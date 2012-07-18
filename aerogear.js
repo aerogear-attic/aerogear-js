@@ -57,10 +57,23 @@
 
         return {
             read: function( options ) {
-                options = options || {};
+                var data;
+                if ( options ) {
+                    if ( options.ajax && options.ajax.data ) {
+                        data = options.ajax.data;
+                    } else if ( options.data ) {
+                        data = options.data;
+                    }
+                    if ( data ) {
+                        options.ajax.data = data;
+                    }
+                } else {
+                    options = {};
+                }
+
                 ajaxSettings = $.extend({
                     type: "GET"
-                }, options.ajax || {}, ajaxSettings );
+                }, ajaxSettings, options.ajax || {} );
 
                 return $.ajax( ajaxSettings );
             },
@@ -70,7 +83,7 @@
                 ajaxSettings = $.extend({
                     type: data[ recordId ] ? "PUT" : "POST",
                     data: data
-                }, options.ajax || {}, ajaxSettings );
+                }, ajaxSettings, options.ajax || {} );
 
                 return $.ajax( ajaxSettings );
             },
@@ -80,7 +93,7 @@
                 ajaxSettings = $.extend({
                     type: "DELETE",
                     data: data || ""
-                }, options.ajax || {}, ajaxSettings );
+                }, ajaxSettings, options.ajax || {} );
 
                 return $.ajax( ajaxSettings );
             }
