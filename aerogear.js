@@ -71,31 +71,37 @@
                     options = {};
                 }
 
-                ajaxSettings = $.extend({
-                    type: "GET"
-                }, ajaxSettings, options.ajax || {} );
-
-                return $.ajax( ajaxSettings );
+                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax || {} ) );
             },
 
             save: function( data, options ) {
                 options = options || {};
-                ajaxSettings = $.extend({
-                    type: data[ recordId ] ? "PUT" : "POST",
-                    data: data
-                }, ajaxSettings, options.ajax || {} );
 
-                return $.ajax( ajaxSettings );
+                return $.ajax( $.extend( {}, ajaxSettings,
+                    {
+                        type: data[ recordId ] ? "PUT" : "POST",
+                        data: data
+                    },
+                    options.ajax || {}
+                ));
             },
 
-            delete: function( data, options ) {
+            delete: function( options ) {
+                var data;
                 options = options || {};
-                ajaxSettings = $.extend({
-                    type: "DELETE",
-                    data: data || ""
-                }, ajaxSettings, options.ajax || {} );
+                if ( typeof options.record === "string" || typeof options.record === "number" ) {
+                    data = { id: options.record };
+                } else {
+                    data = options.record;
+                }
 
-                return $.ajax( ajaxSettings );
+                return $.ajax( $.extend( {}, ajaxSettings,
+                    {
+                        type: "DELETE",
+                        data: data
+                    },
+                    options.ajax || {}
+                ));
             }
         };
     };
