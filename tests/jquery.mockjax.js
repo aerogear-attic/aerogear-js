@@ -119,6 +119,7 @@
 			// Handler expects data but request has none
 			return null;
 		}
+
 		// Inspect the request type
 		if ( handler && handler.type && 
 				 handler.type.toLowerCase() != requestSettings.type.toLowerCase() ) {
