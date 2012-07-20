@@ -30,11 +30,17 @@
             },
 
             save: function( data, options ) {
+                data = data || {};
                 options = options || {};
+
+                var type = data[ recordId ] ? "PUT" : "POST";
+                if ( typeof data !== "string" ) {
+                    data = JSON.stringify( data );
+                }
 
                 return $.ajax( $.extend( {}, ajaxSettings,
                     {
-                        type: data[ recordId ] ? "PUT" : "POST",
+                        type: type,
                         data: data
                     },
                     options.ajax || {}
