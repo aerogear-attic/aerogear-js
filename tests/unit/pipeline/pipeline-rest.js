@@ -5,7 +5,7 @@ module( "pipeline: rest" );
 test( "create - name string", function() {
     expect( 3 );
 
-    var pipe = aerogear.pipeline( "createTest1" );
+    var pipe = aerogear.pipeline( "createTest1" ).pipes;
     equal( Object.keys( pipe ).length, 1, "Single Pipe created" );
     equal( Object.keys( pipe )[ 0 ], "createTest1", "Pipe Name createTest1" );
     equal( pipe.createTest1.type, "rest", "Default pipe type (rest)" );
@@ -25,7 +25,7 @@ test( "create - name array", function() {
             }
         },
         "createTest23"
-    ]);
+    ]).pipes;
 
     equal( Object.keys( pipe ).length, 3, "3 Pipes created" );
     equal( Object.keys( pipe )[ 0 ], "createTest21", "Pipe Name createTest21" );
@@ -58,7 +58,7 @@ test( "create - object", function() {
                 url: "testURL"
             }
         }
-    ]);
+    ]).pipes;
 
     equal( Object.keys( pipe ).length, 3, "3 Pipes created" );
     equal( Object.keys( pipe )[ 0 ], "createTest31", "Pipe Name createTest31" );
@@ -72,17 +72,27 @@ test( "create - object", function() {
     equal( pipe.createTest33.recordId, "testId", "Specified recordId (testId)" );
 });
 
-test( "create - name string", function() {
-    expect( 3 );
-
-    var pipe = aerogear.pipeline( "createTest1" );
-    equal( Object.keys( pipe ).length, 1, "Single Pipe created" );
-    equal( Object.keys( pipe )[ 0 ], "createTest1", "Pipe Name createTest1" );
-    equal( pipe.createTest1.type, "rest", "Default pipe type (rest)" );
-});
 
 // Pipe to be used for all remaining tests
-var pipe = aerogear.pipeline( "tasks" ).tasks;
+var pipeline = aerogear.pipeline( "tasks" ),
+    pipe = pipeline.pipes.tasks;
+
+test( "add method", function() {
+    expect( 3 );
+
+    var pipe = pipeline.add( "addTest" ).pipes;
+    equal( Object.keys( pipe ).length, 2, "Single Pipe added" );
+    equal( Object.keys( pipe )[ 1 ], "addTest", "Pipe Name addTest" );
+    equal( pipe.addTest.type, "rest", "Default pipe type (rest)" );
+});
+
+test( "remove method", function() {
+    expect( 2 );
+
+    var pipe = pipeline.remove( "addTest" ).pipes;
+    equal( Object.keys( pipe ).length, 1, "Single Pipe removed" );
+    equal( pipe.addTest, undefined, "Removed pipe is really gone" );
+});
 
 asyncTest( "read method", function() {
     expect( 3 );
