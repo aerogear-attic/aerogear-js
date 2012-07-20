@@ -13,12 +13,35 @@
 
 // AeroGear Pipeline
 (function( aerogear, undefined ) {
+    function isArray( obj ) {
+        return ({}).toString.call( obj ) === "[object Array]";
+    }
+
     aerogear.pipeline = function( pipe ) {
-        var config = pipe || {},
+        var i,
+            current,
             pipes = {};
 
-        if ( typeof config === "string" ) {
-            pipes[ config ] = aerogear.pipeline.adapters.rest( config );
+        if ( typeof pipe === "string" ) {
+            // pipe is a string so use
+            pipes[ pipe ] = aerogear.pipeline.adapters.rest( pipe );
+        } else if ( isArray( pipe ) ) {
+            // pipe is an array so loop through each item in the array
+            for ( i = 0; i < pipe.length; i++ ) {
+                current = pipe[ i ];
+
+                if ( typeof current === "string" ) {
+                    pipes[ current ] = aerogear.pipeline.adapters.rest( current );
+                } else {
+                    pipes[ current.name ] = aerogear.pipeline.adapters[ current.type || "rest" ]( current.name, current.recordId || "id", current.settings || {} );
+                }
+            }
+        } else if ( pipe ) {
+            // pipe is an object so use that signature
+            pipes[ pipe.name ] = aerogear.pipeline.adapters[ pipe.type || "rest" ]( pipe.name, pipe.recordId || "id", pipe.settings || {} );
+        } else {
+            // pipe is undefined so throw error
+            throw "aerogear.pipeline: pipe is undefined";
         }
 
         return pipes;
@@ -37,25 +60,14 @@
 // Rest Adapter (default)
 (function( aerogear, $, undefined ) {
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
-        // If recordId not set, check for ajaxSettings in second parameter
-        if ( !ajaxSettings ) {
-            if ( !recordId ) {
-                // no recordId nor ajaxSettings provided
-                recordId = "id";
-                ajaxSettings = {};
-            } else if ( typeof recordId !== "string" ) {
-                // recordId contains our ajaxSettings
-                ajaxSettings = recordId;
-                recordId = "id";
-            }
-        }
-
         ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
             url: pipeName
         }, ajaxSettings );
 
         return {
+            recordId: recordId,
+            type: "rest",
             read: function( options ) {
                 var data;
                 if ( options ) {

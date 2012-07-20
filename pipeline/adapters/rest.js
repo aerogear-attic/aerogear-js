@@ -3,25 +3,14 @@
 // Rest Adapter (default)
 (function( aerogear, $, undefined ) {
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
-        // If recordId not set, check for ajaxSettings in second parameter
-        if ( !ajaxSettings ) {
-            if ( !recordId ) {
-                // no recordId nor ajaxSettings provided
-                recordId = "id";
-                ajaxSettings = {};
-            } else if ( typeof recordId !== "string" ) {
-                // recordId contains our ajaxSettings
-                ajaxSettings = recordId;
-                recordId = "id";
-            }
-        }
-
         ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
             url: pipeName
         }, ajaxSettings );
 
         return {
+            recordId: recordId,
+            type: "rest",
             read: function( options ) {
                 var data;
                 if ( options ) {
