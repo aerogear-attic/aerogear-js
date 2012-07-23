@@ -148,9 +148,7 @@ Example:
 Remove data from the server. Passing nothing will inform the server to remove all data at this pipe's rest endpoint. You may also pass a set of options that is or contains the record identifier of the item you want to delete.
 
 ##### Parameters
-* **options** - Mixed (Optional), For the rest adapter, if this parameter is a string or a number, it is assumed that it is the id of an object to be deleted and using the recordId set during creation of the pipe, that item will be deleted. If an object is provided, it is checked for a recordId to pass and then also accepts an `ajax` object that will be added to or override any ajax settings set during creation of the pipe using this adapter
-
-Example:
+* **options** - Mixed (Optional), For the rest adapter, if this parameter is provided, one option called `record` must be included. If this record option is a string or a number, it is assumed that it is the id of an object to be deleted and using the recordId set during creation of the pipe, that item will be deleted. If an object is provided, the recordId specified during creation is pulled out of that object to be passed to the server. Also, if options is an object, an `ajax` object that will be added to or override any ajax settings set during creation of the pipe using this adapter may also be provided
 
 	// Continue use of tasks pipe created earlier
 	// Remove a particular item from the server, again from allData created above
