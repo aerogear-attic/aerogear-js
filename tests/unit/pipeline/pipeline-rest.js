@@ -129,7 +129,7 @@ asyncTest( "read method", function() {
 });
 
 asyncTest( "save method", function() {
-    expect( 2 );
+    expect( 3 );
 
     var save1 = pipe.save({
         title: "New Task",
@@ -144,8 +144,8 @@ asyncTest( "save method", function() {
     });
 
     var save2 = pipe.save({
-        id: 11223,
         data: {
+            id: 11223,
             title: "Updated Task",
             date: "2012-08-01"
         }
@@ -158,7 +158,22 @@ asyncTest( "save method", function() {
         }
     });
 
-    $.when( save1, save2 ).done( function( s1, s2 ) {
+    var save3 = pipe.save({
+        data: {
+            taskId: 44556,
+            title: "Another Updated Task",
+            date: "2012-08-01"
+        }
+    },
+    {
+        ajax: {
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "PUT - update existing data with custom record id" );
+            }
+        }
+    });
+
+    $.when( save1, save2, save3 ).done( function( s1, s2, s3 ) {
         start();
     });
 });
