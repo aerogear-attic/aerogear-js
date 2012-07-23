@@ -10,17 +10,13 @@ $.mockjax({
     responseText: [
         {
             id: 12345,
-            data: {
-                title: "Do Something",
-                date: "2012-08-01"
-            }
+            title: "Do Something",
+            date: "2012-08-01"
         },
         {
             id: 67890,
-            data: {
-                title: "Do Something Else",
-                date: "2012-08-02"
-            }
+            title: "Do Something Else",
+            date: "2012-08-02"
         }
     ]
 });
@@ -32,10 +28,8 @@ $.mockjax({
     responseText: [
         {
             id: 12345,
-            data: {
-                title: "Do Something",
-                date: "2012-08-01"
-            }
+            title: "Do Something",
+            date: "2012-08-01"
         }
     ]
 });
@@ -47,10 +41,8 @@ $.mockjax({
     responseText: [
         {
             id: 11223,
-            data: {
-                title: "New Task",
-                date: "2012-08-01"
-            }
+            title: "New Task",
+            date: "2012-08-01"
         }
     ]
 });

@@ -88,19 +88,15 @@ Example returned data in allData:
 	[
 		{
 			id: 12345
-			data: {
-				title: "Do Something",
-				date: "2012-08-01",
-				…
-			}
+			title: "Do Something",
+			date: "2012-08-01",
+			…
 		},
 		{
 			id: 67890
-			data: {
-				title: "Do Something Else",
-				date: "2012-08-02",
-				…
-			}
+			title: "Do Something Else",
+			date: "2012-08-02",
+			…
 		},
 		…
 	]
