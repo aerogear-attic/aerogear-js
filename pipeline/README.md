@@ -102,7 +102,7 @@ Example returned data in allData:
 	]
 
 #### Save data - save( Object data [, Object, options ] )
-Save data to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST), otherwise, the data on the server is updated (PUT).
+Save data to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
 
 ##### Parameters
 * **data** - Object (Required), For new data, this will be an object representing the data to be saved to teh server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.
