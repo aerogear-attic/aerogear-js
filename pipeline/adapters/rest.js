@@ -48,12 +48,12 @@
             },
 
             delete: function( options ) {
-                var data;
+                var data = {};
                 options = options || {};
                 if ( typeof options.record === "string" || typeof options.record === "number" ) {
-                    data = { id: options.record };
-                } else {
-                    data = options.record;
+                    data[ recordId ] = options.record;
+                } else if ( options.record ) {
+                    data[ recordId ] = options.record[ recordId ];
                 }
 
                 return $.ajax( $.extend( {}, ajaxSettings,
