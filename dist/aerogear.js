@@ -1,15 +1,10 @@
-/* Need to add license, description, etc. */
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-01
+* https://github.com/aerogear/aerogear-js
+* Copyright (c) 2012 AeroGear Team and contributors; Licensed APL */
 
 (function( window, undefined ) {
     var aerogear = window.aerogear = {};
 })( this );
-
-
-/*********************************************** 
-     Begin aerogear.pipeline.js 
-***********************************************/ 
-
-/* Need to add license, description, etc. */
 
 // AeroGear Pipeline
 (function( aerogear, undefined ) {
@@ -89,13 +84,6 @@
     aerogear.pipeline.adapters = {};
 })( aerogear );
 
-
-/*********************************************** 
-     Begin rest.js 
-***********************************************/ 
-
-/* Need to add license, description, etc. */
-
 // Rest Adapter (default)
 (function( aerogear, $, undefined ) {
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
@@ -143,7 +131,7 @@
                 ));
             },
 
-            delete: function( options ) {
+            del: function( options ) {
                 var data = {};
                 options = options || {};
                 if ( typeof options.record === "string" || typeof options.record === "number" ) {

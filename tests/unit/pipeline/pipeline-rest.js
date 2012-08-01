@@ -181,7 +181,7 @@ asyncTest( "save method", function() {
 asyncTest( "delete method", function() {
     expect( 3 );
 
-    var delete1 = pipe.delete({
+    var delete1 = pipe.del({
         ajax: {
             success: function( data, textStatus, jqXHR ) {
                 ok( true, "DELETE - all data at end of this pipe" );
@@ -189,7 +189,7 @@ asyncTest( "delete method", function() {
         }
     });
 
-    var delete2 = pipe.delete({
+    var delete2 = pipe.del({
         record: 11223,
         ajax: {
             success: function( data, textStatus, jqXHR ) {
@@ -198,7 +198,7 @@ asyncTest( "delete method", function() {
         }
     });
 
-    var delete3 = pipe.delete({
+    var delete3 = pipe.del({
         record: {
             taskID: 11223
         },

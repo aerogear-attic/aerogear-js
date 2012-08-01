@@ -47,7 +47,7 @@
                 ));
             },
 
-            delete: function( options ) {
+            del: function( options ) {
                 var data = {};
                 options = options || {};
                 if ( typeof options.record === "string" || typeof options.record === "number" ) {

@@ -2,4 +2,4 @@
 
 (function( window, undefined ) {
     var aerogear = window.aerogear = {};
-}( this ));
+})( this );
