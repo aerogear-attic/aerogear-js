@@ -95,7 +95,7 @@ test( "remove method", function() {
 });
 
 asyncTest( "read method", function() {
-    expect( 3 );
+    expect( 5 );
 
     var read1 = pipe.read({
         ajax: {
@@ -124,7 +124,12 @@ asyncTest( "read method", function() {
     });
 
     $.when( read1, read2, read3 ).done( function( r1, r2, r3 ) {
-        start();
+        pipe.data = null;
+        equal( pipe.data, null, "Pipe has no data" );
+        $.when( pipe.read() ).done( function( r4 ) {
+            equal( pipe.data[ 1 ].id, 67890, "Read all data with no params" );
+            start();
+        });
     });
 });
 

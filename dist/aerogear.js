@@ -1,6 +1,6 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-01
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-02
 * https://github.com/aerogear/aerogear-js
-* Copyright (c) 2012 AeroGear Team and contributors; Licensed APL */
+* Copyright (c) 2012 AeroGear Team and contributors; Licensed ALv2 */
 
 (function( window, undefined ) {
     var aerogear = window.aerogear = {};
@@ -95,22 +95,33 @@
         return {
             recordId: recordId,
             type: "rest",
+            data: {},
             read: function( options ) {
-                var data;
+                var that = this,
+                    data;
                 if ( options ) {
                     if ( options.ajax && options.ajax.data ) {
                         data = options.ajax.data;
                     } else if ( options.data ) {
                         data = options.data;
+                    } else if ( !options.ajax ) {
+                        options.ajax = {};
                     }
                     if ( data ) {
                         options.ajax.data = data;
                     }
                 } else {
-                    options = {};
+                    options = { ajax: {} };
                 }
 
-                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax || {} ) );
+                var success = function( data ) {
+                    that.data = data;
+                    if ( options.ajax.success ) {
+                        options.ajax.success.apply( this, arguments );
+                    }
+                };
+
+                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax || {}, { success: success } ) );
             },
 
             save: function( data, options ) {

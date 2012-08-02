@@ -11,8 +11,10 @@
         return {
             recordId: recordId,
             type: "rest",
+            data: {},
             read: function( options ) {
-                var data;
+                var that = this,
+                    data;
                 if ( options ) {
                     if ( options.ajax && options.ajax.data ) {
                         data = options.ajax.data;
@@ -26,7 +28,14 @@
                     options = {};
                 }
 
-                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax || {} ) );
+                var success = function( data ) {
+                    that.data = data;
+                    if ( options.ajax.success ) {
+                        options.ajax.success.apply( this, arguments );
+                    }
+                };
+
+                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax || {}, { success: success } ) );
             },
 
             save: function( data, options ) {
