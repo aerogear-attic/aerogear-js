@@ -11,7 +11,7 @@
     "maintainers": {
         "name": "Kris Borchers",
         "email": "kris@redhat.com"
-    }
+    },
     "repository": {
         "type": "git",
         "url": "git://github.com/aerogear/aerogear-js.git"
