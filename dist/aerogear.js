@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-02
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-07
 * https://github.com/aerogear/aerogear-js
 * Copyright (c) 2012 AeroGear Team and contributors; Licensed ALv2 */
 

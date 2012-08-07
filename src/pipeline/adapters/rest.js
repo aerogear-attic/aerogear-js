@@ -20,12 +20,14 @@
                         data = options.ajax.data;
                     } else if ( options.data ) {
                         data = options.data;
+                    } else if ( !options.ajax ) {
+                        options.ajax = {};
                     }
                     if ( data ) {
                         options.ajax.data = data;
                     }
                 } else {
-                    options = {};
+                    options = { ajax: {} };
                 }
 
                 var success = function( data ) {
