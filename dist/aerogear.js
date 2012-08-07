@@ -89,7 +89,9 @@
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
         ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
-            url: pipeName
+            url: pipeName,
+            // set the default content type to JSON
+            contentType: "application/json"
         }, ajaxSettings );
 
         return {
@@ -121,7 +123,7 @@
                     }
                 };
 
-                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax || {}, { success: success } ) );
+                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax, { success: success } ) );
             },
 
             save: function( data, options ) {

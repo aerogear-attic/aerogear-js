@@ -7,6 +7,9 @@ $.mockjaxClear();
 $.mockjax({
     url: "tasks",
     type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
     responseText: [
         {
             id: 12345,
@@ -24,6 +27,9 @@ $.mockjax({
 $.mockjax({
     url: "tasks",
     type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
     data: { limit: 1 },
     responseText: [
         {
@@ -38,6 +44,9 @@ $.mockjax({
 $.mockjax({
     url: "tasks",
     type: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
     responseText: [
         {
             id: 11223,
@@ -49,13 +58,19 @@ $.mockjax({
 
 $.mockjax({
     url: "tasks",
-    type: "PUT"
+    type: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    }
 });
 
 // delete mocks
 $.mockjax({
     url: "tasks",
-    type: "DELETE"
+    type: "DELETE",
+    headers: {
+        "Content-Type": "application/json"
+    }
 });
 
 })( jQuery );
