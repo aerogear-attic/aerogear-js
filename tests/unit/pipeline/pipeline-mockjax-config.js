@@ -89,6 +89,14 @@ $.mockjax({
 
 // delete mocks
 $.mockjax({
+    url: "tasks",
+    type: "DELETE",
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+$.mockjax({
     url: "tasks/*",
     type: "DELETE",
     headers: {

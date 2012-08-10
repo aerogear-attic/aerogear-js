@@ -72,20 +72,29 @@
             },
 
             del: function( options ) {
-                var delId,
+                var delId = "",
                     url;
                 options = options || {};
 
-                if ( typeof options.record === "string" || typeof options.record === "number" ) {
-                    delId = options.record;
-                } else if ( options.record ) {
-                    delId = options.record[ this.recordId ];
+                if ( typeof options === "string" || typeof options === "number" ) {
+                    delId = "" + options;
+                } else {
+                    if ( typeof options.record === "string" || typeof options.record === "number" ) {
+                        delId = "" + options.record;
+                    } else if ( options.record ) {
+                        delId = "" + options.record[ this.recordId ];
+                    }
                 }
 
-                if ( !options.ajax.url ) {
-                    url = ajaxSettings.url + "/" + delId;
+                delId = delId.length ? "/" + delId : "";
+                if ( options.ajax ) {
+                    if ( !options.ajax.url ) {
+                        url = ajaxSettings.url + delId;
+                    } else {
+                        url = options.ajax.url;
+                    }
                 } else {
-                    url = options.ajax.url;
+                    url = ajaxSettings.url + delId;
                 }
 
                 return $.ajax( $.extend( {}, ajaxSettings,

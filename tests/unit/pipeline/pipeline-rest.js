@@ -210,14 +210,6 @@ asyncTest( "delete method", function() {
     expect( 3 );
 
     var delete1 = pipe.del({
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "DELETE - all data at end of this pipe" );
-            }
-        }
-    });
-
-    var delete2 = pipe.del({
         record: 11223,
         ajax: {
             success: function( data, textStatus, jqXHR ) {
@@ -226,7 +218,7 @@ asyncTest( "delete method", function() {
         }
     });
 
-    var delete3 = pipe2.del({
+    var delete2 = pipe2.del({
         record: {
             taskId: 44556
         },
@@ -237,8 +229,15 @@ asyncTest( "delete method", function() {
         }
     });
 
-    $.when( delete1, delete2, delete3 ).done( function( d1, d2, d3 ) {
-        start();
+    $.when( delete1, delete2 ).done( function( d1, d2 ) {
+        pipe.del({
+            ajax: {
+                success: function( data, textStatus, jqXHR ) {
+                    ok( true, "DELETE - all data at end of this pipe" );
+                    start();
+                }
+            }
+        });
     });
 });
 
