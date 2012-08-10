@@ -17,7 +17,7 @@
 
             if ( typeof pipe === "string" ) {
                 // pipe is a string so use
-                pipes[ pipe ] = aerogear.pipeline.adapters.rest( pipe );
+                pipes[ pipe ] = aerogear.pipeline.adapters.rest( pipe, "id" );
             } else if ( isArray( pipe ) ) {
                 // pipe is an array so loop through each item in the array
                 for ( i = 0; i < pipe.length; i++ ) {

@@ -74,15 +74,24 @@ test( "create - object", function() {
 
 
 // Pipe to be used for all remaining tests
-var pipeline = aerogear.pipeline( "tasks" ),
-    pipe = pipeline.pipes.tasks;
+var pipeline = aerogear.pipeline([
+        {
+            name: "tasks"
+        },
+        {
+            name: "tasksCustom",
+            recordId: "taskId"
+        }
+    ]),
+    pipe = pipeline.pipes.tasks,
+    pipe2 = pipeline.pipes.tasksCustom;
 
 test( "add method", function() {
     expect( 3 );
 
     var pipe = pipeline.add( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 2, "Single Pipe added" );
-    equal( Object.keys( pipe )[ 1 ], "addTest", "Pipe Name addTest" );
+    equal( Object.keys( pipe ).length, 3, "Single Pipe added" );
+    equal( Object.keys( pipe )[ 2 ], "addTest", "Pipe Name addTest" );
     equal( pipe.addTest.type, "rest", "Default pipe type (rest)" );
 });
 
@@ -90,7 +99,7 @@ test( "remove method", function() {
     expect( 2 );
 
     var pipe = pipeline.remove( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 1, "Single Pipe removed" );
+    equal( Object.keys( pipe ).length, 2, "Single Pipe removed" );
     equal( pipe.addTest, undefined, "Removed pipe is really gone" );
 });
 
@@ -134,9 +143,11 @@ asyncTest( "read method", function() {
 });
 
 asyncTest( "save method", function() {
-    expect( 3 );
+    expect( 4 );
 
-    var save1 = pipe.save({
+    var save1, save2;
+
+    save1 = pipe.save({
         title: "New Task",
         date: "2012-08-01"
     },
@@ -148,38 +159,50 @@ asyncTest( "save method", function() {
         }
     });
 
-    var save2 = pipe.save({
-        data: {
+    save2 = pipe2.save({
+        title: "Another Task",
+        date: "2012-08-01"
+    },
+    {
+        ajax: {
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "POST - new data with custom record id" );
+            }
+        }
+    });
+
+    $.when( save1, save2 ).done( function( s1, s2 ) {
+        var save3, save4;
+
+        save3 = pipe.save({
             id: 11223,
             title: "Updated Task",
             date: "2012-08-01"
-        }
-    },
-    {
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "PUT - update existing data" );
+        },
+        {
+            ajax: {
+                success: function( data, textStatus, jqXHR ) {
+                    ok( true, "PUT - update existing data" );
+                }
             }
-        }
-    });
+        });
 
-    var save3 = pipe.save({
-        data: {
+        save4 = pipe2.save({
             taskId: 44556,
             title: "Another Updated Task",
             date: "2012-08-01"
-        }
-    },
-    {
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "PUT - update existing data with custom record id" );
+        },
+        {
+            ajax: {
+                success: function( data, textStatus, jqXHR ) {
+                    ok( true, "PUT - update existing data with custom record id" );
+                }
             }
-        }
-    });
+        });
 
-    $.when( save1, save2, save3 ).done( function( s1, s2, s3 ) {
-        start();
+        $.when( save3, save4 ).done( function( s3, s4 ) {
+            start();
+        });
     });
 });
 
@@ -203,9 +226,9 @@ asyncTest( "delete method", function() {
         }
     });
 
-    var delete3 = pipe.del({
+    var delete3 = pipe2.del({
         record: {
-            taskID: 11223
+            taskId: 44556
         },
         ajax: {
             success: function( data, textStatus, jqXHR ) {

@@ -57,7 +57,30 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "tasks",
+    url: "tasksCustom",
+    type: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: [
+        {
+            id: 44556,
+            title: "Another Task",
+            date: "2012-08-01"
+        }
+    ]
+});
+
+$.mockjax({
+    url: "tasks/*",
+    type: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+$.mockjax({
+    url: "tasksCustom/*",
     type: "PUT",
     headers: {
         "Content-Type": "application/json"
@@ -66,7 +89,15 @@ $.mockjax({
 
 // delete mocks
 $.mockjax({
-    url: "tasks",
+    url: "tasks/*",
+    type: "DELETE",
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+$.mockjax({
+    url: "tasksCustom/*",
     type: "DELETE",
     headers: {
         "Content-Type": "application/json"

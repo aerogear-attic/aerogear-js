@@ -43,36 +43,55 @@
             },
 
             save: function( data, options ) {
+                var type,
+                    url;
                 data = data || {};
                 options = options || {};
+                type = data[ this.recordId ] ? "PUT" : "POST";
 
-                var type = data[ recordId ] ? "PUT" : "POST";
+                if ( !options.ajax.url && data[ this.recordId ] ) {
+                    url = ajaxSettings.url + "/" + data[ this.recordId ];
+                } else if ( !options.ajax.url ) {
+                    url = ajaxSettings.url;
+                } else {
+                    url = options.ajax.url;
+                }
+
                 if ( typeof data !== "string" ) {
                     data = JSON.stringify( data );
                 }
 
                 return $.ajax( $.extend( {}, ajaxSettings,
                     {
+                        data: data,
                         type: type,
-                        data: data
+                        url: url
                     },
                     options.ajax || {}
                 ));
             },
 
             del: function( options ) {
-                var data = {};
+                var delId,
+                    url;
                 options = options || {};
+
                 if ( typeof options.record === "string" || typeof options.record === "number" ) {
-                    data[ recordId ] = options.record;
+                    delId = options.record;
                 } else if ( options.record ) {
-                    data[ recordId ] = options.record[ recordId ];
+                    delId = options.record[ this.recordId ];
+                }
+
+                if ( !options.ajax.url ) {
+                    url = ajaxSettings.url + "/" + delId;
+                } else {
+                    url = options.ajax.url;
                 }
 
                 return $.ajax( $.extend( {}, ajaxSettings,
                     {
                         type: "DELETE",
-                        data: data
+                        url: url
                     },
                     options.ajax || {}
                 ));
