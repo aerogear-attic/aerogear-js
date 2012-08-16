@@ -6,8 +6,9 @@
         ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
             url: pipeName,
-            // set the default content type to JSON
-            contentType: "application/json"
+            // set the default content type and Accept headers to JSON
+            contentType: "application/json",
+            dataType: "json"
         }, ajaxSettings );
 
         return {
