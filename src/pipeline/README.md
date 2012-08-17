@@ -53,7 +53,7 @@ Remove one or more pipes from the pipeline. Remove can remove pipes using the sa
 
 <h2 id="adapters">Adapters</h2>
 ### REST (Default)
-The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named tasks would use http://mysite.com/myApp/tasks as its REST endpoint.
+The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named _tasks_ would use http://mysite.com/myApp/tasks as its REST endpoint.
 #### Options
 * **ajax** - Object, a hash of key/value pairs can be supplied to jQuery.ajax method via this option.
 
