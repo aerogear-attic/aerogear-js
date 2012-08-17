@@ -72,27 +72,37 @@
                 ));
             },
 
-            del: function( options ) {
+            remove: function( rem, options ) {
                 var delId = "",
                     url;
+
                 options = options || {};
 
-                if ( typeof options === "string" || typeof options === "number" ) {
-                    delId = "" + options;
-                } else {
-                    if ( typeof options.record === "string" || typeof options.record === "number" ) {
-                        delId = "" + options.record;
-                    } else if ( options.record ) {
-                        delId = "" + options.record[ this.recordId ];
+                if ( typeof rem === "string" || typeof rem === "number" ) {
+                    delId = "" + rem;
+                } else if ( rem ) {
+                    if ( typeof rem.record === "string" || typeof rem.record === "number" ) {
+                        delId = "" + rem.record;
+                    } else if ( rem.record ) {
+                        delId = "" + rem.record[ this.recordId ];
                     }
+                } else {
+                    throw "aerogear.pipeline.rest: missing argument";
                 }
 
                 delId = delId.length ? "/" + delId : "";
                 if ( options.ajax ) {
-                    if ( !options.ajax.url ) {
-                        url = ajaxSettings.url + delId;
-                    } else {
+                    if ( options.ajax.url ) {
                         url = options.ajax.url;
+                    } else {
+                        url = ajaxSettings.url + delId;
+                    }
+                } else if ( rem.ajax ) {
+                    options.ajax = rem.ajax;
+                    if ( rem.ajax.url ) {
+                        url = rem.ajax.url;
+                    } else {
+                        url = ajaxSettings.url + delId;
                     }
                 } else {
                     url = ajaxSettings.url + delId;

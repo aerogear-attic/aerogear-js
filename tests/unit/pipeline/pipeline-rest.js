@@ -206,19 +206,27 @@ asyncTest( "save method", function() {
     });
 });
 
-asyncTest( "delete method", function() {
-    expect( 3 );
+asyncTest( "remove method", function() {
+    expect( 4 );
 
-    var delete1 = pipe.del({
-        record: 11223,
+    var remove1 = pipe.remove( 12345, {
         ajax: {
             success: function( data, textStatus, jqXHR ) {
-                ok( true, "DELETE - single record using default record identifier" );
+                ok( true, "DELETE - single record using default integer record identifier" );
             }
         }
     });
 
-    var delete2 = pipe2.del({
+    var remove2 = pipe.remove({
+        record: 11223,
+        ajax: {
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "DELETE - single record using default object record identifier" );
+            }
+        }
+    });
+
+    var remove3 = pipe2.remove({
         record: {
             taskId: 44556
         },
@@ -229,8 +237,8 @@ asyncTest( "delete method", function() {
         }
     });
 
-    $.when( delete1, delete2 ).done( function( d1, d2 ) {
-        pipe.del({
+    $.when( remove1, remove2, remove3 ).done( function( r1, r2, r3 ) {
+        pipe.remove({
             ajax: {
                 success: function( data, textStatus, jqXHR ) {
                     ok( true, "DELETE - all data at end of this pipe" );
