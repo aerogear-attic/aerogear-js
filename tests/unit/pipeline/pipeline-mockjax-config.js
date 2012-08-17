@@ -31,13 +31,11 @@ $.mockjax({
         "Content-Type": "application/json"
     },
     data: { limit: 1 },
-    responseText: [
-        {
-            id: 12345,
-            title: "Do Something",
-            date: "2012-08-01"
-        }
-    ]
+    responseText: {
+        id: 12345,
+        title: "Do Something",
+        date: "2012-08-01"
+    }
 });
 
 // save mocks
@@ -47,13 +45,11 @@ $.mockjax({
     headers: {
         "Content-Type": "application/json"
     },
-    responseText: [
-        {
-            id: 11223,
-            title: "New Task",
-            date: "2012-08-01"
-        }
-    ]
+    responseText: {
+        id: 11223,
+        title: "New Task",
+        date: "2012-08-01"
+    }
 });
 
 $.mockjax({
@@ -62,13 +58,11 @@ $.mockjax({
     headers: {
         "Content-Type": "application/json"
     },
-    responseText: [
-        {
-            id: 44556,
-            title: "Another Task",
-            date: "2012-08-01"
-        }
-    ]
+    responseText: {
+        id: 44556,
+        title: "Another Task",
+        date: "2012-08-01"
+    }
 });
 
 $.mockjax({
@@ -76,6 +70,11 @@ $.mockjax({
     type: "PUT",
     headers: {
         "Content-Type": "application/json"
+    },
+    responseText: {
+        id: 11223,
+        title: "Updated Task",
+        date: "2012-08-01"
     }
 });
 
@@ -84,6 +83,11 @@ $.mockjax({
     type: "PUT",
     headers: {
         "Content-Type": "application/json"
+    },
+    responseText: {
+        id: 44556,
+        title: "Another Updated Task",
+        date: "2012-08-01"
     }
 });
 

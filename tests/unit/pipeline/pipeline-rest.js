@@ -154,7 +154,7 @@ asyncTest( "save method", function() {
     {
         ajax: {
             success: function( data, textStatus, jqXHR ) {
-                equal( data[ 0 ].id, 11223, "POST - new data" );
+                equal( data.id, 11223, "POST - new data" );
             }
         }
     });
