@@ -144,8 +144,7 @@
 
                     for( var item in that.data ) {
                         if ( that.data[ item ].id === delId ) {
-                            itemIndex = that.data.indexOf( that.data[ item ] );
-                            that.data.slice( itemIndex, itemIndex + 1 );
+                            that.data.splice( item, 1 );
                         }
                     }
 
