@@ -20,22 +20,39 @@ Instantiate `aerogear.pipeline`. A pipeline must have at least one pipe. Create 
     
 * Create a pipeline with one or more pipe configuration objects. 
 
-    `aerogear.pipeline( Object pipeConfigurations )`
+    `aerogear.pipeline( Object/Array[Object] pipeConfigurations )`
 
     
 The default pipe type is `rest`. You may also use one of the other provided types or create your own.
 
-	// Create an instance of aerogear.pipeline with a single pipe
+	// Create an instance of aerogear.pipeline with a single pipe using the default adapter
 	var myPipeline = aerogear.pipeline( "tasks" );
+
+    // Create an instance of aerogear.pipeline with multiple pipes using the default adapter
+    var myPipeline = aerogear.pipeline( [ "tasks", "projects" ] );
 
 ##### Pipe Configuration
 When passing a pipeConfiguration object to aerogear.pipeline, the following items can be provided.
 
 * **name** - String (Required), the name that the pipe will later be referenced by
-* **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used 
-* **options** - Object (Optional, default - {}), the options to be passed to the adapter
-  * Adapters may have a number of varying configuration options. [See adapters](#adapters) below.
+* **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
+* **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe
+* **settings** - Object (Optional, default - {}), the settings to be passed to the adapter
+  * Adapters may have a number of varying configuration settings. [See adapters](#adapters) below.
 
+Example:
+
+    // Create an instance of aerogear.pipeline with multiple pipes using custom settings
+    var myPipeline = aerogear.pipeline([
+        {
+            name: "tasks",
+            ...
+        },
+        {
+            name: "projects",
+            ...
+        }
+    ]);
 
 #### Add pipe - aerogear.pipeline.add( Mixed pipeConfig )
 Add one or more pipes to the pipeline. Add can add pipes using the same options as when the pipeline was created by passing either a single pipe name, an array of pipe names or an object with one or more pipe configurations.
@@ -53,16 +70,22 @@ Remove one or more pipes from the pipeline. Remove can remove pipes using the sa
 
 <h2 id="adapters">Adapters</h2>
 ### REST (Default)
-The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named _tasks_ would use http://mysite.com/myApp/tasks as its REST endpoint.
-#### Options
-* **ajax** - Object, a hash of key/value pairs can be supplied to jQuery.ajax method via this option.
+The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named `tasks` would use http://mysite.com/myApp/tasks as its REST endpoint.
+
+When creating a new pipe using the REST adapter, the `settings` parameter to be supplied to pipeline is a hash of key/value pairs that will be supplied to the jQuery.ajax method.
+
+Once created, the new pipe will contain:
+
+* **recordId** - the record identifier specified when the pipe was created
+* **type** - the type specified when the pipe was created
+* **data** - an object used to store a client side copy of the data associated with this pipe
 
 #### Retrieve data - read( [Object options] )
 Retrieve data asynchronously from the server. This function returns a jqXHR which implements the Promise interface. See the [Defered Object](http://api.jquery.com/category/deferred-object/) reference on the jQuery site for more information.
 ##### Parameters
 * **options** - Object (Optional)
   * **data** - Object, a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return (Optional)
-  * **ajax** - Object, a hash of key/value pairs that will be added to or override any ajax settings set during creation of the pipe using this adapter
+  * **ajax** - Object, a hash of key/value pairs that will be added to or override any AJAX settings set during creation of the pipe using this adapter (Optional)
 
 Example:
 
@@ -136,19 +159,23 @@ Example:
     });
     
     // Update an existing piece of data in the allData var we read earlier
-    allData[0].data.title = "Updated Task";
-    myPipe.save( allData[0] );
+    var toUpdate = allData[ 0 ];
+    toUpdate.data.title = "Updated Task";
+    myPipe.save( toUpdate );
 
 
-#### Delete data - delete( [Mixed options] )
-Remove data from the server. Passing nothing will inform the server to remove all data at this pipe's rest endpoint. You may also pass a set of options that is or contains the record identifier of the item you want to delete.
+#### Delete data - delete( Mixed toRemove, [Object options] )
+Remove data from the server. Passing nothing will inform the server to remove all data at this pipe's rest endpoint.
 
 ##### Parameters
-* **options** - Mixed (Optional), For the rest adapter, if this parameter is provided, one option called `record` must be included. If this record option is a string or a number, it is assumed that it is the id of an object to be deleted and using the recordId set during creation of the pipe, that item will be deleted. If an object is provided, the recordId specified during creation is pulled out of that object to be passed to the server. Also, if options is an object, an `ajax` object that will be added to or override any ajax settings set during creation of the pipe using this adapter may also be provided
+* **toRemove** - Mixed, the string or integer id representing the item to delete or the entire record which contains the id of the item to delete
+* **options** - Object (Optional), an object that will be added to or override any ajax settings set during creation of the pipe
+
+Example:
 
 	// Continue use of tasks pipe created earlier
-	// Remove a particular item from the server, again from allData created above
-    myPipe.delete( allData[0].id );
+	// Remove a particular item from the server, using toUpdate created above
+    myPipe.delete( toUpdate.id );
     
     // Delete all data from the server associated with this pipe
     myPipe.delete();
