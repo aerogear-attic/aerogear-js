@@ -197,7 +197,7 @@
                 ));
             },
 
-            remove: function( rem, options ) {
+            remove: function( toRemove, options ) {
                 var that = this,
                     delId = 0,
                     delPath = "",
@@ -205,13 +205,13 @@
 
                 options = options || {};
 
-                if ( typeof rem === "string" || typeof rem === "number" ) {
-                    delId = parseInt( rem, 10 );
-                } else if ( rem ) {
-                    if ( typeof rem.record === "string" || typeof rem.record === "number" ) {
-                        delId = parseInt( rem.record, 10 );
-                    } else if ( rem.record ) {
-                        delId = parseInt( rem.record[ this.recordId ], 10 );
+                if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
+                    delId = parseInt( toRemove, 10 );
+                } else if ( toRemove ) {
+                    if ( typeof toRemove.record === "string" || typeof toRemove.record === "number" ) {
+                        delId = parseInt( toRemove.record, 10 );
+                    } else if ( toRemove.record ) {
+                        delId = parseInt( toRemove.record[ this.recordId ], 10 );
                     }
                 } else {
                     throw "aerogear.pipeline.rest: missing argument";
@@ -224,10 +224,10 @@
                     } else {
                         url = ajaxSettings.url + delPath;
                     }
-                } else if ( rem.ajax ) {
-                    options.ajax = rem.ajax;
-                    if ( rem.ajax.url ) {
-                        url = rem.ajax.url;
+                } else if ( toRemove.ajax ) {
+                    options.ajax = toRemove.ajax;
+                    if ( toRemove.ajax.url ) {
+                        url = toRemove.ajax.url;
                     } else {
                         url = ajaxSettings.url + delPath;
                     }
