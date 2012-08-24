@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-22
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-24
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -488,6 +488,46 @@
                     options.ajax || {},
                     { success: success }
                 ));
+            },
+
+            /**
+             * aerogear.pipeline.adapters.rest#filter( filterParameters[, matchAny = false] ) -> Array[Object]
+             * - filterParameters (Object): An object containing key value pairs on which to filter the pipes data array.
+             * - matchAny (Boolean): When true, an item is included in the output if any of the filter parameters is matched.
+             *
+             * Returns a filtered array of data objects based on the contents of the pipe's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
+             *
+             **/
+            filter: function( filterParameters, matchAny ) {
+                var filtered,
+                    i;
+
+                if ( !filterParameters ) {
+                    filtered = this.data || [];
+                    return filtered;
+                }
+
+                filtered = this.data.filter( function( value, index, array) {
+                    var match = matchAny ? false : true,
+                        keys = Object.keys( filterParameters );
+
+                    for ( i = 0; i < keys.length; i++ ) {
+                        if ( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ) {
+                            // All must match but this one doesn't so return false
+                            match = true;
+                            break;
+                        }
+                        if ( !matchAny && filterParameters[ keys[ i ] ] !== value[ keys[ i ] ] ) {
+                            // At least one item must match and this one does so return true
+                            match = false;
+                            break;
+                        }
+                    }
+
+                    return match;
+                });
+
+                return filtered;
             }
         };
     };

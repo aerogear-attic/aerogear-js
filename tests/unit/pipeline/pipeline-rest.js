@@ -81,28 +81,35 @@ var pipeline = aerogear.pipeline([
         {
             name: "tasksCustom",
             recordId: "taskId"
+        },
+        {
+            name: "usersFilter"
         }
     ]),
     pipe = pipeline.pipes.tasks,
-    pipe2 = pipeline.pipes.tasksCustom;
+    pipe2 = pipeline.pipes.tasksCustom,
+    pipe3 = pipeline.pipes.usersFilter;
 
+// Add pipe test
 test( "add method", function() {
     expect( 3 );
 
     var pipe = pipeline.add( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 3, "Single Pipe added" );
-    equal( Object.keys( pipe )[ 2 ], "addTest", "Pipe Name addTest" );
+    equal( Object.keys( pipe ).length, 4, "Single Pipe added" );
+    equal( Object.keys( pipe )[ 3 ], "addTest", "Pipe Name addTest" );
     equal( pipe.addTest.type, "rest", "Default pipe type (rest)" );
 });
 
+// Remove pipe test
 test( "remove method", function() {
     expect( 2 );
 
     var pipe = pipeline.remove( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 2, "Single Pipe removed" );
+    equal( Object.keys( pipe ).length, 3, "Single Pipe removed" );
     equal( pipe.addTest, undefined, "Removed pipe is really gone" );
 });
 
+// Read method test
 asyncTest( "read method", function() {
     expect( 5 );
 
@@ -142,6 +149,7 @@ asyncTest( "read method", function() {
     });
 });
 
+// Save method test
 asyncTest( "save method", function() {
     expect( 4 );
 
@@ -206,6 +214,7 @@ asyncTest( "save method", function() {
     });
 });
 
+// Remove method test
 asyncTest( "remove method", function() {
     expect( 4 );
 
@@ -246,6 +255,50 @@ asyncTest( "remove method", function() {
                 }
             }
         });
+    });
+});
+
+// Filter method test
+asyncTest( "filter method", function() {
+    expect( 6 );
+
+    pipe3.read({
+        ajax: {
+            success: function() {
+                var filtered = pipe3.filter();
+                equal( filtered.length, 6, "Empty filter returns all data" );
+
+                filtered = pipe3.filter({
+                    fname: "John"
+                });
+                equal( filtered.length, 2, "Only users with fname == John" );
+
+                filtered = pipe3.filter({
+                    lname: "Smith"
+                });
+                equal( filtered.length, 2, "Only users with lname == Smith" );
+
+                filtered = pipe3.filter({
+                    fname: "John",
+                    lname: "Smith"
+                });
+                equal( filtered.length, 1, "Only users with fname == John AND lname = Smith" );
+
+                filtered = pipe3.filter({
+                    fname: "John",
+                    dept: "IT"
+                }, true);
+                equal( filtered.length, 4, "Only users with fname == John OR dept = IT" );
+
+                filtered = pipe3.filter({
+                    fname: "Jim",
+                    lname: "Jones"
+                });
+                equal( filtered.length, 0, "No results" );
+
+                start();
+            }
+        }
     });
 });
 

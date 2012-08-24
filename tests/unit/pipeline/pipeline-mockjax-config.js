@@ -116,4 +116,51 @@ $.mockjax({
     }
 });
 
+// filter mocks
+$.mockjax({
+    url: "usersFilter",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: [
+        {
+            id: 12345,
+            fname: "John",
+            lname: "Smith",
+            dept: "Accounting"
+        },
+        {
+            id: 12346,
+            fname: "Jane",
+            lname: "Smith",
+            dept: "IT"
+        },
+        {
+            id: 12347,
+            fname: "John",
+            lname: "Doe",
+            dept: "Marketing"
+        },
+        {
+            id: 12348,
+            fname: "Jane",
+            lname: "Doe",
+            dept: "Accounting"
+        },
+        {
+            id: 12349,
+            fname: "Any",
+            lname: "Name",
+            dept: "IT"
+        },
+        {
+            id: 12350,
+            fname: "Another",
+            lname: "Person",
+            dept: "Marketing"
+        }
+    ]
+});
+
 })( jQuery );
