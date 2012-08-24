@@ -8,7 +8,8 @@ task :build_doc do
   PDoc.run({
     :source_files => Dir[File.join("src", "**", "*.js")],
     :destination => "docs",
-    :syntax_highlighter => :none,
+    :index_page   => 'README.md',
+    :syntax_highlighter => "pygments",
     :markdown_parser => :bluecloth,
     :src_code_href => proc { |obj|
         "https://github.com/aerogear/aerogear-js/blob/#{hash}/#{obj.file}#L#{obj.line_number}"
@@ -26,7 +27,7 @@ end
 
 desc "Empties output directory"
 task :remove_doc do
-  rm_rf Dir.glob(File.join(docs, "*"))
+  rm_rf Dir.glob(File.join("docs", "*"))
 end
 
 desc "Empties the output directory and builds the documentation."
