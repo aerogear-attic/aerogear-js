@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-24
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-27
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -492,7 +492,7 @@
 
             /**
              * aerogear.pipeline.adapters.rest#filter( filterParameters[, matchAny = false] ) -> Array[Object]
-             * - filterParameters (Object): An object containing key value pairs on which to filter the pipes data array.
+             * - filterParameters (Object): An object containing key value pairs on which to filter the pipe's data array. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of value to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
              * - matchAny (Boolean): When true, an item is included in the output if any of the filter parameters is matched.
              *
              * Returns a filtered array of data objects based on the contents of the pipe's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
@@ -500,7 +500,7 @@
              **/
             filter: function( filterParameters, matchAny ) {
                 var filtered,
-                    i;
+                    i, j;
 
                 if ( !filterParameters ) {
                     filtered = this.data || [];
@@ -509,16 +509,39 @@
 
                 filtered = this.data.filter( function( value, index, array) {
                     var match = matchAny ? false : true,
-                        keys = Object.keys( filterParameters );
+                        keys = Object.keys( filterParameters ),
+                        filterObj, paramMatch, paramResult;
 
                     for ( i = 0; i < keys.length; i++ ) {
-                        if ( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ) {
-                            // All must match but this one doesn't so return false
+                        if ( filterParameters[ keys[ i ] ].data ) {
+                            // Parameter value is an object
+                            filterObj = filterParameters[ keys[ i ] ];
+                            paramResult = filterObj.matchAny ? false : true;
+
+                            for ( j = 0; j < filterObj.data.length; j++ ) {
+                                if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ] ) {
+                                    // At least one value must match and this one does so return true
+                                    paramResult = true;
+                                    break;
+                                }
+                                if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ] ) {
+                                    // All must match but this one doesn't so return false
+                                    paramResult = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // Filter on parameter value
+                            paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ? true : false;
+                        }
+
+                        if ( matchAny && paramResult ) {
+                            // At least one item must match and this one does so return true
                             match = true;
                             break;
                         }
-                        if ( !matchAny && filterParameters[ keys[ i ] ] !== value[ keys[ i ] ] ) {
-                            // At least one item must match and this one does so return true
+                        if ( !matchAny && !paramResult ) {
+                            // All must match but this one doesn't so return false
                             match = false;
                             break;
                         }

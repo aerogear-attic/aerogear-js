@@ -260,7 +260,7 @@ asyncTest( "remove method", function() {
 
 // Filter method test
 asyncTest( "filter method", function() {
-    expect( 6 );
+    expect( 7 );
 
     pipe3.read({
         ajax: {
@@ -272,11 +272,6 @@ asyncTest( "filter method", function() {
                     fname: "John"
                 });
                 equal( filtered.length, 2, "Only users with fname == John" );
-
-                filtered = pipe3.filter({
-                    lname: "Smith"
-                });
-                equal( filtered.length, 2, "Only users with lname == Smith" );
 
                 filtered = pipe3.filter({
                     fname: "John",
@@ -295,6 +290,21 @@ asyncTest( "filter method", function() {
                     lname: "Jones"
                 });
                 equal( filtered.length, 0, "No results" );
+
+                filtered = pipe3.filter({
+                    lname: {
+                        data: [ "Smith", "Jones" ]
+                    }
+                });
+                equal( filtered.length, 0, "Only users with lname == Smith AND lname = Jones (empty result)" );
+
+                filtered = pipe3.filter({
+                    dept: {
+                        data: [ "Marketing", "IT" ],
+                        matchAny: true
+                    }
+                });
+                equal( filtered.length, 4, "Only users with dept == Marketing OR dept = IT" );
 
                 start();
             }
