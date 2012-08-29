@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-27
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-29
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -20,14 +20,93 @@
      *
      * The aerogear namespace provides a way to encapsulate the library's properties and methods away from the global namespace
     **/
-    var aerogear = window.aerogear = {};
+    var aerogear = window.aerogear = {
+        /**
+         * aerogear#add( config ) -> Object
+         * - config (Mixed): This can be a variety of types specifying how to create the object
+         *
+         * This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, valve, etc.) to the respective collection. For specific examples look at those internal use cases.
+         **/
+        add: function ( config ) {
+            var i,
+                current,
+                collection = this._getCollection();
+
+            if ( !config ) {
+                return this;
+            } else if ( typeof config === "string" ) {
+                // config is a string so use default adapter type
+                collection[ config ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( config, "id" );
+            } else if ( aerogear.isArray( config ) ) {
+                // config is an array so loop through each item in the array
+                for ( i = 0; i < config.length; i++ ) {
+                    current = config[ i ];
+
+                    if ( typeof current === "string" ) {
+                        collection[ current ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( current );
+                    } else {
+                        collection[ current.name ] = aerogear[ this.lib ].adapters[ current.type || this.defaultAdapter ]( current.name, current.recordId || "id", current.settings || {} );
+                    }
+                }
+            } else {
+                // config is an object so use that signature
+                collection[ config.name ] = aerogear[ this.lib ].adapters[ config.type || this.defaultAdapter ]( config.name, config.recordId || "id", config.settings || {} );
+            }
+
+            // reset the collection instance
+            this._setCollection( collection );
+
+            return this;
+        },
+        /**
+         * aerogear#remove( config ) -> Object
+         * - config (Mixed): This can be a variety of types specifying how to remove the object
+         *
+         * This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, valve, etc.) from the respective collection. For specific examples look at those internal use cases.
+         **/
+        remove: function( config ) {
+            var i,
+                current,
+                collection = this._getCollection();
+
+            if ( typeof config === "string" ) {
+                // config is a string so delete that item by name
+                delete collection[ config ];
+            } else if ( aerogear.isArray( config ) ) {
+                // config is an array so loop through each item in the array
+                for ( i = 0; i < config.length; i++ ) {
+                    current = config[ i ];
+
+                    if ( typeof current === "string" ) {
+                        delete collection[ current ];
+                    } else {
+                        delete collection[ current.name ];
+                    }
+                }
+            } else if ( config ) {
+                // config is an object so use that signature
+                delete collection[ config.name ];
+            }
+
+            // reset the collection instance
+            this._setCollection( collection );
+
+            return this;
+        }
+    };
+
+    /**
+     * aerogear.isArray( obj ) -> Boolean
+     * - obj (Mixed): This can be any object to test
+     *
+     * Utility function to test if an object is an Array
+     **/
+    aerogear.isArray = function( obj ) {
+        return ({}).toString.call( obj ) === "[object Array]";
+    };
 })( this );
 
 (function( aerogear, undefined ) {
-    function isArray( obj ) {
-        return ({}).toString.call( obj ) === "[object Array]";
-    }
-
     /**
      * aerogear.pipeline
      *
@@ -51,14 +130,16 @@
      *     // Create multiple pipes using the default adapter
      *     var myPipeline = aerogear.pipeline( [ "tasks", "projects" ] );
      **/
-    aerogear.pipeline = function( pipe ) {
+    aerogear.pipeline = function( config ) {
         var pipeline = {
+                lib: "pipeline",
+                defaultAdapter: "rest",
                 pipes: {},
                 /**
-                 * aerogear.pipeline#add( pipe ) -> Object
-                 * - pipe (Mixed): This can be a variety of types specifying how to create the pipe as illustrated below
+                 * aerogear.pipeline#add( config ) -> Object
+                 * - config (Mixed): This can be a variety of types specifying how to create the pipe as illustrated below
                  *
-                 * When passing a pipeConfiguration object to `add`, the following items can be provided:
+                 * When passing a pipe configuration object to `add`, the following items can be provided:
                  *  - **name** - String (Required), the name that the pipe will later be referenced by
                  *  - **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
                  *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe
@@ -89,54 +170,23 @@
                  *     pipeline = pipeline.add( [ "tags", "projects" ] );
                  *
                  **/
-                add: function( pipe ) {
-                    var i,
-                        current;
-
-                    if ( !pipe ) {
-                        return this;
-                    } else if ( typeof pipe === "string" ) {
-                        // pipe is a string so use
-                        this.pipes[ pipe ] = aerogear.pipeline.adapters.rest( pipe, "id" );
-                    } else if ( isArray( pipe ) ) {
-                        // pipe is an array so loop through each item in the array
-                        for ( i = 0; i < pipe.length; i++ ) {
-                            current = pipe[ i ];
-
-                            if ( typeof current === "string" ) {
-                                this.pipes[ current ] = aerogear.pipeline.adapters.rest( current );
-                            } else {
-                                this.pipes[ current.name ] = aerogear.pipeline.adapters[ current.type || "rest" ]( current.name, current.recordId || "id", current.settings || {} );
-                            }
-                        }
-                    } else {
-                        // pipe is an object so use that signature
-                        this.pipes[ pipe.name ] = aerogear.pipeline.adapters[ pipe.type || "rest" ]( pipe.name, pipe.recordId || "id", pipe.settings || {} );
-                    }
-
-                    return this;
+                add: function( config ) {
+                    return aerogear.add.call( this, config );
                 },
                 /**
-                 * aerogear.pipeline#remove( pipe ) -> Object
-                 * - pipe (Mixed): This can be a variety of types specifying the pipe to remove as illustrated below
-                 *
-                 * When passing a pipeConfiguration object to `remove`, the following items can be provided:
-                 *  - **name** - String (Required), the name that the pipe will later be referenced by
-                 *  - **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
-                 *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe
-                 *  - **settings** - Object (Optional, default - {}), the settings to be passed to the adapter
-                 *   - Adapters may have a number of varying configuration settings.
+                 * aerogear.pipeline#remove( toRemove ) -> Object
+                 * - toRemove (Mixed): This can be a variety of types specifying the pipe to remove as illustrated below
                  *
                  * Returns the full pipeline object with the specified pipe(s) removed
                  *
-                 *     // Remove a single pipe using the default configuration (rest).
+                 *     // Remove a single pipe.
                  *     aerogear.pipeline.remove( String pipeName );
                  *
-                 *     // Remove multiple pipes all using the default configuration (rest).
+                 *     // Remove multiple pipes.
                  *     aerogear.pipeline.remove( Array[String] pipeNames );
                  *
-                 *     // Remove one or more pipe configuration objects.
-                 *     aerogear.pipeline.remove( Object/Array[Object] pipeConfigurations )
+                 *     // Remove one or more pipes by passing entire pipe objects.
+                 *     aerogear.pipeline.remove( Object/Array[Object] pipes )
                  *
                  * ##### Example
                  *
@@ -145,38 +195,24 @@
                  *     // Remove a single pipe
                  *     pipeline.remove( "tasks" );
                  *
-                 *     // Remove multiple pipes using the default adapter
+                 *     // Remove multiple pipes
                  *     pipeline.remove( [ "tags", "projects" ] );
                  *
                  **/
-                remove: function( pipe ) {
-                    var i,
-                        current;
-
-                    if ( typeof pipe === "string" ) {
-                        // pipe is a string so use
-                        delete this.pipes[ pipe ];
-                    } else if ( isArray( pipe ) ) {
-                        // pipe is an array so loop through each item in the array
-                        for ( i = 0; i < pipe.length; i++ ) {
-                            current = pipe[ i ];
-
-                            if ( typeof current === "string" ) {
-                                delete this.pipes[ current ];
-                            } else {
-                                delete this.pipes[ current.name ];
-                            }
-                        }
-                    } else if ( pipe ) {
-                        // pipe is an object so use that signature
-                        delete this.pipes[ pipe.name ];
-                    }
-
-                    return this;
+                remove: function( config ) {
+                    return aerogear.remove.call( this, config );
+                },
+                // Helper function to set pipes
+                _setCollection: function( collection ) {
+                    this.pipes = collection;
+                },
+                // Helper function to get the pipes
+                _getCollection: function() {
+                    return this.pipes;
                 }
             };
 
-        return pipeline.add( pipe );
+        return pipeline.add( config );
     };
 
     /**
