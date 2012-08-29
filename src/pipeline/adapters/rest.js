@@ -274,9 +274,9 @@
                 }
 
                 var success = function( data ) {
-                    var itemIndex;
+                    var item;
 
-                    for( var item in that.data ) {
+                    for( item in that.data ) {
                         if ( that.data[ item ].id === delId ) {
                             that.data.splice( item, 1 );
                         }
