@@ -4,7 +4,7 @@
      *
      * The aerogear.dataManager namespace provides a mechanism for connecting to and moving data in and out of different types of client side storage.
      *
-     * `aerogear.valve( config ) -> Object`
+     * `aerogear.dataManager( config ) -> Object`
      * - **config** (Mixed) When passing a valve configuration object to `add`, the following items can be provided:
      *  - **name** - String (Required), the name that the valve will later be referenced by
      *  - **type** - String (Optional, default - "memory"), the type of valve as determined by the adapter used
@@ -88,6 +88,14 @@
                  **/
                 remove: function( config ) {
                     return aerogear.remove.call( this, config );
+                },
+                // Helper function to set pipes
+                _setCollection: function( collection ) {
+                    this.valves = collection;
+                },
+                // Helper function to get the pipes
+                _getCollection: function() {
+                    return this.valves;
                 }
             };
 

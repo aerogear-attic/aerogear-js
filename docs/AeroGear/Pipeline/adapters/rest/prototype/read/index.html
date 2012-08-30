@@ -38,8 +38,8 @@
       </form>
       
       <div class="sidebar-pane scrollable" id="menu_pane">
-        <ul class="menu-items" id="api_menu"><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/index.html" title="aerogear (namespace)">aerogear</a></div><ul><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/pipeline/index.html" title="aerogear.pipeline (namespace)">aerogear.pipeline</a></div><ul><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/pipeline/adapters/index.html" title="aerogear.pipeline.adapters (namespace)">aerogear.pipeline.adapters</a></div><ul><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/pipeline/adapters/rest/index.html" title="aerogear.pipeline.adapters.rest (namespace)">aerogear.pipeline.adapters.rest</a></div><ul><li><div class="menu-item"><a class="instance-method" href="../../../../../../aerogear/pipeline/adapters/rest/prototype/filter/index.html" title="aerogear.pipeline.adapters.rest#filter (instance method)">filter</a></div></li>
-<li><div class="menu-item"><a class="instance-method current" href="../../../../../../aerogear/pipeline/adapters/rest/prototype/read/index.html" title="aerogear.pipeline.adapters.rest#read (instance method)">read</a></div></li>
+        <ul class="menu-items" id="api_menu"><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/index.html" title="aerogear (namespace)">aerogear</a></div><ul><li><div class="menu-item"><a class="namespace" href="../../../../../../aerogear/dataManager/index.html" title="aerogear.dataManager (namespace)">aerogear.dataManager</a></div><ul><li><div class="menu-item"><a class="namespace" href="../../../../../../aerogear/dataManager/adapters/index.html" title="aerogear.dataManager.adapters (namespace)">aerogear.dataManager.adapters</a></div><ul><li><div class="menu-item"><a class="namespace" href="../../../../../../aerogear/dataManager/adapters/memory/index.html" title="aerogear.dataManager.adapters.memory (namespace)">aerogear.dataManager.adapters.memory</a></div></li></ul></li></ul></li>
+<li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/pipeline/index.html" title="aerogear.pipeline (namespace)">aerogear.pipeline</a></div><ul><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/pipeline/adapters/index.html" title="aerogear.pipeline.adapters (namespace)">aerogear.pipeline.adapters</a></div><ul><li><div class="menu-item"><a class="namespace current-parent" href="../../../../../../aerogear/pipeline/adapters/rest/index.html" title="aerogear.pipeline.adapters.rest (namespace)">aerogear.pipeline.adapters.rest</a></div><ul><li><div class="menu-item"><a class="instance-method current" href="../../../../../../aerogear/pipeline/adapters/rest/prototype/read/index.html" title="aerogear.pipeline.adapters.rest#read (instance method)">read</a></div></li>
 <li><div class="menu-item"><a class="instance-method" href="../../../../../../aerogear/pipeline/adapters/rest/prototype/remove/index.html" title="aerogear.pipeline.adapters.rest#remove (instance method)">remove</a></div></li>
 <li><div class="menu-item"><a class="instance-method" href="../../../../../../aerogear/pipeline/adapters/rest/prototype/save/index.html" title="aerogear.pipeline.adapters.rest#save (instance method)">save</a></div></li></ul></li></ul></li></ul></li></ul></li></ul><!--- #api_menu =-->
       </div> <!-- .sidebar-pane -->
@@ -74,7 +74,7 @@
 </ul>
 
 
-  <p id="src_code_href"><a href="https://github.com/aerogear/aerogear-js/blob/46a7a5b/src/pipeline/adapters/rest.js#L82">src code</a></p>
+  <p id="src_code_href"><a href="https://github.com/aerogear/aerogear-js/blob/1510a0f/src/pipeline/adapters/rest.js#L76">src code</a></p>
 
 
 <h2 class="page-title">
@@ -111,6 +111,7 @@
 <ul>
 <li><strong>data</strong> - Object, a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return (Optional)</li>
 <li><strong>ajax</strong> - Object, a hash of key/value pairs that will be added to or override any AJAX settings set during creation of the pipe using this adapter (Optional)</li>
+<li><strong>valves</strong> - Mixed, A single valve object or array of valves to be initialized/reset when a server read is successful</li>
 </ul>
 
 <p>Returns a jqXHR which implements the Promise interface. See the <a href="http://api.jquery.com/category/deferred-object/">Defered Object</a> reference on the jQuery site for more information.</p>
@@ -167,7 +168,7 @@
         <p><a href="http://aerogear.org">AeroGear JavaScript Library</a> v1.0.0.Alpha API documentation.</p>
         <p>
           
-            Last updated on August 27, 2012 at 17:27 UTC.
+            Last updated on August 30, 2012 at 20:54 UTC.
           
           Generated by <a href="http://pdoc.org">PDoc</a>.
           Uses <a href="http://famfamfam.com/lab/icons/silk/" title="famfamfam.com: Silk Icons">Silk Icons</a> and portions of <a href="http://github.com/280north/aristo/tree/master" title="280north's aristo at master - GitHub">Aristo</a>.

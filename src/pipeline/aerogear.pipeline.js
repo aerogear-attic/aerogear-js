@@ -4,8 +4,8 @@
      *
      * The aerogear.pipeline namespace provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, both provided and custom, user supplied, this library provides common methods like read, save and delete that will just work.
      *
-     * `aerogear.pipeline( pipe ) -> Object`
-     * - **pipe** (Mixed) When passing a pipeConfiguration object to `add`, the following items can be provided:
+     * `aerogear.pipeline( config ) -> Object`
+     * - **config** (Mixed) When passing a pipe configuration object to `add`, the following items can be provided:
      *  - **name** - String (Required), the name that the pipe will later be referenced by
      *  - **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
      *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe

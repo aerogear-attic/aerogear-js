@@ -90,6 +90,9 @@ var pipeline = aerogear.pipeline([
     pipe2 = pipeline.pipes.tasksCustom,
     pipe3 = pipeline.pipes.usersFilter;
 
+// Create a default (memory) dataManager to store data for some tests
+var taskValve = aerogear.dataManager( "tasks" ).valves.tasks;
+
 // Add pipe test
 test( "add method", function() {
     expect( 3 );
@@ -140,10 +143,9 @@ asyncTest( "read method", function() {
     });
 
     $.when( read1, read2, read3 ).done( function( r1, r2, r3 ) {
-        pipe.data = null;
-        equal( pipe.data, null, "Pipe has no data" );
-        $.when( pipe.read() ).done( function( r4 ) {
-            equal( pipe.data[ 1 ].id, 67890, "Read all data with no params" );
+        equal( taskValve.data, null, "Valve has no data" );
+        $.when( pipe.read( { valves: taskValve } ) ).done( function( r4 ) {
+            equal( taskValve.data[1].id, 67890, "Read all data with no params" );
             start();
         });
     });

@@ -14,7 +14,6 @@
      * Once created, the new pipe will contain:
      * - **recordId** - the record identifier specified when the pipe was created
      * - **type** - the type specified when the pipe was created
-     * - **data** - an object used to store a client side copy of the data associated with this pipe
      **/
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
         ajaxSettings = $.extend({
@@ -28,7 +27,6 @@
         return {
             recordId: recordId,
             type: "rest",
-            data: null,
             /**
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object
              * - options (Object): Additional options
@@ -36,6 +34,7 @@
              * The options sent to read can include either of the following:
              *  - **data** - Object, a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return (Optional)
              *  - **ajax** - Object, a hash of key/value pairs that will be added to or override any AJAX settings set during creation of the pipe using this adapter (Optional)
+             *  - **valves** - Mixed, A single valve object or array of valves to be initialized/reset when a server read is successful
              *
              * Returns a jqXHR which implements the Promise interface. See the [Defered Object](http://api.jquery.com/category/deferred-object/) reference on the jQuery site for more information.
              *
@@ -75,8 +74,8 @@
              *
              **/
             read: function( options ) {
-                var that = this,
-                    data;
+                var data;
+
                 if ( options ) {
                     if ( options.ajax && options.ajax.data ) {
                         data = options.ajax.data;
@@ -93,7 +92,14 @@
                 }
 
                 var success = function( data ) {
-                    that.data = aerogear.isArray( data ) ? data : [ data ];
+                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                        item;
+
+                    if ( valves.length ) {
+                        for ( item in valves ) {
+                            valves[ item ].save( data, true );
+                        }
+                    }
 
                     if ( options.ajax.success ) {
                         options.ajax.success.apply( this, arguments );
@@ -106,7 +112,9 @@
             /**
              * aerogear.pipeline.adapters.rest#save( data[, options] ) -> Object
              * - data (Object): For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.
-             * - options (Object): An object with a single key/value pair, the key being `ajax`, that will be added to or override any ajax settings set during creation of the pipe using this adapter
+             * - options (Object): An object containing key/value pairs representing options
+             *   - ajax (Object): AJAX options added to or overriding any ajax settings set during creation of the pipe using this adapter
+             *   - valves (Mixed): A single valve object or array of valves to be updated when a server update is successful
              *
              * Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
              *
@@ -145,10 +153,9 @@
              *
              **/
             save: function( data, options ) {
-                var that = this,
-                    type,
-                    url,
-                    itemFound = false;
+                var type,
+                    url;
+
                 data = data || {};
                 options = options || {};
                 type = data[ this.recordId ] ? "PUT" : "POST";
@@ -162,19 +169,13 @@
                 }
 
                 var success = function( data ) {
-                    if ( that.data ) {
-                        for( var item in that.data ) {
-                            if ( that.data[ item ].id === data.id ) {
-                                that.data[ item ] = data;
-                                itemFound = true;
-                                break;
-                            }
+                    var valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ],
+                        item;
+
+                    if ( options.valves ) {
+                        for ( item in valves ) {
+                            valves[ item ].save( data );
                         }
-                        if ( !itemFound ) {
-                            that.data.push( data );
-                        }
-                    } else {
-                        that.data = aerogear.isArray( data ) ? data : [ data ];
                     }
 
                     if ( options.ajax.success ) {
@@ -200,7 +201,9 @@
             /**
              * aerogear.pipeline.adapters.rest#remove( toRemove [, options] ) -> Object
              * - toRemove (Mixed): A variety of objects can be passed to remove to specify the item to remove as illustrated below
-             * - options (Object): An object with a single key/value pair, the key being `ajax`, that will be added to or override any ajax settings set during creation of the pipe using this adapter
+             * - options (Object): An object containing key/value pairs representing options
+             *   - ajax (Object): AJAX options added to or overriding any ajax settings set during creation of the pipe using this adapter
+             *   - valves (Mixed): A single valve object or array of valves to be updated when a server update is successful
              *
              * Remove data asynchronously from the server. Passing nothing will inform the server to remove all data at this pipe's rest endpoint.
              *
@@ -236,9 +239,8 @@
              *
              **/
             remove: function( toRemove, options ) {
-                var that = this,
-                    delId = 0,
-                    delPath = "",
+                var delPath = "",
+                    delId,
                     url;
 
                 options = options || {};
@@ -274,11 +276,12 @@
                 }
 
                 var success = function( data ) {
-                    var item;
+                    var valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ],
+                        item;
 
-                    for( item in that.data ) {
-                        if ( that.data[ item ].id === delId ) {
-                            that.data.splice( item, 1 );
+                    if ( options.valves ) {
+                        for ( item in valves ) {
+                            valves[ item ].remove( delId );
                         }
                     }
 

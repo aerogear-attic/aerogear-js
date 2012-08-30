@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-29
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-30
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -112,8 +112,8 @@
      *
      * The aerogear.pipeline namespace provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, both provided and custom, user supplied, this library provides common methods like read, save and delete that will just work.
      *
-     * `aerogear.pipeline( pipe ) -> Object`
-     * - **pipe** (Mixed) When passing a pipeConfiguration object to `add`, the following items can be provided:
+     * `aerogear.pipeline( config ) -> Object`
+     * - **config** (Mixed) When passing a pipe configuration object to `add`, the following items can be provided:
      *  - **name** - String (Required), the name that the pipe will later be referenced by
      *  - **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
      *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe
@@ -224,11 +224,6 @@
 })( aerogear );
 
 (function( aerogear, $, undefined ) {
-    // TODO: Share this across entire lib
-    function isArray( obj ) {
-        return ({}).toString.call( obj ) === "[object Array]";
-    }
-
     /**
      * aerogear.pipeline.adapters.rest
      *
@@ -244,7 +239,6 @@
      * Once created, the new pipe will contain:
      * - **recordId** - the record identifier specified when the pipe was created
      * - **type** - the type specified when the pipe was created
-     * - **data** - an object used to store a client side copy of the data associated with this pipe
      **/
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
         ajaxSettings = $.extend({
@@ -258,7 +252,6 @@
         return {
             recordId: recordId,
             type: "rest",
-            data: null,
             /**
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object
              * - options (Object): Additional options
@@ -266,6 +259,7 @@
              * The options sent to read can include either of the following:
              *  - **data** - Object, a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return (Optional)
              *  - **ajax** - Object, a hash of key/value pairs that will be added to or override any AJAX settings set during creation of the pipe using this adapter (Optional)
+             *  - **valves** - Mixed, A single valve object or array of valves to be initialized/reset when a server read is successful
              *
              * Returns a jqXHR which implements the Promise interface. See the [Defered Object](http://api.jquery.com/category/deferred-object/) reference on the jQuery site for more information.
              *
@@ -305,8 +299,8 @@
              *
              **/
             read: function( options ) {
-                var that = this,
-                    data;
+                var data;
+
                 if ( options ) {
                     if ( options.ajax && options.ajax.data ) {
                         data = options.ajax.data;
@@ -323,7 +317,14 @@
                 }
 
                 var success = function( data ) {
-                    that.data = isArray( data ) ? data : [ data ];
+                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                        item;
+
+                    if ( valves.length ) {
+                        for ( item in valves ) {
+                            valves[ item ].save( data, true );
+                        }
+                    }
 
                     if ( options.ajax.success ) {
                         options.ajax.success.apply( this, arguments );
@@ -336,7 +337,9 @@
             /**
              * aerogear.pipeline.adapters.rest#save( data[, options] ) -> Object
              * - data (Object): For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.
-             * - options (Object): An object with a single key/value pair, the key being `ajax`, that will be added to or override any ajax settings set during creation of the pipe using this adapter
+             * - options (Object): An object containing key/value pairs representing options
+             *   - ajax (Object): AJAX options added to or overriding any ajax settings set during creation of the pipe using this adapter
+             *   - valves (Mixed): A single valve object or array of valves to be updated when a server update is successful
              *
              * Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
              *
@@ -375,10 +378,9 @@
              *
              **/
             save: function( data, options ) {
-                var that = this,
-                    type,
-                    url,
-                    itemFound = false;
+                var type,
+                    url;
+
                 data = data || {};
                 options = options || {};
                 type = data[ this.recordId ] ? "PUT" : "POST";
@@ -392,18 +394,13 @@
                 }
 
                 var success = function( data ) {
-                    if ( that.data ) {
-                        for( var item in that.data ) {
-                            if ( that.data[ item ].id === data.id ) {
-                                that.data[ item ] = data;
-                                itemFound = true;
-                            }
+                    var valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ],
+                        item;
+
+                    if ( options.valves ) {
+                        for ( item in valves ) {
+                            valves[ item ].save( data );
                         }
-                        if ( !itemFound ) {
-                            that.data.push( data );
-                        }
-                    } else {
-                        that.data = isArray( data ) ? data : [ data ];
                     }
 
                     if ( options.ajax.success ) {
@@ -429,7 +426,9 @@
             /**
              * aerogear.pipeline.adapters.rest#remove( toRemove [, options] ) -> Object
              * - toRemove (Mixed): A variety of objects can be passed to remove to specify the item to remove as illustrated below
-             * - options (Object): An object with a single key/value pair, the key being `ajax`, that will be added to or override any ajax settings set during creation of the pipe using this adapter
+             * - options (Object): An object containing key/value pairs representing options
+             *   - ajax (Object): AJAX options added to or overriding any ajax settings set during creation of the pipe using this adapter
+             *   - valves (Mixed): A single valve object or array of valves to be updated when a server update is successful
              *
              * Remove data asynchronously from the server. Passing nothing will inform the server to remove all data at this pipe's rest endpoint.
              *
@@ -465,9 +464,8 @@
              *
              **/
             remove: function( toRemove, options ) {
-                var that = this,
-                    delId = 0,
-                    delPath = "",
+                var delPath = "",
+                    delId,
                     url;
 
                 options = options || {};
@@ -503,11 +501,12 @@
                 }
 
                 var success = function( data ) {
-                    var itemIndex;
+                    var valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ],
+                        item;
 
-                    for( var item in that.data ) {
-                        if ( that.data[ item ].id === delId ) {
-                            that.data.splice( item, 1 );
+                    if ( options.valves ) {
+                        for ( item in valves ) {
+                            valves[ item ].remove( delId );
                         }
                     }
 
@@ -524,14 +523,211 @@
                     options.ajax || {},
                     { success: success }
                 ));
+            }
+        };
+    };
+})( aerogear, jQuery );
+
+(function( aerogear, undefined ) {
+    /**
+     * aerogear.dataManager
+     *
+     * The aerogear.dataManager namespace provides a mechanism for connecting to and moving data in and out of different types of client side storage.
+     *
+     * `aerogear.dataManager( config ) -> Object`
+     * - **config** (Mixed) When passing a valve configuration object to `add`, the following items can be provided:
+     *  - **name** - String (Required), the name that the valve will later be referenced by
+     *  - **type** - String (Optional, default - "memory"), the type of valve as determined by the adapter used
+     *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this valve
+     *  - **settings** - Object (Optional, default - {}), the settings to be passed to the adapter
+     *   - Adapters may have a number of varying configuration settings.
+     *
+     * Returns an object representing a collection of data connections (valves) and their corresponding data models. This object provides a standard way to interact with client side data no matter the data format or storage mechanism used.
+     *
+     * ##### Example
+     *
+     **/
+    aerogear.dataManager = function( config ) {
+        var dataManager = {
+                lib: "dataManager",
+                defaultAdapter: "memory",
+                valves: {},
+                /**
+                 * aerogear.dataManager#add( config ) -> Object
+                 * - config (Mixed): This can be a variety of types specifying how to create the valve as illustrated below
+                 *
+                 * When passing a valve configuration object to `add`, the following items can be provided:
+                 *  - **name** - String (Required), the name that the valve will later be referenced by
+                 *  - **type** - String (Optional, default - "memory"), the type of valve as determined by the adapter used
+                 *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this valve
+                 *  - **settings** - Object (Optional, default - {}), the settings to be passed to the adapter
+                 *   - Adapters may have a number of varying configuration settings.
+                 *
+                 * Returns the full dataManager object with the new valve(s) added
+                 *
+                 *     // Add a single valve using the default configuration (memory).
+                 *     aerogear.dataManager.add( String valveName );
+                 *
+                 *     // Add multiple valves all using the default configuration (memory).
+                 *     aerogear.dataManager.add( Array[String] valveNames );
+                 *
+                 *     // Add one or more valve configuration objects.
+                 *     aerogear.dataManager.add( Object/Array[Object] valveConfigurations )
+                 *
+                 * The default valve type is `memory`. You may also use one of the other provided types or create your own.
+                 *
+                 * ##### Example
+                 *
+                 *     var dm = aerogear.dataManager();
+                 *
+                 *     // Add a single valve using the default adapter
+                 *     dm = dm.add( "tasks" );
+                 *
+                 *     // Add multiple valves using the default adapter
+                 *     dm = dm.add( [ "tags", "projects" ] );
+                 *
+                 **/
+                add: function( config ) {
+                    return aerogear.add.call( this, config );
+                },
+                /**
+                 * aerogear.dataManager#remove( toRemove ) -> Object
+                 * - toRemove (Mixed): This can be a variety of types specifying the valve to remove as illustrated below
+                 *
+                 * Returns the full dataManager object with the specified valve(s) removed
+                 *
+                 *     // Remove a single valve.
+                 *     aerogear.dataManager.remove( String valveName );
+                 *
+                 *     // Remove multiple valves.
+                 *     aerogear.dataManager.remove( Array[String] valveNames );
+                 *
+                 *     // Remove one or more valves by passing entire valve objects.
+                 *     aerogear.dataManager.remove( Object/Array[Object] valves )
+                 *
+                 * ##### Example
+                 *
+                 *     var dm = aerogear.dataManager( [ "projects", "tags", "tasks" ] );
+                 *
+                 *     // Remove a single valve
+                 *     dm.remove( "tasks" );
+                 *
+                 *     // Remove multiple valves
+                 *     dm.remove( [ "tags", "projects" ] );
+                 *
+                 **/
+                remove: function( config ) {
+                    return aerogear.remove.call( this, config );
+                },
+                // Helper function to set pipes
+                _setCollection: function( collection ) {
+                    this.valves = collection;
+                },
+                // Helper function to get the pipes
+                _getCollection: function() {
+                    return this.valves;
+                }
+            };
+
+        return dataManager.add( config );
+    };
+
+    /**
+     * aerogear.dataManager.adapters
+     *
+     * The adapters object is provided so that adapters can be added to the aerogear.dataManager namespace dynamically and still be accessible to the add method
+     **/
+    aerogear.dataManager.adapters = {};
+})( aerogear );
+
+(function( aerogear, $, undefined ) {
+    /**
+     * aerogear.dataManager.adapters.memory
+     *
+     **/
+    aerogear.dataManager.adapters.memory = function( valveName, recordId, settings ) {
+        return {
+            recordId: recordId,
+            type: "memory",
+            data: null,
+            /**
+             * aerogear.dataManager.adapters.memory#read( [id] ) -> Object
+             * - id (Mixed): Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
+             *
+             **/
+            read: function( id ) {
+                var filter = {};
+                filter[ recordId ] = id;
+                return id ? this.filter( filter ) : this.data;
             },
 
             /**
-             * aerogear.pipeline.adapters.rest#filter( filterParameters[, matchAny = false] ) -> Array[Object]
-             * - filterParameters (Object): An object containing key value pairs on which to filter the pipe's data array. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of value to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
+             * aerogear.dataManager.adapters.memory#save( data[, reset] ) -> Object
+             * - data (Object): For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the valve representing the unique identifier for a "record" in the data set.
+             * - reset (Boolean): If true, this will empty the current data and set it to the data being saved
+             *
+             **/
+            save: function( data, reset ) {
+                var itemFound = false;
+
+                if ( reset ) {
+                    this.data = null;
+                }
+                if ( this.data ) {
+                    for( var item in this.data ) {
+                        if ( this.data[ item ].id === data.id ) {
+                            this.data[ item ] = data;
+                            itemFound = true;
+                            break;
+                        }
+                    }
+                    if ( !itemFound ) {
+                        this.data.push( data );
+                    }
+                } else {
+                    this.data = aerogear.isArray( data ) ? data : [ data ];
+                }
+
+                return this.data;
+            },
+
+            /**
+             * aerogear.dataManager.adapters.memory#remove( toRemove ) -> Object
+             * - toRemove (Mixed): A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
+             *
+             **/
+            remove: function( toRemove ) {
+                if ( !toRemove ) {
+                    // empty data array and return
+                    return this.data = [];
+                }
+                var delId,
+                    item;
+
+                if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
+                    delId = toRemove;
+                } else if ( toRemove ) {
+                    delId = toRemove[ this.recordId ];
+                } else {
+                    // Missing record id so just return unchanged data set
+                    return this.data;
+                }
+
+                for( item in this.data ) {
+                    if ( this.data[ item ].id === delId ) {
+                        this.data.splice( item, 1 );
+                    }
+                }
+
+                return this.data;
+            },
+
+            /**
+             * aerogear.dataManager.adapters.memory#filter( filterParameters[, matchAny = false] ) -> Array[Object]
+             * - filterParameters (Object): An object containing key value pairs on which to filter the valve's data. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of values to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
              * - matchAny (Boolean): When true, an item is included in the output if any of the filter parameters is matched.
              *
-             * Returns a filtered array of data objects based on the contents of the pipe's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
+             * Returns a filtered array of data objects based on the contents of the valve's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
              *
              **/
             filter: function( filterParameters, matchAny ) {

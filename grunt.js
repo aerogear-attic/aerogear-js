@@ -24,14 +24,26 @@ module.exports = function(grunt) {
         },
         concat: {
             dist: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>'],
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>'],
                 dest: 'dist/<%= pkg.name %>.js'
+            },
+            pipeline: {
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            dataManager: {
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
         min: {
             dist: {
                 src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
                 dest: 'dist/<%= pkg.name %>.min.js'
+            },
+            custom: {
+                src: ['<banner:meta.banner>', 'dist/<%= pkg.name %>.custom.js'],
+                dest: 'dist/<%= pkg.name %>.custom.min.js'
             }
         },
         qunit: {
@@ -66,6 +78,8 @@ module.exports = function(grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', 'lint qunit concat min');
+    grunt.registerTask('default', 'lint qunit concat:dist min:dist');
+    grunt.registerTask('pipeline', 'lint qunit concat:pipeline min:custom');
+    grunt.registerTask('data-manager', 'lint qunit concat:dataManager min:custom');
 
 };
