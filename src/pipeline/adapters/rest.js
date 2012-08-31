@@ -7,7 +7,7 @@
      * `aerogear.pipeline.adapters.rest( pipeName [, recordId, ajaxSettings] ) -> Object`
      * - pipeName (String): the name that will be used to reference this pipe
      * - recordId (String): the record identifier specified when the pipe was created
-     * - ajaxSettings (Object) - an object used to pass additional parameters to jQuery.ajax
+     * - settings (Object) - an object used to pass additional parameters to the pipe
      *
      * When creating a new pipe using the REST adapter, the `settings` parameter to be supplied to pipeline is a hash of key/value pairs that will be supplied to the jQuery.ajax method.
      *
@@ -15,14 +15,14 @@
      * - **recordId** - the record identifier specified when the pipe was created
      * - **type** - the type specified when the pipe was created
      **/
-    aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
-        ajaxSettings = $.extend({
+    aerogear.pipeline.adapters.rest = function( pipeName, recordId, settings ) {
+        var ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
-            url: pipeName,
+            url: settings && settings.baseURL ? settings.baseURL + pipeName : pipeName,
             // set the default content type and Accept headers to JSON
             contentType: "application/json",
             dataType: "json"
-        }, ajaxSettings );
+        }, settings );
 
         return {
             recordId: recordId,
@@ -31,7 +31,7 @@
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object
              * - options (Object): Additional options
              *
-             * The options sent to read can include either of the following:
+             * The options sent to read can include the following:
              *  - **data** - Object, a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return (Optional)
              *  - **ajax** - Object, a hash of key/value pairs that will be added to or override any AJAX settings set during creation of the pipe using this adapter (Optional)
              *  - **valves** - Mixed, A single valve object or array of valves to be initialized/reset when a server read is successful

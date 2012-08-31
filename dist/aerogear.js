@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-30
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-08-31
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -112,11 +112,15 @@
      *
      * The aerogear.pipeline namespace provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, both provided and custom, user supplied, this library provides common methods like read, save and delete that will just work.
      *
-     * `aerogear.pipeline( config ) -> Object`
-     * - **config** (Mixed) When passing a pipe configuration object to `add`, the following items can be provided:
+     * `aerogear.pipeline( config[, baseURL] ) -> Object`
+     * - **config** (Mixed) - This can be a variety of types specifying how to create the pipe as illustrated below
+     * - **baseURL** (String) - The base URL to use for the server location that this pipe should communicate with
+     *
+     * When passing a pipe configuration object to `add`, the following items can be provided:
      *  - **name** - String (Required), the name that the pipe will later be referenced by
      *  - **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
      *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe
+     *  - **baseURL** - String (Optional, default - ""), the base URL to use in conjunction with the adapter name as the endpoint.
      *  - **settings** - Object (Optional, default - {}), the settings to be passed to the adapter
      *   - Adapters may have a number of varying configuration settings.
      *
@@ -130,14 +134,52 @@
      *     // Create multiple pipes using the default adapter
      *     var myPipeline = aerogear.pipeline( [ "tasks", "projects" ] );
      **/
-    aerogear.pipeline = function( config ) {
+    aerogear.pipeline = function( config, baseURL ) {
+        function setBaseURL( baseURL, config ) {
+            if ( baseURL && config ) {
+                if ( config.settings ) {
+                    config.settings.baseURL = baseURL;
+                } else {
+                    config.settings = { baseURL: baseURL };
+                }
+            }
+            var current, i;
+
+            if ( !config || !baseURL ) {
+                return config;
+            } else if ( typeof config === "string"  ) {
+                config = { name: config, settings: { baseURL: baseURL } };
+            } else if ( aerogear.isArray( config ) ) {
+                for ( i = 0; i < config.length; i++ ) {
+                    current = config[ i ];
+
+                    if ( typeof current === "string" ) {
+                        config[ i ] = { name: config[ i ], settings: { baseURL: baseURL } };
+                    } else if ( config[ i ].settings ) {
+                        config[ i ].settings.baseURL = baseURL;
+                    } else {
+                        config[ i ].settings = { baseURL: baseURL };
+                    }
+                }
+            } else {
+                if ( config.settings ) {
+                    config.settings.baseURL = baseURL;
+                } else {
+                    config.settings = { baseURL: baseURL };
+                }
+            }
+
+            return config;
+        }
+
         var pipeline = {
                 lib: "pipeline",
                 defaultAdapter: "rest",
                 pipes: {},
                 /**
-                 * aerogear.pipeline#add( config ) -> Object
+                 * aerogear.pipeline#add( config[, baseURL] ) -> Object
                  * - config (Mixed): This can be a variety of types specifying how to create the pipe as illustrated below
+                 * - baseURL (String): The base URL to use for the server location that this pipe should communicate with
                  *
                  * When passing a pipe configuration object to `add`, the following items can be provided:
                  *  - **name** - String (Required), the name that the pipe will later be referenced by
@@ -170,8 +212,8 @@
                  *     pipeline = pipeline.add( [ "tags", "projects" ] );
                  *
                  **/
-                add: function( config ) {
-                    return aerogear.add.call( this, config );
+                add: function( config, baseURL ) {
+                    return aerogear.add.call( this, setBaseURL( baseURL, config ) );
                 },
                 /**
                  * aerogear.pipeline#remove( toRemove ) -> Object
@@ -199,8 +241,8 @@
                  *     pipeline.remove( [ "tags", "projects" ] );
                  *
                  **/
-                remove: function( config ) {
-                    return aerogear.remove.call( this, config );
+                remove: function( toRemove ) {
+                    return aerogear.remove.call( this, toRemove );
                 },
                 // Helper function to set pipes
                 _setCollection: function( collection ) {
@@ -212,7 +254,7 @@
                 }
             };
 
-        return pipeline.add( config );
+        return pipeline.add( config, baseURL );
     };
 
     /**
@@ -232,7 +274,7 @@
      * `aerogear.pipeline.adapters.rest( pipeName [, recordId, ajaxSettings] ) -> Object`
      * - pipeName (String): the name that will be used to reference this pipe
      * - recordId (String): the record identifier specified when the pipe was created
-     * - ajaxSettings (Object) - an object used to pass additional parameters to jQuery.ajax
+     * - settings (Object) - an object used to pass additional parameters to the pipe
      *
      * When creating a new pipe using the REST adapter, the `settings` parameter to be supplied to pipeline is a hash of key/value pairs that will be supplied to the jQuery.ajax method.
      *
@@ -240,14 +282,14 @@
      * - **recordId** - the record identifier specified when the pipe was created
      * - **type** - the type specified when the pipe was created
      **/
-    aerogear.pipeline.adapters.rest = function( pipeName, recordId, ajaxSettings ) {
-        ajaxSettings = $.extend({
+    aerogear.pipeline.adapters.rest = function( pipeName, recordId, settings ) {
+        var ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
-            url: pipeName,
+            url: settings && settings.baseURL ? settings.baseURL + pipeName : pipeName,
             // set the default content type and Accept headers to JSON
             contentType: "application/json",
             dataType: "json"
-        }, ajaxSettings );
+        }, settings );
 
         return {
             recordId: recordId,
@@ -256,7 +298,7 @@
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object
              * - options (Object): Additional options
              *
-             * The options sent to read can include either of the following:
+             * The options sent to read can include the following:
              *  - **data** - Object, a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return (Optional)
              *  - **ajax** - Object, a hash of key/value pairs that will be added to or override any AJAX settings set during creation of the pipe using this adapter (Optional)
              *  - **valves** - Mixed, A single valve object or array of valves to be initialized/reset when a server read is successful

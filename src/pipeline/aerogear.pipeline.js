@@ -4,11 +4,15 @@
      *
      * The aerogear.pipeline namespace provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, both provided and custom, user supplied, this library provides common methods like read, save and delete that will just work.
      *
-     * `aerogear.pipeline( config ) -> Object`
-     * - **config** (Mixed) When passing a pipe configuration object to `add`, the following items can be provided:
+     * `aerogear.pipeline( config[, baseURL] ) -> Object`
+     * - **config** (Mixed) - This can be a variety of types specifying how to create the pipe as illustrated below
+     * - **baseURL** (String) - The base URL to use for the server location that this pipe should communicate with
+     *
+     * When passing a pipe configuration object to `add`, the following items can be provided:
      *  - **name** - String (Required), the name that the pipe will later be referenced by
      *  - **type** - String (Optional, default - "rest"), the type of pipe as determined by the adapter used
      *  - **recordId** - String (Optional, default - "id"), the identifier used to denote the unique id for each record in the data associated with this pipe
+     *  - **baseURL** - String (Optional, default - ""), the base URL to use in conjunction with the adapter name as the endpoint.
      *  - **settings** - Object (Optional, default - {}), the settings to be passed to the adapter
      *   - Adapters may have a number of varying configuration settings.
      *
@@ -22,14 +26,52 @@
      *     // Create multiple pipes using the default adapter
      *     var myPipeline = aerogear.pipeline( [ "tasks", "projects" ] );
      **/
-    aerogear.pipeline = function( config ) {
+    aerogear.pipeline = function( config, baseURL ) {
+        function setBaseURL( baseURL, config ) {
+            if ( baseURL && config ) {
+                if ( config.settings ) {
+                    config.settings.baseURL = baseURL;
+                } else {
+                    config.settings = { baseURL: baseURL };
+                }
+            }
+            var current, i;
+
+            if ( !config || !baseURL ) {
+                return config;
+            } else if ( typeof config === "string"  ) {
+                config = { name: config, settings: { baseURL: baseURL } };
+            } else if ( aerogear.isArray( config ) ) {
+                for ( i = 0; i < config.length; i++ ) {
+                    current = config[ i ];
+
+                    if ( typeof current === "string" ) {
+                        config[ i ] = { name: config[ i ], settings: { baseURL: baseURL } };
+                    } else if ( config[ i ].settings ) {
+                        config[ i ].settings.baseURL = baseURL;
+                    } else {
+                        config[ i ].settings = { baseURL: baseURL };
+                    }
+                }
+            } else {
+                if ( config.settings ) {
+                    config.settings.baseURL = baseURL;
+                } else {
+                    config.settings = { baseURL: baseURL };
+                }
+            }
+
+            return config;
+        }
+
         var pipeline = {
                 lib: "pipeline",
                 defaultAdapter: "rest",
                 pipes: {},
                 /**
-                 * aerogear.pipeline#add( config ) -> Object
+                 * aerogear.pipeline#add( config[, baseURL] ) -> Object
                  * - config (Mixed): This can be a variety of types specifying how to create the pipe as illustrated below
+                 * - baseURL (String): The base URL to use for the server location that this pipe should communicate with
                  *
                  * When passing a pipe configuration object to `add`, the following items can be provided:
                  *  - **name** - String (Required), the name that the pipe will later be referenced by
@@ -62,8 +104,8 @@
                  *     pipeline = pipeline.add( [ "tags", "projects" ] );
                  *
                  **/
-                add: function( config ) {
-                    return aerogear.add.call( this, config );
+                add: function( config, baseURL ) {
+                    return aerogear.add.call( this, setBaseURL( baseURL, config ) );
                 },
                 /**
                  * aerogear.pipeline#remove( toRemove ) -> Object
@@ -91,8 +133,8 @@
                  *     pipeline.remove( [ "tags", "projects" ] );
                  *
                  **/
-                remove: function( config ) {
-                    return aerogear.remove.call( this, config );
+                remove: function( toRemove ) {
+                    return aerogear.remove.call( this, toRemove );
                 },
                 // Helper function to set pipes
                 _setCollection: function( collection ) {
@@ -104,7 +146,7 @@
                 }
             };
 
-        return pipeline.add( config );
+        return pipeline.add( config, baseURL );
     };
 
     /**

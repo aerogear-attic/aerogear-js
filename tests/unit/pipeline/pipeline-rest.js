@@ -73,7 +73,7 @@ test( "create - object", function() {
 });
 
 
-// Pipe to be used for all remaining tests
+// Pipeline to be used for all remaining tests
 var pipeline = aerogear.pipeline([
         {
             name: "tasks"
@@ -83,12 +83,15 @@ var pipeline = aerogear.pipeline([
             recordId: "taskId"
         },
         {
-            name: "usersFilter"
+            name: "projects",
+            settings: {
+                baseURL: "baseTest/"
+            }
         }
     ]),
     pipe = pipeline.pipes.tasks,
     pipe2 = pipeline.pipes.tasksCustom,
-    pipe3 = pipeline.pipes.usersFilter;
+    pipe3 = pipeline.pipes.projects;
 
 // Create a default (memory) dataManager to store data for some tests
 var taskValve = aerogear.dataManager( "tasks" ).valves.tasks;
@@ -260,71 +263,18 @@ asyncTest( "remove method", function() {
     });
 });
 
-// Filter method test
-/*asyncTest( "filter method", function() {
-    expect( 8 );
+// Test custom base URL
+asyncTest( "base URL", function() {
+    expect( 1 );
 
-    pipe3.read({
+    var read = pipe3.read({
         ajax: {
-            success: function() {
-                var filtered = pipe3.filter();
-                equal( filtered.length, 6, "Empty filter returns all data" );
-
-                filtered = pipe3.filter({
-                    fname: "John"
-                });
-                equal( filtered.length, 2, "Only users with fname == John" );
-
-                filtered = pipe3.filter({
-                    fname: "John",
-                    lname: "Smith"
-                });
-                equal( filtered.length, 1, "Only users with fname == John AND lname = Smith" );
-
-                filtered = pipe3.filter({
-                    fname: "John",
-                    dept: "IT"
-                }, true);
-                equal( filtered.length, 4, "Only users with fname == John OR dept = IT" );
-
-                filtered = pipe3.filter({
-                    fname: "Jim",
-                    lname: "Jones"
-                });
-                equal( filtered.length, 0, "No results" );
-
-                filtered = pipe3.filter({
-                    lname: {
-                        data: [ "Smith", "Jones" ]
-                    }
-                });
-                equal( filtered.length, 0, "Only users with lname == Smith AND lname = Jones (empty result)" );
-
-                filtered = pipe3.filter({
-                    dept: {
-                        data: [ "Marketing", "IT" ],
-                        matchAny: true
-                    }
-                });
-                equal( filtered.length, 4, "Only users with dept == Marketing OR dept = IT" );
-
-                filtered = pipe3.filter({
-                    dept: {
-                        data: [ "Marketing", "IT" ],
-                        matchAny: true
-                    },
-                    lname: {
-                        data: [ "Smith", "Jones" ],
-                        matchAny: true
-                    },
-                    matchAny: true
-                });
-                equal( filtered.length, 5, "Only users with dept == Marketing OR dept = IT" );
-
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "Read success from custom base URL" );
                 start();
             }
         }
     });
-});*/
+});
 
 })( jQuery );
