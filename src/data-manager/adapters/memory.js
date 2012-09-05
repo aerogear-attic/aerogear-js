@@ -21,29 +21,36 @@
 
             /**
              * aerogear.dataManager.adapters.memory#save( data[, reset] ) -> Object
-             * - data (Object): For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the valve representing the unique identifier for a "record" in the data set.
+             * - data (Mixed): An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the valve representing the unique identifier for a "record" in the data set.
              * - reset (Boolean): If true, this will empty the current data and set it to the data being saved
              *
              **/
             save: function( data, reset ) {
                 var itemFound = false;
 
+                data = aerogear.isArray( data ) ? data : [ data ];
+
                 if ( reset ) {
-                    this.data = null;
-                }
-                if ( this.data ) {
-                    for( var item in this.data ) {
-                        if ( this.data[ item ].id === data.id ) {
-                            this.data[ item ] = data;
-                            itemFound = true;
-                            break;
-                        }
-                    }
-                    if ( !itemFound ) {
-                        this.data.push( data );
-                    }
+                    this.data = data;
                 } else {
-                    this.data = aerogear.isArray( data ) ? data : [ data ];
+                    if ( this.data ) {
+                        for ( var i = 0; i < data.length; i++ ) {
+                            for( var item in this.data ) {
+                                if ( this.data[ item ].id === data[ i ].id ) {
+                                    this.data[ item ] = data[ i ];
+                                    itemFound = true;
+                                    break;
+                                }
+                            }
+                            if ( !itemFound ) {
+                                this.data.push( data[ i ] );
+                            }
+
+                            itemFound = false;
+                        }
+                    } else {
+                        this.data = data;
+                    }
                 }
 
                 return this.data;
@@ -58,22 +65,26 @@
                 if ( !toRemove ) {
                     // empty data array and return
                     return this.data = [];
+                } else {
+                    toRemove = aerogear.isArray( toRemove ) ? toRemove : [ toRemove ];
                 }
                 var delId,
                     item;
 
-                if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
-                    delId = toRemove;
-                } else if ( toRemove ) {
-                    delId = toRemove[ this.recordId ];
-                } else {
-                    // Missing record id so just return unchanged data set
-                    return this.data;
-                }
+                for ( var i = 0; i < toRemove.length; i++ ) {
+                    if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {
+                        delId = toRemove[ i ];
+                    } else if ( toRemove ) {
+                        delId = toRemove[ i ][ this.recordId ];
+                    } else {
+                        // Missing record id so just skip this item in the arrray
+                        continue;
+                    }
 
-                for( item in this.data ) {
-                    if ( this.data[ item ].id === delId ) {
-                        this.data.splice( item, 1 );
+                    for( item in this.data ) {
+                        if ( this.data[ item ].id === delId ) {
+                            this.data.splice( item, 1 );
+                        }
                     }
                 }
 
