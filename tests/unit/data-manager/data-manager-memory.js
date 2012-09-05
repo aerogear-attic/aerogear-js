@@ -1,0 +1,270 @@
+(function( $ ) {
+
+// Do not reorder tests on rerun
+QUnit.config.reorder = false;
+
+module( "dataManager: memory" );
+
+test( "create - name string", function() {
+    expect( 3 );
+
+    var dm = aerogear.dataManager( "createTest1" ).valves;
+    equal( Object.keys( dm ).length, 1, "Single Valve created" );
+    equal( Object.keys( dm )[ 0 ], "createTest1", "Valve Name createTest1" );
+    equal( dm.createTest1.type, "memory", "Default valve type (memory)" );
+});
+
+test( "create - name array", function() {
+    expect( 7 );
+
+    var dm = aerogear.dataManager([
+        "createTest21",
+        {
+            name: "createTest22",
+            type: "memory"
+        },
+        "createTest23"
+    ]).valves;
+
+    equal( Object.keys( dm ).length, 3, "3 Valves created" );
+    equal( Object.keys( dm )[ 0 ], "createTest21", "Valve Name createTest21" );
+    equal( Object.keys( dm )[ 1 ], "createTest22", "Valve Name createTest22" );
+    equal( Object.keys( dm )[ 2 ], "createTest23", "Valve Name createTest23" );
+    equal( dm.createTest21.type, "memory", "Default valve type (memory)" );
+    equal( dm.createTest22.type, "memory", "Specified valve type (memory)" );
+    equal( dm.createTest23.type, "memory", "Default valve type (memory)" );
+});
+
+test( "create - object", function() {
+    expect( 5 );
+
+    var dm = aerogear.dataManager([
+        {
+            name: "createTest31"
+        },
+        {
+            name: "createTest32",
+            type: "memory"
+        }
+    ]).valves;
+
+    equal( Object.keys( dm ).length, 2, "2 Valves created" );
+    equal( Object.keys( dm )[ 0 ], "createTest31", "Valve Name createTest31" );
+    equal( Object.keys( dm )[ 1 ], "createTest32", "Valve Name createTest32" );
+    equal( dm.createTest31.type, "memory", "Default valve type (memory)" );
+    equal( dm.createTest32.type, "memory", "Specified valve type (memory)" );
+});
+
+
+// Create a default (memory) dataManager to store data for some tests
+var userValve = aerogear.dataManager( "users" ).valves.users;
+
+// Initialize the data set
+test( "save - initialize", function() {
+    expect( 1 );
+
+    userValve.save([
+        {
+            id: 12345,
+            fname: "John",
+            lname: "Smith",
+            dept: "Accounting"
+        },
+        {
+            id: 12346,
+            fname: "Jane",
+            lname: "Smith",
+            dept: "IT"
+        },
+        {
+            id: 12347,
+            fname: "John",
+            lname: "Doe",
+            dept: "Marketing"
+        },
+        {
+            id: 12348,
+            fname: "Jane",
+            lname: "Doe",
+            dept: "Accounting"
+        },
+        {
+            id: 12349,
+            fname: "Any",
+            lname: "Name",
+            dept: "IT"
+        },
+        {
+            id: 12350,
+            fname: "Another",
+            lname: "Person",
+            dept: "Marketing"
+        }
+    ]);
+
+    equal( userValve.data.length, 6, "Initial data added to valve" );
+});
+
+// Read data
+test( "read", function() {
+    expect( 2 );
+
+    equal( userValve.read().length, 6, "Read all data" );
+    equal( userValve.read( 12345 ).length, 1, "Read single item by id" );
+});
+
+// Save data
+test( "save single", function() {
+    expect( 2 );
+
+    userValve.save({
+        id: 12351,
+        fname: "New",
+        lname: "Person",
+        dept: "New"
+    });
+    equal( userValve.read().length, 7, "Read all data including new item" );
+    equal( userValve.read( 12351 ).length, 1, "Read new item by id" );
+});
+test( "save multiple", function() {
+    expect( 2 );
+
+    userValve.save([
+        {
+            id: 12352,
+            fname: "New",
+            lname: "Person2",
+            dept: "New"
+        },
+        {
+            id: 12353,
+            fname: "New",
+            lname: "Person3",
+            dept: "New"
+        }
+    ]);
+    equal( userValve.read().length, 9, "Read all data including new items" );
+    equal( userValve.read( 12353 ).length, 1, "Read new item by id" );
+});
+test( "update single", function() {
+    expect( 2 );
+
+    userValve.save({
+        id: 12351,
+        fname: "Updated",
+        lname: "Person",
+        dept: "New"
+    });
+    equal( userValve.read().length, 9, "Data length unchanged" );
+    equal( userValve.read( 12351 )[ 0 ].fname, "Updated", "Check item is updated" );
+});
+test( "update multiple", function() {
+    expect( 2 );
+
+    userValve.save([
+        {
+            id: 12352,
+            fname: "Updated",
+            lname: "Person2",
+            dept: "New"
+        },
+        {
+            id: 12353,
+            fname: "Updated",
+            lname: "Person3",
+            dept: "New"
+        }
+    ]);
+    equal( userValve.read().length, 9, "Data length unchanged" );
+    equal( userValve.read( 12353 )[ 0 ].fname, "Updated", "Check item is updated" );
+});
+test( "update and add", function() {
+    expect( 3 );
+
+    userValve.save([
+        {
+            id: 12352,
+            fname: "UpdatedAgain",
+            lname: "Person2",
+            dept: "New"
+        },
+        {
+            id: 12354,
+            fname: "New",
+            lname: "Person4",
+            dept: "New"
+        }
+    ]);
+    equal( userValve.read().length, 10, "One new item added" );
+    equal( userValve.read( 12352 )[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
+    equal( userValve.read( 12354 ).length, 1, "Read new item by id" );
+});
+
+// Remove data
+test( "remove single", function() {
+    expect( 2 );
+
+    userValve.remove( 12351 );
+    equal( userValve.read().length, 9, "Read all data without removed item" );
+    equal( userValve.read( 12351 ).length, 0, "Removed item doesn't exist" );
+});
+test( "remove multiple - different formats", function() {
+    expect( 3 );
+
+    userValve.remove([
+        12353,
+        userValve.read( 12345 )[ 0 ]
+    ]);
+    equal( userValve.read().length, 7, "Read all data without removed items" );
+    equal( userValve.read( 12353 ).length, 0, "Removed item doesn't exist" );
+    equal( userValve.read( 12345 ).length, 0, "Removed item doesn't exist" );
+});
+
+// Reset Data
+test( "reset all data", function() {
+    expect( 3 );
+
+    userValve.save([
+        {
+            id: 12345,
+            fname: "John",
+            lname: "Smith",
+            dept: "Accounting"
+        },
+        {
+            id: 12346,
+            fname: "Jane",
+            lname: "Smith",
+            dept: "IT"
+        },
+        {
+            id: 12347,
+            fname: "John",
+            lname: "Doe",
+            dept: "Marketing"
+        },
+        {
+            id: 12348,
+            fname: "Jane",
+            lname: "Doe",
+            dept: "Accounting"
+        },
+        {
+            id: 12349,
+            fname: "Any",
+            lname: "Name",
+            dept: "IT"
+        },
+        {
+            id: 12350,
+            fname: "Another",
+            lname: "Person",
+            dept: "Marketing"
+        }
+    ], true);
+    equal( userValve.read().length, 6, "Read all data" );
+    equal( userValve.read( 12345 ).length, 1, "Removed item has returned" );
+    equal( userValve.read( 12351 ).length, 0, "Added item doesn't exist" );
+});
+
+})( jQuery );
