@@ -267,4 +267,100 @@ test( "reset all data", function() {
     equal( userValve.read( 12351 ).length, 0, "Added item doesn't exist" );
 });
 
+// Filter Data
+test( "filter single field", function() {
+    expect( 3 );
+
+    var filtered = userValve.filter({
+        fname: "John"
+    });
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Items Matched Query" );
+    ok( filtered[ 0 ].fname == "John" && filtered[ 1 ].fname == "John", "Correct items returned" );
+});
+test( "filter multiple fields, single value - AND", function() {
+    expect( 3 );
+
+    var filtered = userValve.filter({
+        fname: "John",
+        dept: "Marketing"
+    });
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched Query" );
+    ok( filtered[ 0 ].fname == "John" && filtered[ 0 ].dept == "Marketing", "Correct item returned" );
+});
+test( "filter multiple fields, single value - OR", function() {
+    expect( 3 );
+
+    var filtered = userValve.filter({
+        fname: "John",
+        dept: "Marketing"
+    }, true );
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 3, "3 Items Matched Query" );
+    ok( filtered[ 0 ].fname == "John" && filtered[ 1 ].fname == "John" && filtered[ 1 ].dept == "Marketing" && filtered[ 2 ].dept == "Marketing", "Correct items returned" );
+});
+test( "filter single field, multiple values - AND (probably never used, consider removing)", function() {
+    expect( 2 );
+
+    var filtered = userValve.filter({
+        fname: {
+            data: [ "John", "Jane" ]
+        }
+    });
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 0, "0 Items Matched Query" );
+});
+test( "filter single field, multiple values - OR", function() {
+    expect( 3 );
+
+    var filtered = userValve.filter({
+        fname: {
+            data: [ "John", "Jane" ],
+            matchAny: true
+        }
+    });
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 4, "4 Items Matched Query" );
+    ok( filtered[ 0 ].fname == "John" && filtered[ 1 ].fname == "Jane" && filtered[ 2 ].fname == "John" && filtered[ 3 ].fname == "Jane", "Correct items returned" );
+});
+test( "filter multiple fields - AND, multiple values - OR", function() {
+    expect( 3 );
+
+    var filtered = userValve.filter({
+        fname: {
+            data: [ "John", "Jane" ],
+            matchAny: true
+        },
+        dept: "Accounting"
+    });
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Items Matched Query" );
+    ok( filtered[ 0 ].fname == "John" && filtered[ 0 ].dept == "Accounting" && filtered[ 1 ].fname == "Jane" && filtered[ 1 ].dept == "Accounting", "Correct items returned" );
+});
+test( "filter multiple fields - OR, multiple values - OR", function() {
+    expect( 3 );
+
+    var filtered = userValve.filter({
+        fname: {
+            data: [ "John", "Jane" ],
+            matchAny: true
+        },
+        dept: {
+            data: [ "Accounting", "IT" ],
+            matchAny: true
+        }
+    }, true );
+
+    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 5, "5 Items Matched Query" );
+    ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
+});
+
 })( jQuery );
