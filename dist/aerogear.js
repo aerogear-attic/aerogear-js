@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-05
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-07
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -275,6 +275,7 @@
      * - pipeName (String): the name that will be used to reference this pipe
      * - recordId (String): the record identifier specified when the pipe was created
      * - settings (Object) - an object used to pass additional parameters to the pipe
+     *  - These are mostly settings defined by jQuery.ajax and are passed through to that method. In addition, a baseURL set at the Pipeline level can define the base URL to use for an endpoint, as well as an endPoint can be defined to override the default naming of the endpoint using the pipeName.
      *
      * When creating a new pipe using the REST adapter, the `settings` parameter to be supplied to pipeline is a hash of key/value pairs that will be supplied to the jQuery.ajax method.
      *
@@ -283,9 +284,10 @@
      * - **type** - the type specified when the pipe was created
      **/
     aerogear.pipeline.adapters.rest = function( pipeName, recordId, settings ) {
-        var ajaxSettings = $.extend({
+        var endPoint = settings && settings.endPoint ? settings.endPoint : pipeName,
+            ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
-            url: settings && settings.baseURL ? settings.baseURL + pipeName : pipeName,
+            url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint,
             // set the default content type and Accept headers to JSON
             contentType: "application/json",
             dataType: "json"

@@ -85,13 +85,28 @@ var pipeline = aerogear.pipeline([
         {
             name: "projects",
             settings: {
-                baseURL: "baseTest/"
+                baseURL: "baseTest"
+            }
+        },
+        {
+            name: "tags",
+            settings: {
+                endPoint: "customEndPoint"
+            }
+        },
+        {
+            name: "users",
+            settings: {
+                baseURL: "baseURL",
+                endPoint: "customEndPoint"
             }
         }
     ]),
     pipe = pipeline.pipes.tasks,
     pipe2 = pipeline.pipes.tasksCustom,
-    pipe3 = pipeline.pipes.projects;
+    pipe3 = pipeline.pipes.projects,
+    pipe4 = pipeline.pipes.tags,
+    pipe5 = pipeline.pipes.users;
 
 // Create a default (memory) dataManager to store data for some tests
 var taskValve = aerogear.dataManager( "tasks" ).valves.tasks;
@@ -101,8 +116,8 @@ test( "add method", function() {
     expect( 3 );
 
     var pipe = pipeline.add( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 4, "Single Pipe added" );
-    equal( Object.keys( pipe )[ 3 ], "addTest", "Pipe Name addTest" );
+    equal( Object.keys( pipe ).length, 6, "Single Pipe added" );
+    equal( Object.keys( pipe )[ 5 ], "addTest", "Pipe Name addTest" );
     equal( pipe.addTest.type, "rest", "Default pipe type (rest)" );
 });
 
@@ -111,7 +126,7 @@ test( "remove method", function() {
     expect( 2 );
 
     var pipe = pipeline.remove( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 3, "Single Pipe removed" );
+    equal( Object.keys( pipe ).length, 5, "Single Pipe removed" );
     equal( pipe.addTest, undefined, "Removed pipe is really gone" );
 });
 
@@ -271,6 +286,34 @@ asyncTest( "base URL", function() {
         ajax: {
             success: function( data, textStatus, jqXHR ) {
                 ok( true, "Read success from custom base URL" );
+                start();
+            }
+        }
+    });
+});
+
+// Test custom endPoint
+asyncTest( "end point", function() {
+    expect( 1 );
+
+    var read = pipe4.read({
+        ajax: {
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "Read success from custom end point" );
+                start();
+            }
+        }
+    });
+});
+
+// Test custom base URL and endPoint
+asyncTest( "base URL + end point", function() {
+    expect( 1 );
+
+    var read = pipe5.read({
+        ajax: {
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "Read success from custom end point" );
                 start();
             }
         }

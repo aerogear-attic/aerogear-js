@@ -125,4 +125,22 @@ $.mockjax({
     }
 });
 
+// custom end point mock
+$.mockjax({
+    url: "customEndPoint",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+// custom base URL + end point mock
+$.mockjax({
+    url: "baseURL/customEndPoint",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
 })( jQuery );
