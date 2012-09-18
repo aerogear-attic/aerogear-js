@@ -3,9 +3,9 @@
      * aerogear.dataManager.adapters.memory
      *
      **/
-    aerogear.dataManager.adapters.memory = function( valveName, recordId, settings ) {
+    aerogear.dataManager.adapters.memory = function( valveName, settings ) {
         return {
-            recordId: recordId,
+            recordId: settings && settings.recordId ? settings.recordId : "id",
             type: "memory",
             data: null,
             /**
@@ -15,7 +15,7 @@
              **/
             read: function( id ) {
                 var filter = {};
-                filter[ recordId ] = id;
+                filter[ this.recordId ] = id;
                 return id ? this.filter( filter ) : this.data;
             },
 

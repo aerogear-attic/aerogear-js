@@ -45,16 +45,16 @@ test( "create - object", function() {
         },
         {
             name: "createTest32",
-            recordId: "testId",
             settings: {
+                recordId: "testId",
                 url: "testURL"
             }
         },
         {
             name: "createTest33",
             type: "rest",
-            recordId: "testId",
             settings: {
+                recordId: "testId",
                 url: "testURL"
             }
         }
@@ -80,7 +80,9 @@ var pipeline = aerogear.pipeline([
         },
         {
             name: "tasksCustom",
-            recordId: "taskId"
+            settings: {
+                recordId: "taskId"
+            }
         },
         {
             name: "projects",

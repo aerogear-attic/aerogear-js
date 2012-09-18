@@ -16,7 +16,7 @@
      * - **recordId** - the record identifier specified when the pipe was created
      * - **type** - the type specified when the pipe was created
      **/
-    aerogear.pipeline.adapters.rest = function( pipeName, recordId, settings ) {
+    aerogear.pipeline.adapters.rest = function( pipeName, settings ) {
         var endPoint = settings && settings.endPoint ? settings.endPoint : pipeName,
             ajaxSettings = $.extend({
             // use the pipeName as the default rest endpoint
@@ -27,7 +27,7 @@
         }, settings );
 
         return {
-            recordId: recordId,
+            recordId: settings && settings.recordId ? settings.recordId : "id",
             type: "rest",
             /**
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object

@@ -29,12 +29,12 @@
                     if ( typeof current === "string" ) {
                         collection[ current ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( current );
                     } else {
-                        collection[ current.name ] = aerogear[ this.lib ].adapters[ current.type || this.defaultAdapter ]( current.name, current.recordId || "id", current.settings || {} );
+                        collection[ current.name ] = aerogear[ this.lib ].adapters[ current.type || this.defaultAdapter ]( current.name, current.settings || {} );
                     }
                 }
             } else {
                 // config is an object so use that signature
-                collection[ config.name ] = aerogear[ this.lib ].adapters[ config.type || this.defaultAdapter ]( config.name, config.recordId || "id", config.settings || {} );
+                collection[ config.name ] = aerogear[ this.lib ].adapters[ config.type || this.defaultAdapter ]( config.name, config.settings || {} );
             }
 
             // reset the collection instance
