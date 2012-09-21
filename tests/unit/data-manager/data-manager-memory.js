@@ -64,7 +64,7 @@ test( "add and remove - string ", function() {
 
     equal( Object.keys( dm.valves ).length, 2, "2 Valves added" );
     equal( Object.keys( dm.valves )[ 0 ], "addTest1", "Valve Name addTest1" );
-    equal( Object.keys( dm.valves )[ 1 ], "addTest2", "Valve Name addTest1" );
+    equal( Object.keys( dm.valves )[ 1 ], "addTest2", "Valve Name addTest2" );
     equal( dm.valves.addTest1.type, "memory", "Default valve type (memory)" );
     equal( dm.valves.addTest2.type, "memory", "Default valve type (memory)" );
 
@@ -76,22 +76,60 @@ test( "add and remove - string ", function() {
 });
 
 test( "add and remove - array ", function() {
-    expect( 7 );
+    expect( 10 );
 
     var dm = aerogear.dataManager();
-    dm.add( [
-     "addTest3",  
-     ] );
+    dm.add([
+        "addTest3",
+        {
+            name: "addTest4"
+        },
+        "addTest5"
+    ]);
+
+    equal( Object.keys( dm.valves ).length, 3, "3 Valves added" );
+    equal( Object.keys( dm.valves )[ 0 ], "addTest3", "Valve Name addTest3" );
+    equal( Object.keys( dm.valves )[ 1 ], "addTest4", "Valve Name addTest4" );
+    equal( Object.keys( dm.valves )[ 2 ], "addTest5", "Valve Name addTest5" );
+    equal( dm.valves.addTest3.type, "memory", "Default valve type (memory)" );
+    equal( dm.valves.addTest4.type, "memory", "Default valve type (memory)" );
+    equal( dm.valves.addTest5.type, "memory", "Default valve type (memory)" );
+
+    dm.remove( ["addTest5", "addTest4"] );
+    equal( Object.keys( dm.valves ).length, 1, "2 Valves removed" );
+    equal( dm.valves.addTest4, undefined, "Valve Name addTest4 no longer exists" );
+    equal( dm.valves.addTest5, undefined, "Valve Name addTest5 no longer exists" );
+
+
+});
+
+test( "add and remove - object ", function() {
+    expect( 9 );
+
+    var dm = aerogear.dataManager();
+    dm.add([
+        {
+            name: "addTest6"
+        },
+        {
+            name: "addTest7"
+        }
+    ]);
 
     equal( Object.keys( dm.valves ).length, 2, "2 Valves added" );
-    equal( Object.keys( dm.valves )[ 0 ], "addTest3", "Valve Name addTest1" );
-    equal( Object.keys( dm.valves )[ 1 ], "addTest4", "Valve Name addTest1" );
-    equal( dm.valves.addTest1.type, "memory", "Default valve type (memory)" );
-    equal( dm.valves.addTest2.type, "memory", "Default valve type (memory)" );
+    equal( Object.keys( dm.valves )[ 0 ], "addTest6", "Valve Name addTest6" );
+    equal( Object.keys( dm.valves )[ 1 ], "addTest7", "Valve Name addTest7" );
+    equal( dm.valves.addTest6.type, "memory", "Default valve type (memory)" );
+    equal( dm.valves.addTest7.type, "memory", "Default valve type (memory)" );
 
-    dm.remove( "addTest1" );
+    dm.remove( { name: "addTest6" } );
     equal( Object.keys( dm.valves ).length, 1, "1 Valves removed" );
-    equal( dm.valves.addTest1, undefined, "Valve Name addTest1 no longer exists" );
+    equal( dm.valves.addTest6, undefined, "Valve Name addTest6 no longer exists" );
+
+    dm.remove( [ { name: "addTest7" } ] );
+    equal( Object.keys( dm.valves ).length, 0, "1 Valves removed" );
+    equal( dm.valves.addTest7, undefined, "Valve Name addTest7 no longer exists" );
+
 
 
 });
