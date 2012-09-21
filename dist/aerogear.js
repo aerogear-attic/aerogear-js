@@ -540,10 +540,16 @@
                 }
 
                 var success = function( data ) {
-                    var valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ],
+                    var valves,
                         item;
 
                     if ( options.valves ) {
+                        valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ];
+                        for ( item in valves ) {
+                            valves[ item ].remove( delId );
+                        }
+                    } else if ( toRemove.valves ) {
+                        valves = aerogear.isArray( toRemove.valves ) ? toRemove.valves : [ toRemove.valves ];
                         for ( item in valves ) {
                             valves[ item ].remove( delId );
                         }
