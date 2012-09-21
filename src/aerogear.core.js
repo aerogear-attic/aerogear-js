@@ -20,7 +20,7 @@
                 return this;
             } else if ( typeof config === "string" ) {
                 // config is a string so use default adapter type
-                collection[ config ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( config, "id" );
+                collection[ config ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( config );
             } else if ( aerogear.isArray( config ) ) {
                 // config is an array so loop through each item in the array
                 for ( i = 0; i < config.length; i++ ) {
