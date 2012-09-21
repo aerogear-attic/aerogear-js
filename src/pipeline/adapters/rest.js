@@ -19,15 +19,13 @@
     aerogear.pipeline.adapters.rest = function( pipeName, settings ) {
         var endPoint = settings && settings.endPoint ? settings.endPoint : pipeName,
             ajaxSettings = $.extend({
-            // use the pipeName as the default rest endpoint
-            url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint,
-            // set the default content type and Accept headers to JSON
-            contentType: "application/json",
-            dataType: "json"
-        }, settings );
+                // use the pipeName as the default rest endpoint
+                url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint
+            }, settings );
 
         return {
             recordId: settings && settings.recordId ? settings.recordId : "id",
+            authenticator: settings && settings.authenticator ? settings.authenticator : null,
             type: "rest",
             /**
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object
@@ -76,23 +74,7 @@
              *
              **/
             read: function( options ) {
-                var data;
-
-                if ( options ) {
-                    if ( options.ajax && options.ajax.data ) {
-                        data = options.ajax.data;
-                    } else if ( options.data ) {
-                        data = options.data;
-                    } else if ( !options.ajax ) {
-                        options.ajax = {};
-                    }
-                    if ( data ) {
-                        options.ajax.data = data;
-                    }
-                } else {
-                    options = { ajax: {} };
-                }
-
+                options = options || {};
                 var success = function( data ) {
                     var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
                         item;
@@ -103,12 +85,20 @@
                         }
                     }
 
-                    if ( options.ajax.success ) {
-                        options.ajax.success.apply( this, arguments );
+                    if ( options.success ) {
+                        options.success.apply( this, arguments );
                     }
+                },
+                extraOptions = {
+                    type: "GET",
+                    success: success
                 };
 
-                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax, { success: success } ) );
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
 
             /**
@@ -162,12 +152,12 @@
                 options = options || {};
                 type = data[ this.recordId ] ? "PUT" : "POST";
 
-                if ( !options.ajax.url && data[ this.recordId ] ) {
+                if ( !options.url && data[ this.recordId ] ) {
                     url = ajaxSettings.url + "/" + data[ this.recordId ];
-                } else if ( !options.ajax.url ) {
+                } else if ( !options.url ) {
                     url = ajaxSettings.url;
                 } else {
-                    url = options.ajax.url;
+                    url = options.url;
                 }
 
                 var success = function( data ) {
@@ -180,24 +170,22 @@
                         }
                     }
 
-                    if ( options.ajax.success ) {
-                        options.ajax.success.apply( this, arguments );
+                    if ( options.success ) {
+                        options.success.apply( this, arguments );
                     }
+                },
+                extraOptions = {
+                    data: data,
+                    type: type,
+                    url: url,
+                    success: success
                 };
 
-                if ( typeof data !== "string" ) {
-                    data = JSON.stringify( data );
+                if ( options.error ) {
+                    extraOptions.error = options.error;
                 }
 
-                return $.ajax( $.extend( {}, ajaxSettings,
-                    {
-                        data: data,
-                        type: type,
-                        url: url
-                    },
-                    options.ajax || {},
-                    { success: success }
-                ));
+                return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
 
             /**
@@ -248,31 +236,27 @@
                 options = options || {};
 
                 if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
-                    delId = parseInt( toRemove, 10 );
+                    delId = toRemove;
                 } else if ( toRemove ) {
                     if ( typeof toRemove.record === "string" || typeof toRemove.record === "number" ) {
-                        delId = parseInt( toRemove.record, 10 );
+                        delId = toRemove.record;
                     } else if ( toRemove.record ) {
-                        delId = parseInt( toRemove.record[ this.recordId ], 10 );
+                        delId = toRemove.record[ this.recordId ];
                     }
-                } else {
-                    throw "aerogear.pipeline.rest: missing argument";
+
+                    if ( toRemove.success && !options.success ) {
+                        options.success = toRemove.success;
+                    }
+                    if ( toRemove.error && !options.error ) {
+                        options.error = toRemove.error;
+                    }
                 }
 
                 delPath = delId ? "/" + delId : "";
-                if ( options.ajax ) {
-                    if ( options.ajax.url ) {
-                        url = options.ajax.url;
-                    } else {
-                        url = ajaxSettings.url + delPath;
-                    }
-                } else if ( toRemove.ajax ) {
-                    options.ajax = toRemove.ajax;
-                    if ( toRemove.ajax.url ) {
-                        url = toRemove.ajax.url;
-                    } else {
-                        url = ajaxSettings.url + delPath;
-                    }
+                if ( options.url ) {
+                    url = options.url;
+                } else if ( toRemove.url ) {
+                    url = toRemove.url;
                 } else {
                     url = ajaxSettings.url + delPath;
                 }
@@ -287,19 +271,35 @@
                         }
                     }
 
-                    if ( options.ajax.success ) {
-                        options.ajax.success.apply( this, arguments );
+                    if ( options.success ) {
+                        options.success.apply( this, arguments );
                     }
+                },
+                extraOptions = {
+                    type: "DELETE",
+                    url: url,
+                    success: success
                 };
 
-                return $.ajax( $.extend( {}, ajaxSettings,
-                    {
-                        type: "DELETE",
-                        url: url
-                    },
-                    options.ajax || {},
-                    { success: success }
-                ));
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+            },
+
+            isAuthenticated: function() {
+                return this.authenticator ? this.authenticator.isAuthenticated() : true;
+            },
+
+            addAuth: function( settings ) {
+                return this.authenticator ? this.authenticator.addAuth( settings ) : settings;
+            },
+
+            deauthorize: function() {
+                if ( this.authenticator ) {
+                    this.authenticator.deauthorize();
+                }
             }
         };
     };

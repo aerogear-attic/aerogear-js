@@ -137,28 +137,22 @@ asyncTest( "read method", function() {
     expect( 5 );
 
     var read1 = pipe.read({
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                equal( data[ 1 ].id, 67890, "Read all data" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            equal( data[ 1 ].id, 67890, "Read all data" );
         }
     });
 
     var read2 = pipe.read({
         data: { limit: 1 },
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                equal( data[ 0 ].id, 12345, "Read only first record - data option" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            equal( data[ 0 ].id, 12345, "Read only first record - data option" );
         }
     });
 
     var read3 = pipe.read({
-        ajax: {
-            data: { limit: 1 },
-            success: function( data, textStatus, jqXHR ) {
-                equal( data[ 0 ].id, 12345, "Read only first record - ajax data option" );
-            }
+        data: { limit: 1 },
+        success: function( data, textStatus, jqXHR ) {
+            equal( data[ 0 ].id, 12345, "Read only first record - ajax data option" );
         }
     });
 
@@ -182,10 +176,8 @@ asyncTest( "save method", function() {
         date: "2012-08-01"
     },
     {
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                equal( data.id, 11223, "POST - new data" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "POST - new data" );
         }
     });
 
@@ -194,10 +186,8 @@ asyncTest( "save method", function() {
         date: "2012-08-01"
     },
     {
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "POST - new data with custom record id" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "POST - new data with custom record id" );
         }
     });
 
@@ -210,10 +200,8 @@ asyncTest( "save method", function() {
             date: "2012-08-01"
         },
         {
-            ajax: {
-                success: function( data, textStatus, jqXHR ) {
-                    ok( true, "PUT - update existing data" );
-                }
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "PUT - update existing data" );
             }
         });
 
@@ -223,10 +211,8 @@ asyncTest( "save method", function() {
             date: "2012-08-01"
         },
         {
-            ajax: {
-                success: function( data, textStatus, jqXHR ) {
-                    ok( true, "PUT - update existing data with custom record id" );
-                }
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "PUT - update existing data with custom record id" );
             }
         });
 
@@ -241,19 +227,15 @@ asyncTest( "remove method", function() {
     expect( 4 );
 
     var remove1 = pipe.remove( 12345, {
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "DELETE - single record using default integer record identifier" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "DELETE - single record using default integer record identifier" );
         }
     });
 
     var remove2 = pipe.remove({
         record: 11223,
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "DELETE - single record using default object record identifier" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "DELETE - single record using default object record identifier" );
         }
     });
 
@@ -261,20 +243,16 @@ asyncTest( "remove method", function() {
         record: {
             taskId: 44556
         },
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "DELETE - single record using custom record identifier" );
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "DELETE - single record using custom record identifier" );
         }
     });
 
     $.when( remove1, remove2, remove3 ).done( function( r1, r2, r3 ) {
         pipe.remove({
-            ajax: {
-                success: function( data, textStatus, jqXHR ) {
-                    ok( true, "DELETE - all data at end of this pipe" );
-                    start();
-                }
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "DELETE - all data at end of this pipe" );
+                start();
             }
         });
     });
@@ -285,11 +263,9 @@ asyncTest( "base URL", function() {
     expect( 1 );
 
     var read = pipe3.read({
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "Read success from custom base URL" );
-                start();
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from custom base URL" );
+            start();
         }
     });
 });
@@ -299,11 +275,9 @@ asyncTest( "end point", function() {
     expect( 1 );
 
     var read = pipe4.read({
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "Read success from custom end point" );
-                start();
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from custom end point" );
+            start();
         }
     });
 });
@@ -313,11 +287,9 @@ asyncTest( "base URL + end point", function() {
     expect( 1 );
 
     var read = pipe5.read({
-        ajax: {
-            success: function( data, textStatus, jqXHR ) {
-                ok( true, "Read success from custom end point" );
-                start();
-            }
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from custom end point" );
+            start();
         }
     });
 });
