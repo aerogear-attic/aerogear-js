@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-20
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-21
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -36,7 +36,7 @@
                 return this;
             } else if ( typeof config === "string" ) {
                 // config is a string so use default adapter type
-                collection[ config ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( config, "id" );
+                collection[ config ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( config );
             } else if ( aerogear.isArray( config ) ) {
                 // config is an array so loop through each item in the array
                 for ( i = 0; i < config.length; i++ ) {
@@ -105,6 +105,54 @@
         return ({}).toString.call( obj ) === "[object Array]";
     };
 })( this );
+
+(function( aerogear, $, undefined ) {
+    aerogear.ajax = function( caller, options ) {
+        var deferred = $.Deferred( function() {
+            var that = this,
+                settings = $.extend( {}, {
+                    contentType: "application/json",
+                    dataType: "json"
+                }, options );
+
+            this.done( settings.success );
+            this.fail( settings.error );
+            this.always( settings.complete );
+
+            var ajaxSettings = $.extend( {}, settings, {
+                success: function( data, textStatus, jqXHR ) {
+                    that.resolve( typeof data === "string" && ajaxSettings.dataType === "json" ? JSON.parse( data ) : data, textStatus, jqXHR );
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    that.reject( jqXHR, textStatus, errorThrown );
+                },
+                complete: function( jqXHR, textStatus ) {
+                    that.resolve( jqXHR, textStatus );
+                }
+            });
+
+            if ( ajaxSettings.contentType === "application/json" && ajaxSettings.data && ajaxSettings.type === "POST" ) {
+                ajaxSettings.data = JSON.stringify( ajaxSettings.data );
+            }
+
+            if ( aerogear.auth && !caller.isAuthenticated() ) {
+                this.reject( "auth", "Error: Authentication Required" );
+            } else if ( caller.addAuth ) {
+                $.ajax( caller.addAuth( ajaxSettings ) );
+            } else {
+                $.ajax( ajaxSettings );
+            }
+        });
+
+        var promise = deferred.promise();
+
+        promise.success = deferred.done;
+        promise.error = deferred.fail;
+        promise.complete = deferred.always;
+
+        return promise;
+    };
+})( aerogear, jQuery );
 
 (function( aerogear, undefined ) {
     /**
@@ -249,15 +297,13 @@
     aerogear.pipeline.adapters.rest = function( pipeName, settings ) {
         var endPoint = settings && settings.endPoint ? settings.endPoint : pipeName,
             ajaxSettings = $.extend({
-            // use the pipeName as the default rest endpoint
-            url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint,
-            // set the default content type and Accept headers to JSON
-            contentType: "application/json",
-            dataType: "json"
-        }, settings );
+                // use the pipeName as the default rest endpoint
+                url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint
+            }, settings );
 
         return {
             recordId: settings && settings.recordId ? settings.recordId : "id",
+            authenticator: settings && settings.authenticator ? settings.authenticator : null,
             type: "rest",
             /**
              * aerogear.pipeline.adapters.rest#read( [options] ) -> Object
@@ -306,23 +352,7 @@
              *
              **/
             read: function( options ) {
-                var data;
-
-                if ( options ) {
-                    if ( options.ajax && options.ajax.data ) {
-                        data = options.ajax.data;
-                    } else if ( options.data ) {
-                        data = options.data;
-                    } else if ( !options.ajax ) {
-                        options.ajax = {};
-                    }
-                    if ( data ) {
-                        options.ajax.data = data;
-                    }
-                } else {
-                    options = { ajax: {} };
-                }
-
+                options = options || {};
                 var success = function( data ) {
                     var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
                         item;
@@ -333,12 +363,20 @@
                         }
                     }
 
-                    if ( options.ajax.success ) {
-                        options.ajax.success.apply( this, arguments );
+                    if ( options.success ) {
+                        options.success.apply( this, arguments );
                     }
+                },
+                extraOptions = {
+                    type: "GET",
+                    success: success
                 };
 
-                return $.ajax( $.extend( {}, ajaxSettings, { type: "GET" }, options.ajax, { success: success } ) );
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
 
             /**
@@ -392,12 +430,12 @@
                 options = options || {};
                 type = data[ this.recordId ] ? "PUT" : "POST";
 
-                if ( !options.ajax.url && data[ this.recordId ] ) {
+                if ( !options.url && data[ this.recordId ] ) {
                     url = ajaxSettings.url + "/" + data[ this.recordId ];
-                } else if ( !options.ajax.url ) {
+                } else if ( !options.url ) {
                     url = ajaxSettings.url;
                 } else {
-                    url = options.ajax.url;
+                    url = options.url;
                 }
 
                 var success = function( data ) {
@@ -410,24 +448,22 @@
                         }
                     }
 
-                    if ( options.ajax.success ) {
-                        options.ajax.success.apply( this, arguments );
+                    if ( options.success ) {
+                        options.success.apply( this, arguments );
                     }
+                },
+                extraOptions = {
+                    data: data,
+                    type: type,
+                    url: url,
+                    success: success
                 };
 
-                if ( typeof data !== "string" ) {
-                    data = JSON.stringify( data );
+                if ( options.error ) {
+                    extraOptions.error = options.error;
                 }
 
-                return $.ajax( $.extend( {}, ajaxSettings,
-                    {
-                        data: data,
-                        type: type,
-                        url: url
-                    },
-                    options.ajax || {},
-                    { success: success }
-                ));
+                return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
 
             /**
@@ -478,31 +514,27 @@
                 options = options || {};
 
                 if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
-                    delId = parseInt( toRemove, 10 );
+                    delId = toRemove;
                 } else if ( toRemove ) {
                     if ( typeof toRemove.record === "string" || typeof toRemove.record === "number" ) {
-                        delId = parseInt( toRemove.record, 10 );
+                        delId = toRemove.record;
                     } else if ( toRemove.record ) {
-                        delId = parseInt( toRemove.record[ this.recordId ], 10 );
+                        delId = toRemove.record[ this.recordId ];
                     }
-                } else {
-                    throw "aerogear.pipeline.rest: missing argument";
+
+                    if ( toRemove.success && !options.success ) {
+                        options.success = toRemove.success;
+                    }
+                    if ( toRemove.error && !options.error ) {
+                        options.error = toRemove.error;
+                    }
                 }
 
                 delPath = delId ? "/" + delId : "";
-                if ( options.ajax ) {
-                    if ( options.ajax.url ) {
-                        url = options.ajax.url;
-                    } else {
-                        url = ajaxSettings.url + delPath;
-                    }
-                } else if ( toRemove.ajax ) {
-                    options.ajax = toRemove.ajax;
-                    if ( toRemove.ajax.url ) {
-                        url = toRemove.ajax.url;
-                    } else {
-                        url = ajaxSettings.url + delPath;
-                    }
+                if ( options.url ) {
+                    url = options.url;
+                } else if ( toRemove.url ) {
+                    url = toRemove.url;
                 } else {
                     url = ajaxSettings.url + delPath;
                 }
@@ -517,19 +549,35 @@
                         }
                     }
 
-                    if ( options.ajax.success ) {
-                        options.ajax.success.apply( this, arguments );
+                    if ( options.success ) {
+                        options.success.apply( this, arguments );
                     }
+                },
+                extraOptions = {
+                    type: "DELETE",
+                    url: url,
+                    success: success
                 };
 
-                return $.ajax( $.extend( {}, ajaxSettings,
-                    {
-                        type: "DELETE",
-                        url: url
-                    },
-                    options.ajax || {},
-                    { success: success }
-                ));
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+            },
+
+            isAuthenticated: function() {
+                return this.authenticator ? this.authenticator.isAuthenticated() : true;
+            },
+
+            addAuth: function( settings ) {
+                return this.authenticator ? this.authenticator.addAuth( settings ) : settings;
+            },
+
+            deauthorize: function() {
+                if ( this.authenticator ) {
+                    this.authenticator.deauthorize();
+                }
             }
         };
     };
@@ -685,7 +733,7 @@
                     if ( this.data ) {
                         for ( var i = 0; i < data.length; i++ ) {
                             for( var item in this.data ) {
-                                if ( this.data[ item ].id === data[ i ].id ) {
+                                if ( this.data[ item ][ this.recordId ] === data[ i ][ this.recordId ] ) {
                                     this.data[ item ] = data[ i ];
                                     itemFound = true;
                                     break;
@@ -731,7 +779,7 @@
                     }
 
                     for( item in this.data ) {
-                        if ( this.data[ item ].id === delId ) {
+                        if ( this.data[ item ][ this.recordId ] === delId ) {
                             this.data.splice( item, 1 );
                         }
                     }
@@ -801,6 +849,182 @@
                 });
 
                 return filtered;
+            }
+        };
+    };
+})( aerogear, jQuery );
+
+(function( aerogear, undefined ) {
+    /**
+     * aerogear.auth
+     *
+     **/
+    aerogear.auth = function( config ) {
+        var auth = {
+                lib: "auth",
+                defaultAdapter: "rest",
+                modules: {},
+                /**
+                 * aerogear.auth#add( config[, baseURL] ) -> Object
+                 * - config (Mixed): This can be a variety of types specifying how to create the authentication module
+                 * - baseURL (String): The base URL to use for the server location that this authentication module should communicate with
+                 *
+                 **/
+                add: function( config ) {
+                    return aerogear.add.call( this, config );
+                },
+                /**
+                 * aerogear.auth#remove( toRemove ) -> Object
+                 * - toRemove (Mixed): This can be a variety of types specifying the authentication module to remove as illustrated below
+                 *
+                 **/
+                remove: function( toRemove ) {
+                    return aerogear.remove.call( this, toRemove );
+                },
+                // Helper function to set auth modules
+                _setCollection: function( collection ) {
+                    this.modules = collection;
+                },
+                // Helper function to get the auth modules
+                _getCollection: function() {
+                    return this.modules;
+                }
+            };
+
+        return auth.add( config );
+    };
+
+    /**
+     * aerogear.auth.adapters
+     *
+     * The adapters object is provided so that adapters can be added to the aerogear.auth namespace dynamically and still be accessible to the add method
+     **/
+    aerogear.auth.adapters = {};
+})( aerogear );
+
+(function( aerogear, $, undefined ) {
+    /**
+     * aerogear.auth.adapters.rest
+     *
+     * The REST adapter is the default type used when creating a new authentication module. It uses jQuery.ajax to communicate with the server.
+     *
+     **/
+    aerogear.auth.adapters.rest = function( moduleName, settings ) {
+        var endPoints = settings && settings.endPoints || {};
+        settings = settings || {};
+
+        return {
+            type: "rest",
+            name: moduleName,
+            agAuth: !!settings.agAuth,
+            baseURL: settings.baseURL || null,
+            /**
+             * aerogear.auth.adapters.rest#register( data[, options] ) -> Object
+             * - data (Object): User profile to register
+             * - options (Object): Options to pass to the register method.
+             *
+             **/
+            register: function( data, options ) {
+                options = options || {};
+
+                var that = this,
+                    success = function( data, textStatus, jqXHR ) {
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ "Auth-Token" ] : "true" );
+
+                        if ( options.success ) {
+                            options.success.apply( this, arguments );
+                        }
+                    },
+                    extraOptions = {
+                        success: success,
+                        data: data
+                    },
+                    url = "";
+
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                if ( options.baseURL ) {
+                    url = options.baseURL;
+                } else if ( this.baseURL ) {
+                    url = this.baseURL;
+                }
+                if ( endPoints.register ) {
+                    url += endPoints.register;
+                } else {
+                    url += "auth/register";
+                }
+                if ( url.length ) {
+                    extraOptions.url = url;
+                }
+
+                return $.ajax( $.extend( {}, settings, { type: "POST" }, extraOptions ) );
+            },
+
+            /**
+             * aerogear.auth.adapters.rest#login( data[, options] ) -> Object
+             * - data (Object): A set of key value pairs representing the user's credentials
+             * - options (Object): An object containing key/value pairs representing options
+             *
+             **/
+            login: function( data, options ) {
+                options = options || {};
+
+                var that = this,
+                    success = function( data, textStatus, jqXHR ) {
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ "token" ] : "true" );
+
+                        if ( options.success ) {
+                            options.success.apply( this, arguments );
+                        }
+                    },
+                    extraOptions = {
+                        success: success
+                    },
+                    url = "";
+
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                if ( options.baseURL ) {
+                    url = options.baseURL;
+                } else if ( this.baseURL ) {
+                    url = this.baseURL;
+                }
+                if ( endPoints.login ) {
+                    url += endPoints.login;
+                } else {
+                    url += "auth/login";
+                }
+                if ( url.length ) {
+                    extraOptions.url = url;
+                }
+
+                if ( this.agAuth ) {
+                    extraOptions.headers = {
+                        "Auth-Credential": data.credential,
+                        "Auth-Password": data.password
+                    };
+                } else {
+                    extraOptions.data = data;
+                }
+
+                return $.ajax( $.extend( {}, settings, { type: "POST" }, extraOptions ) );
+            },
+
+            isAuthenticated: function() {
+                var auth = sessionStorage.getItem( "ag-auth-" + this.name );
+                return !!auth;
+            },
+
+            addAuth: function( settings ) {
+                return $.extend( {}, settings, { headers: { "Auth-Token": sessionStorage.getItem( "ag-auth-" + this.name ) } } );
+            },
+
+            deauthorize: function() {
+                sessionStorage.removeItem( "ag-auth-" + this.name );
             }
         };
     };
