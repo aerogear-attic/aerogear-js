@@ -55,6 +55,46 @@ test( "create - object", function() {
     equal( dm.createTest32.type, "memory", "Specified valve type (memory)" );
 });
 
+test( "add and remove - string ", function() {
+    expect( 7 );
+
+    var dm = aerogear.dataManager();
+    dm.add( "addTest1" ),
+    dm.add( "addTest2" );
+
+    equal( Object.keys( dm.valves ).length, 2, "2 Valves added" );
+    equal( Object.keys( dm.valves )[ 0 ], "addTest1", "Valve Name addTest1" );
+    equal( Object.keys( dm.valves )[ 1 ], "addTest2", "Valve Name addTest1" );
+    equal( dm.valves.addTest1.type, "memory", "Default valve type (memory)" );
+    equal( dm.valves.addTest2.type, "memory", "Default valve type (memory)" );
+
+    dm.remove( "addTest1" );
+    equal( Object.keys( dm.valves ).length, 1, "1 Valves removed" );
+    equal( dm.valves.addTest1, undefined, "Valve Name addTest1 no longer exists" );
+
+
+});
+
+test( "add and remove - array ", function() {
+    expect( 7 );
+
+    var dm = aerogear.dataManager();
+    dm.add( [
+     "addTest3",  
+     ] );
+
+    equal( Object.keys( dm.valves ).length, 2, "2 Valves added" );
+    equal( Object.keys( dm.valves )[ 0 ], "addTest3", "Valve Name addTest1" );
+    equal( Object.keys( dm.valves )[ 1 ], "addTest4", "Valve Name addTest1" );
+    equal( dm.valves.addTest1.type, "memory", "Default valve type (memory)" );
+    equal( dm.valves.addTest2.type, "memory", "Default valve type (memory)" );
+
+    dm.remove( "addTest1" );
+    equal( Object.keys( dm.valves ).length, 1, "1 Valves removed" );
+    equal( dm.valves.addTest1, undefined, "Valve Name addTest1 no longer exists" );
+
+
+});
 
 // Create a default (memory) dataManager to store data for some tests
 var userValve = aerogear.dataManager( "users" ).valves.users;
