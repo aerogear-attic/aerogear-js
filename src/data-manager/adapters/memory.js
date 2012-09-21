@@ -36,7 +36,7 @@
                     if ( this.data ) {
                         for ( var i = 0; i < data.length; i++ ) {
                             for( var item in this.data ) {
-                                if ( this.data[ item ].id === data[ i ].id ) {
+                                if ( this.data[ item ][ this.recordId ] === data[ i ][ this.recordId ] ) {
                                     this.data[ item ] = data[ i ];
                                     itemFound = true;
                                     break;
@@ -82,7 +82,7 @@
                     }
 
                     for( item in this.data ) {
-                        if ( this.data[ item ].id === delId ) {
+                        if ( this.data[ item ][ this.recordId ] === delId ) {
                             this.data.splice( item, 1 );
                         }
                     }
