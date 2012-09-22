@@ -23,7 +23,7 @@
                 }
             });
 
-            if ( ajaxSettings.contentType === "application/json" && ajaxSettings.data && ajaxSettings.type === "POST" ) {
+            if ( ajaxSettings.contentType === "application/json" && ajaxSettings.data && ( ajaxSettings.type === "POST" || ajaxSettings.type === "PUT" ) ) {
                 ajaxSettings.data = JSON.stringify( ajaxSettings.data );
             }
 
