@@ -110,6 +110,49 @@
                 return $.ajax( $.extend( {}, settings, { type: "POST" }, extraOptions ) );
             },
 
+            logout: function( options ) {
+                options = options || {};
+
+                var that = this,
+                    success = function( data, textStatus, jqXHR ) {
+                        that.deauthorize();
+
+                        if ( options.success ) {
+                            options.success.apply( this, arguments );
+                        }
+                    },
+                    extraOptions = {
+                        success: success
+                    },
+                    url = "";
+
+                if ( options.error ) {
+                    extraOptions.error = options.error;
+                }
+
+                if ( options.baseURL ) {
+                    url = options.baseURL;
+                } else if ( this.baseURL ) {
+                    url = this.baseURL;
+                }
+                if ( endPoints.logout ) {
+                    url += endPoints.logout;
+                } else {
+                    url += "auth/logout";
+                }
+                if ( url.length ) {
+                    extraOptions.url = url;
+                }
+
+                if ( this.agAuth ) {
+                    extraOptions.headers = {
+                        "Auth-Token": sessionStorage.getItem( "ag-auth-" + this.name )
+                    };
+                }
+
+                return $.ajax( $.extend( {}, settings, { type: "POST" }, extraOptions ) );
+            },
+
             isAuthenticated: function() {
                 var auth = sessionStorage.getItem( "ag-auth-" + this.name );
                 return !!auth;
