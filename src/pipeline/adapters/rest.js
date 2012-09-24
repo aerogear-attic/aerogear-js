@@ -89,14 +89,27 @@
                         options.success.apply( this, arguments );
                     }
                 },
+                error = function( type, errorMessage ) {
+                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                        item;
+
+                    if ( type === "auth" && valves.length ) {
+                        // If auth error, clear existing data for security
+                        for ( item in valves ) {
+                            valves[ item ].remove();
+                        }
+                    }
+
+                    if ( options.error ) {
+                        options.error.apply( this, arguments );
+                    }
+                },
                 extraOptions = {
                     type: "GET",
-                    success: success
+                    success: success,
+                    error: error,
+                    complete: options.complete
                 };
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
@@ -174,16 +187,29 @@
                         options.success.apply( this, arguments );
                     }
                 },
+                error = function( type, errorMessage ) {
+                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                        item;
+
+                    if ( type === "auth" && valves.length ) {
+                        // If auth error, clear existing data for security
+                        for ( item in valves ) {
+                            valves[ item ].remove();
+                        }
+                    }
+
+                    if ( options.error ) {
+                        options.error.apply( this, arguments );
+                    }
+                },
                 extraOptions = {
                     data: data,
                     type: type,
                     url: url,
-                    success: success
+                    success: success,
+                    error: error,
+                    complete: options.complete
                 };
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
@@ -281,15 +307,28 @@
                         options.success.apply( this, arguments );
                     }
                 },
+                error = function( type, errorMessage ) {
+                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                        item;
+
+                    if ( type === "auth" && valves.length ) {
+                        // If auth error, clear existing data for security
+                        for ( item in valves ) {
+                            valves[ item ].remove();
+                        }
+                    }
+
+                    if ( options.error ) {
+                        options.error.apply( this, arguments );
+                    }
+                },
                 extraOptions = {
                     type: "DELETE",
                     url: url,
-                    success: success
+                    success: success,
+                    error: error,
+                    complete: options.complete
                 };
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 return aerogear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
             },
