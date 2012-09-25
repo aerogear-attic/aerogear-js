@@ -968,7 +968,8 @@
             type: "rest",
             name: moduleName,
             agAuth: !!settings.agAuth,
-            baseURL: settings.baseURL || null,
+            baseURL: settings.baseURL,
+            tokenName: settings.tokenName || "token",
             /**
              * aerogear.auth.adapters.rest#register( data[, options] ) -> Object
              * - data (Object): User profile to register
@@ -980,17 +981,18 @@
 
                 var that = this,
                     success = function( data, textStatus, jqXHR ) {
-                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ "Auth-Token" ] : "true" );
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ that.tokenName ] : "true" );
 
                         if ( options.success ) {
                             options.success.apply( this, arguments );
                         }
                     },
                     extraOptions = {
+                        contentType: options.contentType,
+                        dataType: options.dataType,
                         success: success,
                         error: options.error,
-                        data: data,
-                        type: "POST"
+                        data: data
                     },
                     url = "";
 
@@ -1022,14 +1024,17 @@
 
                 var that = this,
                     success = function( data, textStatus, jqXHR ) {
-                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ "token" ] : "true" );
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ that.tokenName ] : "true" );
 
                         if ( options.success ) {
                             options.success.apply( this, arguments );
                         }
                     },
                     extraOptions = {
-                        success: success
+                        contentType: options.contentType,
+                        dataType: options.dataType,
+                        success: success,
+                        data: data
                     },
                     url = "";
 
@@ -1049,16 +1054,6 @@
                 }
                 if ( url.length ) {
                     extraOptions.url = url;
-                }
-
-                if ( this.agAuth ) {
-                    extraOptions.headers = {
-                        "Auth-Credential": data.credential,
-                        "Auth-Password": data.password,
-                        "Auth-Token": ""
-                    };
-                } else {
-                    extraOptions.data = data;
                 }
 
                 return $.ajax( $.extend( {}, settings, { type: "POST" }, extraOptions ) );
@@ -1099,9 +1094,8 @@
                 }
 
                 if ( this.agAuth ) {
-                    extraOptions.headers = {
-                        "Auth-Token": sessionStorage.getItem( "ag-auth-" + this.name )
-                    };
+                    extraOptions.headers = {};
+                    extraOptions.headers[ this.tokenName ] = sessionStorage.getItem( "ag-auth-" + this.name );
                 }
 
                 return $.ajax( $.extend( {}, settings, { type: "POST" }, extraOptions ) );
@@ -1113,7 +1107,9 @@
             },
 
             addAuth: function( settings ) {
-                return $.extend( {}, settings, { headers: { "Auth-Token": sessionStorage.getItem( "ag-auth-" + this.name ) } } );
+                settings.headers = {};
+                settings.headers[ this.tokenName ] = sessionStorage.getItem( "ag-auth-" + this.name );
+                return $.extend( {}, settings );
             },
 
             deauthorize: function() {
