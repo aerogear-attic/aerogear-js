@@ -121,16 +121,21 @@
 
                             for ( j = 0; j < filterObj.data.length; j++ ) {
                                 if( aerogear.isArray( value[ keys[ i ] ] ) ){
-                                    for( k = 0; k < value[ keys[ i ] ].length; k++ ){
-                                        if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ][ k ] ) {
-                                        // At least one value must match and this one does so return true
+                                    if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ){
                                         paramResult = true;
                                         break;
-                                        }
-                                        if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ][ k ] ) {
-                                        // All must match but this one doesn't so return false
-                                        paramResult = false;
-                                        break;
+                                    } else {
+                                        for( k = 0; k < value[ keys[ i ] ].length; k++ ){
+                                            if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ][ k ] ) {
+                                            // At least one value must match and this one does so return true
+                                            paramResult = true;
+                                            break;
+                                            }
+                                            if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ][ k ] ) {
+                                            // All must match but this one doesn't so return false
+                                            paramResult = false;
+                                            break;
+                                            }
                                         }
                                     }
                                 } else {
