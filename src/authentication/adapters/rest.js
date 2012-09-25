@@ -33,13 +33,11 @@
                     },
                     extraOptions = {
                         success: success,
-                        data: data
+                        error: options.error,
+                        data: data,
+                        type: "POST"
                     },
                     url = "";
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 if ( options.baseURL ) {
                     url = options.baseURL;
@@ -101,7 +99,8 @@
                 if ( this.agAuth ) {
                     extraOptions.headers = {
                         "Auth-Credential": data.credential,
-                        "Auth-Password": data.password
+                        "Auth-Password": data.password,
+                        "Auth-Token": ""
                     };
                 } else {
                     extraOptions.data = data;

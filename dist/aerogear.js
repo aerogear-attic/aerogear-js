@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-23
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-25
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -386,6 +386,7 @@
                     type: "GET",
                     success: success,
                     error: error,
+                    statusCode: options.statusCode,
                     complete: options.complete
                 };
 
@@ -486,6 +487,7 @@
                     url: url,
                     success: success,
                     error: error,
+                    statusCode: options.statusCode,
                     complete: options.complete
                 };
 
@@ -554,6 +556,9 @@
                     if ( toRemove.error && !options.error ) {
                         options.error = toRemove.error;
                     }
+                    if ( toRemove.statusCode && !options.statusCode ) {
+                        options.statusCode = toRemove.statusCode;
+                    }
                 }
 
                 delPath = delId ? "/" + delId : "";
@@ -605,6 +610,7 @@
                     url: url,
                     success: success,
                     error: error,
+                    statusCode: options.statusCode,
                     complete: options.complete
                 };
 
@@ -982,13 +988,11 @@
                     },
                     extraOptions = {
                         success: success,
-                        data: data
+                        error: options.error,
+                        data: data,
+                        type: "POST"
                     },
                     url = "";
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 if ( options.baseURL ) {
                     url = options.baseURL;
@@ -1050,7 +1054,8 @@
                 if ( this.agAuth ) {
                     extraOptions.headers = {
                         "Auth-Credential": data.credential,
-                        "Auth-Password": data.password
+                        "Auth-Password": data.password,
+                        "Auth-Token": ""
                     };
                 } else {
                     extraOptions.data = data;

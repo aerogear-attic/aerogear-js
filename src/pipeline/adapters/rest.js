@@ -108,6 +108,7 @@
                     type: "GET",
                     success: success,
                     error: error,
+                    statusCode: options.statusCode,
                     complete: options.complete
                 };
 
@@ -208,6 +209,7 @@
                     url: url,
                     success: success,
                     error: error,
+                    statusCode: options.statusCode,
                     complete: options.complete
                 };
 
@@ -276,6 +278,9 @@
                     if ( toRemove.error && !options.error ) {
                         options.error = toRemove.error;
                     }
+                    if ( toRemove.statusCode && !options.statusCode ) {
+                        options.statusCode = toRemove.statusCode;
+                    }
                 }
 
                 delPath = delId ? "/" + delId : "";
@@ -327,6 +332,7 @@
                     url: url,
                     success: success,
                     error: error,
+                    statusCode: options.statusCode,
                     complete: options.complete
                 };
 
