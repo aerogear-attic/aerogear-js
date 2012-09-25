@@ -510,6 +510,33 @@ test( "filter multiple fields , Array in Data, OR ", function() {
     equal( filtered.length, 2, "2 Item Matched" );
 });
 
+test( "filter single field Multiple Values, Array in Data, AND", function() {
+    expect(2);
+
+    var filtered = tasksValve.filter({
+        tags: {
+            data: [ 111, 222 ],
+            matchAny: false
+        }
+    });
+
+    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+test( "filter single field Multiple Values, Array in Data, OR", function() {
+    expect(2);
+
+    var filtered = tasksValve.filter({
+        tags: {
+            data: [ 111, 222 ],
+            matchAny: true
+        }
+    });
+
+    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 3, "1 Item Matched" );
+});
 
 
 
