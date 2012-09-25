@@ -477,14 +477,40 @@ test( "reset all data", function() {
     equal( tasksValve.read().length, 3, "3 Items Added" );
 });
 
-test( "filter single field , Array in Data - AND, ", function() {
+test( "filter single field , Array in Data, AND", function() {
     expect( 2 );
 
     var filtered = tasksValve.filter( { tags: 111 } );
 
     equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Item Matched" );
+});
+
+test( "filter multiple fields , Array in Data, AND ", function() {
+    expect( 2 );
+
+    var filtered = tasksValve.filter({
+        tags: 111,
+        project: 11
+    }, false );
+
+    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
+
+test( "filter multiple fields , Array in Data, OR ", function() {
+    expect( 2 );
+
+    var filtered = tasksValve.filter({
+        tags: 111,
+        project: 11
+    }, true );
+
+    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Item Matched" );
+});
+
+
 
 
 })( jQuery );

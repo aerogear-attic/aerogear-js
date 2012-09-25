@@ -134,7 +134,14 @@
                         } else {
                             // Filter on parameter value
 
-                            if( aerogear.isArray( value[keys] ) ){
+                            if( aerogear.isArray( value[ keys[ i ] ] ) ){
+                                for(j = 0; j < value[ keys[ i ] ].length; j++ ){
+                                    paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ] ? true : false;
+                                    if( paramResult )
+                                    {
+                                        break;
+                                    }
+                                }
 
                             } else {
                                  paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ? true : false;
