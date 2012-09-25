@@ -441,4 +441,50 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });
 
+//create a default(memory) dataManager to store data for some tests
+var tasksValve = aerogear.dataManager( "tasks" ).valves.tasks;
+
+test( "reset all data", function() {
+    expect( 1 );
+
+    tasksValve.save([
+       {
+            id: 12345,
+            date: "2012-07-30",
+            title: "Task 1-1",
+            description: "Task 1-1 description text",
+            project: 11,
+            tags: [ 111 ]
+        },
+        {
+            id: 67890,
+            date: "2012-07-30",
+            title: "Task 2-1",
+            description: "Task 2-1 description text",
+            project: 22,
+            tags: [ 111, 222 ]
+        },
+        {
+            id: 54321,
+            date: "2012-07-30",
+            title: "Task 3-1",
+            description: "Task 3-1 description text",
+            project: 33,
+            tags: [ 222 ]
+        }
+    ], true );
+
+    equal( tasksValve.read().length, 3, "3 Items Added" );
+});
+
+test( "filter single field , Array in Data - AND, ", function() {
+    expect( 2 );
+
+    var filtered = tasksValve.filter( { tags: 111 } );
+
+    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+
 })( jQuery );

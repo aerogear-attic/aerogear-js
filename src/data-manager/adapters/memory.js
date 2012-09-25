@@ -133,7 +133,12 @@
                             }
                         } else {
                             // Filter on parameter value
-                            paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ? true : false;
+
+                            if( aerogear.isArray( value[keys] ) ){
+
+                            } else {
+                                 paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ? true : false;
+                            }
                         }
 
                         if ( matchAny && paramResult ) {
