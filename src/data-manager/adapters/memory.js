@@ -156,10 +156,16 @@
                             // Filter on parameter value
 
                             if( aerogear.isArray( value[ keys[ i ] ] ) ){
+                                paramResult = matchAny ? false: true;
                                 for(j = 0; j < value[ keys[ i ] ].length; j++ ){
-                                    paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ] ? true : false;
-                                    if( paramResult )
-                                    {
+                                    if( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ]  ){
+                                        //at least one must match and this one does so return true
+                                        paramResult = true;
+                                        break;
+                                    }
+                                    if( !matchAny && filterParameters[ keys[ i ] ] !== value[ keys[ i ] ][ j ] ){
+                                        //All must match but this one doesn't so return false
+                                        paramResult = false;
                                         break;
                                     }
                                 }

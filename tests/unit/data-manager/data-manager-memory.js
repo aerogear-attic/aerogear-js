@@ -483,7 +483,16 @@ test( "filter single field , Array in Data, AND", function() {
     var filtered = tasksValve.filter( { tags: 111 } );
 
     equal( tasksValve.read().length, 3, "Original Data Unchanged" );
-    equal( filtered.length, 2, "2 Item Matched" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+test( "filter single field , Array in Data, OR", function() {
+    expect( 2 );
+
+    var filtered = tasksValve.filter( { tags: 111 }, true );
+
+    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Items Matched" );
 });
 
 test( "filter multiple fields , Array in Data, AND ", function() {
