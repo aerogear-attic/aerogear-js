@@ -149,12 +149,10 @@
                 options = options || {};
                 type = data[ this.recordId ] ? "PUT" : "POST";
 
-                if ( !options.url && data[ this.recordId ] ) {
+                if ( data[ this.recordId ] ) {
                     url = ajaxSettings.url + "/" + data[ this.recordId ];
-                } else if ( !options.url ) {
-                    url = ajaxSettings.url;
                 } else {
-                    url = options.url;
+                    url = ajaxSettings.url;
                 }
 
                 var success = function( data ) {
@@ -249,36 +247,19 @@
                     delId,
                     url;
 
-                options = options || {};
-
                 if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
                     delId = toRemove;
-                } else if ( toRemove ) {
-                    if ( typeof toRemove.record === "string" || typeof toRemove.record === "number" ) {
-                        delId = toRemove.record;
-                    } else if ( toRemove.record ) {
-                        delId = toRemove.record[ this.recordId ];
-                    }
-
-                    if ( toRemove.success && !options.success ) {
-                        options.success = toRemove.success;
-                    }
-                    if ( toRemove.error && !options.error ) {
-                        options.error = toRemove.error;
-                    }
-                    if ( toRemove.statusCode && !options.statusCode ) {
-                        options.statusCode = toRemove.statusCode;
-                    }
+                } else if ( toRemove && toRemove[ this.recordId ] ) {
+                    delId = toRemove[ this.recordId ];
+                } else if ( toRemove && !options ) {
+                    // No remove item specified so treat as options
+                    options = toRemove;
                 }
+
+                options = options || {};
 
                 delPath = delId ? "/" + delId : "";
-                if ( options.url ) {
-                    url = options.url;
-                } else if ( toRemove.url ) {
-                    url = toRemove.url;
-                } else {
-                    url = ajaxSettings.url + delPath;
-                }
+                url = ajaxSettings.url + delPath;
 
                 var success = function( data ) {
                     var valves,
@@ -286,11 +267,6 @@
 
                     if ( options.valves ) {
                         valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ];
-                        for ( item in valves ) {
-                            valves[ item ].remove( delId );
-                        }
-                    } else if ( toRemove.valves ) {
-                        valves = aerogear.isArray( toRemove.valves ) ? toRemove.valves : [ toRemove.valves ];
                         for ( item in valves ) {
                             valves[ item ].remove( delId );
                         }

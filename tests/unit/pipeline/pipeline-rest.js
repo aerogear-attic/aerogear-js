@@ -224,7 +224,7 @@ asyncTest( "save method", function() {
 
 // Remove method test
 asyncTest( "remove method", function() {
-    expect( 4 );
+    expect( 3 );
 
     var remove1 = pipe.remove( 12345, {
         success: function( data, textStatus, jqXHR ) {
@@ -232,23 +232,15 @@ asyncTest( "remove method", function() {
         }
     });
 
-    var remove2 = pipe.remove({
-        record: 11223,
-        success: function( data, textStatus, jqXHR ) {
-            ok( true, "DELETE - single record using default object record identifier" );
+    var remove2 = pipe2.remove( { taskId: 44556 },
+        {
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "DELETE - single record using custom record identifier" );
+            }
         }
-    });
+    );
 
-    var remove3 = pipe2.remove({
-        record: {
-            taskId: 44556
-        },
-        success: function( data, textStatus, jqXHR ) {
-            ok( true, "DELETE - single record using custom record identifier" );
-        }
-    });
-
-    $.when( remove1, remove2, remove3 ).done( function( r1, r2, r3 ) {
+    $.when( remove1, remove2 ).done( function( r1, r2 ) {
         pipe.remove({
             success: function( data, textStatus, jqXHR ) {
                 ok( true, "DELETE - all data at end of this pipe" );
