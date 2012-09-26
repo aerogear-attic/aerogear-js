@@ -121,11 +121,11 @@
 
                             for ( j = 0; j < filterObj.data.length; j++ ) {
                                 if( aerogear.isArray( value[ keys[ i ] ] ) ) {
-                                    if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ){
+                                    if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ) {
                                         paramResult = true;
                                         break;
                                     } else {
-                                        for( k = 0; k < value[ keys[ i ] ].length; k++ ){
+                                        for( k = 0; k < value[ keys[ i ] ].length; k++ ) {
                                             if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ][ k ] ) {
                                                 // At least one value must match and this one does so return true
                                                 paramResult = true;
@@ -156,7 +156,7 @@
 
                             if( aerogear.isArray( value[ keys[ i ] ] ) ) {
                                 paramResult = matchAny ? false: true;
-                                for(j = 0; j < value[ keys[ i ] ].length; j++ ){
+                                for(j = 0; j < value[ keys[ i ] ].length; j++ ) {
                                     if( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ]  ) {
                                         //at least one must match and this one does so return true
                                         paramResult = true;
