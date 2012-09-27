@@ -89,11 +89,11 @@
                 remove: function( config ) {
                     return aerogear.remove.call( this, config );
                 },
-                // Helper function to set pipes
+                // Helper function to set valves
                 _setCollection: function( collection ) {
                     this.valves = collection;
                 },
-                // Helper function to get the pipes
+                // Helper function to get the valves
                 _getCollection: function() {
                     return this.valves;
                 }
