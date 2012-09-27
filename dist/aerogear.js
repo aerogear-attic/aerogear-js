@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-26
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-27
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -701,11 +701,11 @@
                 remove: function( config ) {
                     return aerogear.remove.call( this, config );
                 },
-                // Helper function to set pipes
+                // Helper function to set valves
                 _setCollection: function( collection ) {
                     this.valves = collection;
                 },
-                // Helper function to get the pipes
+                // Helper function to get the valves
                 _getCollection: function() {
                     return this.valves;
                 }
@@ -957,7 +957,7 @@
 
                 var that = this,
                     success = function( data, textStatus, jqXHR ) {
-                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ that.tokenName ] : "true" );
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? jqXHR.getResponseHeader( that.tokenName ) : "true" );
 
                         if ( options.success ) {
                             options.success.apply( this, arguments );
@@ -1000,7 +1000,7 @@
 
                 var that = this,
                     success = function( data, textStatus, jqXHR ) {
-                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ that.tokenName ] : "true" );
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? jqXHR.getResponseHeader( that.tokenName ) : "true" );
 
                         if ( options.success ) {
                             options.success.apply( this, arguments );

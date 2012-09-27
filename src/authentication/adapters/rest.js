@@ -26,7 +26,7 @@
 
                 var that = this,
                     success = function( data, textStatus, jqXHR ) {
-                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ that.tokenName ] : "true" );
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? jqXHR.getResponseHeader( that.tokenName ) : "true" );
 
                         if ( options.success ) {
                             options.success.apply( this, arguments );
@@ -69,7 +69,7 @@
 
                 var that = this,
                     success = function( data, textStatus, jqXHR ) {
-                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? data[ that.tokenName ] : "true" );
+                        sessionStorage.setItem( "ag-auth-" + that.name, that.agAuth ? jqXHR.getResponseHeader( that.tokenName ) : "true" );
 
                         if ( options.success ) {
                             options.success.apply( this, arguments );
