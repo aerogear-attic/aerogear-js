@@ -14,7 +14,7 @@
             name: moduleName,
             agAuth: !!settings.agAuth,
             baseURL: settings.baseURL,
-            tokenName: settings.tokenName || "token",
+            tokenName: settings.tokenName || "Auth-Token",
             /**
              * aerogear.auth.adapters.rest#register( data[, options] ) -> Object
              * - data (Object): User profile to register
