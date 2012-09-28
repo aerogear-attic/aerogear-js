@@ -87,7 +87,7 @@ var pipeline = aerogear.pipeline([
         {
             name: "projects",
             settings: {
-                baseURL: "baseTest"
+                baseURL: "baseTest/"
             }
         },
         {
@@ -99,7 +99,7 @@ var pipeline = aerogear.pipeline([
         {
             name: "users",
             settings: {
-                baseURL: "baseURL",
+                baseURL: "baseURL/",
                 endPoint: "customEndPoint"
             }
         }

@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-27
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-09-28
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -107,6 +107,9 @@
 })( this );
 
 (function( aerogear, $, undefined ) {
+    /**
+     * aerogear.ajax
+     **/
     aerogear.ajax = function( caller, options ) {
         var deferred = $.Deferred( function() {
             var that = this,
@@ -188,9 +191,8 @@
             defaultAdapter: "rest",
             pipes: {},
             /**
-             * aerogear.pipeline#add( config[, baseURL] ) -> Object
+             * aerogear.pipeline#add( config ) -> Object
              * - config (Mixed): This can be a variety of types specifying how to create the pipe as illustrated below
-             * - baseURL (String): The base URL to use for the server location that this pipe should communicate with
              *
              * When passing a pipe configuration object to `add`, the following items can be provided:
              *  - **name** - String (Required), the name that the pipe will later be referenced by
@@ -223,7 +225,7 @@
              *     pipeline = pipeline.add( [ "tags", "projects" ] );
              *
              **/
-            add: function( config, baseURL ) {
+            add: function( config ) {
                 return aerogear.add.call( this, config );
             },
             /**
@@ -293,10 +295,10 @@
      **/
     aerogear.pipeline.adapters.rest = function( pipeName, settings ) {
         var endPoint = settings && settings.endPoint ? settings.endPoint : pipeName,
-            ajaxSettings = $.extend({
+            ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint
-            }, settings );
+                url: settings && settings.baseURL ? settings.baseURL + endPoint : endPoint
+            };
 
         return {
             recordId: settings && settings.recordId ? settings.recordId : "id",

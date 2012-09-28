@@ -32,9 +32,8 @@
             defaultAdapter: "rest",
             pipes: {},
             /**
-             * aerogear.pipeline#add( config[, baseURL] ) -> Object
+             * aerogear.pipeline#add( config ) -> Object
              * - config (Mixed): This can be a variety of types specifying how to create the pipe as illustrated below
-             * - baseURL (String): The base URL to use for the server location that this pipe should communicate with
              *
              * When passing a pipe configuration object to `add`, the following items can be provided:
              *  - **name** - String (Required), the name that the pipe will later be referenced by
@@ -67,7 +66,7 @@
              *     pipeline = pipeline.add( [ "tags", "projects" ] );
              *
              **/
-            add: function( config, baseURL ) {
+            add: function( config ) {
                 return aerogear.add.call( this, config );
             },
             /**

@@ -15,10 +15,10 @@
      **/
     aerogear.pipeline.adapters.rest = function( pipeName, settings ) {
         var endPoint = settings && settings.endPoint ? settings.endPoint : pipeName,
-            ajaxSettings = $.extend({
+            ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings && settings.baseURL ? settings.baseURL + "/" + endPoint : endPoint
-            }, settings );
+                url: settings && settings.baseURL ? settings.baseURL + endPoint : endPoint
+            };
 
         return {
             recordId: settings && settings.recordId ? settings.recordId : "id",
