@@ -32,11 +32,25 @@
                             options.success.apply( this, arguments );
                         }
                     },
+                    error = function( jqXHR, textStatus, errorThrown ) {
+                        var args;
+
+                        try {
+                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                            args = [ jqXHR, textStatus, errorThrown ];
+                        } catch( error ) {
+                            args = arguments;
+                        }
+
+                        if ( options.error ) {
+                            options.error.apply( this, args );
+                        }
+                    },
                     extraOptions = {
                         contentType: options.contentType,
                         dataType: options.dataType,
                         success: success,
-                        error: options.error,
+                        error: error,
                         data: data
                     },
                     url = "";
@@ -75,17 +89,28 @@
                             options.success.apply( this, arguments );
                         }
                     },
+                    error = function( jqXHR, textStatus, errorThrown ) {
+                        var args;
+
+                        try {
+                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                            args = [ jqXHR, textStatus, errorThrown ];
+                        } catch( error ) {
+                            args = arguments;
+                        }
+
+                        if ( options.error ) {
+                            options.error.apply( this, args );
+                        }
+                    },
                     extraOptions = {
                         contentType: options.contentType,
                         dataType: options.dataType,
                         success: success,
+                        error: error,
                         data: data
                     },
                     url = "";
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 if ( options.baseURL ) {
                     url = options.baseURL;
@@ -115,14 +140,25 @@
                             options.success.apply( this, arguments );
                         }
                     },
+                    error = function( jqXHR, textStatus, errorThrown ) {
+                        var args;
+
+                        try {
+                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                            args = [ jqXHR, textStatus, errorThrown ];
+                        } catch( error ) {
+                            args = arguments;
+                        }
+
+                        if ( options.error ) {
+                            options.error.apply( this, args );
+                        }
+                    },
                     extraOptions = {
-                        success: success
+                        success: success,
+                        error: error
                     },
                     url = "";
-
-                if ( options.error ) {
-                    extraOptions.error = options.error;
-                }
 
                 if ( options.baseURL ) {
                     url = options.baseURL;
