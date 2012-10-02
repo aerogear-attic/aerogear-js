@@ -131,6 +131,11 @@
                     that.resolve( typeof data === "string" && ajaxSettings.dataType === "json" ? JSON.parse( data ) : data, textStatus, jqXHR );
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if ( ajaxSettings.dataType === "json" ) {
+                        try {
+                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                        } catch( error ) {}
+                    }
                     that.reject( jqXHR, textStatus, errorThrown );
                 },
                 complete: function( jqXHR, textStatus ) {

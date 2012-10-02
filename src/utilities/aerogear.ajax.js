@@ -1,4 +1,11 @@
 (function( aerogear, $, undefined ) {
+    /**
+     * aerogear.ajax( caller[, options] ) -> Object
+     * - caller (Object): the AeroGear object (pipe, datamanager, etc.) that is calling aerogear.ajax
+     * - options (Object): settings for jQuery.ajax
+     *
+     * Returns a promise similar to the promise returned by jQuery.ajax
+     **/
     aerogear.ajax = function( caller, options ) {
         var deferred = $.Deferred( function() {
             var that = this,
@@ -16,6 +23,11 @@
                     that.resolve( typeof data === "string" && ajaxSettings.dataType === "json" ? JSON.parse( data ) : data, textStatus, jqXHR );
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if ( ajaxSettings.dataType === "json" ) {
+                        try {
+                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                        } catch( error ) {}
+                    }
                     that.reject( jqXHR, textStatus, errorThrown );
                 },
                 complete: function( jqXHR, textStatus ) {
