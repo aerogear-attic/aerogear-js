@@ -172,7 +172,19 @@
         });
     });
 
-    test( "Log Out", function() {
-        expect( 0 );
+    asyncTest( "Log Out", function() {
+        expect( 2 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "1234567" );
+
+        restAuth.logout({
+            success: function() {
+                ok( true, "Logout Successful");
+                equal( sessionStorage.getItem( "ag-auth-auth" ), null, "Auth-Token removed" );
+                start();
+            }
+        });
+
     });
 })( jQuery );

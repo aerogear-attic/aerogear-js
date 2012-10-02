@@ -61,4 +61,15 @@ $.mockjax({
     }
 });
 
+$.mockjax({
+    url: "auth/logout",
+    type: "POST",
+    response: function( event ) {
+        var data = event.data;
+
+        this.status = "204",
+        this.statusText = "No Content";
+    }
+});
+
 })(jQuery);
