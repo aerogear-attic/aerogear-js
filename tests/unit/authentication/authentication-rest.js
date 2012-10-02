@@ -77,29 +77,26 @@
         });
     });
 
-    asyncTest( "Login - Success", function() {
+    asyncTest( "Register", function() {
         expect( 4 );
 
         //a little clean up
         sessionStorage.removeItem( "ag-auth-auth" );
-
         var values = {
             username: "john",
-            password: "123"
+            password: "1234"
         };
 
-        equal( sessionStorage.getItem( "ag-auth-auth" ), null, "Auth Token doesn't exist yet" );
-
-        restAuth.login( values, {
+        restAuth.register( values, {
             success: function( data ) {
-                equal( sessionStorage.getItem( "ag-auth-auth" ), "123456", "Auth-Token set correctly" );
-                equal( data.username, "john", "Username is John" );
+                ok( true, "Successful Register" );
+                equal( sessionStorage.getItem( "ag-auth-auth" ), "123456789", "Auth-Token set correctly" );
+                equal( data.username, "john", "Username is john" );
                 equal( data.logged, true, "Logged is true" );
                 start();
             }
         });
     });
-
     asyncTest( "Login - Failure", function() {
         expect( 4 );
 
@@ -118,6 +115,29 @@
                 equal( sessionStorage.getItem( "ag-auth-auth" ), null, "Auth Token doesn't exist" );
                 equal( data.status, 401, "UnAuthorized Code");
                 equal( data.responseText.message, "User authentication failed", "Login Failure Message" );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Login - Success", function() {
+        expect( 4 );
+
+        //a little clean up
+        sessionStorage.removeItem( "ag-auth-auth" );
+
+        var values = {
+            username: "john",
+            password: "123"
+        };
+
+        equal( sessionStorage.getItem( "ag-auth-auth" ), null, "Auth Token doesn't exist yet" );
+
+        restAuth.login( values, {
+            success: function( data ) {
+                equal( sessionStorage.getItem( "ag-auth-auth" ), "123456", "Auth-Token set correctly" );
+                equal( data.username, "john", "Username is John" );
+                equal( data.logged, true, "Logged is true" );
                 start();
             }
         });
@@ -146,27 +166,6 @@
             error: function( data ) {
                 equal( data.status, 401, "UnAuthorized Code" );
                 ok( true, "Failed Access with InValid Token" );
-                start();
-            }
-        });
-    });
-
-    asyncTest( "Register", function() {
-        expect( 4 );
-
-        //a little clean up
-        sessionStorage.removeItem( "ag-auth-auth" );
-        var values = {
-            username: "john",
-            password: "1234"
-        };
-
-        restAuth.register( values, {
-            success: function( data ) {
-                ok( true, "Successful Register" );
-                equal( sessionStorage.getItem( "ag-auth-auth" ), "123456789", "Auth-Token set correctly" );
-                equal( data.username, "john", "Username is john" );
-                equal( data.logged, true, "Logged is true" );
                 start();
             }
         });
