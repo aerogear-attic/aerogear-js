@@ -3,12 +3,27 @@
 $.mockjaxClear();
 
 $.mockjax({
+    url: "auth/register",
+    type: "POST",
+    response: function( event ) {
+        var data = event.data;
+
+        this.responseText = {
+            username: data.username,
+            logged: true
+        },
+        this.headers = {
+            "Auth-Token": "123456789"
+        };
+    }
+});
+
+$.mockjax({
     url: "auth/login",
     type: "POST",
     response: function( event ) {
         var data = event.data;
-        if( data.username == "john" && data.password == "123" )
-        {
+        if( data.username == "john" && data.password == "123" ) {
             this.responseText = {
                 username: "john",
                 logged: true
@@ -16,9 +31,7 @@ $.mockjax({
             this.headers = {
                 "Auth-Token": "123456"
             };
-        }
-        else
-        {
+        } else {
             this.status = 401,
             this.statusText = "UnAuthorized",
             this.responseText = {
@@ -34,7 +47,17 @@ $.mockjax({
     url: "auth/secured",
     type: "GET",
     response: function( event ) {
-        var data = event.data;
+        var authToken = event.headers["Auth-Token"];
+        if( authToken && authToken == "1234567" ) {
+            this.responseText = {
+                value1: "value1",
+                value2: "value2"
+            };
+        } else {
+            this.status = 401,
+            this.statusText = "UnAuthorized",
+            this.headers = "";
+        }
     }
 });
 

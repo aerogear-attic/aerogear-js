@@ -57,7 +57,7 @@
         {
             name: "secured",
             settings: {
-                baseURL: "/auth/",
+                baseURL: "auth/",
                 authenticator: restAuth
             }
         }
@@ -65,6 +65,9 @@
 
     asyncTest( "No Token", function() {
         expect( 1 );
+
+        //a little clean up
+        sessionStorage.removeItem( "ag-auth-auth" );
 
         securePipe.read({
             error: function( data, message ) {
@@ -120,12 +123,53 @@
         });
     });
 
-    test( "Access With Valid Token", function() {
-        expect( 0 );
+    asyncTest( "Access With Valid Token", function() {
+        expect( 1 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "1234567" );
+        securePipe.read({
+            success: function( data ) {
+                ok( true, "Successful Access with Valid Token" );
+                start();
+            }
+        });
+
     });
 
-    test( "Accessing With Invalid Token", function() {
-        expect( 0 );
+    asyncTest( "Accessing With Invalid Token", function() {
+        expect( 2 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "12345" );
+        securePipe.read({
+            error: function( data ) {
+                equal( data.status, 401, "UnAuthorized Code" );
+                ok( true, "Failed Access with InValid Token" );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Register", function() {
+        expect( 4 );
+
+        //a little clean up
+        sessionStorage.removeItem( "ag-auth-auth" );
+        var values = {
+            username: "john",
+            password: "1234"
+        };
+
+        restAuth.register( values, {
+            success: function( data ) {
+                ok( true, "Successful Register" );
+                equal( sessionStorage.getItem( "ag-auth-auth" ), "123456789", "Auth-Token set correctly" );
+                equal( data.username, "john", "Username is john" );
+                equal( data.logged, true, "Logged is true" );
+                start();
+            }
+        });
     });
 
     test( "Log Out", function() {
