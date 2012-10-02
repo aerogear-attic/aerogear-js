@@ -8,10 +8,10 @@ module( "dataManager: memory" );
 test( "create - name string", function() {
     expect( 3 );
 
-    var dm = aerogear.dataManager( "createTest1" ).valves;
-    equal( Object.keys( dm ).length, 1, "Single Valve created" );
-    equal( Object.keys( dm )[ 0 ], "createTest1", "Valve Name createTest1" );
-    equal( dm.createTest1.type, "memory", "Default valve type (memory)" );
+    var dm = aerogear.dataManager( "createTest1" ).stores;
+    equal( Object.keys( dm ).length, 1, "Single Store created" );
+    equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
+    equal( dm.createTest1.type, "memory", "Default store type (memory)" );
 });
 
 test( "create - name array", function() {
@@ -24,15 +24,15 @@ test( "create - name array", function() {
             type: "memory"
         },
         "createTest23"
-    ]).valves;
+    ]).stores;
 
-    equal( Object.keys( dm ).length, 3, "3 Valves created" );
-    equal( Object.keys( dm )[ 0 ], "createTest21", "Valve Name createTest21" );
-    equal( Object.keys( dm )[ 1 ], "createTest22", "Valve Name createTest22" );
-    equal( Object.keys( dm )[ 2 ], "createTest23", "Valve Name createTest23" );
-    equal( dm.createTest21.type, "memory", "Default valve type (memory)" );
-    equal( dm.createTest22.type, "memory", "Specified valve type (memory)" );
-    equal( dm.createTest23.type, "memory", "Default valve type (memory)" );
+    equal( Object.keys( dm ).length, 3, "3 Stores created" );
+    equal( Object.keys( dm )[ 0 ], "createTest21", "Store Name createTest21" );
+    equal( Object.keys( dm )[ 1 ], "createTest22", "Store Name createTest22" );
+    equal( Object.keys( dm )[ 2 ], "createTest23", "Store Name createTest23" );
+    equal( dm.createTest21.type, "memory", "Default store type (memory)" );
+    equal( dm.createTest22.type, "memory", "Specified store type (memory)" );
+    equal( dm.createTest23.type, "memory", "Default store type (memory)" );
 });
 
 test( "create - object", function() {
@@ -46,13 +46,13 @@ test( "create - object", function() {
             name: "createTest32",
             type: "memory"
         }
-    ]).valves;
+    ]).stores;
 
-    equal( Object.keys( dm ).length, 2, "2 Valves created" );
-    equal( Object.keys( dm )[ 0 ], "createTest31", "Valve Name createTest31" );
-    equal( Object.keys( dm )[ 1 ], "createTest32", "Valve Name createTest32" );
-    equal( dm.createTest31.type, "memory", "Default valve type (memory)" );
-    equal( dm.createTest32.type, "memory", "Specified valve type (memory)" );
+    equal( Object.keys( dm ).length, 2, "2 Stores created" );
+    equal( Object.keys( dm )[ 0 ], "createTest31", "Store Name createTest31" );
+    equal( Object.keys( dm )[ 1 ], "createTest32", "Store Name createTest32" );
+    equal( dm.createTest31.type, "memory", "Default store type (memory)" );
+    equal( dm.createTest32.type, "memory", "Specified store type (memory)" );
 });
 
 test( "add and remove - string ", function() {
@@ -62,15 +62,15 @@ test( "add and remove - string ", function() {
     dm.add( "addTest1" ),
     dm.add( "addTest2" );
 
-    equal( Object.keys( dm.valves ).length, 2, "2 Valves added" );
-    equal( Object.keys( dm.valves )[ 0 ], "addTest1", "Valve Name addTest1" );
-    equal( Object.keys( dm.valves )[ 1 ], "addTest2", "Valve Name addTest2" );
-    equal( dm.valves.addTest1.type, "memory", "Default valve type (memory)" );
-    equal( dm.valves.addTest2.type, "memory", "Default valve type (memory)" );
+    equal( Object.keys( dm.stores ).length, 2, "2 Stores added" );
+    equal( Object.keys( dm.stores )[ 0 ], "addTest1", "Store Name addTest1" );
+    equal( Object.keys( dm.stores )[ 1 ], "addTest2", "Store Name addTest2" );
+    equal( dm.stores.addTest1.type, "memory", "Default store type (memory)" );
+    equal( dm.stores.addTest2.type, "memory", "Default store type (memory)" );
 
     dm.remove( "addTest1" );
-    equal( Object.keys( dm.valves ).length, 1, "1 Valves removed" );
-    equal( dm.valves.addTest1, undefined, "Valve Name addTest1 no longer exists" );
+    equal( Object.keys( dm.stores ).length, 1, "1 Stores removed" );
+    equal( dm.stores.addTest1, undefined, "Store Name addTest1 no longer exists" );
 
 
 });
@@ -87,18 +87,18 @@ test( "add and remove - array ", function() {
         "addTest5"
     ]);
 
-    equal( Object.keys( dm.valves ).length, 3, "3 Valves added" );
-    equal( Object.keys( dm.valves )[ 0 ], "addTest3", "Valve Name addTest3" );
-    equal( Object.keys( dm.valves )[ 1 ], "addTest4", "Valve Name addTest4" );
-    equal( Object.keys( dm.valves )[ 2 ], "addTest5", "Valve Name addTest5" );
-    equal( dm.valves.addTest3.type, "memory", "Default valve type (memory)" );
-    equal( dm.valves.addTest4.type, "memory", "Default valve type (memory)" );
-    equal( dm.valves.addTest5.type, "memory", "Default valve type (memory)" );
+    equal( Object.keys( dm.stores ).length, 3, "3 Stores added" );
+    equal( Object.keys( dm.stores )[ 0 ], "addTest3", "Store Name addTest3" );
+    equal( Object.keys( dm.stores )[ 1 ], "addTest4", "Store Name addTest4" );
+    equal( Object.keys( dm.stores )[ 2 ], "addTest5", "Store Name addTest5" );
+    equal( dm.stores.addTest3.type, "memory", "Default store type (memory)" );
+    equal( dm.stores.addTest4.type, "memory", "Default store type (memory)" );
+    equal( dm.stores.addTest5.type, "memory", "Default store type (memory)" );
 
     dm.remove( ["addTest5", "addTest4"] );
-    equal( Object.keys( dm.valves ).length, 1, "2 Valves removed" );
-    equal( dm.valves.addTest4, undefined, "Valve Name addTest4 no longer exists" );
-    equal( dm.valves.addTest5, undefined, "Valve Name addTest5 no longer exists" );
+    equal( Object.keys( dm.stores ).length, 1, "2 Stores removed" );
+    equal( dm.stores.addTest4, undefined, "Store Name addTest4 no longer exists" );
+    equal( dm.stores.addTest5, undefined, "Store Name addTest5 no longer exists" );
 
 
 });
@@ -116,32 +116,32 @@ test( "add and remove - object ", function() {
         }
     ]);
 
-    equal( Object.keys( dm.valves ).length, 2, "2 Valves added" );
-    equal( Object.keys( dm.valves )[ 0 ], "addTest6", "Valve Name addTest6" );
-    equal( Object.keys( dm.valves )[ 1 ], "addTest7", "Valve Name addTest7" );
-    equal( dm.valves.addTest6.type, "memory", "Default valve type (memory)" );
-    equal( dm.valves.addTest7.type, "memory", "Default valve type (memory)" );
+    equal( Object.keys( dm.stores ).length, 2, "2 Stores added" );
+    equal( Object.keys( dm.stores )[ 0 ], "addTest6", "Store Name addTest6" );
+    equal( Object.keys( dm.stores )[ 1 ], "addTest7", "Store Name addTest7" );
+    equal( dm.stores.addTest6.type, "memory", "Default store type (memory)" );
+    equal( dm.stores.addTest7.type, "memory", "Default store type (memory)" );
 
     dm.remove( { name: "addTest6" } );
-    equal( Object.keys( dm.valves ).length, 1, "1 Valves removed" );
-    equal( dm.valves.addTest6, undefined, "Valve Name addTest6 no longer exists" );
+    equal( Object.keys( dm.stores ).length, 1, "1 Stores removed" );
+    equal( dm.stores.addTest6, undefined, "Store Name addTest6 no longer exists" );
 
     dm.remove( [ { name: "addTest7" } ] );
-    equal( Object.keys( dm.valves ).length, 0, "1 Valves removed" );
-    equal( dm.valves.addTest7, undefined, "Valve Name addTest7 no longer exists" );
+    equal( Object.keys( dm.stores ).length, 0, "1 Stores removed" );
+    equal( dm.stores.addTest7, undefined, "Store Name addTest7 no longer exists" );
 
 
 
 });
 
 // Create a default (memory) dataManager to store data for some tests
-var userValve = aerogear.dataManager( "users" ).valves.users;
+var userStore = aerogear.dataManager( "users" ).stores.users;
 
 // Initialize the data set
 test( "save - initialize", function() {
     expect( 1 );
 
-    userValve.save([
+    userStore.save([
         {
             id: 12345,
             fname: "John",
@@ -180,34 +180,34 @@ test( "save - initialize", function() {
         }
     ]);
 
-    equal( userValve.data.length, 6, "Initial data added to valve" );
+    equal( userStore.data.length, 6, "Initial data added to store" );
 });
 
 // Read data
 test( "read", function() {
     expect( 2 );
 
-    equal( userValve.read().length, 6, "Read all data" );
-    equal( userValve.read( 12345 ).length, 1, "Read single item by id" );
+    equal( userStore.read().length, 6, "Read all data" );
+    equal( userStore.read( 12345 ).length, 1, "Read single item by id" );
 });
 
 // Save data
 test( "save single", function() {
     expect( 2 );
 
-    userValve.save({
+    userStore.save({
         id: 12351,
         fname: "New",
         lname: "Person",
         dept: "New"
     });
-    equal( userValve.read().length, 7, "Read all data including new item" );
-    equal( userValve.read( 12351 ).length, 1, "Read new item by id" );
+    equal( userStore.read().length, 7, "Read all data including new item" );
+    equal( userStore.read( 12351 ).length, 1, "Read new item by id" );
 });
 test( "save multiple", function() {
     expect( 2 );
 
-    userValve.save([
+    userStore.save([
         {
             id: 12352,
             fname: "New",
@@ -221,25 +221,25 @@ test( "save multiple", function() {
             dept: "New"
         }
     ]);
-    equal( userValve.read().length, 9, "Read all data including new items" );
-    equal( userValve.read( 12353 ).length, 1, "Read new item by id" );
+    equal( userStore.read().length, 9, "Read all data including new items" );
+    equal( userStore.read( 12353 ).length, 1, "Read new item by id" );
 });
 test( "update single", function() {
     expect( 2 );
 
-    userValve.save({
+    userStore.save({
         id: 12351,
         fname: "Updated",
         lname: "Person",
         dept: "New"
     });
-    equal( userValve.read().length, 9, "Data length unchanged" );
-    equal( userValve.read( 12351 )[ 0 ].fname, "Updated", "Check item is updated" );
+    equal( userStore.read().length, 9, "Data length unchanged" );
+    equal( userStore.read( 12351 )[ 0 ].fname, "Updated", "Check item is updated" );
 });
 test( "update multiple", function() {
     expect( 2 );
 
-    userValve.save([
+    userStore.save([
         {
             id: 12352,
             fname: "Updated",
@@ -253,13 +253,13 @@ test( "update multiple", function() {
             dept: "New"
         }
     ]);
-    equal( userValve.read().length, 9, "Data length unchanged" );
-    equal( userValve.read( 12353 )[ 0 ].fname, "Updated", "Check item is updated" );
+    equal( userStore.read().length, 9, "Data length unchanged" );
+    equal( userStore.read( 12353 )[ 0 ].fname, "Updated", "Check item is updated" );
 });
 test( "update and add", function() {
     expect( 3 );
 
-    userValve.save([
+    userStore.save([
         {
             id: 12352,
             fname: "UpdatedAgain",
@@ -273,36 +273,36 @@ test( "update and add", function() {
             dept: "New"
         }
     ]);
-    equal( userValve.read().length, 10, "One new item added" );
-    equal( userValve.read( 12352 )[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
-    equal( userValve.read( 12354 ).length, 1, "Read new item by id" );
+    equal( userStore.read().length, 10, "One new item added" );
+    equal( userStore.read( 12352 )[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
+    equal( userStore.read( 12354 ).length, 1, "Read new item by id" );
 });
 
 // Remove data
 test( "remove single", function() {
     expect( 2 );
 
-    userValve.remove( 12351 );
-    equal( userValve.read().length, 9, "Read all data without removed item" );
-    equal( userValve.read( 12351 ).length, 0, "Removed item doesn't exist" );
+    userStore.remove( 12351 );
+    equal( userStore.read().length, 9, "Read all data without removed item" );
+    equal( userStore.read( 12351 ).length, 0, "Removed item doesn't exist" );
 });
 test( "remove multiple - different formats", function() {
     expect( 3 );
 
-    userValve.remove([
+    userStore.remove([
         12353,
-        userValve.read( 12345 )[ 0 ]
+        userStore.read( 12345 )[ 0 ]
     ]);
-    equal( userValve.read().length, 7, "Read all data without removed items" );
-    equal( userValve.read( 12353 ).length, 0, "Removed item doesn't exist" );
-    equal( userValve.read( 12345 ).length, 0, "Removed item doesn't exist" );
+    equal( userStore.read().length, 7, "Read all data without removed items" );
+    equal( userStore.read( 12353 ).length, 0, "Removed item doesn't exist" );
+    equal( userStore.read( 12345 ).length, 0, "Removed item doesn't exist" );
 });
 
 // Reset Data
 test( "reset all data", function() {
     expect( 3 );
 
-    userValve.save([
+    userStore.save([
         {
             id: 12345,
             fname: "John",
@@ -340,77 +340,77 @@ test( "reset all data", function() {
             dept: "Marketing"
         }
     ], true);
-    equal( userValve.read().length, 6, "Read all data" );
-    equal( userValve.read( 12345 ).length, 1, "Removed item has returned" );
-    equal( userValve.read( 12351 ).length, 0, "Added item doesn't exist" );
+    equal( userStore.read().length, 6, "Read all data" );
+    equal( userStore.read( 12345 ).length, 1, "Removed item has returned" );
+    equal( userStore.read( 12351 ).length, 0, "Added item doesn't exist" );
 });
 
 // Filter Data
 test( "filter single field", function() {
     expect( 3 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: "John"
     });
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 2, "2 Items Matched Query" );
     ok( filtered[ 0 ].fname == "John" && filtered[ 1 ].fname == "John", "Correct items returned" );
 });
 test( "filter multiple fields, single value - AND", function() {
     expect( 3 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: "John",
         dept: "Marketing"
     });
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched Query" );
     ok( filtered[ 0 ].fname == "John" && filtered[ 0 ].dept == "Marketing", "Correct item returned" );
 });
 test( "filter multiple fields, single value - OR", function() {
     expect( 3 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: "John",
         dept: "Marketing"
     }, true );
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 3, "3 Items Matched Query" );
     ok( filtered[ 0 ].fname == "John" && filtered[ 1 ].fname == "John" && filtered[ 1 ].dept == "Marketing" && filtered[ 2 ].dept == "Marketing", "Correct items returned" );
 });
 test( "filter single field, multiple values - AND (probably never used, consider removing)", function() {
     expect( 2 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: {
             data: [ "John", "Jane" ]
         }
     });
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 0, "0 Items Matched Query" );
 });
 test( "filter single field, multiple values - OR", function() {
     expect( 3 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: {
             data: [ "John", "Jane" ],
             matchAny: true
         }
     });
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 4, "4 Items Matched Query" );
     ok( filtered[ 0 ].fname == "John" && filtered[ 1 ].fname == "Jane" && filtered[ 2 ].fname == "John" && filtered[ 3 ].fname == "Jane", "Correct items returned" );
 });
 test( "filter multiple fields - AND, multiple values - OR", function() {
     expect( 3 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: {
             data: [ "John", "Jane" ],
             matchAny: true
@@ -418,14 +418,14 @@ test( "filter multiple fields - AND, multiple values - OR", function() {
         dept: "Accounting"
     });
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 2, "2 Items Matched Query" );
     ok( filtered[ 0 ].fname == "John" && filtered[ 0 ].dept == "Accounting" && filtered[ 1 ].fname == "Jane" && filtered[ 1 ].dept == "Accounting", "Correct items returned" );
 });
 test( "filter multiple fields - OR, multiple values - OR", function() {
     expect( 3 );
 
-    var filtered = userValve.filter({
+    var filtered = userStore.filter({
         fname: {
             data: [ "John", "Jane" ],
             matchAny: true
@@ -436,7 +436,7 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
         }
     }, true );
 
-    equal( userValve.read().length, 6, "Original Data Unchanged" );
+    equal( userStore.read().length, 6, "Original Data Unchanged" );
     equal( filtered.length, 5, "5 Items Matched Query" );
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });

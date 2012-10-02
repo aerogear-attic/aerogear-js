@@ -14,31 +14,31 @@
         add: function ( config ) {
             var i,
                 current,
-                collection = this._getCollection();
+                collection = this[ this.collectionName ] || {};
 
             if ( !config ) {
                 return this;
             } else if ( typeof config === "string" ) {
                 // config is a string so use default adapter type
-                collection[ config ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( config );
+                collection[ config ] = aerogear[ this.lib ].adapters[ this.type ]( config );
             } else if ( aerogear.isArray( config ) ) {
                 // config is an array so loop through each item in the array
                 for ( i = 0; i < config.length; i++ ) {
                     current = config[ i ];
 
                     if ( typeof current === "string" ) {
-                        collection[ current ] = aerogear[ this.lib ].adapters[ this.defaultAdapter ]( current );
+                        collection[ current ] = aerogear[ this.lib ].adapters[ this.type ]( current );
                     } else {
-                        collection[ current.name ] = aerogear[ this.lib ].adapters[ current.type || this.defaultAdapter ]( current.name, current.settings || {} );
+                        collection[ current.name ] = aerogear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings || {} );
                     }
                 }
             } else {
                 // config is an object so use that signature
-                collection[ config.name ] = aerogear[ this.lib ].adapters[ config.type || this.defaultAdapter ]( config.name, config.settings || {} );
+                collection[ config.name ] = aerogear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings || {} );
             }
 
             // reset the collection instance
-            this._setCollection( collection );
+            this[ this.collectionName ] = collection;
 
             return this;
         },
@@ -51,7 +51,7 @@
         remove: function( config ) {
             var i,
                 current,
-                collection = this._getCollection();
+                collection = this[ this.collectionName ] || {};
 
             if ( typeof config === "string" ) {
                 // config is a string so delete that item by name
@@ -73,7 +73,7 @@
             }
 
             // reset the collection instance
-            this._setCollection( collection );
+            this[ this.collectionName ] = collection;
 
             return this;
         }

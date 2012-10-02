@@ -34,7 +34,7 @@
              *  - **error** (Function), a callback to be called when the request to the server results in an error
              *  - **statusCode** (Object), a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the [jQuery.ajax page](http://api.jquery.com/jQuery.ajax/).
              *  - **success** (Function), a callback to be called when the result of the request to the server is successful
-             *  - **valves** - Mixed, A single valve object or array of valves to be initialized/reset when a server read is successful
+             *  - **stores** - Mixed, A single store object or array of stores to be initialized/reset when a server read is successful
              *
              * Returns a jqXHR which implements the Promise interface. See the [Defered Object](http://api.jquery.com/category/deferred-object/) reference on the jQuery site for more information.
              *
@@ -58,12 +58,12 @@
             read: function( options ) {
                 options = options || {};
                 var success = function( data ) {
-                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                    var stores = options.stores ? aerogear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                         item;
 
-                    if ( valves.length ) {
-                        for ( item in valves ) {
-                            valves[ item ].save( data, true );
+                    if ( stores.length ) {
+                        for ( item in stores ) {
+                            stores[ item ].save( data, true );
                         }
                     }
 
@@ -72,13 +72,13 @@
                     }
                 },
                 error = function( type, errorMessage ) {
-                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                    var stores = options.stores ? aerogear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                         item;
 
-                    if ( type === "auth" && valves.length ) {
+                    if ( type === "auth" && stores.length ) {
                         // If auth error, clear existing data for security
-                        for ( item in valves ) {
-                            valves[ item ].remove();
+                        for ( item in stores ) {
+                            stores[ item ].remove();
                         }
                     }
 
@@ -105,7 +105,7 @@
              *  - **error** (Function), a callback to be called when the request to the server results in an error
              *  - **statusCode** (Object), a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the [jQuery.ajax page](http://api.jquery.com/jQuery.ajax/).
              *  - **success** (Function), a callback to be called when the result of the request to the server is successful
-             *  - **valves** - Mixed, A single valve object or array of valves to be updated when a server update is successful
+             *  - **stores** - Mixed, A single store object or array of stores to be updated when a server update is successful
              *
              * Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
              *
@@ -156,12 +156,12 @@
                 }
 
                 var success = function( data ) {
-                    var valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ],
+                    var stores = aerogear.isArray( options.stores ) ? options.stores : [ options.stores ],
                         item;
 
-                    if ( options.valves ) {
-                        for ( item in valves ) {
-                            valves[ item ].save( data );
+                    if ( options.stores ) {
+                        for ( item in stores ) {
+                            stores[ item ].save( data );
                         }
                     }
 
@@ -170,13 +170,13 @@
                     }
                 },
                 error = function( type, errorMessage ) {
-                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                    var stores = options.stores ? aerogear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                         item;
 
-                    if ( type === "auth" && valves.length ) {
+                    if ( type === "auth" && stores.length ) {
                         // If auth error, clear existing data for security
-                        for ( item in valves ) {
-                            valves[ item ].remove();
+                        for ( item in stores ) {
+                            stores[ item ].remove();
                         }
                     }
 
@@ -207,7 +207,7 @@
              *  - **error** (Function), a callback to be called when the request to the server results in an error
              *  - **statusCode** (Object), a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the [jQuery.ajax page](http://api.jquery.com/jQuery.ajax/).
              *  - **success** (Function), a callback to be called when the result of the request to the server is successful
-             *  - **valves** - Mixed, A single valve object or array of valves to be updated when a server update is successful
+             *  - **stores** - Mixed, A single store object or array of stores to be updated when a server update is successful
              *
              * Remove data asynchronously from the server. Passing nothing will inform the server to remove all data at this pipe's endpoint.
              *
@@ -262,13 +262,13 @@
                 url = ajaxSettings.url + delPath;
 
                 var success = function( data ) {
-                    var valves,
+                    var stores,
                         item;
 
-                    if ( options.valves ) {
-                        valves = aerogear.isArray( options.valves ) ? options.valves : [ options.valves ];
-                        for ( item in valves ) {
-                            valves[ item ].remove( delId );
+                    if ( options.stores ) {
+                        stores = aerogear.isArray( options.stores ) ? options.stores : [ options.stores ];
+                        for ( item in stores ) {
+                            stores[ item ].remove( delId );
                         }
                     }
 
@@ -277,13 +277,13 @@
                     }
                 },
                 error = function( type, errorMessage ) {
-                    var valves = options.valves ? aerogear.isArray( options.valves ) ? options.valves : [ options.valves ] : [],
+                    var stores = options.stores ? aerogear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                         item;
 
-                    if ( type === "auth" && valves.length ) {
+                    if ( type === "auth" && stores.length ) {
                         // If auth error, clear existing data for security
-                        for ( item in valves ) {
-                            valves[ item ].remove();
+                        for ( item in stores ) {
+                            stores[ item ].remove();
                         }
                     }
 
