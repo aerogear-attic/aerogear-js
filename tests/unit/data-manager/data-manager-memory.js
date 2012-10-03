@@ -442,12 +442,12 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
 });
 
 //create a default(memory) dataManager to store data for some tests
-var tasksValve = aerogear.dataManager( "tasks" ).valves.tasks;
+var tasksStore = aerogear.dataManager( "tasks" ).stores.tasks;
 
 test( "reset all data", function() {
     expect( 1 );
 
-    tasksValve.save([
+    tasksStore.save([
        {
             id: 12345,
             date: "2012-07-30",
@@ -474,76 +474,76 @@ test( "reset all data", function() {
         }
     ], true );
 
-    equal( tasksValve.read().length, 3, "3 Items Added" );
+    equal( tasksStore.read().length, 3, "3 Items Added" );
 });
 
 test( "filter single field , Array in Data, AND", function() {
     expect( 2 );
 
-    var filtered = tasksValve.filter( { tags: 111 } );
+    var filtered = tasksStore.filter( { tags: 111 } );
 
-    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
 test( "filter single field , Array in Data, OR", function() {
     expect( 2 );
 
-    var filtered = tasksValve.filter( { tags: 111 }, true );
+    var filtered = tasksStore.filter( { tags: 111 }, true );
 
-    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 2, "2 Items Matched" );
 });
 
 test( "filter multiple fields , Array in Data, AND ", function() {
     expect( 2 );
 
-    var filtered = tasksValve.filter({
+    var filtered = tasksStore.filter({
         tags: 111,
         project: 11
     }, false );
 
-    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
 test( "filter multiple fields , Array in Data, OR ", function() {
     expect( 2 );
 
-    var filtered = tasksValve.filter({
+    var filtered = tasksStore.filter({
         tags: 111,
         project: 11
     }, true );
 
-    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 2, "2 Item Matched" );
 });
 
 test( "filter single field Multiple Values, Array in Data, AND", function() {
     expect(2);
 
-    var filtered = tasksValve.filter({
+    var filtered = tasksStore.filter({
         tags: {
             data: [ 111, 222 ],
             matchAny: false
         }
     });
 
-    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
 test( "filter single field Multiple Values, Array in Data, OR", function() {
     expect(2);
 
-    var filtered = tasksValve.filter({
+    var filtered = tasksStore.filter({
         tags: {
             data: [ 111, 222 ],
             matchAny: true
         }
     });
 
-    equal( tasksValve.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 3, "1 Item Matched" );
 });
 
