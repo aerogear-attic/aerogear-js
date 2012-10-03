@@ -448,7 +448,15 @@ test( "reset all data", function() {
     expect( 1 );
 
     tasksStore.save([
-       {
+        {
+            id: 123,
+            date: "2012-10-03",
+            title: "Task 0-1",
+            description: "Task 0-1 description Text",
+            project: 99,
+            tags: [ ]
+        },
+        {
             id: 12345,
             date: "2012-07-30",
             title: "Task 1-1",
@@ -474,7 +482,7 @@ test( "reset all data", function() {
         }
     ], true );
 
-    equal( tasksStore.read().length, 3, "3 Items Added" );
+    equal( tasksStore.read().length, 4, "4 Items Added" );
 });
 
 test( "filter single field , Array in Data, AND", function() {
@@ -482,7 +490,7 @@ test( "filter single field , Array in Data, AND", function() {
 
     var filtered = tasksStore.filter( { tags: 111 } );
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
@@ -491,7 +499,7 @@ test( "filter single field , Array in Data, OR", function() {
 
     var filtered = tasksStore.filter( { tags: 111 }, true );
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
     equal( filtered.length, 2, "2 Items Matched" );
 });
 
@@ -503,7 +511,7 @@ test( "filter multiple fields , Array in Data, AND ", function() {
         project: 11
     }, false );
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
@@ -515,7 +523,7 @@ test( "filter multiple fields , Array in Data, OR ", function() {
         project: 11
     }, true );
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
     equal( filtered.length, 2, "2 Item Matched" );
 });
 
@@ -529,7 +537,7 @@ test( "filter single field Multiple Values, Array in Data, AND", function() {
         }
     });
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
@@ -543,8 +551,8 @@ test( "filter single field Multiple Values, Array in Data, OR", function() {
         }
     });
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
-    equal( filtered.length, 3, "1 Item Matched" );
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 3, "3 Items Matched" );
 });
 
 

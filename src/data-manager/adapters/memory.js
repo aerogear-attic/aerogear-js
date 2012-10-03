@@ -121,22 +121,26 @@
 
                             for ( j = 0; j < filterObj.data.length; j++ ) {
                                 if( aerogear.isArray( value[ keys[ i ] ] ) ) {
-                                    if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ) {
-                                        paramResult = true;
-                                        break;
-                                    } else {
-                                        for( k = 0; k < value[ keys[ i ] ].length; k++ ) {
-                                            if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ][ k ] ) {
-                                                // At least one value must match and this one does so return true
-                                                paramResult = true;
-                                                break;
-                                            }
-                                            if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ][ k ] ) {
-                                                // All must match but this one doesn't so return false
-                                                paramResult = false;
-                                                break;
+                                    if(value[ keys [ i ] ].length ) {
+                                        if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ) {
+                                            paramResult = true;
+                                            break;
+                                        } else {
+                                            for( k = 0; k < value[ keys[ i ] ].length; k++ ) {
+                                                if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ][ k ] ) {
+                                                    // At least one value must match and this one does so return true
+                                                    paramResult = true;
+                                                    break;
+                                                }
+                                                if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ][ k ] ) {
+                                                    // All must match but this one doesn't so return false
+                                                    paramResult = false;
+                                                    break;
+                                                }
                                             }
                                         }
+                                    } else {
+                                        paramResult = false;
                                     }
                                 } else {
                                     if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ] ) {
@@ -153,22 +157,25 @@
                             }
                         } else {
                             // Filter on parameter value
-
                             if( aerogear.isArray( value[ keys[ i ] ] ) ) {
                                 paramResult = matchAny ? false: true;
-                                for(j = 0; j < value[ keys[ i ] ].length; j++ ) {
-                                    if( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ]  ) {
-                                        //at least one must match and this one does so return true
-                                        paramResult = true;
-                                        break;
-                                    }
-                                    if( !matchAny && filterParameters[ keys[ i ] ] !== value[ keys[ i ] ][ j ] ) {
-                                        //All must match but this one doesn't so return false
-                                        paramResult = false;
-                                        break;
-                                    }
-                                }
 
+                                if(value[ keys[ i ] ].length ) {
+                                    for(j = 0; j < value[ keys[ i ] ].length; j++ ) {
+                                        if( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ]  ) {
+                                            //at least one must match and this one does so return true
+                                            paramResult = true;
+                                            break;
+                                        }
+                                        if( !matchAny && filterParameters[ keys[ i ] ] !== value[ keys[ i ] ][ j ] ) {
+                                            //All must match but this one doesn't so return false
+                                            paramResult = false;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    paramResult = false;
+                                }
                             } else {
                                  paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ? true : false;
                             }
