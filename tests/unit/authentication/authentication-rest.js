@@ -14,8 +14,8 @@
 
         equal( Object.keys( auth1 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth1 )[ 0 ], "auth", "Module name auth" );
-        equal( auth1.auth.agAuth, true, "agAuth Setting True" );
-        equal( auth1.auth.type, "rest", "Default auth module type(rest)" );
+        equal( auth1.auth.isAuthenticated(), true, "agAuth Setting True" );
+        equal( auth1.auth.getType(), "rest", "Default auth module type(rest)" );
     });
     test( "Authentication Pipeline init", function() {
         expect( 4 );
@@ -39,7 +39,7 @@
         equal( Object.keys( auth2 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth2 )[ 0 ], "auth", "Module named auth" );
         equal( Object.keys( pipe ).length, 1, "1 Pipe Created" );
-        equal( pipe.pipe1.authenticator.auth.name, "auth", "Authenticator named auth added to pipe" );
+        equal( pipe.pipe1.authenticator.auth.getName(), "auth", "Authenticator named auth added to pipe" );
 
     });
 
@@ -70,9 +70,11 @@
         sessionStorage.removeItem( "ag-auth-auth" );
 
         securePipe.read({
-            error: function( data, message ) {
-                equal( message, "Error: Authentication Required", "Initial Page load Auth Failure" );
-                start();
+            statusCode: {
+                401: function( jqXHR, textStatus, errorThrown ) {
+                    equal( errorThrown, "UnAuthorized", "Initial Page load Auth Failure" );
+                    start();
+                }
             }
         });
     });
