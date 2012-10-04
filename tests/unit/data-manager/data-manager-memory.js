@@ -441,4 +441,120 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });
 
+//create a default(memory) dataManager to store data for some tests
+var tasksStore = aerogear.dataManager( "tasks" ).stores.tasks;
+
+test( "reset all data", function() {
+    expect( 1 );
+
+    tasksStore.save([
+        {
+            id: 123,
+            date: "2012-10-03",
+            title: "Task 0-1",
+            description: "Task 0-1 description Text",
+            project: 99,
+            tags: [ ]
+        },
+        {
+            id: 12345,
+            date: "2012-07-30",
+            title: "Task 1-1",
+            description: "Task 1-1 description text",
+            project: 11,
+            tags: [ 111 ]
+        },
+        {
+            id: 67890,
+            date: "2012-07-30",
+            title: "Task 2-1",
+            description: "Task 2-1 description text",
+            project: 22,
+            tags: [ 111, 222 ]
+        },
+        {
+            id: 54321,
+            date: "2012-07-30",
+            title: "Task 3-1",
+            description: "Task 3-1 description text",
+            project: 33,
+            tags: [ 222 ]
+        }
+    ], true );
+
+    equal( tasksStore.read().length, 4, "4 Items Added" );
+});
+
+test( "filter single field , Array in Data, AND", function() {
+    expect( 2 );
+
+    var filtered = tasksStore.filter( { tags: 111 } );
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+test( "filter single field , Array in Data, OR", function() {
+    expect( 2 );
+
+    var filtered = tasksStore.filter( { tags: 111 }, true );
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Items Matched" );
+});
+
+test( "filter multiple fields , Array in Data, AND ", function() {
+    expect( 2 );
+
+    var filtered = tasksStore.filter({
+        tags: 111,
+        project: 11
+    }, false );
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+test( "filter multiple fields , Array in Data, OR ", function() {
+    expect( 2 );
+
+    var filtered = tasksStore.filter({
+        tags: 111,
+        project: 11
+    }, true );
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 2, "2 Item Matched" );
+});
+
+test( "filter single field Multiple Values, Array in Data, AND", function() {
+    expect(2);
+
+    var filtered = tasksStore.filter({
+        tags: {
+            data: [ 111, 222 ],
+            matchAny: false
+        }
+    });
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+test( "filter single field Multiple Values, Array in Data, OR", function() {
+    expect(2);
+
+    var filtered = tasksStore.filter({
+        tags: {
+            data: [ 111, 222 ],
+            matchAny: true
+        }
+    });
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 3, "3 Items Matched" );
+});
+
+
+
 })( jQuery );
