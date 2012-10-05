@@ -3,16 +3,15 @@
 module( "pipeline: rest" );
 
 test( "create - name string", function() {
-    expect( 3 );
+    expect( 2 );
 
     var pipe = aerogear.pipeline( "createTest1" ).pipes;
     equal( Object.keys( pipe ).length, 1, "Single Pipe created" );
     equal( Object.keys( pipe )[ 0 ], "createTest1", "Pipe Name createTest1" );
-    equal( pipe.createTest1.type, "rest", "Default pipe type (rest)" );
 });
 
 test( "create - name array", function() {
-    expect( 7 );
+    expect( 4 );
 
     var pipe = aerogear.pipeline([
         "createTest21",
@@ -31,13 +30,10 @@ test( "create - name array", function() {
     equal( Object.keys( pipe )[ 0 ], "createTest21", "Pipe Name createTest21" );
     equal( Object.keys( pipe )[ 1 ], "createTest22", "Pipe Name createTest22" );
     equal( Object.keys( pipe )[ 2 ], "createTest23", "Pipe Name createTest23" );
-    equal( pipe.createTest21.type, "rest", "Default pipe type (rest)" );
-    equal( pipe.createTest22.type, "rest", "Specified pipe type (rest)" );
-    equal( pipe.createTest23.type, "rest", "Default pipe type (rest)" );
 });
 
 test( "create - object", function() {
-    expect( 10 );
+    expect( 7 );
 
     var pipe = aerogear.pipeline([
         {
@@ -64,12 +60,9 @@ test( "create - object", function() {
     equal( Object.keys( pipe )[ 0 ], "createTest31", "Pipe Name createTest31" );
     equal( Object.keys( pipe )[ 1 ], "createTest32", "Pipe Name createTest32" );
     equal( Object.keys( pipe )[ 2 ], "createTest33", "Pipe Name createTest33" );
-    equal( pipe.createTest31.type, "rest", "Default pipe type (rest)" );
-    equal( pipe.createTest31.recordId, "id", "Default recordId (id)" );
-    equal( pipe.createTest32.type, "rest", "Default pipe type (rest)" );
-    equal( pipe.createTest32.recordId, "testId", "Specified recordId (testId)" );
-    equal( pipe.createTest33.type, "rest", "Specified pipe type (rest)" );
-    equal( pipe.createTest33.recordId, "testId", "Specified recordId (testId)" );
+    equal( pipe.createTest31.getRecordId(), "id", "Default recordId (id)" );
+    equal( pipe.createTest32.getRecordId(), "testId", "Specified recordId (testId)" );
+    equal( pipe.createTest33.getRecordId(), "testId", "Specified recordId (testId)" );
 });
 
 
@@ -93,14 +86,14 @@ var pipeline = aerogear.pipeline([
         {
             name: "tags",
             settings: {
-                endPoint: "customEndPoint"
+                endpoint: "customEndPoint"
             }
         },
         {
             name: "users",
             settings: {
                 baseURL: "baseURL/",
-                endPoint: "customEndPoint"
+                endpoint: "customEndPoint"
             }
         }
     ]),
@@ -115,12 +108,11 @@ var taskStore = aerogear.dataManager( "tasks" ).stores.tasks;
 
 // Add pipe test
 test( "add method", function() {
-    expect( 3 );
+    expect( 2 );
 
     var pipe = pipeline.add( "addTest" ).pipes;
     equal( Object.keys( pipe ).length, 6, "Single Pipe added" );
     equal( Object.keys( pipe )[ 5 ], "addTest", "Pipe Name addTest" );
-    equal( pipe.addTest.type, "rest", "Default pipe type (rest)" );
 });
 
 // Remove pipe test
@@ -157,9 +149,9 @@ asyncTest( "read method", function() {
     });
 
     $.when( read1, read2, read3 ).done( function( r1, r2, r3 ) {
-        equal( taskStore.data, null, "Store has no data" );
+        equal( taskStore.getData(), null, "Store has no data" );
         $.when( pipe.read( { stores: taskStore } ) ).done( function( r4 ) {
-            equal( taskStore.data[1].id, 67890, "Read all data with no params" );
+            equal( taskStore.getData()[1].id, 67890, "Read all data with no params" );
             start();
         });
     });
@@ -262,7 +254,7 @@ asyncTest( "base URL", function() {
     });
 });
 
-// Test custom endPoint
+// Test custom endpoint
 asyncTest( "end point", function() {
     expect( 1 );
 
@@ -274,7 +266,7 @@ asyncTest( "end point", function() {
     });
 });
 
-// Test custom base URL and endPoint
+// Test custom base URL and endpoint
 asyncTest( "base URL + end point", function() {
     expect( 1 );
 

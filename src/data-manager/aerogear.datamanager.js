@@ -16,6 +16,14 @@
      *
      * ##### Example
      *
+     *      // Create an empty dataManager
+     *      var dm = aerogear.dataManager();
+     *
+     *      // Create a single store using the default adapter
+     *      var dm2 = aerogear.dataManager( "tasks" );
+     *
+     *      // Create multiple stores using the default adapter
+     *      var dm3 = aerogear.dataManager( [ "tasks", "projects" ] );
      **/
     aerogear.dataManager = function( config ) {
         var dataManager = $.extend( {}, aerogear, {

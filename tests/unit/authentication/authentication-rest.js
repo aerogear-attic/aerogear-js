@@ -3,7 +3,7 @@
     module( "authentication: Token" );
 
     test( "Authentication init", function() {
-        expect( 4 );
+        expect( 3 );
 
         var auth1 = aerogear.auth({
             name: "auth",
@@ -14,8 +14,7 @@
 
         equal( Object.keys( auth1 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth1 )[ 0 ], "auth", "Module name auth" );
-        equal( auth1.auth.isAuthenticated(), true, "agAuth Setting True" );
-        equal( auth1.auth.getType(), "rest", "Default auth module type(rest)" );
+        equal( auth1.auth.isAuthenticated(), false, "Current Auth Status" );
     });
     test( "Authentication Pipeline init", function() {
         expect( 4 );
@@ -27,7 +26,7 @@
             }
         }).modules;
 
-        var pipe = aerogear.pipeline([
+        var pipeline = aerogear.pipeline([
             {
                 name: "pipe1",
                 settings: {
@@ -38,8 +37,8 @@
 
         equal( Object.keys( auth2 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth2 )[ 0 ], "auth", "Module named auth" );
-        equal( Object.keys( pipe ).length, 1, "1 Pipe Created" );
-        equal( pipe.pipe1.authenticator.auth.getName(), "auth", "Authenticator named auth added to pipe" );
+        equal( Object.keys( pipeline ).length, 1, "1 Pipe Created" );
+        equal( pipeline.pipe1.getAuthenticator().auth.getName(), "auth", "Authenticator named auth added to pipe" );
 
     });
 
@@ -70,11 +69,9 @@
         sessionStorage.removeItem( "ag-auth-auth" );
 
         securePipe.read({
-            statusCode: {
-                401: function( jqXHR, textStatus, errorThrown ) {
-                    equal( errorThrown, "UnAuthorized", "Initial Page load Auth Failure" );
-                    start();
-                }
+            error: function( data ) {
+                equal( data, "auth", "Initial Page load Auth Failure" );
+                start();
             }
         });
     });
@@ -89,7 +86,7 @@
             password: "1234"
         };
 
-        restAuth.register( values, {
+        restAuth.enroll( values, {
             success: function( data ) {
                 ok( true, "Successful Register" );
                 equal( sessionStorage.getItem( "ag-auth-auth" ), "123456789", "Auth-Token set correctly" );
@@ -116,7 +113,7 @@
             error: function( data ) {
                 equal( sessionStorage.getItem( "ag-auth-auth" ), null, "Auth Token doesn't exist" );
                 equal( data.status, 401, "UnAuthorized Code");
-                equal( data.responseText.message, "User authentication failed", "Login Failure Message" );
+                equal( data.responseJSON.message, "User authentication failed", "Login Failure Message" );
                 start();
             }
         });

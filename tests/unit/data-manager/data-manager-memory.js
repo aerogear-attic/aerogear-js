@@ -6,16 +6,15 @@ QUnit.config.reorder = false;
 module( "dataManager: memory" );
 
 test( "create - name string", function() {
-    expect( 3 );
+    expect( 2 );
 
     var dm = aerogear.dataManager( "createTest1" ).stores;
     equal( Object.keys( dm ).length, 1, "Single Store created" );
     equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
-    equal( dm.createTest1.type, "memory", "Default store type (memory)" );
 });
 
 test( "create - name array", function() {
-    expect( 7 );
+    expect( 4 );
 
     var dm = aerogear.dataManager([
         "createTest21",
@@ -30,13 +29,10 @@ test( "create - name array", function() {
     equal( Object.keys( dm )[ 0 ], "createTest21", "Store Name createTest21" );
     equal( Object.keys( dm )[ 1 ], "createTest22", "Store Name createTest22" );
     equal( Object.keys( dm )[ 2 ], "createTest23", "Store Name createTest23" );
-    equal( dm.createTest21.type, "memory", "Default store type (memory)" );
-    equal( dm.createTest22.type, "memory", "Specified store type (memory)" );
-    equal( dm.createTest23.type, "memory", "Default store type (memory)" );
 });
 
 test( "create - object", function() {
-    expect( 5 );
+    expect( 3 );
 
     var dm = aerogear.dataManager([
         {
@@ -51,12 +47,10 @@ test( "create - object", function() {
     equal( Object.keys( dm ).length, 2, "2 Stores created" );
     equal( Object.keys( dm )[ 0 ], "createTest31", "Store Name createTest31" );
     equal( Object.keys( dm )[ 1 ], "createTest32", "Store Name createTest32" );
-    equal( dm.createTest31.type, "memory", "Default store type (memory)" );
-    equal( dm.createTest32.type, "memory", "Specified store type (memory)" );
 });
 
 test( "add and remove - string ", function() {
-    expect( 7 );
+    expect( 5 );
 
     var dm = aerogear.dataManager();
     dm.add( "addTest1" ),
@@ -65,8 +59,6 @@ test( "add and remove - string ", function() {
     equal( Object.keys( dm.stores ).length, 2, "2 Stores added" );
     equal( Object.keys( dm.stores )[ 0 ], "addTest1", "Store Name addTest1" );
     equal( Object.keys( dm.stores )[ 1 ], "addTest2", "Store Name addTest2" );
-    equal( dm.stores.addTest1.type, "memory", "Default store type (memory)" );
-    equal( dm.stores.addTest2.type, "memory", "Default store type (memory)" );
 
     dm.remove( "addTest1" );
     equal( Object.keys( dm.stores ).length, 1, "1 Stores removed" );
@@ -76,7 +68,7 @@ test( "add and remove - string ", function() {
 });
 
 test( "add and remove - array ", function() {
-    expect( 10 );
+    expect( 7 );
 
     var dm = aerogear.dataManager();
     dm.add([
@@ -91,9 +83,6 @@ test( "add and remove - array ", function() {
     equal( Object.keys( dm.stores )[ 0 ], "addTest3", "Store Name addTest3" );
     equal( Object.keys( dm.stores )[ 1 ], "addTest4", "Store Name addTest4" );
     equal( Object.keys( dm.stores )[ 2 ], "addTest5", "Store Name addTest5" );
-    equal( dm.stores.addTest3.type, "memory", "Default store type (memory)" );
-    equal( dm.stores.addTest4.type, "memory", "Default store type (memory)" );
-    equal( dm.stores.addTest5.type, "memory", "Default store type (memory)" );
 
     dm.remove( ["addTest5", "addTest4"] );
     equal( Object.keys( dm.stores ).length, 1, "2 Stores removed" );
@@ -104,7 +93,7 @@ test( "add and remove - array ", function() {
 });
 
 test( "add and remove - object ", function() {
-    expect( 9 );
+    expect( 7 );
 
     var dm = aerogear.dataManager();
     dm.add([
@@ -119,8 +108,6 @@ test( "add and remove - object ", function() {
     equal( Object.keys( dm.stores ).length, 2, "2 Stores added" );
     equal( Object.keys( dm.stores )[ 0 ], "addTest6", "Store Name addTest6" );
     equal( Object.keys( dm.stores )[ 1 ], "addTest7", "Store Name addTest7" );
-    equal( dm.stores.addTest6.type, "memory", "Default store type (memory)" );
-    equal( dm.stores.addTest7.type, "memory", "Default store type (memory)" );
 
     dm.remove( { name: "addTest6" } );
     equal( Object.keys( dm.stores ).length, 1, "1 Stores removed" );
@@ -180,7 +167,7 @@ test( "save - initialize", function() {
         }
     ]);
 
-    equal( userStore.data.length, 6, "Initial data added to store" );
+    equal( userStore.getData().length, 6, "Initial data added to store" );
 });
 
 // Read data

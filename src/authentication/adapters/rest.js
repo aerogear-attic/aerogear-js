@@ -1,9 +1,14 @@
 (function( aerogear, $, undefined ) {
     /**
-     * aerogear.auth.adapters.rest
+     * new aerogear.auth.adapters.rest
      *
      * The REST adapter is the default type used when creating a new authentication module. It uses jQuery.ajax to communicate with the server.
      *
+     * `aerogear.auth.adapters.rest( moduleName[, settings] ) -> Object`
+     * - moduleName (String): the name used to reference this particular auth module
+     * - settings (Object): an object used to pass additional parameters to the module
+     *  - endpoints (Object): a set of REST endpoints that correspond to the different public methods including enroll, login and logout
+     *  - baseURL (String): defines the base URL to use for an endpoint
      **/
     aerogear.auth.adapters.rest = function( moduleName, settings ) {
         // Allow instantiation without using new
@@ -12,7 +17,9 @@
         }
 
         settings = settings || {};
-        var endPoints = settings.endPoints || {},
+
+        // Private Instance vars
+        var endpoints = settings.endpoints || {},
             type = "rest",
             name = moduleName,
             agAuth = !!settings.agAuth,
@@ -20,58 +27,120 @@
             tokenName = settings.tokenName || "Auth-Token";
 
         // Privileged methods
+        /**
+         * aerogear.auth.adapters.rest#isAuthenticated() -> Boolean
+         *
+         * Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
+         **/
         this.isAuthenticated = function() {
-            return agAuth;
+            if ( agAuth ) {
+                return !!sessionStorage.getItem( "ag-auth-" + name );
+            } else {
+                // For the default (rest) adapter, we assume if not using agAuth then session so auth will be handled server side
+                return true;
+            }
         };
 
-        this.addAuth = function( settings ) {
+        /**
+         * aerogear.auth.adapters.rest#addAuthIdentifier( settings ) -> Object
+         * - settings (Object): the settings object that will have the auth identifier added
+         *
+         * Adds the auth token to the headers and returns the modified version of the settings
+         **/
+        this.addAuthIdentifier = function( settings ) {
             settings.headers = {};
             settings.headers[ tokenName ] = sessionStorage.getItem( "ag-auth-" + name );
             return $.extend( {}, settings );
         };
 
+        /**
+         * aerogear.auth.adapters.rest#deauthorize()
+         *
+         * Removes the stored token effectively telling the client it must re-authenticate with the server
+         **/
         this.deauthorize = function() {
             sessionStorage.removeItem( "ag-auth-" + name );
         };
 
+        /**
+         * aerogear.auth.adapters.rest#getSettings() -> Object
+         *
+         * Returns the value of the private settings var
+         **/
         this.getSettings = function() {
             return settings;
         };
-        this.getEndPoints = function() {
-            return endPoints;
+
+        /**
+         * aerogear.auth.adapters.rest#getSettings() -> Object
+         *
+         * Returns the value of the private settings var
+         **/
+        this.getEndpoints = function() {
+            return endpoints;
         };
-        this.getType = function() {
-            return type;
-        };
+
+        /**
+         * aerogear.auth.adapters.rest#getName() -> String
+         *
+         * Returns the value of the private name var
+         **/
         this.getName = function() {
             return name;
         };
+
+        /**
+         * aerogear.auth.adapters.rest#getAGAuth() -> Boolean
+         *
+         * Returns the value of the private agAuth var which determines whether or not the AeroGear style authentication token should be used
+         **/
+        this.getAGAuth = function() {
+            return agAuth;
+        };
+
+        /**
+         * aerogear.auth.adapters.rest#getBaseURL() -> String
+         *
+         * Returns the value of the private baseURL var
+         **/
         this.getBaseURL = function() {
             return baseURL;
         };
+
+        /**
+         * aerogear.auth.adapters.rest#getTokenName() -> Object
+         *
+         * Returns the value of the private tokenName var
+         **/
         this.getTokenName = function() {
             return tokenName;
         };
     };
 
     //Public Methods
-
     /**
-     * aerogear.auth.adapters.rest#register( data[, options] ) -> Object
-     * - data (Object): User profile to register
-     * - options (Object): Options to pass to the register method.
+     * aerogear.auth.adapters.rest#enroll( data[, options] ) -> Object
+     * - data (Object): User profile to enroll
+     * - options (Object): Options to pass to the enroll method.
+     *  - baseURL (String): defines the base URL to use for an endpoint
+     *  - contentType (String): set the content type for the AJAX request (defaults to application/json when using agAuth)
+     *  - dataType (String): specify the data expected to be returned by the server (defaults to json when using agAuth)
+     *  - error (Function): callback to be executed if the AJAX request results in an error
+     *  - success (Function): callback to be executed if the AJAX request results in an error
      *
+     * Enroll a new user in the authentication system
      **/
-    aerogear.auth.adapters.rest.prototype.register = function( data, options ) {
+    aerogear.auth.adapters.rest.prototype.enroll = function( data, options ) {
         options = options || {};
 
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
             baseURL = this.getBaseURL(),
-            endPoints = this.getEndPoints(),
+            endpoints = this.getEndpoints(),
+            agAuth = this.getAGAuth(),
             success = function( data, textStatus, jqXHR ) {
-                sessionStorage.setItem( "ag-auth-" + name, that.isAuthenticated() ? jqXHR.getResponseHeader( tokenName ) : "true" );
+                sessionStorage.setItem( "ag-auth-" + name, that.getAGAuth() ? jqXHR.getResponseHeader( tokenName ) : "true" );
 
                 if ( options.success ) {
                     options.success.apply( this, arguments );
@@ -92,21 +161,29 @@
                 }
             },
             extraOptions = {
-                contentType: options.contentType,
-                dataType: options.dataType,
                 success: success,
                 error: error,
                 data: data
             },
             url = "";
 
+        if ( options.contentType ) {
+            extraOptions.contentType = options.contentType;
+        } else if ( agAuth ) {
+            extraOptions.contentType = "application/json";
+        }
+        if ( options.dataType ) {
+            extraOptions.dataType = options.dataType;
+        } else if ( agAuth ) {
+            extraOptions.dataType = "json";
+        }
         if ( options.baseURL ) {
             url = options.baseURL;
         } else if ( baseURL ) {
             url = baseURL;
         }
-        if ( endPoints.register ) {
-            url += endPoints.register;
+        if ( endpoints.enroll ) {
+            url += endpoints.enroll;
         } else {
             url += "auth/register";
         }
@@ -121,7 +198,13 @@
      * aerogear.auth.adapters.rest#login( data[, options] ) -> Object
      * - data (Object): A set of key value pairs representing the user's credentials
      * - options (Object): An object containing key/value pairs representing options
+     *  - baseURL (String): defines the base URL to use for an endpoint
+     *  - contentType (String): set the content type for the AJAX request (defaults to application/json when using agAuth)
+     *  - dataType (String): specify the data expected to be returned by the server (defaults to json when using agAuth)
+     *  - error (Function): callback to be executed if the AJAX request results in an error
+     *  - success (Function): callback to be executed if the AJAX request results in an error
      *
+     * Authenticate a user
      **/
     aerogear.auth.adapters.rest.prototype.login = function( data, options ) {
         options = options || {};
@@ -130,9 +213,10 @@
             name = this.getName(),
             tokenName = this.getTokenName(),
             baseURL = this.getBaseURL(),
-            endPoints = this.getEndPoints(),
+            endpoints = this.getEndpoints(),
+            agAuth = this.getAGAuth(),
             success = function( data, textStatus, jqXHR ) {
-                sessionStorage.setItem( "ag-auth-" + name, that.isAuthenticated() ? jqXHR.getResponseHeader( tokenName ) : "true" );
+                sessionStorage.setItem( "ag-auth-" + name, that.getAGAuth() ? jqXHR.getResponseHeader( tokenName ) : "true" );
 
                 if ( options.success ) {
                     options.success.apply( this, arguments );
@@ -153,21 +237,29 @@
                 }
             },
             extraOptions = {
-                contentType: options.contentType,
-                dataType: options.dataType,
                 success: success,
                 error: error,
                 data: data
             },
             url = "";
 
+        if ( options.contentType ) {
+            extraOptions.contentType = options.contentType;
+        } else if ( agAuth ) {
+            extraOptions.contentType = "application/json";
+        }
+        if ( options.dataType ) {
+            extraOptions.dataType = options.dataType;
+        } else if ( agAuth ) {
+            extraOptions.dataType = "json";
+        }
         if ( options.baseURL ) {
             url = options.baseURL;
         } else if ( baseURL ) {
             url = baseURL;
         }
-        if ( endPoints.login ) {
-            url += endPoints.login;
+        if ( endpoints.login ) {
+            url += endpoints.login;
         } else {
             url += "auth/login";
         }
@@ -178,6 +270,15 @@
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
     };
 
+    /**
+     * aerogear.auth.adapters.rest#logout( [options] ) -> Object
+     * - options (Object): An object containing key/value pairs representing options
+     *  - baseURL (String): defines the base URL to use for an endpoint
+     *  - error (Function): callback to be executed if the AJAX request results in an error
+     *  - success (Function): callback to be executed if the AJAX request results in an error
+     *
+     * End a user's authenticated session
+     **/
     aerogear.auth.adapters.rest.prototype.logout = function( options ) {
         options = options || {};
 
@@ -185,7 +286,7 @@
             name = this.getName(),
             tokenName = this.getTokenName(),
             baseURL = this.getBaseURL(),
-            endPoints = this.getEndPoints(),
+            endpoints = this.getEndpoints(),
             success = function( data, textStatus, jqXHR ) {
                 that.deauthorize();
 
@@ -218,8 +319,8 @@
         } else if ( baseURL ) {
             url = baseURL;
         }
-        if ( endPoints.logout ) {
-            url += endPoints.logout;
+        if ( endpoints.logout ) {
+            url += endpoints.logout;
         } else {
             url += "auth/logout";
         }

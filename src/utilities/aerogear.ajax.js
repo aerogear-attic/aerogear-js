@@ -41,8 +41,8 @@
 
             if ( aerogear.auth && !caller.isAuthenticated() ) {
                 this.reject( "auth", "Error: Authentication Required" );
-            } else if ( caller.addAuth ) {
-                $.ajax( caller.addAuth( ajaxSettings ) );
+            } else if ( caller.addAuthIdentifier ) {
+                $.ajax( caller.addAuthIdentifier( ajaxSettings ) );
             } else {
                 $.ajax( ajaxSettings );
             }
