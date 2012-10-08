@@ -1,69 +1,64 @@
-(function( aerogear, $, undefined ) {
+(function( AeroGear, $, undefined ) {
     /**
-     * aerogear.dataManager.adapters.memory
-     *
-     * The memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
-     *
-     * `aerogear.datamanager.adapters.memory( storeName [, settings] ) -> Object`
-     * - storeName (String): the name that will be used to reference this store
-     * - settings (Object) - an object used to pass additional parameters to the store
-     *  - recordId (String): the name of the field used to uniquely identify a "record" in the data
-     **/
-    aerogear.dataManager.adapters.memory = function( storeName, settings ) {
+        The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
+        @constructs AeroGear.DataManager.adapters.Memory
+        @param {String} storeName - the name used to reference this particular store
+        @param {Object} [settings={}] - the settings to be passed to the adapter
+        @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @returns {Object} The created store
+     */
+    AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
         // Allow instantiation without using new
-        if ( !( this instanceof aerogear.dataManager.adapters.memory ) ) {
-            return new aerogear.dataManager.adapters.memory( storeName, settings );
+        if ( !( this instanceof AeroGear.DataManager.adapters.Memory ) ) {
+            return new AeroGear.DataManager.adapters.Memory( storeName, settings );
         }
 
         settings = settings || {};
 
         // Private Instance vars
         var recordId = settings.recordId ? settings.recordId : "id",
-            type = "memory",
+            type = "Memory",
             data = null;
 
         // Privileged Methods
         /**
-         * aerogear.dataManager.adapters.memory#getRecordId() -> String
-         *
-         * Returns the value of the private recordId var
-         **/
+            Returns the value of the private recordId var
+            @augments Memory
+            @returns {String}
+         */
         this.getRecordId = function() {
             return recordId;
         };
 
         /**
-         * aerogear.dataManager.adapters.memory#getData() -> Object
-         *
-         * Returns the complete contents of the store's data
-         **/
+            Returns the value of the private data var
+            @augments Memory
+            @returns {Array}
+         */
         this.getData = function() {
             return data;
         };
 
         /**
-         * aerogear.dataManager.adapters.memory#setData()
-         *
-         * Resets the complete contents of the store's data
-         **/
+            Sets the value of the private data var
+            @augments Memory
+         */
         this.setData = function( newData ) {
             data = newData;
         };
 
         /**
-         * aerogear.dataManager.adapters.memory#addDataRecord()
-         *
-         * Adds a record to the store's data set
-         **/
+            Adds a record to the store's data set
+            @augments Memory
+         */
         this.addDataRecord = function( record ) {
             data.push( record );
         };
 
         /**
-         * aerogear.dataManager.adapters.memory#removeDataRecord()
-         *
-         * Removes a single record from the store's data set
-         **/
+            Removes a single record from the store's data set
+            @augments Memory
+         */
         this.removeDataRecord = function( record ) {
             data.splice( record, 1 );
         };
@@ -71,28 +66,26 @@
 
     // Public Methods
     /**
-     * aerogear.dataManager.adapters.memory#read( [id] ) -> Object
-     * - id (Mixed): Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
-     *
-     * Returns data from the store, optionally filtered by an id
-     **/
-    aerogear.dataManager.adapters.memory.prototype.read = function( id ) {
+        Read data from a store
+        @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
+        @returns {Array} Returns data from the store, optionally filtered by an id
+     */
+    AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
         var filter = {};
         filter[ this.getRecordId() ] = id;
         return id ? this.filter( filter ) : this.getData();
     };
 
     /**
-     * aerogear.dataManager.adapters.memory#save( data[, reset] ) -> Object
-     * - data (Mixed): An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
-     * - reset (Boolean): If true, this will empty the current data and set it to the data being saved
-     *
-     * Saves data to the store, optionally clearing and resetting the data
-     **/
-    aerogear.dataManager.adapters.memory.prototype.save = function( data, reset ) {
+        Saves data to the store, optionally clearing and resetting the data
+        @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
+        @param {Boolean} [reset] - If true, this will empty the current data and set it to the data being saved
+        @returns {Array} Returns the updated data from the store
+     */
+    AeroGear.DataManager.adapters.Memory.prototype.save = function( data, reset ) {
         var itemFound = false;
 
-        data = aerogear.isArray( data ) ? data : [ data ];
+        data = AeroGear.isArray( data ) ? data : [ data ];
 
         if ( reset ) {
             this.setData( data );
@@ -121,18 +114,17 @@
     };
 
     /**
-     * aerogear.dataManager.adapters.memory#remove( toRemove ) -> Object
-     * - toRemove (Mixed): A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
-     *
-     * Removes data from the store
-     **/
-    aerogear.dataManager.adapters.memory.prototype.remove = function( toRemove ) {
+        Removes data from the store
+        @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
+        @returns {Array} Returns the updated data from the store
+     */
+    AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
         if ( !toRemove ) {
             // empty data array and return
             this.setData( [] );
             return this.getData();
         } else {
-            toRemove = aerogear.isArray( toRemove ) ? toRemove : [ toRemove ];
+            toRemove = AeroGear.isArray( toRemove ) ? toRemove : [ toRemove ];
         }
         var delId,
             item;
@@ -158,13 +150,12 @@
     };
 
     /**
-     * aerogear.dataManager.adapters.memory#filter( filterParameters[, matchAny = false] ) -> Array[Object]
-     * - filterParameters (Object): An object containing key value pairs on which to filter the store's data. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of values to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
-     * - matchAny (Boolean): When true, an item is included in the output if any of the filter parameters is matched.
-     *
-     * Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
-     **/
-    aerogear.dataManager.adapters.memory.prototype.filter = function( filterParameters, matchAny ) {
+        Filter the current store's data
+        @param {Object} [filterParameters] - An object containing key value pairs on which to filter the store's data. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of values to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
+        @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
+        @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
+     */
+    AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
         var filtered,
             i, j, k;
 
@@ -185,7 +176,7 @@
                     paramResult = filterObj.matchAny ? false : true;
 
                     for ( j = 0; j < filterObj.data.length; j++ ) {
-                        if( aerogear.isArray( value[ keys[ i ] ] ) ) {
+                        if( AeroGear.isArray( value[ keys[ i ] ] ) ) {
                             if(value[ keys [ i ] ].length ) {
                                 if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ) {
                                     paramResult = true;
@@ -222,7 +213,7 @@
                     }
                 } else {
                     // Filter on parameter value
-                    if( aerogear.isArray( value[ keys[ i ] ] ) ) {
+                    if( AeroGear.isArray( value[ keys[ i ] ] ) ) {
                         paramResult = matchAny ? false: true;
 
                         if(value[ keys[ i ] ].length ) {
@@ -263,4 +254,4 @@
 
         return filtered;
     };
-})( aerogear, jQuery );
+})( AeroGear, jQuery );

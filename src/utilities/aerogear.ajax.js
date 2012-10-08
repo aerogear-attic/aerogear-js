@@ -1,12 +1,11 @@
-(function( aerogear, $, undefined ) {
+(function( AeroGear, $, undefined ) {
     /**
-     * aerogear.ajax( caller[, options] ) -> Object
-     * - caller (Object): the AeroGear object (pipe, datamanager, etc.) that is calling aerogear.ajax
-     * - options (Object): settings for jQuery.ajax
-     *
-     * Returns a promise similar to the promise returned by jQuery.ajax
-     **/
-    aerogear.ajax = function( caller, options ) {
+        Wrapper utility around jQuery.ajax to preform some custom actions
+        @method
+        @param {Object} caller - the AeroGear object (pipe, datamanager, etc.) that is calling AeroGear.ajax
+        @param {Object} options - settings for jQuery.ajax
+     */
+    AeroGear.ajax = function( caller, options ) {
         var deferred = $.Deferred( function() {
             var that = this,
                 settings = $.extend( {}, {
@@ -39,7 +38,7 @@
                 ajaxSettings.data = JSON.stringify( ajaxSettings.data );
             }
 
-            if ( aerogear.auth && !caller.isAuthenticated() ) {
+            if ( AeroGear.auth && !caller.isAuthenticated() ) {
                 this.reject( "auth", "Error: Authentication Required" );
             } else if ( caller.addAuthIdentifier ) {
                 $.ajax( caller.addAuthIdentifier( ajaxSettings ) );
@@ -56,4 +55,4 @@
 
         return promise;
     };
-})( aerogear, jQuery );
+})( AeroGear, jQuery );

@@ -8,7 +8,7 @@ module( "dataManager: memory" );
 test( "create - name string", function() {
     expect( 2 );
 
-    var dm = aerogear.dataManager( "createTest1" ).stores;
+    var dm = AeroGear.DataManager( "createTest1" ).stores;
     equal( Object.keys( dm ).length, 1, "Single Store created" );
     equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
 });
@@ -16,11 +16,11 @@ test( "create - name string", function() {
 test( "create - name array", function() {
     expect( 4 );
 
-    var dm = aerogear.dataManager([
+    var dm = AeroGear.DataManager([
         "createTest21",
         {
             name: "createTest22",
-            type: "memory"
+            type: "Memory"
         },
         "createTest23"
     ]).stores;
@@ -34,13 +34,13 @@ test( "create - name array", function() {
 test( "create - object", function() {
     expect( 3 );
 
-    var dm = aerogear.dataManager([
+    var dm = AeroGear.DataManager([
         {
             name: "createTest31"
         },
         {
             name: "createTest32",
-            type: "memory"
+            type: "Memory"
         }
     ]).stores;
 
@@ -52,7 +52,7 @@ test( "create - object", function() {
 test( "add and remove - string ", function() {
     expect( 5 );
 
-    var dm = aerogear.dataManager();
+    var dm = AeroGear.DataManager();
     dm.add( "addTest1" ),
     dm.add( "addTest2" );
 
@@ -70,7 +70,7 @@ test( "add and remove - string ", function() {
 test( "add and remove - array ", function() {
     expect( 7 );
 
-    var dm = aerogear.dataManager();
+    var dm = AeroGear.DataManager();
     dm.add([
         "addTest3",
         {
@@ -95,7 +95,7 @@ test( "add and remove - array ", function() {
 test( "add and remove - object ", function() {
     expect( 7 );
 
-    var dm = aerogear.dataManager();
+    var dm = AeroGear.DataManager();
     dm.add([
         {
             name: "addTest6"
@@ -122,7 +122,7 @@ test( "add and remove - object ", function() {
 });
 
 // Create a default (memory) dataManager to store data for some tests
-var userStore = aerogear.dataManager( "users" ).stores.users;
+var userStore = AeroGear.DataManager( "users" ).stores.users;
 
 // Initialize the data set
 test( "save - initialize", function() {
@@ -429,7 +429,7 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
 });
 
 //create a default(memory) dataManager to store data for some tests
-var tasksStore = aerogear.dataManager( "tasks" ).stores.tasks;
+var tasksStore = AeroGear.DataManager( "tasks" ).stores.tasks;
 
 test( "reset all data", function() {
     expect( 1 );

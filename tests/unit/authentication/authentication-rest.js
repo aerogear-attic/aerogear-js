@@ -5,7 +5,7 @@
     test( "Authentication init", function() {
         expect( 3 );
 
-        var auth1 = aerogear.auth({
+        var auth1 = AeroGear.Auth({
             name: "auth",
             settings: {
                 agAuth: true
@@ -19,14 +19,14 @@
     test( "Authentication Pipeline init", function() {
         expect( 4 );
 
-        var auth2 = aerogear.auth({
+        var auth2 = AeroGear.Auth({
             name: "auth",
             settings: {
                 agAuth: true
             }
         }).modules;
 
-        var pipeline = aerogear.pipeline([
+        var pipeline = AeroGear.Pipeline([
             {
                 name: "pipe1",
                 settings: {
@@ -43,7 +43,7 @@
     });
 
     //create an Authenticator and Pipeline to be used for other tests
-    var restAuth = aerogear.auth([
+    var restAuth = AeroGear.Auth([
         {
             name: "auth",
             settings: {
@@ -52,7 +52,7 @@
         }
     ]).modules.auth;
 
-    var securePipe = aerogear.pipeline([
+    var securePipe = AeroGear.Pipeline([
         {
             name: "secured",
             settings: {
@@ -70,7 +70,7 @@
 
         securePipe.read({
             error: function( data ) {
-                equal( data, "auth", "Initial Page load Auth Failure" );
+                equal( data.statusText, "UnAuthorized", "Initial Page load Auth Failure" );
                 start();
             }
         });

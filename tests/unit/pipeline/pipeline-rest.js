@@ -1,11 +1,11 @@
 (function( $ ) {
 
-module( "pipeline: rest" );
+module( "pipeline: Rest" );
 
 test( "create - name string", function() {
     expect( 2 );
 
-    var pipe = aerogear.pipeline( "createTest1" ).pipes;
+    var pipe = AeroGear.Pipeline( "createTest1" ).pipes;
     equal( Object.keys( pipe ).length, 1, "Single Pipe created" );
     equal( Object.keys( pipe )[ 0 ], "createTest1", "Pipe Name createTest1" );
 });
@@ -13,11 +13,11 @@ test( "create - name string", function() {
 test( "create - name array", function() {
     expect( 4 );
 
-    var pipe = aerogear.pipeline([
+    var pipe = AeroGear.Pipeline([
         "createTest21",
         {
             name: "createTest22",
-            type: "rest",
+            type: "Rest",
             recordId: "testId",
             settings: {
                 url: "testURL"
@@ -35,7 +35,7 @@ test( "create - name array", function() {
 test( "create - object", function() {
     expect( 7 );
 
-    var pipe = aerogear.pipeline([
+    var pipe = AeroGear.Pipeline([
         {
             name: "createTest31"
         },
@@ -48,7 +48,7 @@ test( "create - object", function() {
         },
         {
             name: "createTest33",
-            type: "rest",
+            type: "Rest",
             settings: {
                 recordId: "testId",
                 url: "testURL"
@@ -67,7 +67,7 @@ test( "create - object", function() {
 
 
 // Pipeline to be used for all remaining tests
-var pipeline = aerogear.pipeline([
+var pipeline = AeroGear.Pipeline([
         {
             name: "tasks"
         },
@@ -104,7 +104,7 @@ var pipeline = aerogear.pipeline([
     pipe5 = pipeline.pipes.users;
 
 // Create a default (memory) dataManager to store data for some tests
-var taskStore = aerogear.dataManager( "tasks" ).stores.tasks;
+var taskStore = AeroGear.DataManager( "tasks" ).stores.tasks;
 
 // Add pipe test
 test( "add method", function() {
