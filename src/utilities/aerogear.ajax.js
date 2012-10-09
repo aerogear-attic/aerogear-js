@@ -38,7 +38,7 @@
                 ajaxSettings.data = JSON.stringify( ajaxSettings.data );
             }
 
-            if ( AeroGear.auth && !caller.isAuthenticated() ) {
+            if ( AeroGear.Auth && !caller.isAuthenticated() ) {
                 this.reject( "auth", "Error: Authentication Required" );
             } else if ( caller.addAuthIdentifier ) {
                 $.ajax( caller.addAuthIdentifier( ajaxSettings ) );
