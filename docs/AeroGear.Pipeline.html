@@ -304,7 +304,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>aerogear.pipeline.js, line 21</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>aerogear.pipeline.js, line 22</li></ul></dd>
 	
     
     
@@ -350,7 +350,7 @@
         var pl = AeroGear.Pipeline();
 
         // Create a single pipe using the default adapter
-        var pl2 = Aerogear.Pipeline( "tasks" );
+        var pl2 = AeroGear.Pipeline( "tasks" );
 
         // Create multiple pipes using the default adapter
         var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );</code></pre>
@@ -361,6 +361,12 @@
     
     </div>
     
+    
+        <h3 class="subsection-title">Extends</h3>
+        
+        <ul>
+            <li>AeroGear.Core</li>
+        </ul>
     
     
     
@@ -408,7 +414,58 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>aerogear.pipeline.js, line 39</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>aerogear.pipeline.js, line 52</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="this.collectionName"><span class="type-signature">&lt;static> </span>this.collectionName<span class="type-signature"> :Object</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The name used to reference the collection of pipe instances created from the adapters
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-default">Default Value:</dt>
+	<dd class="tag-default"><ul class="dummy"><li>pipes</li></ul></dd>
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>aerogear.pipeline.js, line 40</li></ul></dd>
 	
     
     
@@ -425,6 +482,279 @@
         </dl>
     
     
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="add"><span class="type-signature"></span>add</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection.
+    </div>
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+            
+            <td class="type">
+            
+                        String
+                         | 
+                    
+                        Array
+                         | 
+                    
+                        Object
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">This can be a variety of types specifying how to create the object</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>aerogear.core.js, line 24</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The object containing the collection that was updated
+</div>
+
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+		<span class="param-type">Object</span> 
+		
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection.
+    </div>
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+            
+            <td class="type">
+            
+                        String
+                         | 
+                    
+                        String[]
+                         | 
+                    
+                        Object[]
+                         | 
+                    
+                        Object
+                        
+                    
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">This can be a variety of types specifying how to remove the object</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source"><ul class="dummy"><li>aerogear.core.js, line 61</li></ul></dd>
+	
+    
+    
+	
+	
+	
+	
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The object containing the collection that was updated
+</div>
+
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+		<span class="param-type">Object</span> 
+		
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        </dl>
     
     
     
@@ -446,7 +776,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Mon Oct 08 2012 20:55:40 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Tue Oct 09 2012 16:54:50 GMT-0500 (CDT)
 </footer>
 
 <script> sh_highlightDocument(); </script>

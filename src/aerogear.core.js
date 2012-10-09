@@ -6,6 +6,7 @@ var AeroGear = {};
 
 /**
     AeroGear.Core is a base for all of the library modules to extend. It is not to be instantiated and will throw an error when attempted
+    @class
     @private
  */
 AeroGear.Core = function() {
@@ -15,7 +16,7 @@ AeroGear.Core = function() {
     }
 
     /**
-        This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection. For specific examples look at those internal use cases.
+        This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection.
         @method
         @param {String|Array|Object} config - This can be a variety of types specifying how to create the object
         @returns {Object} The object containing the collection that was updated
@@ -52,7 +53,7 @@ AeroGear.Core = function() {
         return this;
     };
     /**
-        This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection. For specific examples look at those internal use cases.
+        This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection.
         @method
         @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object
         @returns {Object} The object containing the collection that was updated

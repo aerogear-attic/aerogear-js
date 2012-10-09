@@ -23,6 +23,7 @@
         // Privileged Methods
         /**
             Returns the value of the private recordId var
+            @private
             @augments Memory
             @returns {String}
          */
@@ -32,6 +33,7 @@
 
         /**
             Returns the value of the private data var
+            @private
             @augments Memory
             @returns {Array}
          */
@@ -41,6 +43,7 @@
 
         /**
             Sets the value of the private data var
+            @private
             @augments Memory
          */
         this.setData = function( newData ) {
@@ -49,6 +52,7 @@
 
         /**
             Adds a record to the store's data set
+            @private
             @augments Memory
          */
         this.addDataRecord = function( record ) {
@@ -57,6 +61,7 @@
 
         /**
             Removes a single record from the store's data set
+            @private
             @augments Memory
          */
         this.removeDataRecord = function( record ) {

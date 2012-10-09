@@ -31,6 +31,7 @@
         // Privileged Methods
         /**
             Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
+            @private
             @augments Rest
             @returns {Boolean}
          */
@@ -40,6 +41,7 @@
 
         /**
             Adds the auth token to the headers and returns the modified version of the settings
+            @private
             @augments Rest
             @param {Object} settings - the settings object that will have the auth identifier added
             @returns {Object} Settings extended with auth identifier
@@ -50,6 +52,7 @@
 
         /**
             Removes the stored token effectively telling the client it must re-authenticate with the server
+            @private
             @augments Rest
          */
         this.deauthorize = function() {
@@ -60,6 +63,7 @@
 
         /**
             Returns the value of the private ajaxSettings var
+            @private
             @augments Rest
             @returns {Object}
          */
@@ -69,6 +73,7 @@
 
         /**
             Returns the value of the private recordId var
+            @private
             @augments Rest
             @returns {String}
          */
@@ -78,6 +83,7 @@
 
         /**
             Returns the value of the private authenticator var
+            @private
             @augments Rest
             @returns {Object}
          */
@@ -93,7 +99,7 @@
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
         @param {Object} [options.data] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
-        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the jQuery.ajax page (http://api.jquery.com/jQuery.ajax/).
+        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
@@ -162,7 +168,7 @@
         @param {Object} [options={}] - Additional options
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
-        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the jQuery.ajax page (http://api.jquery.com/jQuery.ajax/).
+        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
         @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
@@ -261,7 +267,7 @@
         @param {Object} [options={}] - Additional options
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
-        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the jQuery.ajax page (http://api.jquery.com/jQuery.ajax/).
+        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
         @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax

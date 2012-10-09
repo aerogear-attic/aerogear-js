@@ -1,6 +1,7 @@
 (function( AeroGear, $, undefined ) {
     /**
         Wrapper utility around jQuery.ajax to preform some custom actions
+        @private
         @method
         @param {Object} caller - the AeroGear object (pipe, datamanager, etc.) that is calling AeroGear.ajax
         @param {Object} options - settings for jQuery.ajax
@@ -58,6 +59,7 @@
 
     /**
         Utility function to test if an object is an Array
+        @private
         @method
         @param {Object} obj - This can be any object to test
      */

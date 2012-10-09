@@ -1,7 +1,8 @@
 (function( AeroGear, $, undefined ) {
     /**
         The AeroGear.Pipeline provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, this library provides common methods like read, save and delete that will just work.
-        @constructs AeroGear.Pipeline
+        @class
+        @augments AeroGear.Core
         @param {String|Array|Object} [config] - A configuration for the pipe(s) being created along with the Pipeline. If an object or array containing objects is used, the objects can have the following properties:
         @param {String} config.name - the name that the pipe will later be referenced by
         @param {String} [config.type="rest"] - the type of pipe as determined by the adapter used
@@ -29,6 +30,13 @@
 
         this.lib = "Pipeline";
         this.type = config ? config.type || "Rest" : "Rest";
+
+        /**
+            The name used to reference the collection of pipe instances created from the adapters
+            @memberOf AeroGear.Pipeline
+            @type Object
+            @default pipes
+         */
         this.collectionName = "pipes";
 
         return this.add( config );

@@ -174,12 +174,12 @@
 	
         <tr>
             
-                <td class="name"><code>endpoints</code></td>
+                <td class="name"><code>agAuth</code></td>
             
             
             <td class="type">
             
-                        Object
+                        Boolean
                         
                     
             </td>
@@ -197,12 +197,10 @@
             
                 <td class="default">
                 
-                    {}
-                
                 </td>
             
             
-            <td class="description last">a set of REST endpoints that correspond to the different public methods including enroll, login and logout</td>
+            <td class="description last">True if the rest adapter should use AeroGear's token based authentication model</td>
         </tr>
 	
 	
@@ -239,6 +237,76 @@
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>endpoints</code></td>
+            
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+            
+            <td class="description last">a set of REST endpoints that correspond to the different public methods including enroll, login and logout</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>tokenName</code></td>
+            
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "Auth-Token"
+                
+                </td>
+            
+            
+            <td class="description last">defines the name used for the token header when using agAuth</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
             </td>
@@ -269,7 +337,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 11</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 13</li></ul></dd>
 	
     
     
@@ -330,192 +398,6 @@
         <h3 class="subsection-title">Methods</h3>
         
         <dl>
-            
-<dt>
-    <h4 class="name" id="addAuthIdentifier"><span class="type-signature"></span>addAuthIdentifier</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Adds the auth token to the headers and returns the modified version of the settings
-    </div>
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>settings</code></td>
-            
-            
-            <td class="type">
-            
-                        Object
-                        
-                    
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">the settings object that will have the auth identifier added</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 48</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Settings extended with auth identifier
-</div>
-
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-		<span class="param-type">Object</span> 
-		
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="deauthorize"><span class="type-signature"></span>deauthorize</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Removes the stored token effectively telling the client it must re-authenticate with the server
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 58</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
             
 <dt>
     <h4 class="name" id="enroll"><span class="type-signature"></span>enroll</h4>
@@ -707,7 +589,7 @@
 	
         <tr>
             
-                <td class="name"><code>dataTypeType</code></td>
+                <td class="name"><code>dataType</code></td>
             
             
             <td class="type">
@@ -821,7 +703,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 125</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 136</li></ul></dd>
 	
     
     
@@ -854,437 +736,6 @@
 	<dd>
 		
 		<span class="param-type">Object</span> 
-		
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getAGAuth"><span class="type-signature"></span>getAGAuth</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the value of the private agAuth var which determines whether or not the AeroGear style authentication token should be used
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 92</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getBaseURL"><span class="type-signature"></span>getBaseURL</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the value of the private baseURL var
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 100</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getEndpoints"><span class="type-signature"></span>getEndpoints</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the value of the private settings var
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 76</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getName"><span class="type-signature"></span>getName</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the value of the private name var
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 84</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getSettings"><span class="type-signature"></span>getSettings</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the value of the private settings var
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 67</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getTokenName"><span class="type-signature"></span>getTokenName</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the value of the private tokenName var
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 108</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isAuthenticated"><span class="type-signature"></span>isAuthenticated</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
-    </div>
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 33</li></ul></dd>
-	
-    
-    
-	
-	
-	
-	
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-		<span class="param-type">Boolean</span> 
 		
 	</dd>
 </dl>
@@ -1486,7 +937,7 @@
 	
         <tr>
             
-                <td class="name"><code>dataTypeType</code></td>
+                <td class="name"><code>dataType</code></td>
             
             
             <td class="type">
@@ -1600,7 +1051,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 200</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 211</li></ul></dd>
 	
     
     
@@ -1859,7 +1310,7 @@
 	
 	
 	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 272</li></ul></dd>
+	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 283</li></ul></dd>
 	
     
     
@@ -1923,7 +1374,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Mon Oct 08 2012 20:55:40 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Tue Oct 09 2012 16:54:49 GMT-0500 (CDT)
 </footer>
 
 <script> sh_highlightDocument(); </script>

@@ -4,8 +4,10 @@
         @constructs AeroGear.Auth.adapters.Rest
         @param {String} moduleName - the name used to reference this particular auth module
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
+        @param {Boolean} [settings.agAuth] - True if the rest adapter should use AeroGear's token based authentication model
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
+        @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
+        @param {String} [settings.tokenName="Auth-Token"] - defines the name used for the token header when using agAuth
         @returns {Object} The created auth module
      */
     AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
@@ -27,6 +29,7 @@
         // Privileged methods
         /**
             Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
+            @private
             @augments Rest
             @returns {Boolean}
          */
@@ -41,6 +44,7 @@
 
         /**
             Adds the auth token to the headers and returns the modified version of the settings
+            @private
             @augments Rest
             @param {Object} settings - the settings object that will have the auth identifier added
             @returns {Object} Settings extended with auth identifier
@@ -53,6 +57,7 @@
 
         /**
             Removes the stored token effectively telling the client it must re-authenticate with the server
+            @private
             @augments Rest
          */
         this.deauthorize = function() {
@@ -62,6 +67,7 @@
 
         /**
             Returns the value of the private settings var
+            @private
             @augments Rest
          */
         this.getSettings = function() {
@@ -71,6 +77,7 @@
 
         /**
             Returns the value of the private settings var
+            @private
             @augments Rest
          */
         this.getEndpoints = function() {
@@ -79,6 +86,7 @@
 
         /**
             Returns the value of the private name var
+            @private
             @augments Rest
          */
         this.getName = function() {
@@ -87,6 +95,7 @@
 
         /**
             Returns the value of the private agAuth var which determines whether or not the AeroGear style authentication token should be used
+            @private
             @augments Rest
          */
         this.getAGAuth = function() {
@@ -95,6 +104,7 @@
 
         /**
             Returns the value of the private baseURL var
+            @private
             @augments Rest
          */
         this.getBaseURL = function() {
@@ -103,6 +113,7 @@
 
         /**
             Returns the value of the private tokenName var
+            @private
             @augments Rest
          */
         this.getTokenName = function() {
