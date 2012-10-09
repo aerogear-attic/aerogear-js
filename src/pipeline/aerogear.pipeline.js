@@ -13,7 +13,7 @@
         var pl = AeroGear.Pipeline();
 
         // Create a single pipe using the default adapter
-        var pl2 = Aerogear.Pipeline( "tasks" );
+        var pl2 = AeroGear.Pipeline( "tasks" );
 
         // Create multiple pipes using the default adapter
         var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );
