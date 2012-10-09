@@ -20,7 +20,7 @@
     AeroGear.Auth = function( config ) {
         var auth = $.extend( {}, AeroGear, {
                 lib: "Auth",
-                type: config.type || "Rest",
+                type: config ? config.type || "Rest" : "Rest",
                 collectionName: "modules"
             });
 
