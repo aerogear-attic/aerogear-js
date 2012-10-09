@@ -117,7 +117,7 @@
         @param {Object} [options={}] - Options to pass to the enroll method
         @param {String} [options.baseURL] - defines the base URL to use for an endpoint
         @param {String} [options.contentType] - set the content type for the AJAX request (defaults to application/json when using agAuth)
-        @param {String} [options.dataTypeType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
+        @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {Function} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax
@@ -192,7 +192,7 @@
         @param {Object} [options={}] - An object containing key/value pairs representing options
         @param {String} [options.baseURL] - defines the base URL to use for an endpoint
         @param {String} [options.contentType] - set the content type for the AJAX request (defaults to application/json when using agAuth)
-        @param {String} [options.dataTypeType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
+        @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {String} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax
