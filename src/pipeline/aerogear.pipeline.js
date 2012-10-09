@@ -23,14 +23,19 @@
         if ( !( this instanceof AeroGear.Pipeline ) ) {
             return new AeroGear.Pipeline( config );
         }
-        var pipeline = $.extend( {}, AeroGear, {
-            lib: "Pipeline",
-            type: config ? config.type || "Rest" : "Rest",
-            collectionName: "pipes"
-        });
 
-        return pipeline.add( config );
+        // Super constructor
+        AeroGear.Core.call( this );
+
+        this.lib = "Pipeline";
+        this.type = config ? config.type || "Rest" : "Rest";
+        this.collectionName = "pipes";
+
+        return this.add( config );
     };
+
+    AeroGear.Pipeline.prototype = AeroGear.Core;
+    AeroGear.Pipeline.constructor = AeroGear.Pipeline;
 
     /**
         The adapters object is provided so that adapters can be added to the AeroGear.Pipeline namespace dynamically and still be accessible to the add method

@@ -69,8 +69,8 @@
         sessionStorage.removeItem( "ag-auth-auth" );
 
         securePipe.read({
-            error: function( data ) {
-                equal( data.statusText, "UnAuthorized", "Initial Page load Auth Failure" );
+            error: function( type, message ) {
+                equal( message, "Error: Authentication Required", "Initial Page load Auth Failure" );
                 start();
             }
         });

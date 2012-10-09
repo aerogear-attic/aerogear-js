@@ -2,14 +2,25 @@
     The AeroGear namespace provides a way to encapsulate the library's properties and methods away from the global namespace
     @namespace
  */
-var AeroGear = {
+var AeroGear = {};
+
+/**
+    AeroGear.Core is a base for all of the library modules to extend. It is not to be instantiated and will throw an error when attempted
+    @private
+ */
+AeroGear.Core = function() {
+    // Prevent instantiation of this base class
+    if ( this instanceof AeroGear.Core ) {
+        throw "Invalid instantiation of base class AeroGear.Core";
+    }
+
     /**
         This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection. For specific examples look at those internal use cases.
         @method
         @param {String|Array|Object} config - This can be a variety of types specifying how to create the object
         @returns {Object} The object containing the collection that was updated
      */
-    add: function ( config ) {
+    this.add = function ( config ) {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
@@ -39,14 +50,14 @@ var AeroGear = {
         this[ this.collectionName ] = collection;
 
         return this;
-    },
+    };
     /**
         This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection. For specific examples look at those internal use cases.
         @method
         @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object
         @returns {Object} The object containing the collection that was updated
      */
-    remove: function( config ) {
+    this.remove = function( config ) {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
@@ -74,14 +85,5 @@ var AeroGear = {
         this[ this.collectionName ] = collection;
 
         return this;
-    }
-};
-
-/**
-    Utility function to test if an object is an Array
-    @method
-    @param {Object} obj - This can be any object to test
- */
-AeroGear.isArray = function( obj ) {
-    return ({}).toString.call( obj ) === "[object Array]";
+    };
 };

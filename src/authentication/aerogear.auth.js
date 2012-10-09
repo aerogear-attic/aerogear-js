@@ -2,6 +2,7 @@
     /**
         The AeroGear.Auth namespace provides an authentication and enrollment API. Through the use of adapters, this library provides common methods like enroll, login and logout that will just work.
         @constructs AeroGear.Auth
+        @borrows AeroGear.Core as AeroGear.Auth.prototype
         @param {String|Array|Object} [config] - A configuration for the modules(s) being created along with the authenticator. If an object or array containing objects is used, the objects can have the following properties:
         @param {String} config.name - the name that the module will later be referenced by
         @param {String} [config.type="rest"] - the type of module as determined by the adapter used
@@ -18,14 +19,22 @@
         var auth3 = AeroGear.Auth( [ "someAuth", "anotherAuth" ] );
      */
     AeroGear.Auth = function( config ) {
-        var auth = $.extend( {}, AeroGear, {
-                lib: "Auth",
-                type: config ? config.type || "Rest" : "Rest",
-                collectionName: "modules"
-            });
+        // Allow instantiation without using new
+        if ( !( this instanceof AeroGear.Auth ) ) {
+            return new AeroGear.Auth( config );
+        }
+        // Super Constructor
+        AeroGear.Core.call( this );
 
-        return auth.add( config );
+        this.lib = "Auth";
+        this.type = config ? config.type || "Rest" : "Rest";
+        this.collectionName = "modules";
+
+        return this.add( config );
     };
+
+    AeroGear.Auth.prototype = AeroGear.Core;
+    AeroGear.Auth.constructor = AeroGear.Auth;
 
     /**
         The adapters object is provided so that adapters can be added to the AeroGear.Auth namespace dynamically and still be accessible to the add method

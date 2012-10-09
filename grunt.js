@@ -24,15 +24,19 @@ module.exports = function(grunt) {
         },
         concat: {
             dist: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.ajax.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>', '<file_strip_banner:src/authentication/aerogear.auth.js>', '<file_strip_banner:src/authentication/adapters/rest.js>'],
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>', '<file_strip_banner:src/authentication/aerogear.auth.js>', '<file_strip_banner:src/authentication/adapters/rest.js>'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>'],
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>'],
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            auth: {
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:src/authentication/aerogear.auth.js>', '<file_strip_banner:src/authentication/adapters/rest.js>'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
@@ -81,5 +85,6 @@ module.exports = function(grunt) {
     grunt.registerTask('default', 'lint qunit concat:dist min:dist');
     grunt.registerTask('pipeline', 'lint qunit concat:pipeline min:custom');
     grunt.registerTask('data-manager', 'lint qunit concat:dataManager min:custom');
+    grunt.registerTask('auth', 'lint qunit concat:auth min:custom');
 
 };

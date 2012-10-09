@@ -131,7 +131,7 @@
             }
         },
         error = function( type, errorMessage ) {
-            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
+            var stores = options.stores ? that.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
 
             if ( type === "auth" && stores.length ) {

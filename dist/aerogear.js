@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-08
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-09
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -14,14 +14,16 @@
 * limitations under the License.
 */
 
-var AeroGear = {
+var AeroGear = {};
+
+AeroGear.Core = function() {
     /**
         This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection. For specific examples look at those internal use cases.
         @method
         @param {String|Array|Object} config - This can be a variety of types specifying how to create the object
         @returns {Object} The object containing the collection that was updated
      */
-    add: function ( config ) {
+    this.add = function ( config ) {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
@@ -51,14 +53,14 @@ var AeroGear = {
         this[ this.collectionName ] = collection;
 
         return this;
-    },
+    };
     /**
         This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection. For specific examples look at those internal use cases.
         @method
         @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object
         @returns {Object} The object containing the collection that was updated
      */
-    remove: function( config ) {
+    this.remove = function( config ) {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
@@ -86,16 +88,7 @@ var AeroGear = {
         this[ this.collectionName ] = collection;
 
         return this;
-    }
-};
-
-/**
-    Utility function to test if an object is an Array
-    @method
-    @param {Object} obj - This can be any object to test
- */
-AeroGear.isArray = function( obj ) {
-    return ({}).toString.call( obj ) === "[object Array]";
+    };
 };
 
 (function( AeroGear, $, undefined ) {
@@ -138,7 +131,7 @@ AeroGear.isArray = function( obj ) {
                 ajaxSettings.data = JSON.stringify( ajaxSettings.data );
             }
 
-            if ( AeroGear.auth && !caller.isAuthenticated() ) {
+            if ( AeroGear.Auth && !caller.isAuthenticated() ) {
                 this.reject( "auth", "Error: Authentication Required" );
             } else if ( caller.addAuthIdentifier ) {
                 $.ajax( caller.addAuthIdentifier( ajaxSettings ) );
@@ -154,6 +147,15 @@ AeroGear.isArray = function( obj ) {
         promise.complete = deferred.always;
 
         return promise;
+    };
+
+    /**
+        Utility function to test if an object is an Array
+        @method
+        @param {Object} obj - This can be any object to test
+     */
+    AeroGear.isArray = function( obj ) {
+        return ({}).toString.call( obj ) === "[object Array]";
     };
 })( AeroGear, jQuery );
 
@@ -172,7 +174,7 @@ AeroGear.isArray = function( obj ) {
         var pl = AeroGear.Pipeline();
 
         // Create a single pipe using the default adapter
-        var pl2 = Aerogear.Pipeline( "tasks" );
+        var pl2 = AeroGear.Pipeline( "tasks" );
 
         // Create multiple pipes using the default adapter
         var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );
@@ -182,14 +184,19 @@ AeroGear.isArray = function( obj ) {
         if ( !( this instanceof AeroGear.Pipeline ) ) {
             return new AeroGear.Pipeline( config );
         }
-        var pipeline = $.extend( {}, AeroGear, {
-            lib: "Pipeline",
-            type: config ? config.type || "Rest" : "Rest",
-            collectionName: "pipes"
-        });
 
-        return pipeline.add( config );
+        // Super constructor
+        AeroGear.Core.call( this );
+
+        this.lib = "Pipeline";
+        this.type = config ? config.type || "Rest" : "Rest";
+        this.collectionName = "pipes";
+
+        return this.add( config );
     };
+
+    AeroGear.Pipeline.prototype = AeroGear.Core;
+    AeroGear.Pipeline.constructor = AeroGear.Pipeline;
 
     /**
         The adapters object is provided so that adapters can be added to the AeroGear.Pipeline namespace dynamically and still be accessible to the add method
@@ -331,7 +338,7 @@ AeroGear.isArray = function( obj ) {
             }
         },
         error = function( type, errorMessage ) {
-            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
+            var stores = options.stores ? that.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
 
             if ( type === "auth" && stores.length ) {
@@ -584,14 +591,19 @@ AeroGear.isArray = function( obj ) {
         if ( !( this instanceof AeroGear.DataManager ) ) {
             return new AeroGear.DataManager( config );
         }
-        var dataManager = $.extend( {}, AeroGear, {
-                lib: "DataManager",
-                type: config ? config.type || "Memory" : "Memory",
-                collectionName: "stores"
-            });
 
-        return dataManager.add( config );
+        // Super Constructor
+        AeroGear.Core.call( this );
+
+        this.lib = "DataManager";
+        this.type = config ? config.type || "Memory" : "Memory";
+        this.collectionName = "stores";
+
+        return this.add( config );
     };
+
+    AeroGear.DataManager.prototype = AeroGear.Core;
+    AeroGear.DataManager.constructor = AeroGear.DataManager;
 
     /**
         The adapters object is provided so that adapters can be added to the AeroGear.DataManager namespace dynamically and still be accessible to the add method
@@ -878,14 +890,22 @@ AeroGear.isArray = function( obj ) {
         var auth3 = AeroGear.Auth( [ "someAuth", "anotherAuth" ] );
      */
     AeroGear.Auth = function( config ) {
-        var auth = $.extend( {}, AeroGear, {
-                lib: "Auth",
-                type: config.type || "Rest",
-                collectionName: "modules"
-            });
+        // Allow instantiation without using new
+        if ( !( this instanceof AeroGear.Auth ) ) {
+            return new AeroGear.Auth( config );
+        }
+        // Super Constructor
+        AeroGear.Core.call( this );
 
-        return auth.add( config );
+        this.lib = "Auth";
+        this.type = config ? config.type || "Rest" : "Rest";
+        this.collectionName = "modules";
+
+        return this.add( config );
     };
+
+    AeroGear.Auth.prototype = AeroGear.Core;
+    AeroGear.Auth.constructor = AeroGear.Auth;
 
     /**
         The adapters object is provided so that adapters can be added to the AeroGear.Auth namespace dynamically and still be accessible to the add method
@@ -1013,7 +1033,7 @@ AeroGear.isArray = function( obj ) {
         @param {Object} [options={}] - Options to pass to the enroll method
         @param {String} [options.baseURL] - defines the base URL to use for an endpoint
         @param {String} [options.contentType] - set the content type for the AJAX request (defaults to application/json when using agAuth)
-        @param {String} [options.dataTypeType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
+        @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {Function} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax
@@ -1088,7 +1108,7 @@ AeroGear.isArray = function( obj ) {
         @param {Object} [options={}] - An object containing key/value pairs representing options
         @param {String} [options.baseURL] - defines the base URL to use for an endpoint
         @param {String} [options.contentType] - set the content type for the AJAX request (defaults to application/json when using agAuth)
-        @param {String} [options.dataTypeType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
+        @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {String} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax

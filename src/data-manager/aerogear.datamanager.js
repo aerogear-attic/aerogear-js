@@ -23,14 +23,19 @@
         if ( !( this instanceof AeroGear.DataManager ) ) {
             return new AeroGear.DataManager( config );
         }
-        var dataManager = $.extend( {}, AeroGear, {
-                lib: "DataManager",
-                type: config ? config.type || "Memory" : "Memory",
-                collectionName: "stores"
-            });
 
-        return dataManager.add( config );
+        // Super Constructor
+        AeroGear.Core.call( this );
+
+        this.lib = "DataManager";
+        this.type = config ? config.type || "Memory" : "Memory";
+        this.collectionName = "stores";
+
+        return this.add( config );
     };
+
+    AeroGear.DataManager.prototype = AeroGear.Core;
+    AeroGear.DataManager.constructor = AeroGear.DataManager;
 
     /**
         The adapters object is provided so that adapters can be added to the AeroGear.DataManager namespace dynamically and still be accessible to the add method
