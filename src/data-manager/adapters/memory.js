@@ -1,10 +1,11 @@
-(function( AeroGear, $, undefined ) {
+(function( AeroGear, $, uuid, undefined ) {
     /**
         The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
         @constructs AeroGear.DataManager.adapters.Memory
         @param {String} storeName - the name used to reference this particular store
         @param {Object} [settings={}] - the settings to be passed to the adapter
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @param {Boolean} [settings.dataSync=false] - if true, any pipes associated with this store will attempt to keep the data in sync with the server (coming soon)
         @returns {Object} The created store
      */
     AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
@@ -18,7 +19,8 @@
         // Private Instance vars
         var recordId = settings.recordId ? settings.recordId : "id",
             type = "Memory",
-            data = null;
+            data = null,
+            dataSync = !!settings.dataSync;
 
         // Privileged Methods
         /**
@@ -32,13 +34,28 @@
         };
 
         /**
-            Returns the value of the private data var
+            Returns the value of the private data var, filtered by sync status if necessary
             @private
             @augments Memory
+            @param {Boolean} [dataSyncBypass] - get all data no matter it's sync status
             @returns {Array}
          */
-        this.getData = function() {
-            return data;
+        this.getData = function( dataSyncBypass ) {
+            var activeData = [],
+                item,
+                syncStatus;
+
+            if ( dataSync && !dataSyncBypass ) {
+                for ( item in data ) {
+                    syncStatus = data[ item ][ "ag-sync-status" ];
+                    if ( syncStatus !== AeroGear.DataManager.STATUS_REMOVED ) {
+                        activeData.push( data[ item ] );
+                    }
+                }
+                return activeData;
+            } else {
+                return data;
+            }
         };
 
         /**
@@ -47,7 +64,27 @@
             @augments Memory
          */
         this.setData = function( newData ) {
+            if ( dataSync ) {
+                for ( var item in newData ) {
+                    newData[ item ][ "ag-sync-status" ] = AeroGear.DataManager.STATUS_NEW;
+                }
+            }
             data = newData;
+        };
+
+        /**
+            Empties the value of the private data var
+            @private
+            @augments Memory
+         */
+        this.emptyData = function() {
+            if ( dataSync ) {
+                for ( var item in data ) {
+                    data[ item ][ "ag-sync-status" ] = AeroGear.DataManager.STATUS_REMOVED;
+                }
+            } else {
+                data = null;
+            }
         };
 
         /**
@@ -56,7 +93,24 @@
             @augments Memory
          */
         this.addDataRecord = function( record ) {
+            data = data || [];
+            if ( dataSync ) {
+                record[ "ag-sync-status" ] = AeroGear.DataManager.STATUS_NEW;
+                record.id = record.id || uuid.v4();
+            }
             data.push( record );
+        };
+
+        /**
+            Adds a record to the store's data set
+            @private
+            @augments Memory
+         */
+        this.updateDataRecord = function( index, record ) {
+            if ( dataSync ) {
+                record[ "ag-sync-status" ] = AeroGear.DataManager.STATUS_MODIFIED;
+            }
+            data[ index ] = record;
         };
 
         /**
@@ -64,8 +118,22 @@
             @private
             @augments Memory
          */
-        this.removeDataRecord = function( record ) {
-            data.splice( record, 1 );
+        this.removeDataRecord = function( index ) {
+            if ( dataSync ) {
+                data[ index ][ "ag-sync-status" ] = AeroGear.DataManager.STATUS_REMOVED;
+            } else {
+                data.splice( index, 1 );
+            }
+        };
+
+        /**
+            Returns the value of the private dataSync var
+            @private
+            @augments Memory
+            @returns {Boolean}
+         */
+        this.getDataSync = function() {
+            return dataSync;
         };
     };
 
@@ -99,7 +167,7 @@
                 for ( var i = 0; i < data.length; i++ ) {
                     for( var item in this.getData() ) {
                         if ( this.getData()[ item ][ this.getRecordId() ] === data[ i ][ this.getRecordId() ] ) {
-                            this.getData()[ item ] = data[ i ];
+                            this.updateDataRecord( item, data[ i ] );
                             itemFound = true;
                             break;
                         }
@@ -126,12 +194,13 @@
     AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
         if ( !toRemove ) {
             // empty data array and return
-            this.setData( [] );
+            this.emptyData();
             return this.getData();
         } else {
             toRemove = AeroGear.isArray( toRemove ) ? toRemove : [ toRemove ];
         }
         var delId,
+            data,
             item;
 
         for ( var i = 0; i < toRemove.length; i++ ) {
@@ -144,8 +213,9 @@
                 continue;
             }
 
-            for( item in this.getData() ) {
-                if ( this.getData()[ item ][ this.getRecordId() ] === delId ) {
+            data = this.getData( true );
+            for( item in data ) {
+                if ( data[ item ][ this.getRecordId() ] === delId ) {
                     this.removeDataRecord( item );
                 }
             }
@@ -259,4 +329,4 @@
 
         return filtered;
     };
-})( AeroGear, jQuery );
+})( AeroGear, jQuery, window.uuid );
