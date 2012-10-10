@@ -39,7 +39,7 @@
          */
         this.collectionName = "pipes";
 
-        return this.add( config );
+        this.add( config );
     };
 
     AeroGear.Pipeline.prototype = AeroGear.Core;

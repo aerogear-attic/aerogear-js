@@ -37,7 +37,7 @@
          */
         this.collectionName = "modules";
 
-        return this.add( config );
+        this.add( config );
     };
 
     AeroGear.Auth.prototype = AeroGear.Core;

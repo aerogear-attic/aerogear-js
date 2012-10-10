@@ -39,7 +39,7 @@
          */
         this.collectionName = "stores";
 
-        return this.add( config );
+        this.add( config );
     };
 
     AeroGear.DataManager.prototype = AeroGear.Core;
@@ -50,4 +50,9 @@
         @augments AeroGear.DataManager
      */
     AeroGear.DataManager.adapters = {};
+
+    // Constants
+    AeroGear.DataManager.STATUS_NEW = 1;
+    AeroGear.DataManager.STATUS_MODIFIED = 2;
+    AeroGear.DataManager.STATUS_REMOVED = 0;
 })( AeroGear, jQuery );
