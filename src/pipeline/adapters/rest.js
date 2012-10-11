@@ -98,6 +98,7 @@
         @param {Object} [options={}] - Additional options
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
         @param {Object} [options.data] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
+        @param {Object} [options.id] - the value to append to the endpoint URL,  should be the same as the pipelines recordId
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
@@ -120,9 +121,23 @@
         });
      */
     AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
-        options = options || {};
         var that = this,
-            success = function( data ) {
+            recordId = this.getRecordId(),
+            ajaxSettings = this.getAjaxSettings(),
+            url,
+            success,
+            error,
+            extraOptions;
+
+        options = options || {};
+
+        if ( options[ recordId ] ) {
+            url = ajaxSettings.url + "/" + options[ recordId ];
+        } else {
+            url = ajaxSettings.url;
+        }
+
+        success = function( data ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
 
@@ -135,7 +150,7 @@
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? that.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -150,11 +165,12 @@
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             type: "GET",
             success: success,
             error: error,
+            url: url,
             statusCode: options.statusCode,
             complete: options.complete
         };
@@ -207,7 +223,10 @@
             recordId = this.getRecordId(),
             ajaxSettings = this.getAjaxSettings(),
             type,
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         data = data || {};
         options = options || {};
@@ -219,7 +238,7 @@
             url = ajaxSettings.url;
         }
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores = AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ],
                 item;
 
@@ -232,7 +251,7 @@
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -247,7 +266,7 @@
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             data: data,
             type: type,
@@ -306,7 +325,10 @@
             ajaxSettings = this.getAjaxSettings(),
             delPath = "",
             delId,
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
             delId = toRemove;
@@ -322,7 +344,7 @@
         delPath = delId ? "/" + delId : "";
         url = ajaxSettings.url + delPath;
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores,
                 item;
 
@@ -336,7 +358,7 @@
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -351,7 +373,7 @@
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             type: "DELETE",
             url: url,

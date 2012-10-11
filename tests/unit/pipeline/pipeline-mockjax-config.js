@@ -125,6 +125,7 @@ $.mockjax({
     }
 });
 
+
 // custom end point mock
 $.mockjax({
     url: "customEndPoint",
@@ -140,6 +141,19 @@ $.mockjax({
     type: "GET",
     headers: {
         "Content-Type": "application/json"
+    }
+});
+
+//id added to the end of the endpoint mock
+$.mockjax({
+    url: "baseURL/customEndPoint/12345",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: {
+        name: "My Name",
+        id: 12345
     }
 });
 
