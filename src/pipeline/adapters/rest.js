@@ -24,14 +24,20 @@
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
-                jsonp :settings.jsonp ? "jsonp" : null,
-                dataType: settings.jsonp ? "jsonp" : "json",
-                jsonpCallback: ( settings.jsonp && settings.callback ) ? settings.callback : null
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
             type = "Rest";
+
+            if( settings.jsonp ) {
+                ajaxSettings.jsonp = "jsonp",
+                ajaxSettings.dataType = "jsonp";
+
+                if( settings.callback ) {
+                    ajaxSettings.jsonpCallback = settings.callback;
+                }
+            }
 
         // Privileged Methods
         /**
