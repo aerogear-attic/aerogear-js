@@ -8,6 +8,8 @@
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @param {Boolean} [settings.jsonp=false] - If true, this pipe will use jsonp
+        @param {String} [settings.callback] - when settings.jsonp == true, will override the jQuery jsonpCallback
         @returns {Object} The created pipe
      */
     AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
@@ -22,7 +24,10 @@
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
+                jsonp :settings.jsonp ? "jsonp" : null,
+                dataType: settings.jsonp ? "jsonp" : "json",
+                jsonpCallback: ( settings.jsonp && settings.callback ) ? settings.callback : null
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
