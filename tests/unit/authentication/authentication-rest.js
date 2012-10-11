@@ -17,7 +17,7 @@
         equal( auth1.auth.isAuthenticated(), false, "Current Auth Status" );
     });
     test( "Authentication Pipeline init", function() {
-        expect( 4 );
+        expect( 3 );
 
         var auth2 = AeroGear.Auth({
             name: "auth",
@@ -30,15 +30,14 @@
             {
                 name: "pipe1",
                 settings: {
-                    authenticator: auth2
+                    authenticator: auth2.auth
                 }
             }
         ]).pipes;
 
         equal( Object.keys( auth2 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth2 )[ 0 ], "auth", "Module named auth" );
-        equal( Object.keys( pipeline ).length, 1, "1 Pipe Created" );
-        equal( pipeline.pipe1.getAuthenticator().auth.getName(), "auth", "Authenticator named auth added to pipe" );
+        equal( Object.keys( pipeline ).length, 1, "1 Pipe Created with auth module" );
 
     });
 

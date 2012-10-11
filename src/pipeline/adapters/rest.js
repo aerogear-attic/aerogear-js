@@ -80,16 +80,6 @@
         this.getRecordId = function() {
             return recordId;
         };
-
-        /**
-            Returns the value of the private authenticator var
-            @private
-            @augments Rest
-            @returns {Object}
-         */
-        this.getAuthenticator = function() {
-            return authenticator;
-        };
     };
 
     // Public Methods
