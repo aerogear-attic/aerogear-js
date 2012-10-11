@@ -4,7 +4,7 @@
         @constructs AeroGear.Auth.adapters.Rest
         @param {String} moduleName - the name used to reference this particular auth module
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Boolean} [settings.agAuth] - True if the rest adapter should use AeroGear's token based authentication model
+        @param {Boolean} [settings.agAuth] - True if this adapter should use AeroGear's token based authentication model
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
         @param {String} [settings.tokenName="Auth-Token"] - defines the name used for the token header when using agAuth
