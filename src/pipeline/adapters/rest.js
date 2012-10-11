@@ -124,7 +124,10 @@
         var that = this,
             recordId = this.getRecordId(),
             ajaxSettings = this.getAjaxSettings(),
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         options = options || {};
 
@@ -134,7 +137,7 @@
             url = ajaxSettings.url;
         }
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
 
@@ -147,7 +150,7 @@
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? that.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -162,7 +165,7 @@
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             type: "GET",
             success: success,
@@ -220,7 +223,10 @@
             recordId = this.getRecordId(),
             ajaxSettings = this.getAjaxSettings(),
             type,
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         data = data || {};
         options = options || {};
@@ -232,7 +238,7 @@
             url = ajaxSettings.url;
         }
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores = AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ],
                 item;
 
@@ -245,7 +251,7 @@
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -260,7 +266,7 @@
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             data: data,
             type: type,
@@ -319,7 +325,10 @@
             ajaxSettings = this.getAjaxSettings(),
             delPath = "",
             delId,
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
             delId = toRemove;
@@ -335,7 +344,7 @@
         delPath = delId ? "/" + delId : "";
         url = ajaxSettings.url + delPath;
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores,
                 item;
 
@@ -349,7 +358,7 @@
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -364,7 +373,7 @@
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             type: "DELETE",
             url: url,

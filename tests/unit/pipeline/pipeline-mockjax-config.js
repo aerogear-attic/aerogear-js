@@ -152,10 +152,9 @@ $.mockjax({
         "Content-Type": "application/json"
     },
     responseText: {
-            name: "My Name",
-            id: 12345
+        name: "My Name",
+        id: 12345
     }
-
 });
 
 })( jQuery );
