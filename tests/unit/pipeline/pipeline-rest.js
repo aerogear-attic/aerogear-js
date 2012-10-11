@@ -278,4 +278,53 @@ asyncTest( "base URL + end point", function() {
     });
 });
 
+
+var pipeline2 = AeroGear.Pipeline([
+    {
+        name: "custom",
+        settings: {
+            baseURL: "baseURL/",
+            endpoint: "customEndPoint"
+        }
+    },
+    {
+        name: "custom2",
+        settings: {
+            baseURL: "baseURL/",
+            endpoint: "customEndPoint",
+            recordId: "identifier"
+        }
+    }
+]);
+
+var pipe6 = pipeline2.pipes.custom,
+    pipe7 = pipeline2.pipes.custom2;
+
+asyncTest( "ID added to end point", function() {
+    expect( 2 );
+
+    var read = pipe6.read({
+        id: 12345,
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from endpoint with id on the end" );
+            equal( data.id, 12345, "Id is 12345" );
+            start();
+        }
+    });
+});
+
+asyncTest( "ID added to end point with custom recordID", function() {
+    expect( 2 );
+
+    var read = pipe7.read({
+        identifier: 12345,
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from endpoint with id on the end" );
+            equal( data.id, 12345, "Id is 12345" );
+            start();
+        }
+    });
+});
+
+
 })( jQuery );
