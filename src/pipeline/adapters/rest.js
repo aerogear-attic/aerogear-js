@@ -1,4 +1,4 @@
-(function( AeroGear, $, undefined ) {
+(function( AeroGear, $, uuid, undefined ) {
     /**
         The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named `tasks` would use http://mysite.com/myApp/tasks as its REST endpoint.
         @constructs AeroGear.Pipeline.adapters.Rest
@@ -375,4 +375,4 @@
 
         return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
     };
-})( AeroGear, jQuery );
+})( AeroGear, jQuery, uuid );

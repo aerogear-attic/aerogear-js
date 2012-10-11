@@ -96,7 +96,7 @@
             data = data || [];
             if ( dataSync ) {
                 record[ "ag-sync-status" ] = AeroGear.DataManager.STATUS_NEW;
-                record.id = record.id || uuid.v4();
+                record.id = record.id || uuid();
             }
             data.push( record );
         };
@@ -384,4 +384,4 @@
 
         return filtered;
     };
-})( AeroGear, jQuery, window.uuid );
+})( AeroGear, jQuery, uuid );
