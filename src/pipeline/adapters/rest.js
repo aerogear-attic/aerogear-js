@@ -8,7 +8,7 @@
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
-        @param {Boolean} [settings.jsonp=false] - If true, this pipe will use jsonp
+        @param {Boolean} [settings.jsonp=false] - If true, this pipe will use jsonp, ***Pipe becomes read only***
         @param {String} [settings.callback] - when settings.jsonp == true, will override the jQuery jsonpCallback
         @returns {Object} The created pipe
      */
