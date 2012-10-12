@@ -8,8 +8,7 @@
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
-        @param {Boolean} [settings.jsonp=false] - If true, this pipe will use jsonp, ***Pipe becomes read only***
-        @param {String} [settings.callback] - when settings.jsonp == true, will override the jQuery jsonpCallback
+        @param {Boolean/Object} [settings.jsonp] - settings to be passed for jsonp setup ***Pipe becomes read only***
         @returns {Object} The created pipe
      */
     AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
@@ -31,10 +30,10 @@
             type = "Rest";
 
             if( settings.jsonp ) {
-                ajaxSettings.jsonp = "jsonp",
-                ajaxSettings.dataType = "jsonp";
+                ajaxSettings.dataType = "jsonp",
+                ajaxSettings.jsonp = settings.jsonp.jsonp ? settings.jsonp.jsonp : "callback";
 
-                if( settings.callback ) {
+                if( settings.jsonp.callback ) {
                     ajaxSettings.jsonpCallback = settings.callback;
                 }
             }
