@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-10
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-16
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -307,16 +307,6 @@ AeroGear.Core = function() {
         this.getRecordId = function() {
             return recordId;
         };
-
-        /**
-            Returns the value of the private authenticator var
-            @private
-            @augments Rest
-            @returns {Object}
-         */
-        this.getAuthenticator = function() {
-            return authenticator;
-        };
     };
 
     // Public Methods
@@ -325,6 +315,7 @@ AeroGear.Core = function() {
         @param {Object} [options={}] - Additional options
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
         @param {Object} [options.data] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
+        @param {Object} [options.id] - the value to append to the endpoint URL,  should be the same as the pipelines recordId
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
@@ -347,9 +338,23 @@ AeroGear.Core = function() {
         });
      */
     AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
-        options = options || {};
         var that = this,
-            success = function( data ) {
+            recordId = this.getRecordId(),
+            ajaxSettings = this.getAjaxSettings(),
+            url,
+            success,
+            error,
+            extraOptions;
+
+        options = options || {};
+
+        if ( options[ recordId ] ) {
+            url = ajaxSettings.url + "/" + options[ recordId ];
+        } else {
+            url = ajaxSettings.url;
+        }
+
+        success = function( data ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
 
@@ -362,9 +367,9 @@ AeroGear.Core = function() {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
-            var stores = options.stores ? that.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
+            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
 
             if ( type === "auth" && stores.length ) {
@@ -377,11 +382,12 @@ AeroGear.Core = function() {
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             type: "GET",
             success: success,
             error: error,
+            url: url,
             statusCode: options.statusCode,
             complete: options.complete
         };
@@ -434,7 +440,10 @@ AeroGear.Core = function() {
             recordId = this.getRecordId(),
             ajaxSettings = this.getAjaxSettings(),
             type,
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         data = data || {};
         options = options || {};
@@ -446,7 +455,7 @@ AeroGear.Core = function() {
             url = ajaxSettings.url;
         }
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores = AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ],
                 item;
 
@@ -459,7 +468,7 @@ AeroGear.Core = function() {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -474,7 +483,7 @@ AeroGear.Core = function() {
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             data: data,
             type: type,
@@ -533,7 +542,10 @@ AeroGear.Core = function() {
             ajaxSettings = this.getAjaxSettings(),
             delPath = "",
             delId,
-            url;
+            url,
+            success,
+            error,
+            extraOptions;
 
         if ( typeof toRemove === "string" || typeof toRemove === "number" ) {
             delId = toRemove;
@@ -549,7 +561,7 @@ AeroGear.Core = function() {
         delPath = delId ? "/" + delId : "";
         url = ajaxSettings.url + delPath;
 
-        var success = function( data ) {
+        success = function( data ) {
             var stores,
                 item;
 
@@ -563,7 +575,7 @@ AeroGear.Core = function() {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
-        },
+        };
         error = function( type, errorMessage ) {
             var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
                 item;
@@ -578,7 +590,7 @@ AeroGear.Core = function() {
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
-        },
+        };
         extraOptions = {
             type: "DELETE",
             url: url,
@@ -1042,7 +1054,7 @@ AeroGear.Core = function() {
         @constructs AeroGear.Auth.adapters.Rest
         @param {String} moduleName - the name used to reference this particular auth module
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Boolean} [settings.agAuth] - True if the rest adapter should use AeroGear's token based authentication model
+        @param {Boolean} [settings.agAuth] - True if this adapter should use AeroGear's token based authentication model
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
         @param {String} [settings.tokenName="Auth-Token"] - defines the name used for the token header when using agAuth
