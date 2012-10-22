@@ -94,7 +94,7 @@
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
-        var myPipe = AeroGear.pipeline( "tasks" ).pipes[ 0 ];
+        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Get a set of key/value pairs of all data on the server associated with this pipe
         var allData = myPipe.read();
@@ -179,7 +179,7 @@
         @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
-        var myPipe = AeroGear.pipeline( "tasks" ).pipes[ 0 ];
+        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Store a new task
         myPipe.save({
@@ -281,7 +281,7 @@
         @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
-        var myPipe = AeroGear.pipeline( "tasks" ).pipes[ 0 ];
+        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Store a new task
         myPipe.save({
@@ -307,7 +307,7 @@
         myPipe.remove( toRemove );
 
         // Delete all remaining data from the server associated with this pipe
-        myPipe.delete();
+        myPipe.remove();
      */
     AeroGear.Pipeline.adapters.Rest.prototype.remove = function( toRemove, options ) {
         var that = this,
