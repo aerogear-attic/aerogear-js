@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-16
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-23
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -321,7 +321,7 @@ AeroGear.Core = function() {
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
-        var myPipe = AeroGear.pipeline( "tasks" ).pipes[ 0 ];
+        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Get a set of key/value pairs of all data on the server associated with this pipe
         var allData = myPipe.read();
@@ -406,7 +406,7 @@ AeroGear.Core = function() {
         @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
-        var myPipe = AeroGear.pipeline( "tasks" ).pipes[ 0 ];
+        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Store a new task
         myPipe.save({
@@ -508,7 +508,7 @@ AeroGear.Core = function() {
         @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
-        var myPipe = AeroGear.pipeline( "tasks" ).pipes[ 0 ];
+        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Store a new task
         myPipe.save({
@@ -534,7 +534,7 @@ AeroGear.Core = function() {
         myPipe.remove( toRemove );
 
         // Delete all remaining data from the server associated with this pipe
-        myPipe.delete();
+        myPipe.remove();
      */
     AeroGear.Pipeline.adapters.Rest.prototype.remove = function( toRemove, options ) {
         var that = this,
@@ -807,6 +807,11 @@ AeroGear.Core = function() {
         Read data from a store
         @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
         @returns {Array} Returns data from the store, optionally filtered by an id
+        @example
+        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+
+        // Get an array of all data in the store
+        var allData = dm.read();
      */
     AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
         var filter = {};
@@ -819,6 +824,20 @@ AeroGear.Core = function() {
         @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
         @param {Boolean} [reset] - If true, this will empty the current data and set it to the data being saved
         @returns {Array} Returns the updated data from the store
+        @example
+        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+
+        // Store a new task
+        dm.save({
+            title: "Created Task",
+            date: "2012-07-13",
+            ...
+        });
+
+        // Update an existing piece of data
+        var toUpdate = dm.read()[ 0 ];
+        toUpdate.data.title = "Updated Task";
+        dm.save( toUpdate );
      */
     AeroGear.DataManager.adapters.Memory.prototype.save = function( data, reset ) {
         var itemFound = false;
@@ -855,6 +874,34 @@ AeroGear.Core = function() {
         Removes data from the store
         @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
         @returns {Array} Returns the updated data from the store
+        @example
+        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+
+        // Store a new task
+        dm.save({
+            title: "Created Task"
+        });
+
+        // Store another new task
+        dm.save({
+            title: "Another Created Task"
+        });
+
+        // Store one more new task
+        dm.save({
+            title: "And Another Created Task"
+        });
+
+        // Remove a particular item from the store by its id
+        var toRemove = dm.read()[ 0 ];
+        dm.remove( toRemove.id );
+
+        // Remove an item from the store using the data object
+        toRemove = dm.read()[ 0 ];
+        dm.remove( toRemove );
+
+        // Delete all remaining data from the store
+        dm.remove();
      */
     AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
         if ( !toRemove ) {
@@ -894,6 +941,14 @@ AeroGear.Core = function() {
         @param {Object} [filterParameters] - An object containing key value pairs on which to filter the store's data. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of values to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
         @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
         @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
+        @example
+        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+
+        // An object can be passed to filter the data
+        var filteredData = dm.filter({
+            date: "2012-08-01"
+            ...
+        });
      */
     AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
         var filtered,
@@ -1182,6 +1237,12 @@ AeroGear.Core = function() {
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {Function} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax
+        @example
+        var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
+            data = { userName: "user", password: "abc123", name: "John" };
+
+        // Enroll a new user
+        auth.enroll( data );
      */
     AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
         options = options || {};
@@ -1257,6 +1318,12 @@ AeroGear.Core = function() {
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {String} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax
+        @example
+        var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
+            data = { userName: "user", password: "abc123" };
+
+        // Enroll a new user
+        auth.login( data );
      */
     AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
         options = options || {};
@@ -1329,6 +1396,11 @@ AeroGear.Core = function() {
         @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
         @param {String} [options.success] - callback to be executed if the AJAX request results in success
         @returns {Object} The jqXHR created by jQuery.ajax
+        @example
+        var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ];
+
+        // Enroll a new user
+        auth.logout();
      */
     AeroGear.Auth.adapters.Rest.prototype.logout = function( options ) {
         options = options || {};
