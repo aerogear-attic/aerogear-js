@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-23
+/*! AeroGear JavaScript Library - v1.0.0.Alpha - 2012-10-31
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2012, Red Hat, Inc., and individual contributors
@@ -1299,7 +1299,7 @@ AeroGear.Core = function() {
         if ( endpoints.enroll ) {
             url += endpoints.enroll;
         } else {
-            url += "auth/register";
+            url += "auth/enroll";
         }
         if ( url.length ) {
             extraOptions.url = url;

@@ -3,7 +3,7 @@
 $.mockjaxClear();
 
 $.mockjax({
-    url: "auth/register",
+    url: "auth/enroll",
     type: "POST",
     response: function( event ) {
         var data = event.data;

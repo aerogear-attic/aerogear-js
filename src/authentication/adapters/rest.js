@@ -194,7 +194,7 @@
         if ( endpoints.enroll ) {
             url += endpoints.enroll;
         } else {
-            url += "auth/register";
+            url += "auth/enroll";
         }
         if ( url.length ) {
             extraOptions.url = url;
