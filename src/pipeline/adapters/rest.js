@@ -32,10 +32,6 @@
             if( settings.jsonp ) {
                 ajaxSettings.dataType = "jsonp",
                 ajaxSettings.jsonp = settings.jsonp.jsonp ? settings.jsonp.jsonp : "callback";
-
-                if( settings.jsonp.callback ) {
-                    ajaxSettings.jsonpCallback = settings.callback;
-                }
             }
 
         // Privileged Methods
