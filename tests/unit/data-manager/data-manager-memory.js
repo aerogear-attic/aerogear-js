@@ -866,6 +866,25 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });
 
+test( "filter multiple fields - AND, multiple values - OR - Part 2", function() {
+    expect( 3 );
+
+    var filtered = userStore2.filter({
+        fname: {
+            data: [ "John", "Jane" ],
+            matchAny: true
+        },
+        dept: {
+            data: [ "Accounting", "IT" ],
+            matchAny: true
+        }
+    }, false );
+
+    equal( userStore2.read().length, 6, "Original Data Unchanged" );
+    equal( filtered.length, 3, "3 Items Matched Query" );
+    ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350, "Correct items returned" );
+});
+
 //create a default(memory) dataManager to store data for some tests
 var tasksStore = AeroGear.DataManager( "tasks" ).stores.tasks;
 
@@ -979,5 +998,76 @@ test( "filter single field Multiple Values, Array in Data, OR", function() {
     equal( tasksStore.read().length, 4, "Original Data Unchanged" );
     equal( filtered.length, 3, "3 Items Matched" );
 });
+
+
+
+
+test( "filter single field Multiple Values, Array in Data, OR", function() {
+    expect(2);
+
+    var filtered = tasksStore.filter({
+        tags: {
+            data: [ 111, 222 ],
+            matchAny: true
+        }
+    });
+
+    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
+    equal( filtered.length, 3, "3 Items Matched" );
+});
+
+
+test( "reset all data", function() {
+    expect( 1 );
+
+    tasksStore.save([
+        {
+            id: 123,
+            date: "2012-10-03",
+            title: "Task 0-1",
+            description: "Task 0-1 description Text",
+            project: "P1",
+            tags: [ "tag1" ]
+        },
+        {
+            id: 12345,
+            date: "2012-07-30",
+            title: "Task 1-1",
+            description: "Task 1-1 description text",
+            project: "P2",
+            tags: [ "tag1","tag2" ]
+        },
+        {
+            id: 67890,
+            date: "2012-07-30",
+            title: "Task 2-1",
+            description: "Task 2-1 description text",
+            project: "P3",
+            tags: [ "tag3" ]
+        }
+    ], true );
+
+    equal( tasksStore.read().length, 3, "3 Items Added" );
+});
+
+test( "New Unnamed Filter Test", function() {
+    expect(2);
+
+    var filtered = tasksStore.filter({
+            project: {
+                data: [ "P1", "P2" ],
+                matchAny: true
+            },
+            tags: {
+                data: [ "tag1" ],
+                matchAny: true
+            }
+    }, false );
+
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 1, "1 Item Matched" );
+});
+
+
 
 })( jQuery );
