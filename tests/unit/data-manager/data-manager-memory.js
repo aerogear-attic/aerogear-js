@@ -1050,7 +1050,7 @@ test( "reset all data", function() {
     equal( tasksStore.read().length, 3, "3 Items Added" );
 });
 
-test( "New Unnamed Filter Test", function() {
+test( "filter multiple fields - AND, multiple values - OR - Array in Data", function() {
     expect(2);
 
     var filtered = tasksStore.filter({
@@ -1068,6 +1068,23 @@ test( "New Unnamed Filter Test", function() {
     equal( filtered.length, 1, "1 Item Matched" );
 });
 
+test( "filter multiple fields - OR, multiple values - OR - Array in Data", function() {
+    expect(2);
+
+    var filtered = tasksStore.filter({
+            project: {
+                data: [ "P1", "P2" ],
+                matchAny: true
+            },
+            tags: {
+                data: [ "tag1" ],
+                matchAny: true
+            }
+    }, true );
+
+    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
+    equal( filtered.length, 2, "1 Item Matched" );
+});
 
 
 })( jQuery );
