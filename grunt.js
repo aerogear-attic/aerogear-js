@@ -75,7 +75,8 @@ module.exports = function(grunt) {
             },
             globals: {
                 jQuery: true,
-                AeroGear: true
+                AeroGear: true,
+                uuid: true
             }
         },
         uglify: {}
