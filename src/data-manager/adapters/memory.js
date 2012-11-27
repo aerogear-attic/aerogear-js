@@ -287,7 +287,7 @@
      */
     AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
         var filtered,
-            i, j, k;
+            key, j, k, l;
 
         if ( !filterParameters ) {
             filtered = this.getData() || [];
@@ -299,26 +299,36 @@
                 keys = Object.keys( filterParameters ),
                 filterObj, paramMatch, paramResult;
 
-            for ( i = 0; i < keys.length; i++ ) {
-                if ( filterParameters[ keys[ i ] ].data ) {
+            for ( key = 0; key < keys.length; key++ ) {
+                if ( filterParameters[ keys[ key ] ].data ) {
                     // Parameter value is an object
-                    filterObj = filterParameters[ keys[ i ] ];
+                    filterObj = filterParameters[ keys[ key ] ];
                     paramResult = filterObj.matchAny ? false : true;
 
                     for ( j = 0; j < filterObj.data.length; j++ ) {
-                        if( AeroGear.isArray( value[ keys[ i ] ] ) ) {
-                            if(value[ keys [ i ] ].length ) {
+                        if( AeroGear.isArray( value[ keys[ key ] ] ) ) {
+                            if(value[ keys [ key ] ].length ) {
                                 if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ) {
                                     paramResult = true;
                                     break;
                                 } else {
-                                    for( k = 0; k < value[ keys[ i ] ].length; k++ ) {
-                                        if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ][ k ] ) {
+                                    for( k = 0; k < value[ keys[ key ] ].length; k++ ) {
+                                        if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ key ] ][ k ] ) {
                                             // At least one value must match and this one does so return true
                                             paramResult = true;
-                                            break;
+                                            if( matchAny ) {
+                                                break;
+                                            } else {
+                                                for( l = 0; l < value[ keys[ key ] ].length; l++ ) {
+                                                    if( !matchAny && filterObj.data[ j ] !== value[ keys[ key ] ][ l ] ) {
+                                                        // All must match but this one doesn't so return false
+                                                        paramResult = false;
+                                                        break;
+                                                    }
+                                                }
+                                            }
                                         }
-                                        if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ][ k ] ) {
+                                        if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ key ] ][ k ] ) {
                                             // All must match but this one doesn't so return false
                                             paramResult = false;
                                             break;
@@ -329,12 +339,12 @@
                                 paramResult = false;
                             }
                         } else {
-                            if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ i ] ] ) {
+                            if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ key ] ] ) {
                                 // At least one value must match and this one does so return true
                                 paramResult = true;
                                 break;
                             }
-                            if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ i ] ] ) {
+                            if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ key ] ] ) {
                                 // All must match but this one doesn't so return false
                                 paramResult = false;
                                 break;
@@ -343,17 +353,17 @@
                     }
                 } else {
                     // Filter on parameter value
-                    if( AeroGear.isArray( value[ keys[ i ] ] ) ) {
+                    if( AeroGear.isArray( value[ keys[ key ] ] ) ) {
                         paramResult = matchAny ? false: true;
 
-                        if(value[ keys[ i ] ].length ) {
-                            for(j = 0; j < value[ keys[ i ] ].length; j++ ) {
-                                if( matchAny && filterParameters[ keys[ i ] ] === value[ keys[ i ] ][ j ]  ) {
+                        if(value[ keys[ key ] ].length ) {
+                            for(j = 0; j < value[ keys[ key ] ].length; j++ ) {
+                                if( matchAny && filterParameters[ keys[ key ] ] === value[ keys[ key ] ][ j ]  ) {
                                     //at least one must match and this one does so return true
                                     paramResult = true;
                                     break;
                                 }
-                                if( !matchAny && filterParameters[ keys[ i ] ] !== value[ keys[ i ] ][ j ] ) {
+                                if( !matchAny && filterParameters[ keys[ key ] ] !== value[ keys[ key ] ][ j ] ) {
                                     //All must match but this one doesn't so return false
                                     paramResult = false;
                                     break;
@@ -363,7 +373,7 @@
                             paramResult = false;
                         }
                     } else {
-                         paramResult = filterParameters[ keys[ i ] ] === value[ keys[ i ] ] ? true : false;
+                         paramResult = filterParameters[ keys[ key ] ] === value[ keys[ key ] ] ? true : false;
                     }
                 }
 
