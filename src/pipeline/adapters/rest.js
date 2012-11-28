@@ -87,7 +87,7 @@
         Reads data from the specified endpoint
         @param {Object} [options={}] - Additional options
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-        @param {Object} [options.data] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
+        @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
         @param {Object} [options.id] - the value to append to the endpoint URL,  should be the same as the pipelines recordId
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
@@ -158,6 +158,7 @@
         };
         extraOptions = {
             type: "GET",
+            data: options.query,
             success: success,
             error: error,
             url: url,

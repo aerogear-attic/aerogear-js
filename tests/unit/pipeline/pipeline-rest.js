@@ -135,14 +135,14 @@ asyncTest( "read method", function() {
     });
 
     var read2 = pipe.read({
-        data: { limit: 1 },
+        query: { limit: 1 },
         success: function( data, textStatus, jqXHR ) {
             equal( data[ 0 ].id, 12345, "Read only first record - data option" );
         }
     });
 
     var read3 = pipe.read({
-        data: { limit: 1 },
+        query: { limit: 1 },
         success: function( data, textStatus, jqXHR ) {
             equal( data[ 0 ].id, 12345, "Read only first record - ajax data option" );
         }
