@@ -1,29 +1,42 @@
-console.log(document.referrer);
 (function( $ ) {
 
 // Do not reorder tests on rerun
 QUnit.config.reorder = false;
 
-module( "DataManager: Memory" );
+// Empty stores before starting tests
+for ( var sessionItem in window.sessionStorage ) {
+    sessionStorage.removeItem( sessionItem );
+}
+for ( var localItem in window.localStorage ) {
+    localStorage.removeItem( localItem );
+}
+
+module( "DataManager: SessionLocal" );
 
 test( "create - name string", function() {
     expect( 2 );
 
-    var dm = AeroGear.DataManager( "createTest1" ).stores;
+    var dm = AeroGear.DataManager({ name: "createTest1", type: "SessionLocal" }).stores;
     equal( Object.keys( dm ).length, 1, "Single Store created" );
     equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
 });
 
-test( "create - name array", function() {
+test( "create - array", function() {
     expect( 4 );
 
     var dm = AeroGear.DataManager([
-        "createTest21",
+        {
+            name: "createTest21",
+            type: "SessionLocal"
+        },
         {
             name: "createTest22",
-            type: "Memory"
+            type: "SessionLocal"
         },
-        "createTest23"
+        {
+            name: "createTest23",
+            type: "SessionLocal"
+        }
     ]).stores;
 
     equal( Object.keys( dm ).length, 3, "3 Stores created" );
@@ -32,30 +45,18 @@ test( "create - name array", function() {
     equal( Object.keys( dm )[ 2 ], "createTest23", "Store Name createTest23" );
 });
 
-test( "create - object", function() {
-    expect( 3 );
-
-    var dm = AeroGear.DataManager([
-        {
-            name: "createTest31"
-        },
-        {
-            name: "createTest32",
-            type: "Memory"
-        }
-    ]).stores;
-
-    equal( Object.keys( dm ).length, 2, "2 Stores created" );
-    equal( Object.keys( dm )[ 0 ], "createTest31", "Store Name createTest31" );
-    equal( Object.keys( dm )[ 1 ], "createTest32", "Store Name createTest32" );
-});
-
 test( "add and remove - string ", function() {
     expect( 5 );
 
     var dm = AeroGear.DataManager();
-    dm.add( "addTest1" ),
-    dm.add( "addTest2" );
+    dm.add({
+        name: "addTest1",
+        type: "SessionLocal"
+    }),
+    dm.add({
+        name: "addTest2",
+        type: "SessionLocal"
+    });
 
     equal( Object.keys( dm.stores ).length, 2, "2 Stores added" );
     equal( Object.keys( dm.stores )[ 0 ], "addTest1", "Store Name addTest1" );
@@ -64,8 +65,6 @@ test( "add and remove - string ", function() {
     dm.remove( "addTest1" );
     equal( Object.keys( dm.stores ).length, 1, "1 Stores removed" );
     equal( dm.stores.addTest1, undefined, "Store Name addTest1 no longer exists" );
-
-
 });
 
 test( "add and remove - array ", function() {
@@ -73,11 +72,18 @@ test( "add and remove - array ", function() {
 
     var dm = AeroGear.DataManager();
     dm.add([
-        "addTest3",
         {
-            name: "addTest4"
+            name: "addTest3",
+            type: "SessionLocal"
         },
-        "addTest5"
+        {
+            name: "addTest4",
+            type: "SessionLocal"
+        },
+        {
+            name: "addTest5",
+            type: "SessionLocal"
+        }
     ]);
 
     equal( Object.keys( dm.stores ).length, 3, "3 Stores added" );
@@ -89,8 +95,6 @@ test( "add and remove - array ", function() {
     equal( Object.keys( dm.stores ).length, 1, "2 Stores removed" );
     equal( dm.stores.addTest4, undefined, "Store Name addTest4 no longer exists" );
     equal( dm.stores.addTest5, undefined, "Store Name addTest5 no longer exists" );
-
-
 });
 
 test( "add and remove - object ", function() {
@@ -99,10 +103,12 @@ test( "add and remove - object ", function() {
     var dm = AeroGear.DataManager();
     dm.add([
         {
-            name: "addTest6"
+            name: "addTest6",
+            type: "SessionLocal"
         },
         {
-            name: "addTest7"
+            name: "addTest7",
+            type: "SessionLocal"
         }
     ]);
 
@@ -117,15 +123,15 @@ test( "add and remove - object ", function() {
     dm.remove( [ { name: "addTest7" } ] );
     equal( Object.keys( dm.stores ).length, 0, "1 Stores removed" );
     equal( dm.stores.addTest7, undefined, "Store Name addTest7 no longer exists" );
-
-
-
 });
 
-module( "DataManager: Memory - Data Manipulation" );
+module( "DataManager: SessionLocal - Data Manipulation" );
 
-// Create a default (memory) dataManager to store data for some tests
-var userStore = AeroGear.DataManager( "users" ).stores.users;
+// Create a session based dataManager to store data for some tests
+var userStore = AeroGear.DataManager({
+    name: "users",
+    type: "SessionLocal"
+}).stores.users;
 
 // Initialize the data set
 test( "save - initialize", function() {
@@ -170,7 +176,7 @@ test( "save - initialize", function() {
         }
     ]);
 
-    equal( userStore.getData().length, 6, "Initial data added to store" );
+    equal( userStore.read().length, 6, "Initial data added to store" );
 });
 
 // Read data
@@ -329,7 +335,7 @@ test( "reset all data", function() {
             lname: "Person",
             dept: "Marketing"
         }
-    ], true);
+    ], { reset: true });
     equal( userStore.read().length, 6, "Read all data" );
     equal( userStore.read( 12345 ).length, 1, "Removed item has returned" );
     equal( userStore.read( 12351 ).length, 0, "Added item doesn't exist" );
@@ -431,8 +437,13 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });
 
-//create a default(memory) dataManager to store data for some tests
-var tasksStore = AeroGear.DataManager( "tasks" ).stores.tasks;
+//create a localStorage based dataManager to store data for some tests
+var tasksStore = AeroGear.DataManager({
+    name: "tasks",
+    type: "SessionLocal",
+    settings: {
+        storageType: "localStorage"
+    }}).stores.tasks;
 
 test( "reset all data", function() {
     expect( 1 );
@@ -470,7 +481,7 @@ test( "reset all data", function() {
             project: 33,
             tags: [ 222 ]
         }
-    ], true );
+    ], { reset: true });
 
     equal( tasksStore.read().length, 4, "4 Items Added" );
 });
@@ -545,12 +556,14 @@ test( "filter single field Multiple Values, Array in Data, OR", function() {
     equal( filtered.length, 3, "3 Items Matched" );
 });
 
-module( "DataManager: Memory - Data Manipulation with Sync" );
+module( "DataManager: SessionLocal - Data Manipulation with Sync" );
 
-// Create a memory store that tracs data status to store data for some tests
+// Create a local store that tracs data status to store data for some tests
 var userStore2 = AeroGear.DataManager({
-    name:"users",
+    name: "users",
+    type: "SessionLocal",
     settings: {
+        storageType: "localStorage",
         dataSync: true
     }
 }).stores.users;
@@ -598,7 +611,7 @@ test( "save - initialize", function() {
         }
     ]);
 
-    equal( userStore2.getData().length, 6, "Initial data added to store" );
+    equal( userStore2.read().length, 6, "Initial data added to store" );
 });
 
 // Read data
@@ -765,7 +778,7 @@ test( "reset all data", function() {
             lname: "Person",
             dept: "Marketing"
         }
-    ], true);
+    ], { reset: true });
     equal( userStore2.read().length, 6, "Read all data" );
     equal( userStore2.read( 12345 ).length, 1, "Removed item has returned" );
     equal( userStore2.read( 12351 ).length, 0, "Added item doesn't exist" );
@@ -867,118 +880,5 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });
 
-//create a default(memory) dataManager to store data for some tests
-var tasksStore = AeroGear.DataManager( "tasks" ).stores.tasks;
-
-test( "reset all data", function() {
-    expect( 1 );
-
-    tasksStore.save([
-        {
-            id: 123,
-            date: "2012-10-03",
-            title: "Task 0-1",
-            description: "Task 0-1 description Text",
-            project: 99,
-            tags: [ ]
-        },
-        {
-            id: 12345,
-            date: "2012-07-30",
-            title: "Task 1-1",
-            description: "Task 1-1 description text",
-            project: 11,
-            tags: [ 111 ]
-        },
-        {
-            id: 67890,
-            date: "2012-07-30",
-            title: "Task 2-1",
-            description: "Task 2-1 description text",
-            project: 22,
-            tags: [ 111, 222 ]
-        },
-        {
-            id: 54321,
-            date: "2012-07-30",
-            title: "Task 3-1",
-            description: "Task 3-1 description text",
-            project: 33,
-            tags: [ 222 ]
-        }
-    ], true );
-
-    equal( tasksStore.read().length, 4, "4 Items Added" );
-});
-
-test( "filter single field , Array in Data, AND", function() {
-    expect( 2 );
-
-    var filtered = tasksStore.filter( { tags: 111 } );
-
-    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
-    equal( filtered.length, 1, "1 Item Matched" );
-});
-
-test( "filter single field , Array in Data, OR", function() {
-    expect( 2 );
-
-    var filtered = tasksStore.filter( { tags: 111 }, true );
-
-    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
-    equal( filtered.length, 2, "2 Items Matched" );
-});
-
-test( "filter multiple fields , Array in Data, AND ", function() {
-    expect( 2 );
-
-    var filtered = tasksStore.filter({
-        tags: 111,
-        project: 11
-    }, false );
-
-    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
-    equal( filtered.length, 1, "1 Item Matched" );
-});
-
-test( "filter multiple fields , Array in Data, OR ", function() {
-    expect( 2 );
-
-    var filtered = tasksStore.filter({
-        tags: 111,
-        project: 11
-    }, true );
-
-    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
-    equal( filtered.length, 2, "2 Item Matched" );
-});
-
-test( "filter single field Multiple Values, Array in Data, AND", function() {
-    expect(2);
-
-    var filtered = tasksStore.filter({
-        tags: {
-            data: [ 111, 222 ],
-            matchAny: false
-        }
-    });
-
-    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
-    equal( filtered.length, 1, "1 Item Matched" );
-});
-
-test( "filter single field Multiple Values, Array in Data, OR", function() {
-    expect(2);
-
-    var filtered = tasksStore.filter({
-        tags: {
-            data: [ 111, 222 ],
-            matchAny: true
-        }
-    });
-
-    equal( tasksStore.read().length, 4, "Original Data Unchanged" );
-    equal( filtered.length, 3, "3 Items Matched" );
-});
 
 })( jQuery );
