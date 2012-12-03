@@ -882,6 +882,14 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
 
 module( "DataManager: SessionLocal - Size Limits" );
 
+// Empty stores before size tests
+for ( sessionItem in window.sessionStorage ) {
+    sessionStorage.removeItem( sessionItem );
+}
+for ( localItem in window.localStorage ) {
+    localStorage.removeItem( localItem );
+}
+
 // Create a session and a local store for testing data size limits
 var sizeErrorHandler = function( error, data ) {
         ok( true, "Error properly handled" );
@@ -898,8 +906,7 @@ var sizeErrorHandler = function( error, data ) {
         name: "size2",
         type: "SessionLocal",
         settings: {
-            storageType: "localStorage",
-            dataSync: true
+            storageType: "localStorage"
         }
     }
 ]);
@@ -908,6 +915,31 @@ test( "size limit - sessionStorage", function() {
     expect( 2 );
 
     var store = sizeStores.stores.size1,
+        data1 = new Array( 1048576 ).join( "x" ),
+        data2 = new Array( 1048576 * 6 ).join( "x" ),
+        max = 12;
+
+    store.save({
+        id: "test",
+        val: data1
+    }, {
+        storageSuccess: sizeSuccessHandler,
+        storageError: sizeErrorHandler
+    });
+
+    store.save({
+        id: "test",
+        val: data2
+    }, {
+        storageSuccess: sizeSuccessHandler,
+        storageError: sizeErrorHandler
+    });
+});
+
+test( "size limit - localStorage", function() {
+    expect( 2 );
+
+    var store = sizeStores.stores.size2,
         data1 = new Array( 1048576 ).join( "x" ),
         data2 = new Array( 1048576 * 6 ).join( "x" ),
         max = 12;
