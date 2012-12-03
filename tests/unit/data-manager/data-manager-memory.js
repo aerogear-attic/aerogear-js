@@ -1051,7 +1051,7 @@ test( "reset all data", function() {
 });
 
 test( "filter multiple fields - AND, multiple values - OR - Array in Data", function() {
-    expect(2);
+    expect(3);
 
     var filtered = tasksStore.filter({
             project: {
@@ -1066,24 +1066,49 @@ test( "filter multiple fields - AND, multiple values - OR - Array in Data", func
 
     equal( tasksStore.read().length, 3, "Original Data Unchanged" );
     equal( filtered.length, 1, "1 Item Matched" );
+    ok( filtered[ 0 ].id === 123, "Correct items returned" );
+
 });
 
 test( "filter multiple fields - OR, multiple values - OR - Array in Data", function() {
-    expect(2);
+    expect(4);
+
+    tasksStore.save([
+        {
+            id: 678901,
+            date: "2012-07-30",
+            title: "Task 4-1",
+            description: "Task 5-1 description text",
+            project: "P4",
+            tags: [ "tag3", "tag4" ]
+        },
+        {
+            id: 678902,
+            date: "2012-07-30",
+            title: "Task 5-1",
+            description: "Task 5-1 description text",
+            project: "P5",
+            tags: [ "tag3", "tag5" ]
+        }
+    ]);
+
+    equal( tasksStore.read().length, 5, "2 New Entries Added" );
 
     var filtered = tasksStore.filter({
             project: {
-                data: [ "P1", "P2" ],
+                data: [ "P1", "P5" ],
                 matchAny: true
             },
             tags: {
-                data: [ "tag1" ],
+                data: [ "tag3" ],
                 matchAny: true
             }
     }, true );
 
-    equal( tasksStore.read().length, 3, "Original Data Unchanged" );
-    equal( filtered.length, 2, "1 Item Matched" );
+    equal( tasksStore.read().length, 5, "Original Data Unchanged" );
+    equal( filtered.length, 4, "4 Item Matched" );
+    ok( filtered[ 0 ].id != 12345 && filtered[ 1 ].id != 12345 && filtered[ 2 ].id != 12345, "Correct items returned" );
+
 });
 
 
