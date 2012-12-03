@@ -60,6 +60,8 @@
             @param {Object} [options] - Extra options to pass to save
             @param {Object} [options.noSync] - If true, do not sync this save to the server (usually used internally during a sync to avoid loops)
             @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
+            @param {Function} [options.storageSuccess] - A callback that can be used for handling success when syncing the data to the session or local store. The function receives the data being saved.
+            @param {Function} [options.storageError] - A callback that can be used for handling errors when syncing the data to the session or local store. The function receives the error thrown and the data being saved as arguments.
             @returns {Array} Returns the updated data from the store
             @example
             [TODO]
@@ -70,7 +72,18 @@
                 AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, arguments );
 
                 // Sync changes to persistent store
-                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.getData() ) );
+                try {
+                    window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.getData() ) );
+                    if ( options && options.storageSuccess ) {
+                        options.storageSuccess( data );
+                    }
+                } catch( error ) {
+                    if ( options && options.storageError ) {
+                        options.storageError( error, data );
+                    } else {
+                        throw error;
+                    }
+                }
             }, enumerable: true, configurable: true, writable: true
         },
 

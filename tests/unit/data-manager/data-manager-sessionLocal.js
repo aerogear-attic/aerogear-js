@@ -880,5 +880,53 @@ test( "filter multiple fields - OR, multiple values - OR", function() {
     ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
 });
 
+module( "DataManager: SessionLocal - Size Limits" );
+
+// Create a session and a local store for testing data size limits
+var sizeErrorHandler = function( error, data ) {
+        ok( true, "Error properly handled" );
+    },
+    sizeSuccessHandler = function( data ) {
+        ok( true, "Data Saved Successfully" );
+    },
+    sizeStores = AeroGear.DataManager([
+    {
+        name: "size1",
+        type: "SessionLocal"
+    },
+    {
+        name: "size2",
+        type: "SessionLocal",
+        settings: {
+            storageType: "localStorage",
+            dataSync: true
+        }
+    }
+]);
+
+test( "size limit - sessionStorage", function() {
+    expect( 2 );
+
+    var store = sizeStores.stores.size1,
+        data1 = new Array( 1048576 ).join( "x" ),
+        data2 = new Array( 1048576 * 6 ).join( "x" ),
+        max = 12;
+
+    store.save({
+        id: "test",
+        val: data1
+    }, {
+        storageSuccess: sizeSuccessHandler,
+        storageError: sizeErrorHandler
+    });
+
+    store.save({
+        id: "test",
+        val: data2
+    }, {
+        storageSuccess: sizeSuccessHandler,
+        storageError: sizeErrorHandler
+    });
+});
 
 })( jQuery );
