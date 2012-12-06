@@ -27,12 +27,8 @@
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
-            type = "Rest";
-
-            if( settings.jsonp ) {
-                ajaxSettings.dataType = "jsonp",
-                ajaxSettings.jsonp = settings.jsonp.jsonp ? settings.jsonp.jsonp : "callback";
-            }
+            type = "Rest",
+            crossDomainSettings = settings.crossdomain || {};
 
         // Privileged Methods
         /**
@@ -85,6 +81,16 @@
          */
         this.getRecordId = function() {
             return recordId;
+        };
+
+        /**
+            Returns the value of the private crossDomainSettings
+            @private
+            @augments Rest
+            @returns {Object}
+        */
+        this.getCrossDomainSettings = function() {
+            return crossDomainSettings;
         };
     };
 

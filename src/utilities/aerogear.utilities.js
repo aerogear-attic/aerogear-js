@@ -12,7 +12,19 @@
                 settings = $.extend( {}, {
                     contentType: "application/json",
                     dataType: "json"
-                }, options );
+                }, options ),
+                crossDomain = caller.getCrossDomainSettings(),
+                jsonpOptions = {};
+
+            //Check for CrossDomain
+            if( crossDomain ) {
+                if( crossDomain.type === "jsonp" || !AeroGear.hasCORS() ) {
+                    jsonpOptions.dataType = "jsonp";
+                    jsonpOptions.jsonp = crossDomain.jsonp ? crossDomain.jsonp : "callback";
+
+                    settings = $.extend( {}, settings, jsonpOptions );
+                }
+            }
 
             this.done( settings.success );
             this.fail( settings.error );
@@ -65,5 +77,8 @@
      */
     AeroGear.isArray = function( obj ) {
         return ({}).toString.call( obj ) === "[object Array]";
+    };
+    AeroGear.hasCORS = function() {
+        return ( $.support.cors || ( typeof window.XDomainRequest != "undefined" ) );
     };
 })( AeroGear, jQuery );
