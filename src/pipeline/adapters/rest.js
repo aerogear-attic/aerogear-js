@@ -8,6 +8,7 @@
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @param {Boolean/Object} [settings.jsonp] - settings to be passed for jsonp setup ***Pipe becomes read only***
         @returns {Object} The created pipe
      */
     AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
@@ -26,7 +27,8 @@
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
-            type = "Rest";
+            type = "Rest",
+            crossDomainSettings = settings.crossdomain || {};
 
         // Privileged Methods
         /**
@@ -79,6 +81,16 @@
          */
         this.getRecordId = function() {
             return recordId;
+        };
+
+        /**
+            Returns the value of the private crossDomainSettings
+            @private
+            @augments Rest
+            @returns {Object}
+        */
+        this.getCrossDomainSettings = function() {
+            return crossDomainSettings;
         };
     };
 

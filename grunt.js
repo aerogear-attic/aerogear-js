@@ -24,11 +24,11 @@ module.exports = function(grunt) {
         },
         concat: {
             dist: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:external/uuid.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>', '<file_strip_banner:src/authentication/aerogear.auth.js>', '<file_strip_banner:src/authentication/adapters/rest.js>'],
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:external/uuid.js>', '<file_strip_banner:external/xdr.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>', '<file_strip_banner:src/data-manager/aerogear.datamanager.js>', '<file_strip_banner:src/data-manager/adapters/memory.js>', '<file_strip_banner:src/authentication/aerogear.auth.js>', '<file_strip_banner:src/authentication/adapters/rest.js>'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:external/uuid.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>'],
+                src: ['<banner:meta.banner>', '<file_strip_banner:src/aerogear.core.js>', '<file_strip_banner:src/utilities/aerogear.utilities.js>', '<file_strip_banner:external/uuid.js>', '<file_strip_banner:external/xdr.js>', '<file_strip_banner:src/pipeline/aerogear.pipeline.js>', '<file_strip_banner:src/pipeline/adapters/rest.js>'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
