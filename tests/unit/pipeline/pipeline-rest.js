@@ -126,7 +126,7 @@ test( "remove method", function() {
 
 // Read method test
 asyncTest( "read method", function() {
-    expect( 5 );
+    expect( 4 );
 
     var read1 = pipe.read({
         success: function( data, textStatus, jqXHR ) {
@@ -137,18 +137,11 @@ asyncTest( "read method", function() {
     var read2 = pipe.read({
         query: { limit: 1 },
         success: function( data, textStatus, jqXHR ) {
-            equal( data[ 0 ].id, 12345, "Read only first record - data option" );
+            equal( data.length, 1, "Read only first record - query option" );
         }
     });
 
-    var read3 = pipe.read({
-        query: { limit: 1 },
-        success: function( data, textStatus, jqXHR ) {
-            equal( data[ 0 ].id, 12345, "Read only first record - ajax data option" );
-        }
-    });
-
-    $.when( read1, read2, read3 ).done( function( r1, r2, r3 ) {
+    $.when( read1, read2 ).done( function( r1, r2 ) {
         equal( taskStore.getData(), null, "Store has no data" );
         $.when( pipe.read( { stores: taskStore } ) ).done( function( r4 ) {
             equal( taskStore.getData()[1].id, 67890, "Read all data with no params" );

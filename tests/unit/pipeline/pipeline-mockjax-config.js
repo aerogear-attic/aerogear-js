@@ -10,6 +10,23 @@ $.mockjax({
     headers: {
         "Content-Type": "application/json"
     },
+    data: { limit: "1" },
+    response: function( settings ) {
+        console.log(this, settings);
+            this.responseText = JSON.stringify([{
+            id: 12345,
+            title: "Do Something",
+            date: "2012-08-01"
+        }]);
+    }
+});
+
+$.mockjax({
+    url: "tasks",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
     responseText: [
         {
             id: 12345,
@@ -22,20 +39,6 @@ $.mockjax({
             date: "2012-08-02"
         }
     ]
-});
-
-$.mockjax({
-    url: "tasks",
-    type: "GET",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    data: { limit: 1 },
-    responseText: {
-        id: 12345,
-        title: "Do Something",
-        date: "2012-08-01"
-    }
 });
 
 // save mocks
