@@ -92,6 +92,8 @@
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
+        @param {Mixed} [options.jsonp] - Turns jsonp on/off for reads, Set to true, or an object with options
+        @param {String} [options.jsonp.callback] - Override the callback function name in a jsonp request. This value will be used instead of 'callback' in the 'callback=?' part of the query string in the url
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
@@ -165,6 +167,11 @@
             statusCode: options.statusCode,
             complete: options.complete
         };
+
+        if( options.jsonp ) {
+            extraOptions.dataType = "jsonp";
+            extraOptions.jsonp = options.jsonp.callback ? options.jsonp.callback : "callback";
+        }
 
         return AeroGear.ajax( this, $.extend( {}, this.getAjaxSettings(), extraOptions ) );
     };
