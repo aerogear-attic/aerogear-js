@@ -1349,10 +1349,13 @@ AeroGear.Core = function() {
             name = storeName,
             dataSync = settings.dataSync,
             appContext = document.location.pathname.replace(/[\/\.]/g,"-"),
-            storeKey = name + appContext;
+            storeKey = name + appContext,
+            currentData = JSON.parse( window[ storeType ].getItem( storeKey ) );
 
         // Initialize data from the persistent store if it exists
-        data = JSON.parse( window[ storeType ].getItem( storeKey ) );
+        if ( currentData ) {
+            AeroGear.DataManager.adapters.Memory.prototype.save.call( this, currentData, true );
+        }
 
         // Privileged Methods
         /**
