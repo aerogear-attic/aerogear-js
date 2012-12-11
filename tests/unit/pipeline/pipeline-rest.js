@@ -318,43 +318,4 @@ asyncTest( "ID added to end point with custom recordID", function() {
         }
     });
 });
-
-var pipeline3 = AeroGear.Pipeline( "jsonpTest" );
-
-
-var pipe8 = pipeline3.pipes.jsonpTest;
-
-asyncTest( "Pipeline JSONP read - default", function() {
-    expect( 2 );
-
-    var read = pipe8.read({
-        error: function( data, textStatus, jqXHR ) {
-            equal( JSON.parse(data.responseText).callback, "callback", "default JSONP callback function Query Param set correctly" );
-            equal( JSON.parse(data.responseText).dataType, "jsonp", "JSONP data type set correctly" );
-            start();
-        },
-        jsonp: true
-    });
-
-});
-
-asyncTest( "Pipeline JSONP read - custom", function() {
-    expect( 2 );
-
-    var read = pipe8.read({
-        error: function( data, textStatus, jqXHR ) {
-            equal( JSON.parse(data.responseText).callback, "jsonp", "Custom JSONP callback function Query Param set correctly" );
-            equal( JSON.parse(data.responseText).dataType, "jsonp", "JSONP data type set correctly" );
-            start();
-        },
-        jsonp: {
-            callback: "jsonp"
-        }
-    });
-
-});
-
-
-
-
 })( jQuery );
