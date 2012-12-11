@@ -160,4 +160,18 @@ $.mockjax({
     }
 });
 
+$.mockjax({
+    url: "jsonpTest",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    response: function( settings ) {
+        this.responseText = JSON.stringify({
+            "callback": settings.jsonp,
+            "dataType": settings.dataType
+        });
+    }
+});
+
 })( jQuery );

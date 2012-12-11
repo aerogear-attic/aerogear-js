@@ -318,6 +318,4 @@ asyncTest( "ID added to end point with custom recordID", function() {
         }
     });
 });
-
-
 })( jQuery );
