@@ -12,7 +12,6 @@ $.mockjax({
     },
     data: { limit: "1" },
     response: function( settings ) {
-        console.log(this, settings);
             this.responseText = JSON.stringify([{
             id: 12345,
             title: "Do Something",
