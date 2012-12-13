@@ -366,7 +366,6 @@
                                 paramResult = false;
                             }
                         } else {
-                            console.log(filterObj.data[ j ]);
                             if ( typeof filterObj.data[ j ] === "object" ) {
                                 if ( filterObj.matchAny && that.traverseObjects( keys[ key ], filterObj.data[ j ], value[ keys[ key ] ] ) ) {
                                     // At least one value must match and this one does so return true
