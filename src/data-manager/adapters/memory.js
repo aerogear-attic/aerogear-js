@@ -135,6 +135,33 @@
         this.getDataSync = function() {
             return dataSync;
         };
+
+        /**
+            Little utility used to compare nested object values in the filter method
+            @private
+            @augments Memory
+            @param {String} nestedKey - Filter key to test
+            @param {Object} nestedFilter - Filter object to test
+            @param {Object} nestedValue - Value object to test
+            @returns {Boolean}
+         */
+        this.traverseObjects = function( nestedKey, nestedFilter, nestedValue ) {
+            while ( typeof nestedFilter === "object" ) {
+                if ( nestedValue ) {
+                    // Value contains this key so continue checking down the object tree
+                    nestedKey = Object.keys( nestedFilter )[ 0 ];
+                    nestedFilter = nestedFilter[ nestedKey ];
+                    nestedValue = nestedValue[ nestedKey ];
+                } else {
+                    break;
+                }
+            }
+            if ( nestedFilter === nestedValue ) {
+                return true;
+            } else {
+                return false;
+            }
+        };
     };
 
     // Public Methods
@@ -286,8 +313,8 @@
         });
      */
     AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
-        var filtered,
-            key, j, k, l;
+        var filtered, key, j, k, l, nestedKey, nestedFilter, nestedValue,
+            that = this;
 
         if ( !filterParameters ) {
             filtered = this.getData() || [];
@@ -307,7 +334,7 @@
 
                     for ( j = 0; j < filterObj.data.length; j++ ) {
                         if( AeroGear.isArray( value[ keys[ key ] ] ) ) {
-                            if(value[ keys [ key ] ].length ) {
+                            if( value[ keys [ key ] ].length ) {
                                 if( $( value[ keys ] ).not( filterObj.data ).length === 0 && $( filterObj.data ).not( value[ keys ] ).length === 0 ) {
                                     paramResult = true;
                                     break;
@@ -339,15 +366,29 @@
                                 paramResult = false;
                             }
                         } else {
-                            if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ key ] ] ) {
-                                // At least one value must match and this one does so return true
-                                paramResult = true;
-                                break;
-                            }
-                            if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ key ] ] ) {
-                                // All must match but this one doesn't so return false
-                                paramResult = false;
-                                break;
+                            console.log(filterObj.data[ j ]);
+                            if ( typeof filterObj.data[ j ] === "object" ) {
+                                if ( filterObj.matchAny && that.traverseObjects( keys[ key ], filterObj.data[ j ], value[ keys[ key ] ] ) ) {
+                                    // At least one value must match and this one does so return true
+                                    paramResult = true;
+                                    break;
+                                }
+                                if ( !filterObj.matchAny && !that.traverseObjects( keys[ key ], filterObj.data[ j ], value[ keys[ key ] ] ) ) {
+                                    // All must match but this one doesn't so return false
+                                    paramResult = false;
+                                    break;
+                                }
+                            } else {
+                                if ( filterObj.matchAny && filterObj.data[ j ] === value[ keys[ key ] ] ) {
+                                    // At least one value must match and this one does so return true
+                                    paramResult = true;
+                                    break;
+                                }
+                                if ( !filterObj.matchAny && filterObj.data[ j ] !== value[ keys[ key ] ] ) {
+                                    // All must match but this one doesn't so return false
+                                    paramResult = false;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -356,7 +397,7 @@
                     if( AeroGear.isArray( value[ keys[ key ] ] ) ) {
                         paramResult = matchAny ? false: true;
 
-                        if(value[ keys[ key ] ].length ) {
+                        if( value[ keys[ key ] ].length ) {
                             for(j = 0; j < value[ keys[ key ] ].length; j++ ) {
                                 if( matchAny && filterParameters[ keys[ key ] ] === value[ keys[ key ] ][ j ]  ) {
                                     //at least one must match and this one does so return true
@@ -373,7 +414,11 @@
                             paramResult = false;
                         }
                     } else {
-                         paramResult = filterParameters[ keys[ key ] ] === value[ keys[ key ] ] ? true : false;
+                        if ( typeof filterParameters[ keys[ key ] ] === "object" ) {
+                            paramResult = that.traverseObjects( keys[ key ], filterParameters[ keys[ key ] ], value[ keys[ key ] ] );
+                        } else {
+                            paramResult = filterParameters[ keys[ key ] ] === value[ keys[ key ] ] ? true : false;
+                        }
                     }
                 }
 

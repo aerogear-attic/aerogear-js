@@ -1111,5 +1111,86 @@ test( "filter multiple fields - OR, multiple values - OR - Array in Data", funct
 
 });
 
+test( "filter data with nested objects", function() {
+    expect(7);
+
+    tasksStore.save([
+        {
+            id: 999999,
+            date: "2012-07-30",
+            title: "Task",
+            description: "Task description text",
+            nested: {
+                anotherNest: {
+                    "crazy.key": {
+                        val: 12345
+                    }
+                }
+            }
+        },
+        {
+            id: 999998,
+            date: "2012-07-30",
+            title: "Task",
+            description: "Task description text",
+            nested: {
+                someOtherNest: {
+                    "crazy.key": {
+                        val: 67890
+                    }
+                }
+            }
+        },
+        {
+            id: 999997,
+            date: "2012-07-30",
+            title: "Task",
+            description: "Task description text",
+            nested: {
+                someOtherNest: {
+                    "crazy.key": {
+                        val: 67890
+                    }
+                }
+            },
+            moreNesting: {
+                hi: "there"
+            }
+        }
+    ]);
+
+    equal( tasksStore.read().length, 8, "3 New EntryiesAdded" );
+
+    var filtered = tasksStore.filter({
+            nested: { anotherNest: { "crazy.key": { val: 12345 } } }
+        }),
+        filtered2 = tasksStore.filter({
+            nested: {
+                data: [ { anotherNest: { "crazy.key": { val: 12345 } } } ]
+            }
+        }),
+        filtered3 = tasksStore.filter({
+            nested: {
+                data: [ { anotherNest: { "crazy.key": { val: 12345 } } }, { someOtherNest: { "crazy.key": { val: 67890 } } } ],
+                matchAny: true
+            }
+        }),
+        filtered4 = tasksStore.filter({
+            nested: { someOtherNest: { "crazy.key": { val: 67890 } } },
+            moreNesting: { hi: "there" }
+        }),
+        filtered5 = tasksStore.filter({
+            nested: { someOtherNest: { "crazy.key": { val: 67890 } } },
+            moreNesting: { hi: "there" }
+        }, true);
+
+    equal( tasksStore.read().length, 8, "Original Data Unchanged" );
+    equal( filtered.length, 1, "Value only" );
+    equal( filtered2.length, 1, "Value in array" );
+    equal( filtered3.length, 3, "Single field - Multiple values" );
+    equal( filtered4.length, 1, "Multiple fields - Single value - AND" );
+    equal( filtered5.length, 2, "Multiple fields - Single value - OR" );
+});
+
 
 })( jQuery );
