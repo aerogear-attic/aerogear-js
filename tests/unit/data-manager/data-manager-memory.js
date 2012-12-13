@@ -1,4 +1,3 @@
-console.log(document.referrer);
 (function( $ ) {
 
 // Do not reorder tests on rerun
