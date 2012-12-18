@@ -2,6 +2,7 @@
     /**
         The SessionLocal adapter extends the Memory adapter to store data in either session or local storage which makes it a little more persistent than memory
         @constructs AeroGear.DataManager.adapters.SessionLocal
+        @mixes AeroGear.DataManager.adapters.Memory
         @param {String} storeName - the name used to reference this particular store
         @param {Object} [settings={}] - the settings to be passed to the adapter
         @param {Boolean} [settings.dataSync=false] - if true, any pipes associated with this store will attempt to keep the data in sync with the server (coming soon)
@@ -57,18 +58,6 @@
     // Inherit from the Memory adapter
     AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGear.DataManager.adapters.Memory(), {
         // Public Methods
-        /**
-            Saves data to the store, optionally clearing and resetting the data
-            @param {Object|Array} data - An object or array of objects representing the data to be saved to the store.
-            @param {Object} [options] - Extra options to pass to save
-            @param {Object} [options.noSync] - If true, do not sync this save to the server (usually used internally during a sync to avoid loops)
-            @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
-            @param {Function} [options.storageSuccess] - A callback that can be used for handling success when syncing the data to the session or local store. The function receives the data being saved.
-            @param {Function} [options.storageError] - A callback that can be used for handling errors when syncing the data to the session or local store. The function receives the error thrown and the data being saved as arguments.
-            @returns {Array} Returns the updated data from the store
-            @example
-            [TODO]
-         */
         save: {
             value: function( data, options ) {
                 // Call the super method
@@ -89,42 +78,6 @@
                 }
             }, enumerable: true, configurable: true, writable: true
         },
-
-        /**
-            Removes data from the store
-            @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
-            @param {Object} [options] - Extra options to pass to remove
-            @param {Object} [options.noSync] - If true, do not sync this remove to the server (usually used internally during a sync to avoid loops)
-            @returns {Array} Returns the updated data from the store
-            @example
-            var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
-
-            // Store a new task
-            dm.save({
-                title: "Created Task"
-            });
-
-            // Store another new task
-            dm.save({
-                title: "Another Created Task"
-            });
-
-            // Store one more new task
-            dm.save({
-                title: "And Another Created Task"
-            });
-
-            // Remove a particular item from the store by its id
-            var toRemove = dm.read()[ 0 ];
-            dm.remove( toRemove.id );
-
-            // Remove an item from the store using the data object
-            toRemove = dm.read()[ 0 ];
-            dm.remove( toRemove );
-
-            // Delete all remaining data from the store
-            dm.remove();
-         */
         remove: {
             value: function( toRemove, options ) {
                 // Call the super method
