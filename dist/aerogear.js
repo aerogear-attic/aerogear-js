@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-02
+/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-04
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright 2013, Red Hat, Inc., and individual contributors
@@ -101,6 +101,16 @@ AeroGear.Core = function() {
     };
 };
 
+/**
+    Utility function to test if an object is an Array
+    @private
+    @method
+    @param {Object} obj - This can be any object to test
+*/
+AeroGear.isArray = function( obj ) {
+    return ({}).toString.call( obj ) === "[object Array]";
+};
+
 (function( AeroGear, $, undefined ) {
     /**
         Wrapper utility around jQuery.ajax to preform some custom actions
@@ -158,16 +168,6 @@ AeroGear.Core = function() {
         promise.complete = deferred.always;
 
         return promise;
-    };
-
-    /**
-        Utility function to test if an object is an Array
-        @private
-        @method
-        @param {Object} obj - This can be any object to test
-     */
-    AeroGear.isArray = function( obj ) {
-        return ({}).toString.call( obj ) === "[object Array]";
     };
 })( AeroGear, jQuery );
 
