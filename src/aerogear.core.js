@@ -88,3 +88,13 @@ AeroGear.Core = function() {
         return this;
     };
 };
+
+/**
+    Utility function to test if an object is an Array
+    @private
+    @method
+    @param {Object} obj - This can be any object to test
+*/
+AeroGear.isArray = function( obj ) {
+    return ({}).toString.call( obj ) === "[object Array]";
+};
