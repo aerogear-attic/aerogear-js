@@ -128,7 +128,8 @@ test( "add and remove - object ", function() {
 module( "DataManager: SessionLocal - Data Manipulation" );
 
 // Create a session based dataManager to store data for some tests
-var userStore = AeroGear.DataManager({
+var userStoreReload,
+    userStore = AeroGear.DataManager({
     name: "users",
     type: "SessionLocal"
 }).stores.users;
@@ -177,6 +178,18 @@ test( "save - initialize", function() {
     ]);
 
     equal( userStore.read().length, 6, "Initial data added to store" );
+
+    userStoreReload = AeroGear.DataManager({
+        name: "users",
+        type: "SessionLocal"
+    }).stores.users;
+});
+
+// Check data was loaded from existing session store
+test( "load session stored data", function() {
+    expect( 1 );
+
+    equal( userStoreReload.read().length, 6, "Previously stored data added to store" );
 });
 
 // Read data
