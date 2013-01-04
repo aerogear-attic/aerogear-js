@@ -88,3 +88,7 @@ AeroGear.Core = function() {
         return this;
     };
 };
+
+AeroGear.isArray = function( obj ) {
+    return ({}).toString.call( obj ) === "[object Array]";
+};
