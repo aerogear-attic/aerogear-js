@@ -9,7 +9,7 @@ module.exports = function(grunt) {
                 '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
                 '<%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
                 '* JBoss, Home of Professional Open Source\n' +
-                '* Copyright <%= grunt.template.today("yyyy") %>, <%= pkg.author.name %>, and individual contributors\n' +
+                '* Copyright <%= pkg.author.name %>, and individual contributors\n' +
                 '*\n' +
                 '* Licensed under the Apache License, Version 2.0 (the "License");\n' +
                 '* you may not use this file except in compliance with the License.\n' +
