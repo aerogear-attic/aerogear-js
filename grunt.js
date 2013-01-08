@@ -76,14 +76,25 @@ module.exports = function(grunt) {
             globals: {
                 jQuery: true,
                 AeroGear: true,
-                uuid: true
+                uuid: true,
+                require: true
             }
         },
         uglify: {}
     });
 
+    var exec = require('child_process').exec;
+    grunt.registerTask('docs', function() {
+        grunt.log.writeln('Remove old docs');
+        exec('rm -r docs');
+        grunt.log.writeln('Old docs removed\nGenerate new docs');
+        exec('jsdoc src/ -r -d docs');
+        grunt.log.writeln('New docs generated');
+    });
+
     // Default task.
     grunt.registerTask('default', 'lint qunit concat:dist min:dist');
+    grunt.registerTask('build+docs', 'lint qunit concat:dist min:dist docs');
     grunt.registerTask('pipeline', 'lint qunit concat:pipeline min:custom');
     grunt.registerTask('data-manager', 'lint qunit concat:dataManager min:custom');
     grunt.registerTask('auth', 'lint qunit concat:auth min:custom');
