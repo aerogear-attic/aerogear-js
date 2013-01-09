@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.M7 - 2013-01-08
+/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-09
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -13,7 +13,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
 /**
     The AeroGear namespace provides a way to encapsulate the library's properties and methods away from the global namespace
     @namespace
