@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 },
                 options: {
                     banner: "<%= meta.banner %>",
-                    sourceMap: "dist/<%= pkg.name %>.source-map.js",
+                    sourceMap: "dist/<%= pkg.name %>.js.map",
                     beautify: {
                         ascii_only: true
                     }
@@ -75,7 +75,7 @@ module.exports = function(grunt) {
                 },
                 options: {
                     banner: "<%= meta.banner %>",
-                    sourceMap: "dist/<%= pkg.name %>.custom.source-map.js",
+                    sourceMap: "dist/<%= pkg.name %>.custom.js.map",
                     beautify: {
                         ascii_only: true
                     }
