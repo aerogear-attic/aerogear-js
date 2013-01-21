@@ -1,0 +1,16 @@
+{
+    "browser": true,
+    "curly": true,
+    "eqeqeq": true,
+    "latedef": true,
+    "noarg": true,
+    "noempty": true,
+    "undef": true,
+    "trailing": true,
+    "globals": {
+        "jQuery": true,
+        "AeroGear": true,
+        "uuid": true,
+        "require": true
+    }
+}
