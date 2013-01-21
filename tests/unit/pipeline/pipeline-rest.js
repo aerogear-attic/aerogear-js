@@ -103,9 +103,6 @@ var pipeline = AeroGear.Pipeline([
     pipe4 = pipeline.pipes.tags,
     pipe5 = pipeline.pipes.users;
 
-// Create a default (memory) dataManager to store data for some tests
-var taskStore = AeroGear.DataManager( "tasks" ).stores.tasks;
-
 // Add pipe test
 test( "add method", function() {
     expect( 2 );
@@ -126,7 +123,7 @@ test( "remove method", function() {
 
 // Read method test
 asyncTest( "read method", function() {
-    expect( 4 );
+    expect( 2 );
 
     var read1 = pipe.read({
         success: function( data, textStatus, jqXHR ) {
@@ -142,11 +139,7 @@ asyncTest( "read method", function() {
     });
 
     $.when( read1, read2 ).done( function( r1, r2 ) {
-        equal( taskStore.getData(), null, "Store has no data" );
-        $.when( pipe.read( { stores: taskStore } ) ).done( function( r4 ) {
-            equal( taskStore.getData()[1].id, 67890, "Read all data with no params" );
-            start();
-        });
+        start();
     });
 });
 
