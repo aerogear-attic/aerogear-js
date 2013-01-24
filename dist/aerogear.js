@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-10
+/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-24
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -487,6 +487,11 @@ AeroGear.isArray = function( obj ) {
         @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
+        @param {Object|Boolean} [settings.pageConfig] - an object containing the current paging configuration, true to use all defaults or false/undefined to not use paging
+        @param {String} [settings.pageConfig.metadataLocation="webLinking"] - indicates whether paging information is received from the response "header", the response "body" or via RFC 5988 "webLinking", which is the default.
+        @param {String} [settings.pageConfig.previousIdentifier="previous"] - the name of the prev link header, content var or web link rel
+        @param {String} [settings.pageConfig.nextIdentifier="next"] - the name of the next link header, content var or web link rel
+        @param {Function} [settings.pageConfig.parameterProvider] - a function for handling custom parameter placement within header and body based paging - for header paging, the function receives a jqXHR object and for body paging, the function receives the JSON formatted body as an object. the function should then return an object containing keys named for the previous/nextIdentifier options and whos values are either a map of parameters and values or a properly formatted query string
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
         @returns {Object} The created pipe
      */
@@ -506,7 +511,8 @@ AeroGear.isArray = function( obj ) {
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
-            type = "Rest";
+            type = "Rest",
+            pageConfig = settings.pageConfig;
 
         // Privileged Methods
         /**
@@ -560,6 +566,101 @@ AeroGear.isArray = function( obj ) {
         this.getRecordId = function() {
             return recordId;
         };
+
+        /**
+            Returns the value of the private pageConfig var
+            @private
+            @augments Rest
+            @returns {Object}
+         */
+        this.getPageConfig = function() {
+            return pageConfig;
+        };
+
+        /**
+            Updates the value of the private pageConfig var with only the items specified in newConfig unless the reset option is specified
+            @private
+            @augments Rest
+         */
+        this.updatePageConfig = function( newConfig, reset ) {
+            if ( reset ) {
+                pageConfig = {};
+                pageConfig.metadataLocation = newConfig.metadataLocation ? newConfig.metadataLocation : "webLinking";
+                pageConfig.previousIdentifier = newConfig.previousIdentifier ? newConfig.previousIdentifier : "previous";
+                pageConfig.nextIdentifier = newConfig.nextIdentifier ? newConfig.nextIdentifier : "next";
+                pageConfig.parameterProvider = newConfig.parameterProvider ? newConfig.parameterProvider : null;
+            } else {
+                $.extend( pageConfig, newConfig );
+            }
+        };
+
+        // Set pageConfig defaults
+        if ( pageConfig ) {
+            this.updatePageConfig( pageConfig, true );
+        }
+
+        // Paging Helpers
+        this.webLinkingPageParser = function( jqXHR, previousQuery ) {
+            var linkAr, linksAr, currentLink, params, paramAr, identifier,
+                query = {};
+
+            linksAr = jqXHR.getResponseHeader( "Link" ).split( "," );
+            for ( var link in linksAr ) {
+                linkAr = linksAr[ link ].trim().split( ";" );
+                for ( var item in linkAr ) {
+                    currentLink = linkAr[ item ].trim();
+                    if ( currentLink.indexOf( "<" ) === 0 && currentLink.lastIndexOf( ">" ) === linkAr[ item ].length - 1 ) {
+                        params = currentLink.substr( 1, currentLink.length - 2 ).split( "?" )[ 1 ];
+                    } else if ( currentLink.indexOf( "rel=" ) === 0 ) {
+                        if ( currentLink.indexOf( pageConfig.previousIdentifier ) >= 0 ) {
+                            identifier = pageConfig.previousIdentifier;
+                        } else if ( currentLink.indexOf( pageConfig.nextIdentifier ) >= 0 ) {
+                            identifier = pageConfig.nextIdentifier;
+                        }
+                    }
+                }
+
+                query[ identifier ] = params;
+            }
+
+            return query;
+        };
+
+        this.headerPageParser = function( jqXHR, previousQuery ) {
+            var previousQueryString = jqXHR.getResponseHeader( pageConfig.previousIdentifier ),
+                nextQueryString = jqXHR.getResponseHeader( pageConfig.nextIdentifier ),
+                pagingMetadata = {},
+                query = {};
+
+            if ( pageConfig.parameterProvider ) {
+                pagingMetadata = pageConfig.parameterProvider( jqXHR );
+                query[ pageConfig.previousIdentifier ] = pagingMetadata[ pageConfig.previousIdentifier ];
+                query[ pageConfig.nextIdentifier ] = pagingMetadata[ pageConfig.nextIdentifier ];
+            } else {
+                query[ pageConfig.previousIdentifier ] = previousQueryString ? previousQueryString.split( "?" )[ 1 ] : null;
+                query[ pageConfig.nextIdentifier ] = nextQueryString ? nextQueryString.split( "?" )[ 1 ] : null;
+            }
+
+            return query;
+        };
+
+        this.bodyPageParser = function( jqXHR, previousQuery ) {
+            var query = {},
+                pagingMetadata = {},
+                body = JSON.parse( jqXHR.responseText );
+
+            if ( pageConfig.parameterProvider ) {
+                pagingMetadata = pageConfig.parameterProvider( body );
+
+                query[ pageConfig.previousIdentifier ] = pagingMetadata[ pageConfig.previousIdentifier ];
+                query[ pageConfig.nextIdentifier ] = pagingMetadata[ pageConfig.nextIdentifier ];
+            } else {
+                query[ pageConfig.previousIdentifier ] = body[ pageConfig.previousIdentifier ];
+                query[ pageConfig.nextIdentifier ] = body[ pageConfig.nextIdentifier ];
+            }
+
+            return query;
+        };
     };
 
     // Public Methods
@@ -567,14 +668,17 @@ AeroGear.isArray = function( obj ) {
         Reads data from the specified endpoint
         @param {Object} [options={}] - Additional options
         @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-        @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
-        @param {Object} [options.id] - the value to append to the endpoint URL,  should be the same as the pipelines recordId
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
-        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
-        @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
+        @param {Object} [options.id] - the value to append to the endpoint URL,  should be the same as the pipelines recordId
         @param {Mixed} [options.jsonp] - Turns jsonp on/off for reads, Set to true, or an object with options
         @param {String} [options.jsonp.callback] - Override the callback function name in a jsonp request. This value will be used instead of 'callback' in the 'callback=?' part of the query string in the url
         @param {String} [options.jsonp.customCallback] - Specify the callback function name for a JSONP request. This value will be used instead of the random name automatically generated by jQuery
+        @param {Number} [options.limitValue=10] - the maximum number of results the server should return when using a paged pipe
+        @param {String} [options.offsetValue="0"] - the offset of the first element that should be included in the returned collection when using a paged pipe
+        @param {Object|Boolean} [options.paging] - this object can be used to overwrite the default paging parameters to request data from other pages or completely customize the paging functionality, leaving undefined will cause paging to use defaults, setting to false will turn off paging and request all data for this single read request
+        @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
+        @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
+        @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
@@ -594,15 +698,14 @@ AeroGear.isArray = function( obj ) {
         });
      */
     AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
-        var that = this,
+        var url, success, error, extraOptions,
+            that = this,
             recordId = this.getRecordId(),
             ajaxSettings = this.getAjaxSettings(),
-            url,
-            success,
-            error,
-            extraOptions;
+            pageConfig = this.getPageConfig();
 
-        options = options || {};
+        options = options ? options : {};
+        options.query = options.query ? options.query : {};
 
         if ( options[ recordId ] ) {
             url = ajaxSettings.url + "/" + options[ recordId ];
@@ -610,14 +713,43 @@ AeroGear.isArray = function( obj ) {
             url = ajaxSettings.url;
         }
 
-        success = function( data ) {
-            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
-                item;
+        // Handle paging
+        if ( pageConfig && options.paging !== false ) {
+            // Set custom paging to defaults if not used
+            if ( !options.paging ) {
+                options.paging = {
+                    offset: options.offsetValue || 0,
+                    limit: options.limitValue || 10
+                };
+            }
 
-            if ( stores.length ) {
-                for ( item in stores ) {
-                    stores[ item ].save( data, true );
-                }
+            // Apply paging to request
+            options.query = options.query || {};
+            for ( var item in options.paging ) {
+                options.query[ item ] = options.paging[ item ];
+            }
+        }
+
+        success = function( data, textStatus, jqXHR ) {
+            var paramMap;
+
+            // Generate paged response
+            if ( pageConfig && options.paging !== false ) {
+                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( jqXHR, options.query );
+
+                [ "previous", "next" ].forEach( function( element ) {
+                    data[ element ] = (function( pipe, parameters, options ) {
+                        return function( callbacks ) {
+                            options.paging = true;
+                            options.offsetValue = options.limitValue = undefined;
+                            options.query = parameters;
+                            options.success = callbacks && callbacks.success ? callbacks.success : options.success;
+                            options.error = callbacks && callbacks.error ? callbacks.error : options.error;
+
+                            return pipe.read( options );
+                        };
+                    })( that, paramMap[ pageConfig[ element + "Identifier" ] ], options );
+                });
             }
 
             if ( options.success ) {
@@ -625,16 +757,6 @@ AeroGear.isArray = function( obj ) {
             }
         };
         error = function( type, errorMessage ) {
-            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
-                item;
-
-            if ( type === "auth" && stores.length ) {
-                // If auth error, clear existing data for security
-                for ( item in stores ) {
-                    stores[ item ].remove();
-                }
-            }
-
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -668,7 +790,6 @@ AeroGear.isArray = function( obj ) {
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
@@ -721,30 +842,11 @@ AeroGear.isArray = function( obj ) {
         }
 
         success = function( data ) {
-            var stores = AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ],
-                item;
-
-            if ( options.stores ) {
-                for ( item in stores ) {
-                    stores[ item ].save( data );
-                }
-            }
-
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
         error = function( type, errorMessage ) {
-            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
-                item;
-
-            if ( type === "auth" && stores.length ) {
-                // If auth error, clear existing data for security
-                for ( item in stores ) {
-                    stores[ item ].remove();
-                }
-            }
-
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -770,7 +872,6 @@ AeroGear.isArray = function( obj ) {
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @param {Object|Array} [options.stores] - A single store object or array of stores to be updated when a server update is successful
         @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
@@ -827,31 +928,11 @@ AeroGear.isArray = function( obj ) {
         url = ajaxSettings.url + delPath;
 
         success = function( data ) {
-            var stores,
-                item;
-
-            if ( options.stores ) {
-                stores = AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ];
-                for ( item in stores ) {
-                    stores[ item ].remove( delId );
-                }
-            }
-
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
         error = function( type, errorMessage ) {
-            var stores = options.stores ? AeroGear.isArray( options.stores ) ? options.stores : [ options.stores ] : [],
-                item;
-
-            if ( type === "auth" && stores.length ) {
-                // If auth error, clear existing data for security
-                for ( item in stores ) {
-                    stores[ item ].remove();
-                }
-            }
-
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
