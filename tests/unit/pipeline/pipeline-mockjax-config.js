@@ -99,7 +99,8 @@ $.mockjax({
     type: "DELETE",
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    responseText: []
 });
 
 $.mockjax({
@@ -107,7 +108,8 @@ $.mockjax({
     type: "DELETE",
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    responseText: []
 });
 
 $.mockjax({
@@ -115,7 +117,8 @@ $.mockjax({
     type: "DELETE",
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    responseText: []
 });
 
 // custom base URL mock
@@ -124,7 +127,8 @@ $.mockjax({
     type: "GET",
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    responseText: []
 });
 
 
@@ -134,7 +138,8 @@ $.mockjax({
     type: "GET",
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    responseText: []
 });
 
 // custom base URL + end point mock
@@ -143,7 +148,8 @@ $.mockjax({
     type: "GET",
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    responseText: []
 });
 
 //id added to the end of the endpoint mock

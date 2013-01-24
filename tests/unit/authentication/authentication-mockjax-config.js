@@ -69,7 +69,8 @@ $.mockjax({
 
         this.status = "204",
         this.statusText = "No Content";
-    }
+    },
+    responseText: []
 });
 
 })(jQuery);
