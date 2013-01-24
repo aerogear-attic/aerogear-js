@@ -1,6 +1,6 @@
 (function( $ ) {
 
-module( "pipeline: Rest" );
+module( "Pipeline: Rest - General" );
 
 test( "create - name string", function() {
     expect( 2 );
@@ -284,7 +284,8 @@ var pipeline2 = AeroGear.Pipeline([
 ]);
 
 var pipe6 = pipeline2.pipes.custom,
-    pipe7 = pipeline2.pipes.custom2;
+    pipe7 = pipeline2.pipes.custom2,
+    pipe8 = pipeline2.pipes.paged;
 
 asyncTest( "ID added to end point", function() {
     expect( 2 );
@@ -308,6 +309,497 @@ asyncTest( "ID added to end point with custom recordID", function() {
             ok( true, "Read success from endpoint with id on the end" );
             equal( data.id, 12345, "Id is 12345" );
             start();
+        }
+    });
+});
+
+module( "Pipeline: Rest - Paging" );
+
+var pagingPipes = AeroGear.Pipeline([
+    {
+        name: "webLinking",
+        settings: {
+            endpoint: "pageTestWebLink",
+            pageConfig: true
+        }
+    },
+    {
+        name: "webLinking2",
+        settings: {
+            endpoint: "pageTestWebLinkCustomIdentifiers",
+            pageConfig: {
+                previousIdentifier: "back",
+                nextIdentifier: "forward"
+            }
+        }
+    },
+    {
+        name: "webLinking3",
+        settings: {
+            endpoint: "pageTestWebLinkCustomParameters",
+            pageConfig: true
+        }
+    },
+    {
+        name: "webLinking4",
+        settings: {
+            endpoint: "pageTestWebLinkCustomAll",
+            pageConfig: {
+                previousIdentifier: "minus",
+                nextIdentifier: "plus"
+            }
+        }
+    },
+    {
+        name: "header",
+        settings: {
+            endpoint: "pageTestHeader",
+            pageConfig: {
+                metadataLocation: "header"
+            }
+        }
+    },
+    {
+        name: "header2",
+        settings: {
+            endpoint: "pageTestHeaderCustomIdentifiers",
+            pageConfig: {
+                metadataLocation: "header",
+                previousIdentifier: "back",
+                nextIdentifier: "forward"
+            }
+        }
+    },
+    {
+        name: "header3",
+        settings: {
+            endpoint: "pageTestHeaderCustomParameters",
+            pageConfig: {
+                metadataLocation: "header"
+            }
+        }
+    },
+    {
+        name: "header4",
+        settings: {
+            endpoint: "pageTestHeaderCustomAll",
+            pageConfig: {
+                metadataLocation: "header",
+                previousIdentifier: "minus",
+                nextIdentifier: "plus"
+            }
+        }
+    },
+    {
+        name: "header5",
+        settings: {
+            endpoint: "pageTestHeaderProvider",
+            pageConfig: {
+                metadataLocation: "header",
+                previousIdentifier: "providerPrevious",
+                nextIdentifier: "providerNext",
+                parameterProvider: function( jqXHR ) {
+                    var links = {};
+                    links.providerPrevious = JSON.parse( jqXHR.getResponseHeader( "providerPrevious" ) );
+                    links.providerNext = JSON.parse( jqXHR.getResponseHeader( "providerNext" ) );
+                    return links;
+                }
+            }
+        }
+    },
+    {
+        name: "body",
+        settings: {
+            endpoint: "pageTestBody",
+            pageConfig: {
+                metadataLocation: "body"
+            }
+        }
+    },
+    {
+        name: "body2",
+        settings: {
+            endpoint: "pageTestBodyCustomIdentifiers",
+            pageConfig: {
+                metadataLocation: "body",
+                previousIdentifier: "back",
+                nextIdentifier: "forward"
+            }
+        }
+    },
+    {
+        name: "body3",
+        settings: {
+            endpoint: "pageTestBodyCustomParameters",
+            pageConfig: {
+                metadataLocation: "body"
+            }
+        }
+    },
+    {
+        name: "body4",
+        settings: {
+            endpoint: "pageTestBodyCustomAll",
+            pageConfig: {
+                metadataLocation: "body",
+                previousIdentifier: "minus",
+                nextIdentifier: "plus"
+            }
+        }
+    },
+    {
+        name: "body5",
+        settings: {
+            endpoint: "pageTestBodyProvider",
+            pageConfig: {
+                metadataLocation: "body",
+                previousIdentifier: "providerPrevious",
+                nextIdentifier: "providerNext",
+                parameterProvider: function( body ) {
+                    var links = {};
+                    links.providerPrevious = body.pagingMetadata.deeper.providerPrevious;
+                    links.providerNext = body.pagingMetadata.deeper.providerNext;
+                    return links;
+                }
+            }
+        }
+    }
+]);
+
+asyncTest( "webLinking (default)", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.webLinking.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "webLinking - custom identifiers", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.webLinking2.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "webLinking - custom query parameters", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.webLinking3.read({
+        paging: {
+            pageNumber: 2,
+            rpp: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "webLinking - custom identifiers and query parameters", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.webLinking4.read({
+        paging: {
+            current: 2,
+            count: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "header", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.header.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "header - custom identifiers", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.header2.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "header - custom query parameters", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.header3.read({
+        paging: {
+            pageNumber: 2,
+            rpp: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "header - custom identifiers and query parameters", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.header4.read({
+        paging: {
+            current: 2,
+            count: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "header - custom identifiers and query parameters with parameter provider", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.header5.read({
+        paging: {
+            current: 2,
+            count: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "body", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.body.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "body - custom identifiers", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.body2.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "body - custom query parameters", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.body3.read({
+        paging: {
+            pageNumber: 2,
+            rpp: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "body - custom identifiers and query parameters", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.body4.read({
+        paging: {
+            current: 2,
+            count: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "body - custom identifiers and query parameters with parameter provider", function() {
+    expect( 3 );
+
+    pagingPipes.pipes.body5.read({
+        paging: {
+            current: 2,
+            count: 2
+        },
+        success: function( data, textStatus, jqXHR ) {
+            data.previous({
+                success: function() {
+                    ok( true, "Read success from previous call" );
+                    data.next({
+                        success: function() {
+                            ok( true, "Read success from next call" );
+                            start();
+                        }
+                    });
+                }
+            });
+            ok( true, "Read success from endpoint with paging" );
         }
     });
 });
