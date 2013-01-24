@@ -135,7 +135,7 @@
         }
 
         // Paging Helpers
-        this.webLinkingPageParser = function( jqXHR, previousQuery ) {
+        this.webLinkingPageParser = function( jqXHR ) {
             var linkAr, linksAr, currentLink, params, paramAr, identifier,
                 query = {};
 
@@ -161,7 +161,7 @@
             return query;
         };
 
-        this.headerPageParser = function( jqXHR, previousQuery ) {
+        this.headerPageParser = function( jqXHR ) {
             var previousQueryString = jqXHR.getResponseHeader( pageConfig.previousIdentifier ),
                 nextQueryString = jqXHR.getResponseHeader( pageConfig.nextIdentifier ),
                 pagingMetadata = {},
@@ -179,7 +179,7 @@
             return query;
         };
 
-        this.bodyPageParser = function( jqXHR, previousQuery ) {
+        this.bodyPageParser = function( jqXHR ) {
             var query = {},
                 pagingMetadata = {},
                 body = JSON.parse( jqXHR.responseText );
@@ -270,7 +270,7 @@
 
             // Generate paged response
             if ( pageConfig && options.paging !== false ) {
-                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( jqXHR, options.query );
+                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( jqXHR );
 
                 [ "previous", "next" ].forEach( function( element ) {
                     data[ element ] = (function( pipe, parameters, options ) {
