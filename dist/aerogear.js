@@ -644,10 +644,9 @@ AeroGear.isArray = function( obj ) {
             return query;
         };
 
-        this.bodyPageParser = function( data ) {
+        this.bodyPageParser = function( body ) {
             var query = {},
-                pagingMetadata = {},
-                body = typeof data === "string" ? JSON.parse( data ) : data;
+                pagingMetadata = {};
 
             if ( pageConfig.parameterProvider ) {
                 pagingMetadata = pageConfig.parameterProvider( body );
