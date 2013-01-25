@@ -474,7 +474,7 @@ asyncTest( "webLinking (default)", function() {
         limitValue: 2,
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -497,7 +497,7 @@ asyncTest( "webLinking - custom identifiers", function() {
         limitValue: 2,
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -522,7 +522,7 @@ asyncTest( "webLinking - custom query parameters", function() {
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -547,7 +547,7 @@ asyncTest( "webLinking - custom identifiers and query parameters", function() {
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -570,7 +570,7 @@ asyncTest( "header", function() {
         limitValue: 2,
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -593,7 +593,7 @@ asyncTest( "header - custom identifiers", function() {
         limitValue: 2,
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -618,7 +618,7 @@ asyncTest( "header - custom query parameters", function() {
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -643,7 +643,7 @@ asyncTest( "header - custom identifiers and query parameters", function() {
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -668,7 +668,7 @@ asyncTest( "header - custom identifiers and query parameters with parameter prov
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -691,7 +691,7 @@ asyncTest( "body", function() {
         limitValue: 2,
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -714,7 +714,7 @@ asyncTest( "body - custom identifiers", function() {
         limitValue: 2,
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -739,7 +739,7 @@ asyncTest( "body - custom query parameters", function() {
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -764,7 +764,7 @@ asyncTest( "body - custom identifiers and query parameters", function() {
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
@@ -789,7 +789,7 @@ asyncTest( "body - custom identifiers and query parameters with parameter provid
         },
         success: function( data, textStatus, jqXHR ) {
             data.previous({
-                success: function() {
+                success: function( data ) {
                     ok( true, "Read success from previous call" );
                     data.next({
                         success: function() {
