@@ -179,10 +179,9 @@
             return query;
         };
 
-        this.bodyPageParser = function( jqXHR ) {
+        this.bodyPageParser = function( body ) {
             var query = {},
-                pagingMetadata = {},
-                body = JSON.parse( jqXHR.responseText );
+                pagingMetadata = {};
 
             if ( pageConfig.parameterProvider ) {
                 pagingMetadata = pageConfig.parameterProvider( body );
@@ -270,7 +269,7 @@
 
             // Generate paged response
             if ( pageConfig && options.paging !== false ) {
-                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( jqXHR );
+                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( pageConfig.metadataLocation === "body" ? data : jqXHR );
 
                 [ "previous", "next" ].forEach( function( element ) {
                     data[ element ] = (function( pipe, parameters, options ) {

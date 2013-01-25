@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-24
+/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-25
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -644,10 +644,10 @@ AeroGear.isArray = function( obj ) {
             return query;
         };
 
-        this.bodyPageParser = function( jqXHR ) {
+        this.bodyPageParser = function( data ) {
             var query = {},
                 pagingMetadata = {},
-                body = JSON.parse( jqXHR.responseText );
+                body = typeof data === "string" ? JSON.parse( data ) : data;
 
             if ( pageConfig.parameterProvider ) {
                 pagingMetadata = pageConfig.parameterProvider( body );
@@ -735,7 +735,7 @@ AeroGear.isArray = function( obj ) {
 
             // Generate paged response
             if ( pageConfig && options.paging !== false ) {
-                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( jqXHR );
+                paramMap = that[ pageConfig.metadataLocation + "PageParser" ]( pageConfig.metadataLocation === "body" ? data : jqXHR );
 
                 [ "previous", "next" ].forEach( function( element ) {
                     data[ element ] = (function( pipe, parameters, options ) {
