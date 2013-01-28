@@ -70,7 +70,7 @@ nav
 {
 	display: block;
 	float: left;
-    margin-left: -230px;
+    margin-left: -250px;
     margin-top: 28px;
     width: 220px;
     border-left: 1px solid #ccc;
@@ -87,8 +87,7 @@ nav ul {
 }
 
 nav h2 a, nav h2 a:visited {
-    color: #A35A00;
-    text-decoration: none;
+    color: #C6000F;
 }
 
 nav h3 {
@@ -117,6 +116,10 @@ footer {
     margin-top: 12px;
     font-style: italic;
     font-size: 90%;
+}
+
+h1, h2, h3 {
+    color: #45698B;
 }
 
 h1
@@ -216,13 +219,18 @@ h6
 	margin: 0;
 }
 
-.sh_sourceCode
+.prettyprint
 {
 	border: 1px solid #ddd;
 	width: 80%;
+    overflow: auto;
 }
 
-.sh_sourceCode code
+.prettyprint.source {
+    width: inherit;
+}
+
+.prettyprint code
 {
 	font-family: Consolas, 'Lucida Console', Monaco, monospace;
 	font-size: 100%;
@@ -243,7 +251,7 @@ h6
 }
 
 .params .name, .props .name, .name code {
-	color: #A35A00;
+	color: #C6000F;
 	font-family: Consolas, 'Lucida Console', Monaco, monospace;
 	font-size: 100%;
 }
@@ -254,7 +262,7 @@ h6
 	margin: 0px;
 	text-align: left;
 	vertical-align: top;
-	padding: 4px 6px;
+	padding: 3px;
 	display: table-cell;
 }
 

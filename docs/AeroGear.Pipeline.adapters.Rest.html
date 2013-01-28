@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Adapter: Rest</title>
+    <title>AeroGear.js API Documentation</title>
     
-    <script src="http://shjs.sourceforge.net/sh_main.min.js"> </script>
-    <script src="http://shjs.sourceforge.net/lang/sh_javascript.min.js"> </script>
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/node-dark.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
@@ -41,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Rest"><span class="type-signature"></span>new Rest</h4>
+    <h4 class="name" id="Rest"><span class="type-signature"></span>new Rest<span class="signature">(pipeName, <span class="optional">settings</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -51,6 +51,8 @@
     <div class="description">
         The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named `tasks` would use http://mysite.com/myApp/tasks as its REST endpoint.
     </div>
+    
+
     
     
     
@@ -90,9 +92,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -121,9 +125,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -179,9 +185,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -214,9 +222,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -247,9 +257,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -277,14 +289,229 @@
 	
         <tr>
             
+                <td class="name"><code>pageConfig</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">an object containing the current paging configuration, true to use all defaults or false/undefined to not use paging
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>metadataLocation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "webLinking"
+                
+                </td>
+            
+            
+            <td class="description last">indicates whether paging information is received from the response "header", the response "body" or via RFC 5988 "webLinking", which is the default.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>previousIdentifier</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "previous"
+                
+                </td>
+            
+            
+            <td class="description last">the name of the prev link header, content var or web link rel</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>nextIdentifier</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "next"
+                
+                </td>
+            
+            
+            <td class="description last">the name of the next link header, content var or web link rel</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>parameterProvider</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">a function for handling custom parameter placement within header and body based paging - for header paging, the function receives a jqXHR object and for body paging, the function receives the JSON formatted body as an object. the function should then return an object containing keys named for the previous/nextIdentifier options and whos values are either a map of parameters and values or a properly formatted query string</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
                 <td class="name"><code>recordId</code></td>
             
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -323,30 +550,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 28</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 33
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -364,15 +595,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Object</span> 
-		
+<span class="param-type">Object</span>
+
+
 	</dd>
 </dl>
 
@@ -402,7 +633,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="read"><span class="type-signature"></span>read</h4>
+    <h4 class="name" id="read"><span class="type-signature"></span>read<span class="signature">(<span class="optional">options</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -412,6 +643,8 @@
     <div class="description">
         Reads data from the specified endpoint
     </div>
+    
+
     
     
     
@@ -451,9 +684,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -492,6 +727,8 @@
 		
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
@@ -507,9 +744,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -522,67 +761,13 @@
                 </td>
             
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">a callback to be called when the result of the request to the server is complete, regardless of success</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>query</code></td>
-            
-            
-            <td class="type">
-            
-                        Object
-                        
-                    
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-            
-            <td class="type">
-            
-                        Object
-                        
-                    
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">the value to append to the endpoint URL,  should be the same as the pipelines recordId</td>
         </tr>
 	
 	
@@ -594,9 +779,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -609,6 +796,10 @@
                 </td>
             
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">a callback to be called when the request to the server results in an error</td>
@@ -618,14 +809,16 @@
 	
         <tr>
             
-                <td class="name"><code>statusCode</code></td>
+                <td class="name"><code>id</code></td>
             
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -639,37 +832,12 @@
             
             
             
-            
-            <td class="description last">a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>success</code></td>
-            
-            
-            <td class="type">
-            
-                        Function
-                        
-                    
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
+                <td class="default">
                 
                 </td>
             
             
-            
-            
-            <td class="description last">a callback to be called when the result of the request to the server is successful</td>
+            <td class="description last">the value to append to the endpoint URL,  should be the same as the pipelines recordId</td>
         </tr>
 	
 	
@@ -681,9 +849,11 @@
             
             <td class="type">
             
-                        Mixed
-                        
-                    
+                
+<span class="param-type">Mixed</span>
+
+
+            
             </td>
             
             
@@ -696,6 +866,10 @@
                 </td>
             
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Turns jsonp on/off for reads, Set to true, or an object with options
@@ -731,9 +905,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -760,9 +936,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -787,6 +965,223 @@
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>limitValue</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+            
+            <td class="description last">the maximum number of results the server should return when using a paged pipe</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>offsetValue</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "0"
+                
+                </td>
+            
+            
+            <td class="description last">the offset of the first element that should be included in the returned collection when using a paged pipe</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>paging</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">this object can be used to overwrite the default paging parameters to request data from other pages or completely customize the paging functionality, leaving undefined will cause paging to use defaults, setting to false will turn off paging and request all data for this single read request</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>query</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>statusCode</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>success</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">a callback to be called when the result of the request to the server is successful</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
             </td>
@@ -801,30 +1196,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 131</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 234
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -842,15 +1241,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Object</span> 
-		
+<span class="param-type">Object</span>
+
+
 	</dd>
 </dl>
 
@@ -859,7 +1258,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
+    <pre class="prettyprint"><code>        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Get a set of key/value pairs of all data on the server associated with this pipe
         var allData = myPipe.read();
@@ -881,7 +1280,7 @@
         
             
 <dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove</h4>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(<span class="optional">data</span>, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -891,6 +1290,8 @@
     <div class="description">
         Remove data asynchronously from the server. Passing nothing will inform the server to remove all data at this pipe's endpoint.
     </div>
+    
+
     
     
     
@@ -930,12 +1331,14 @@
             
             <td class="type">
             
-                        String
-                         | 
-                    
-                        Object
-                        
-                    
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -966,9 +1369,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -1022,9 +1427,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -1051,9 +1458,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -1080,9 +1489,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -1109,9 +1520,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -1130,38 +1543,6 @@
         </tr>
 	
 	
-	
-        <tr>
-            
-                <td class="name"><code>stores</code></td>
-            
-            
-            <td class="type">
-            
-                        Object
-                         | 
-                    
-                        Array
-                        
-                    
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">A single store object or array of stores to be updated when a server update is successful</td>
-        </tr>
-	
-	
 	</tbody>
 </table>
             </td>
@@ -1176,30 +1557,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 339</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 439
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -1217,15 +1602,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Object</span> 
-		
+<span class="param-type">Object</span>
+
+
 	</dd>
 </dl>
 
@@ -1234,7 +1619,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
+    <pre class="prettyprint"><code>        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Store a new task
         myPipe.save({
@@ -1268,7 +1653,7 @@
         
             
 <dt>
-    <h4 class="name" id="save"><span class="type-signature"></span>save</h4>
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(data, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -1278,6 +1663,8 @@
     <div class="description">
         Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
     </div>
+    
+
     
     
     
@@ -1317,9 +1704,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -1348,9 +1737,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -1404,9 +1795,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -1433,9 +1826,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -1462,9 +1857,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -1491,9 +1888,11 @@
             
             <td class="type">
             
-                        Function
-                        
-                    
+                
+<span class="param-type">Function</span>
+
+
+            
             </td>
             
             
@@ -1512,38 +1911,6 @@
         </tr>
 	
 	
-	
-        <tr>
-            
-                <td class="name"><code>stores</code></td>
-            
-            
-            <td class="type">
-            
-                        Object
-                         | 
-                    
-                        Array
-                        
-                    
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">A single store object or array of stores to be updated when a server update is successful</td>
-        </tr>
-	
-	
 	</tbody>
 </table>
             </td>
@@ -1558,30 +1925,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>rest.js, line 238</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 358
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -1599,15 +1970,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Object</span> 
-		
+<span class="param-type">Object</span>
+
+
 	</dd>
 </dl>
 
@@ -1616,7 +1987,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
+    <pre class="prettyprint"><code>        var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
         // Store a new task
         myPipe.save({
@@ -1664,15 +2035,15 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="AeroGear.html">AeroGear</a></li></ul><h3>Modules</h3><ul><li><a href="AeroGear.Auth.html">AeroGear.Auth</a></li><li><a href="AeroGear.DataManager.html">AeroGear.DataManager</a></li><li><a href="AeroGear.Pipeline.html">AeroGear.Pipeline</a></li></ul><h3>Adapters</h3><ul><li><a href="AeroGear.DataManager.adapters.Memory.html">AeroGear.DataManager.adapters.Memory</a></li><li><a href="AeroGear.Auth.adapters.Rest.html">AeroGear.Auth.adapters.Rest</a></li><li><a href="AeroGear.Pipeline.adapters.Rest.html">AeroGear.Pipeline.adapters.Rest</a></li><li><a href="AeroGear.DataManager.adapters.SessionLocal.html">AeroGear.DataManager.adapters.SessionLocal</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="AeroGear.html">AeroGear</a></li></ul><h3>Modules</h3><ul><li><a href="AeroGear.Auth.html">Auth</a></li><li><a href="AeroGear.DataManager.html">DataManager</a></li><li><a href="AeroGear.Pipeline.html">Pipeline</a></li></ul><h3>Adapters</h3><ul><li><a href="AeroGear.Auth.adapters.Rest.html">Auth.adapters.Rest</a></li><li><a href="AeroGear.DataManager.adapters.Memory.html">DataManager.adapters.Memory</a></li><li><a href="AeroGear.DataManager.adapters.SessionLocal.html">DataManager.adapters.SessionLocal</a></li><li><a href="AeroGear.Pipeline.adapters.Rest.html">Pipeline.adapters.Rest</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Tue Jan 08 2013 14:47:44 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Jan 28 2013 13:09:59 GMT-0600 (CST)
 </footer>
 
-<script> sh_highlightDocument(); </script>
+<script> prettyPrint(); </script>
 </body>
 </html>

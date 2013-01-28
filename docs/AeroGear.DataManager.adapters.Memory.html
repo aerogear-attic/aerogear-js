@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Adapter: Memory</title>
+    <title>AeroGear.js API Documentation</title>
     
-    <script src="http://shjs.sourceforge.net/sh_main.min.js"> </script>
-    <script src="http://shjs.sourceforge.net/lang/sh_javascript.min.js"> </script>
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/node-dark.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
 
@@ -41,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Memory"><span class="type-signature"></span>new Memory</h4>
+    <h4 class="name" id="Memory"><span class="type-signature"></span>new Memory<span class="signature">(storeName, <span class="optional">settings</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -51,6 +51,8 @@
     <div class="description">
         The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
     </div>
+    
+
     
     
     
@@ -90,9 +92,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -121,9 +125,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -179,9 +185,11 @@
             
             <td class="type">
             
-                        String
-                        
-                    
+                
+<span class="param-type">String</span>
+
+
+            
             </td>
             
             
@@ -214,9 +222,11 @@
             
             <td class="type">
             
-                        Boolean
-                        
-                    
+                
+<span class="param-type">Boolean</span>
+
+
+            
             </td>
             
             
@@ -255,30 +265,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>memory.js, line 26</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="9e1e419dfc.html">data-manager/adapters/memory.js</a>, line 26
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -296,15 +310,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Object</span> 
-		
+<span class="param-type">Object</span>
+
+
 	</dd>
 </dl>
 
@@ -334,7 +348,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="filter"><span class="type-signature"></span>filter</h4>
+    <h4 class="name" id="filter"><span class="type-signature"></span>filter<span class="signature">(<span class="optional">filterParameters</span>, <span class="optional">matchAny</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -344,6 +358,8 @@
     <div class="description">
         Filter the current store's data
     </div>
+    
+
     
     
     
@@ -381,9 +397,11 @@
             
             <td class="type">
             
-                        Object
-                        
-                    
+                
+<span class="param-type">Object</span>
+
+
+            
             </td>
             
             
@@ -410,9 +428,11 @@
             
             <td class="type">
             
-                        Boolean
-                        
-                    
+                
+<span class="param-type">Boolean</span>
+
+
+            
             </td>
             
             
@@ -439,30 +459,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>memory.js, line 330</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="9e1e419dfc.html">data-manager/adapters/memory.js</a>, line 330
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -480,15 +504,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Array</span> 
-		
+<span class="param-type">Array</span>
+
+
 	</dd>
 </dl>
 
@@ -497,7 +521,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+    <pre class="prettyprint"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
         // An object can be passed to filter the data
         var filteredData = dm.filter({
@@ -511,7 +535,7 @@
         
             
 <dt>
-    <h4 class="name" id="read"><span class="type-signature"></span>read</h4>
+    <h4 class="name" id="read"><span class="type-signature"></span>read<span class="signature">(<span class="optional">id</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -521,6 +545,8 @@
     <div class="description">
         Read data from a store
     </div>
+    
+
     
     
     
@@ -558,12 +584,14 @@
             
             <td class="type">
             
-                        String
-                         | 
-                    
-                        Number
-                        
-                    
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Number</span>
+
+
+            
             </td>
             
             
@@ -590,30 +618,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>memory.js, line 193</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="9e1e419dfc.html">data-manager/adapters/memory.js</a>, line 193
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -631,15 +663,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Array</span> 
-		
+<span class="param-type">Array</span>
+
+
 	</dd>
 </dl>
 
@@ -648,7 +680,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+    <pre class="prettyprint"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
         // Get an array of all data in the store
         var allData = dm.read();</code></pre>
@@ -659,7 +691,7 @@
         
             
 <dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove</h4>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(toRemove)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -669,6 +701,8 @@
     <div class="description">
         Removes data from the store
     </div>
+    
+
     
     
     
@@ -704,15 +738,17 @@
             
             <td class="type">
             
-                        String
-                         | 
-                    
-                        Object
-                         | 
-                    
-                        Array
-                        
-                    
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
             </td>
             
             
@@ -731,30 +767,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>memory.js, line 283</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="9e1e419dfc.html">data-manager/adapters/memory.js</a>, line 283
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -772,15 +812,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Array</span> 
-		
+<span class="param-type">Array</span>
+
+
 	</dd>
 </dl>
 
@@ -789,7 +829,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+    <pre class="prettyprint"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
         // Store a new task
         dm.save({
@@ -823,7 +863,7 @@
         
             
 <dt>
-    <h4 class="name" id="save"><span class="type-signature"></span>save</h4>
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(data, <span class="optional">reset</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -833,6 +873,8 @@
     <div class="description">
         Saves data to the store, optionally clearing and resetting the data
     </div>
+    
+
     
     
     
@@ -870,12 +912,14 @@
             
             <td class="type">
             
-                        Object
-                         | 
-                    
-                        Array
-                        
-                    
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
             </td>
             
             
@@ -900,9 +944,11 @@
             
             <td class="type">
             
-                        Boolean
-                        
-                    
+                
+<span class="param-type">Boolean</span>
+
+
+            
             </td>
             
             
@@ -929,30 +975,34 @@
 <dl class="details">
     
         
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source"><ul class="dummy"><li>memory.js, line 219</li></ul></dd>
-	
     
     
-	
-	
-	
-	
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="9e1e419dfc.html">data-manager/adapters/memory.js</a>, line 219
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
 </dl>
 
     
@@ -970,15 +1020,15 @@
 
 
 
-
 <dl>
 	<dt>
 		Type
 	</dt>
 	<dd>
 		
-		<span class="param-type">Array</span> 
-		
+<span class="param-type">Array</span>
+
+
 	</dd>
 </dl>
 
@@ -987,7 +1037,7 @@
     
         <h5>Example</h5>
         
-    <pre class="sh_javascript"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+    <pre class="prettyprint"><code>        var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
         // Store a new task
         dm.save({
@@ -1020,15 +1070,15 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="AeroGear.html">AeroGear</a></li></ul><h3>Modules</h3><ul><li><a href="AeroGear.Auth.html">AeroGear.Auth</a></li><li><a href="AeroGear.DataManager.html">AeroGear.DataManager</a></li><li><a href="AeroGear.Pipeline.html">AeroGear.Pipeline</a></li></ul><h3>Adapters</h3><ul><li><a href="AeroGear.DataManager.adapters.Memory.html">AeroGear.DataManager.adapters.Memory</a></li><li><a href="AeroGear.Auth.adapters.Rest.html">AeroGear.Auth.adapters.Rest</a></li><li><a href="AeroGear.Pipeline.adapters.Rest.html">AeroGear.Pipeline.adapters.Rest</a></li><li><a href="AeroGear.DataManager.adapters.SessionLocal.html">AeroGear.DataManager.adapters.SessionLocal</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="AeroGear.html">AeroGear</a></li></ul><h3>Modules</h3><ul><li><a href="AeroGear.Auth.html">Auth</a></li><li><a href="AeroGear.DataManager.html">DataManager</a></li><li><a href="AeroGear.Pipeline.html">Pipeline</a></li></ul><h3>Adapters</h3><ul><li><a href="AeroGear.Auth.adapters.Rest.html">Auth.adapters.Rest</a></li><li><a href="AeroGear.DataManager.adapters.Memory.html">DataManager.adapters.Memory</a></li><li><a href="AeroGear.DataManager.adapters.SessionLocal.html">DataManager.adapters.SessionLocal</a></li><li><a href="AeroGear.Pipeline.adapters.Rest.html">Pipeline.adapters.Rest</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/micmath/jsdoc">JSDoc 3</a> on Tue Jan 08 2013 14:47:44 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Jan 28 2013 13:09:59 GMT-0600 (CST)
 </footer>
 
-<script> sh_highlightDocument(); </script>
+<script> prettyPrint(); </script>
 </body>
 </html>

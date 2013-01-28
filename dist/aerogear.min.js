@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0.M2 - 2013-01-25
+/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-01-28
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
