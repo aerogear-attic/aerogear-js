@@ -89,7 +89,7 @@ module.exports = function(grunt) {
         grunt.log.writeln('Remove old docs');
         exec('rm -r docs');
         grunt.log.writeln('Old docs removed\nGenerate new docs');
-        exec('jsdoc src/ -r -d docs');
+        exec('jsdoc src/ -r -d docs README.md');
         grunt.log.writeln('New docs generated');
     });
 
