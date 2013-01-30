@@ -42,7 +42,9 @@
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
+                contentType: "application/json",
+                dataType: "json"
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
@@ -290,7 +292,16 @@
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            // Handle JSON formatted error responses and provide as responseJSON
+            if ( ajaxSettings.dataType === "json" ) {
+                try {
+                    jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                } catch( error ) {
+                    // Response was not JSON formatted
+                }
+            }
+
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -313,7 +324,7 @@
             }
         }
 
-        return AeroGear.ajax( this, $.extend( {}, this.getAjaxSettings(), extraOptions ) );
+        return $.ajax( $.extend( {}, this.getAjaxSettings(), extraOptions ) );
     };
 
     /**
@@ -395,7 +406,12 @@
             complete: options.complete
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( ajaxSettings.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
+        }
+
+        return $.ajax( $.extend( {}, ajaxSettings, extraOptions ) );
     };
 
     /**
@@ -480,6 +496,6 @@
             complete: options.complete
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        return $.ajax( $.extend( {}, ajaxSettings, extraOptions ) );
     };
 })( AeroGear, jQuery, uuid );

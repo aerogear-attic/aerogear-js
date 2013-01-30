@@ -127,6 +127,7 @@ asyncTest( "read method", function() {
 
     var read1 = pipe.read({
         success: function( data, textStatus, jqXHR ) {
+            console.log(data,textStatus,jqXHR);
             equal( data[ 1 ].id, 67890, "Read all data" );
         }
     });
