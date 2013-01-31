@@ -155,7 +155,10 @@
                     }
                 }
 
-                query[ identifier ] = params;
+                if( identifier ) {
+                    query[ identifier ] = params;
+                    identifier = undefined;
+                }
             }
 
             return query;

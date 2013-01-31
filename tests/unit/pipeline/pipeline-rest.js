@@ -351,6 +351,13 @@ var pagingPipes = AeroGear.Pipeline([
         }
     },
     {
+        name: "webLinking5",
+        settings: {
+            endpoint: "pageTestWebLinkCustomIdentifiersA",
+            pageConfig: true
+        }
+    },
+    {
         name: "header",
         settings: {
             endpoint: "pageTestHeader",
@@ -558,6 +565,18 @@ asyncTest( "webLinking - custom identifiers and query parameters", function() {
                 }
             });
             ok( true, "Read success from endpoint with paging" );
+        }
+    });
+});
+
+asyncTest( "webLinking - custom identifiers, but not overriding them", function() {
+    expect( 1 );
+
+    pagingPipes.pipes.webLinking5.read({
+        success: function( data, textStatus, jqXHR ) {
+            var pagingObject = pagingPipes.pipes.webLinking5.webLinkingPageParser( jqXHR );
+            equal( pagingObject.next, "offset=2&limit=2", "next is set correctly" );
+            start();
         }
     });
 });
