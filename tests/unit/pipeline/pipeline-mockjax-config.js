@@ -241,6 +241,16 @@ $.mockjax({
 });
 
 $.mockjax({
+    url: "pageTestWebLinkCustomIdentifiersA",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json",
+        "Link": "<http://fakeLink.com?offset=2&limit=2>; rel=\"next\", <http://fakeLink.com?offset=0&limit=2>; rel=\"first\""
+    },
+    responseText: defaultResponseText
+});
+
+$.mockjax({
     url: "pageTestWebLinkCustomParameters",
     type: "GET",
     data: {
