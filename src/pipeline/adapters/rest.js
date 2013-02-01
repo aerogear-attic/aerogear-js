@@ -19,7 +19,6 @@
         @constructs AeroGear.Pipeline.adapters.Rest
         @param {String} pipeName - the name used to reference this particular pipe
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
         @param {Object|Boolean} [settings.pageConfig] - an object containing the current paging configuration, true to use all defaults or false/undefined to not use paging
@@ -52,38 +51,6 @@
             pageConfig = settings.pageConfig;
 
         // Privileged Methods
-        /**
-            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
-            @private
-            @augments Rest
-            @returns {Boolean}
-         */
-        this.isAuthenticated = function() {
-            return authenticator ? authenticator.isAuthenticated() : true;
-        };
-
-        /**
-            Adds the auth token to the headers and returns the modified version of the settings
-            @private
-            @augments Rest
-            @param {Object} settings - the settings object that will have the auth identifier added
-            @returns {Object} Settings extended with auth identifier
-         */
-        this.addAuthIdentifier = function( settings ) {
-            return authenticator ? authenticator.addAuthIdentifier( settings ) : settings;
-        };
-
-        /**
-            Removes the stored token effectively telling the client it must re-authenticate with the server
-            @private
-            @augments Rest
-         */
-        this.deauthorize = function() {
-            if ( authenticator ) {
-                authenticator.deauthorize();
-            }
-        };
-
         /**
             Returns the value of the private ajaxSettings var
             @private
