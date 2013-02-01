@@ -44,8 +44,62 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "auth/secured",
+    url: "secured",
     type: "GET",
+    response: function( event ) {
+        var authToken = event.headers["Auth-Token"];
+        if( authToken && authToken == "1234567" ) {
+            this.responseText = {
+                value1: "value1",
+                value2: "value2"
+            };
+        } else {
+            this.status = 401,
+            this.statusText = "UnAuthorized",
+            this.headers = "";
+        }
+    }
+});
+
+$.mockjax({
+    url: "secured",
+    type: "POST",
+    response: function( event ) {
+        var authToken = event.headers["Auth-Token"];
+        if( authToken && authToken == "1234567" ) {
+            this.responseText = {
+                value1: "value1",
+                value2: "value2"
+            };
+        } else {
+            this.status = 401,
+            this.statusText = "UnAuthorized",
+            this.headers = "";
+        }
+    }
+});
+
+$.mockjax({
+    url: "secured/999999",
+    type: "PUT",
+    response: function( event ) {
+        var authToken = event.headers["Auth-Token"];
+        if( authToken && authToken == "1234567" ) {
+            this.responseText = {
+                value1: "value1",
+                value2: "value2"
+            };
+        } else {
+            this.status = 401,
+            this.statusText = "UnAuthorized",
+            this.headers = "";
+        }
+    }
+});
+
+$.mockjax({
+    url: "secured/999999",
+    type: "DELETE",
     response: function( event ) {
         var authToken = event.headers["Auth-Token"];
         if( authToken && authToken == "1234567" ) {

@@ -313,7 +313,8 @@
             error: error,
             url: url,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
         if( options.jsonp ) {
@@ -403,7 +404,8 @@
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
         // Stringify data if we actually want to POST/PUT JSON data
@@ -493,7 +495,8 @@
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
         return $.ajax( $.extend( {}, ajaxSettings, extraOptions ) );
