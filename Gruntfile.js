@@ -29,19 +29,19 @@ module.exports = function(grunt) {
                 banner: "<%= meta.banner %>"
             },
             dist: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'external/uuid/uuid.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             auth: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
