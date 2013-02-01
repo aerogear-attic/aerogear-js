@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-01-28
+/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-02-01
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -113,66 +113,6 @@ AeroGear.Core = function() {
 AeroGear.isArray = function( obj ) {
     return ({}).toString.call( obj ) === "[object Array]";
 };
-
-(function( AeroGear, $, undefined ) {
-    /**
-        Wrapper utility around jQuery.ajax to preform some custom actions
-        @private
-        @method
-        @param {Object} caller - the AeroGear object (pipe, datamanager, etc.) that is calling AeroGear.ajax
-        @param {Object} options - settings for jQuery.ajax
-     */
-    AeroGear.ajax = function( caller, options ) {
-        var deferred = $.Deferred( function() {
-            var that = this,
-                settings = $.extend( {}, {
-                    contentType: "application/json",
-                    dataType: "json"
-                }, options );
-
-            this.done( settings.success );
-            this.fail( settings.error );
-            this.always( settings.complete );
-
-            var ajaxSettings = $.extend( {}, settings, {
-                success: function( data, textStatus, jqXHR ) {
-                    that.resolve( typeof data === "string" && ajaxSettings.dataType === "json" ? JSON.parse( data ) : data, textStatus, jqXHR );
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    if ( ajaxSettings.dataType === "json" ) {
-                        try {
-                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
-                        } catch( error ) {}
-                    }
-                    that.reject( jqXHR, textStatus, errorThrown );
-                },
-                complete: function( jqXHR, textStatus ) {
-                    that.resolve( jqXHR, textStatus );
-                }
-            });
-
-            if ( ajaxSettings.contentType === "application/json" && ajaxSettings.data && ( ajaxSettings.type === "POST" || ajaxSettings.type === "PUT" ) ) {
-                ajaxSettings.data = JSON.stringify( ajaxSettings.data );
-            }
-
-            if ( AeroGear.Auth && !caller.isAuthenticated() ) {
-                this.reject( "auth", "Error: Authentication Required" );
-            } else if ( caller.addAuthIdentifier ) {
-                $.ajax( caller.addAuthIdentifier( ajaxSettings ) );
-            } else {
-                $.ajax( ajaxSettings );
-            }
-        });
-
-        var promise = deferred.promise();
-
-        promise.success = deferred.done;
-        promise.error = deferred.fail;
-        promise.complete = deferred.always;
-
-        return promise;
-    };
-})( AeroGear, jQuery );
 
 //     node-uuid/uuid.js
 //
@@ -507,7 +447,9 @@ AeroGear.isArray = function( obj ) {
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
+                contentType: "application/json",
+                dataType: "json"
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
@@ -755,7 +697,16 @@ AeroGear.isArray = function( obj ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            // Handle JSON formatted error responses and provide as responseJSON
+            if ( ajaxSettings.dataType === "json" ) {
+                try {
+                    jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
+                } catch( error ) {
+                    // Response was not JSON formatted
+                }
+            }
+
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -767,7 +718,8 @@ AeroGear.isArray = function( obj ) {
             error: error,
             url: url,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
         if( options.jsonp ) {
@@ -778,7 +730,7 @@ AeroGear.isArray = function( obj ) {
             }
         }
 
-        return AeroGear.ajax( this, $.extend( {}, this.getAjaxSettings(), extraOptions ) );
+        return $.ajax( $.extend( {}, this.getAjaxSettings(), extraOptions ) );
     };
 
     /**
@@ -857,10 +809,16 @@ AeroGear.isArray = function( obj ) {
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( ajaxSettings.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
+        }
+
+        return $.ajax( $.extend( {}, ajaxSettings, extraOptions ) );
     };
 
     /**
@@ -942,10 +900,11 @@ AeroGear.isArray = function( obj ) {
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        return $.ajax( $.extend( {}, ajaxSettings, extraOptions ) );
     };
 })( AeroGear, jQuery, uuid );
 
@@ -1603,6 +1562,7 @@ AeroGear.isArray = function( obj ) {
         @param {Boolean} [settings.agAuth] - True if this adapter should use AeroGear's token based authentication model
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
+        @param {Object|Array} pipes - a single pipe or array of pipes that will use this auth module
         @param {String} [settings.tokenName="Auth-Token"] - defines the name used for the token header when using agAuth
         @returns {Object} The created auth module
      */
@@ -1615,7 +1575,9 @@ AeroGear.isArray = function( obj ) {
         settings = settings || {};
 
         // Private Instance vars
-        var endpoints = settings.endpoints || {},
+        var pipes, authDeferred, originalReadMethod,
+            that = this,
+            endpoints = settings.endpoints || {},
             type = "Rest",
             name = moduleName,
             agAuth = !!settings.agAuth,
@@ -1646,7 +1608,7 @@ AeroGear.isArray = function( obj ) {
             @returns {Object} Settings extended with auth identifier
          */
         this.addAuthIdentifier = function( settings ) {
-            settings.headers = {};
+            settings.headers = settings.headers ? settings.headers : {};
             settings.headers[ tokenName ] = sessionStorage.getItem( "ag-auth-" + name );
             return $.extend( {}, settings );
         };
@@ -1715,6 +1677,34 @@ AeroGear.isArray = function( obj ) {
         this.getTokenName = function() {
             return tokenName;
         };
+
+        // Modify Pipeline methods to check authentication status
+        if ( settings.pipes ) {
+            pipes = AeroGear.isArray( settings.pipes ) ? settings.pipes : [ settings.pipes ];
+            for ( var i = 0; i < pipes.length; i++ ) {
+                [ "read", "save", "remove" ].forEach( function( method ) {
+                    pipes[ i ][ method ] = (function( pipe, originalMethod ) {
+                        return function( arg1, arg2 ) {
+                            var args = Array.prototype.slice.call( arguments, 0 );
+                            if ( that.isAuthenticated() ) {
+                                if ( arg2 ) {
+                                    args[ 1 ] = that.addAuthIdentifier( arg2 );
+                                } else if ( method === "read" && arg1 ) {
+                                    args[ 0 ] = that.addAuthIdentifier( arg1 );
+                                }
+                                originalMethod.apply( pipe, args );
+                            } else {
+                                if ( arg1 && arg1.error ) {
+                                    arg1.error( "auth", "Error: Authentication Required" );
+                                } else if ( arg2 && arg2.error ) {
+                                    arg2.error( "auth", "Error: Authentication Required" );
+                                }
+                            }
+                        };
+                    })( pipes[ i ], pipes[ i ][ method ] );
+                });
+            }
+        }
     };
 
     //Public Methods
