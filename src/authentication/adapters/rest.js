@@ -142,32 +142,22 @@
         if ( settings.pipes ) {
             pipes = AeroGear.isArray( settings.pipes ) ? settings.pipes : [ settings.pipes ];
             for ( var i = 0; i < pipes.length; i++ ) {
-                // read
-                pipes[ i ].read = (function( pipe, read ) {
-                    return function( options ) {
-                        if ( that.isAuthenticated() ) {
-                            read.call( pipe, that.addAuthIdentifier( options ) );
-                        } else {
-                            if ( options.error ) {
-                                options.error( "auth", "Error: Authentication Required" );
-                            }
-                        }
-                    };
-                })( pipes[ i ], pipes[ i ].read );
-
-                // save and remove
-                [ "save", "remove" ].forEach( function( method ) {
+                [ "read", "save", "remove" ].forEach( function( method ) {
                     pipes[ i ][ method ] = (function( pipe, originalMethod ) {
-                        return function( data, options ) {
+                        return function( arg1, arg2 ) {
                             var args = Array.prototype.slice.call( arguments, 0 );
                             if ( that.isAuthenticated() ) {
-                                if ( args.length > 1 ) {
-                                    args[ 1 ] = that.addAuthIdentifier( options );
+                                if ( arg2 ) {
+                                    args[ 1 ] = that.addAuthIdentifier( arg2 );
+                                } else if ( method === "read" && arg1 ) {
+                                    args[ 0 ] = that.addAuthIdentifier( arg1 );
                                 }
                                 originalMethod.apply( pipe, args );
                             } else {
-                                if ( options.error ) {
-                                    options.error( "auth", "Error: Authentication Required" );
+                                if ( arg1 && arg1.error ) {
+                                    arg1.error( "auth", "Error: Authentication Required" );
+                                } else if ( arg2 && arg2.error ) {
+                                    arg2.error( "auth", "Error: Authentication Required" );
                                 }
                             }
                         };
