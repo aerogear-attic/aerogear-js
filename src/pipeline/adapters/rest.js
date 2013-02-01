@@ -46,7 +46,6 @@
                 dataType: "json"
             },
             recordId = settings.recordId || "id",
-            authenticator = settings.authenticator || null,
             type = "Rest",
             pageConfig = settings.pageConfig;
 
