@@ -18,6 +18,7 @@
         The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named `tasks` would use http://mysite.com/myApp/tasks as its REST endpoint.
         @constructs AeroGear.Pipeline.adapters.Rest
         @param {String} pipeName - the name used to reference this particular pipe
+        @param {String} [type="Rest"] - the name used to reference this particular pipe
         @param {Object} [settings={}] - the settings to be passed to the adapter
         @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
