@@ -22,6 +22,7 @@
         @param {Boolean} [settings.agAuth] - True if this adapter should use AeroGear's token based authentication model
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
         @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
+        @param {Object|Array} pipes - a single pipe or array of pipes that will use this auth module
         @param {String} [settings.tokenName="Auth-Token"] - defines the name used for the token header when using agAuth
         @returns {Object} The created auth module
      */
@@ -34,7 +35,9 @@
         settings = settings || {};
 
         // Private Instance vars
-        var endpoints = settings.endpoints || {},
+        var pipes, authDeferred, originalReadMethod,
+            that = this,
+            endpoints = settings.endpoints || {},
             type = "Rest",
             name = moduleName,
             agAuth = !!settings.agAuth,
@@ -65,7 +68,7 @@
             @returns {Object} Settings extended with auth identifier
          */
         this.addAuthIdentifier = function( settings ) {
-            settings.headers = {};
+            settings.headers = settings.headers ? settings.headers : {};
             settings.headers[ tokenName ] = sessionStorage.getItem( "ag-auth-" + name );
             return $.extend( {}, settings );
         };
@@ -134,6 +137,34 @@
         this.getTokenName = function() {
             return tokenName;
         };
+
+        // Modify Pipeline methods to check authentication status
+        if ( settings.pipes ) {
+            pipes = AeroGear.isArray( settings.pipes ) ? settings.pipes : [ settings.pipes ];
+            for ( var i = 0; i < pipes.length; i++ ) {
+                [ "read", "save", "remove" ].forEach( function( method ) {
+                    pipes[ i ][ method ] = (function( pipe, originalMethod ) {
+                        return function( arg1, arg2 ) {
+                            var args = Array.prototype.slice.call( arguments, 0 );
+                            if ( that.isAuthenticated() ) {
+                                if ( arg2 ) {
+                                    args[ 1 ] = that.addAuthIdentifier( arg2 );
+                                } else if ( method === "read" && arg1 ) {
+                                    args[ 0 ] = that.addAuthIdentifier( arg1 );
+                                }
+                                originalMethod.apply( pipe, args );
+                            } else {
+                                if ( arg1 && arg1.error ) {
+                                    arg1.error( "auth", "Error: Authentication Required" );
+                                } else if ( arg2 && arg2.error ) {
+                                    arg2.error( "auth", "Error: Authentication Required" );
+                                }
+                            }
+                        };
+                    })( pipes[ i ], pipes[ i ][ method ] );
+                });
+            }
+        }
     };
 
     //Public Methods

@@ -1,5 +1,8 @@
 (function( $ ) {
 
+    // Do not reorder tests on rerun
+    QUnit.config.reorder = false;
+
     module( "authentication: Token" );
 
     test( "Authentication init", function() {
@@ -17,49 +20,33 @@
         equal( auth1.auth.isAuthenticated(), false, "Current Auth Status" );
     });
     test( "Authentication Pipeline init", function() {
-        expect( 3 );
+        expect( 2 );
 
-        var auth2 = AeroGear.Auth({
-            name: "auth",
-            settings: {
-                agAuth: true
-            }
-        }).modules;
-
-        var pipeline = AeroGear.Pipeline([
-            {
-                name: "pipe1",
+        var pipeline = AeroGear.Pipeline( "pipe1" ).pipes,
+            auth2 = AeroGear.Auth({
+                name: "auth",
                 settings: {
-                    authenticator: auth2.auth
+                    agAuth: true,
+                    pipes: pipeline
                 }
-            }
-        ]).pipes;
+            }).modules;
 
         equal( Object.keys( auth2 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth2 )[ 0 ], "auth", "Module named auth" );
-        equal( Object.keys( pipeline ).length, 1, "1 Pipe Created with auth module" );
 
     });
 
     //create an Authenticator and Pipeline to be used for other tests
-    var restAuth = AeroGear.Auth([
-        {
-            name: "auth",
-            settings: {
-                agAuth: true
+    var securePipe = AeroGear.Pipeline( "secured" ).pipes.secured,
+        restAuth = AeroGear.Auth([
+            {
+                name: "auth",
+                settings: {
+                    agAuth: true,
+                    pipes: securePipe
+                }
             }
-        }
-    ]).modules.auth;
-
-    var securePipe = AeroGear.Pipeline([
-        {
-            name: "secured",
-            settings: {
-                baseURL: "auth/",
-                authenticator: restAuth
-            }
-        }
-    ]).pipes.secured;
+        ]).modules.auth;
 
     asyncTest( "No Token", function() {
         expect( 1 );
@@ -141,21 +128,71 @@
         });
     });
 
-    asyncTest( "Access With Valid Token", function() {
+    asyncTest( "Read With Valid Token", function() {
         expect( 1 );
 
         //set a Auth-Token, for example purpose's
         sessionStorage.setItem( "ag-auth-auth", "1234567" );
         securePipe.read({
             success: function( data ) {
-                ok( true, "Successful Access with Valid Token" );
+                ok( true, "Successful Read with Valid Token" );
                 start();
             }
         });
 
     });
 
-    asyncTest( "Accessing With Invalid Token", function() {
+    asyncTest( "Save New With Valid Token", function() {
+        expect( 1 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "1234567" );
+        securePipe.save({
+            name: "New Item"
+        },
+        {
+            success: function( data ) {
+                ok( true, "Successful Save with Valid Token" );
+                start();
+            }
+        });
+
+    });
+
+    asyncTest( "Save Changes to Existing Item With Valid Token", function() {
+        expect( 1 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "1234567" );
+        securePipe.save({
+            id: 999999,
+            name: "New Item"
+        },
+        {
+            success: function( data ) {
+                ok( true, "Successful Save with Valid Token" );
+                start();
+            }
+        });
+
+    });
+
+    asyncTest( "Remove Item With Valid Token", function() {
+        expect( 1 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "1234567" );
+        securePipe.remove( 999999,
+        {
+            success: function( data ) {
+                ok( true, "Successful Remove with Valid Token" );
+                start();
+            }
+        });
+
+    });
+
+    asyncTest( "Read With Invalid Token", function() {
         expect( 2 );
 
         //set a Auth-Token, for example purpose's
@@ -163,10 +200,63 @@
         securePipe.read({
             error: function( data ) {
                 equal( data.status, 401, "UnAuthorized Code" );
-                ok( true, "Failed Access with InValid Token" );
+                ok( true, "Failed Read with InValid Token" );
                 start();
             }
         });
+    });
+
+    asyncTest( "Save New With Invalid Token", function() {
+        expect( 2 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "12345" );
+        securePipe.save({
+            name: "New Item"
+        },
+        {
+            error: function( data ) {
+                equal( data.status, 401, "UnAuthorized Code" );
+                ok( true, "Failed Save with InValid Token" );
+                start();
+            }
+        });
+
+    });
+
+    asyncTest( "Save Changes to Existing Item With Invalid Token", function() {
+        expect( 2 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "12345" );
+        securePipe.save({
+            id: 999999,
+            name: "New Item"
+        },
+        {
+            error: function( data ) {
+                equal( data.status, 401, "UnAuthorized Code" );
+                ok( true, "Failed Save with InValid Token" );
+                start();
+            }
+        });
+
+    });
+
+    asyncTest( "Remove Item With Invalid Token", function() {
+        expect( 2 );
+
+        //set a Auth-Token, for example purpose's
+        sessionStorage.setItem( "ag-auth-auth", "12345" );
+        securePipe.remove( 999999,
+        {
+            error: function( data ) {
+                equal( data.status, 401, "UnAuthorized Code" );
+                ok( true, "Failed Remove with InValid Token" );
+                start();
+            }
+        });
+
     });
 
     asyncTest( "Log Out", function() {
