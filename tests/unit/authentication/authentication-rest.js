@@ -3,7 +3,7 @@
     module( "authentication: Token" );
 
     test( "Authentication init", function() {
-        expect( 3 );
+        expect( 2 );
 
         var auth1 = AeroGear.Auth({
             name: "auth",
@@ -14,7 +14,6 @@
 
         equal( Object.keys( auth1 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth1 )[ 0 ], "auth", "Module name auth" );
-        equal( auth1.auth.isAuthenticated(), false, "Current Auth Status" );
     });
     test( "Authentication Pipeline init", function() {
         expect( 3 );
@@ -68,8 +67,8 @@
         sessionStorage.removeItem( "ag-auth-auth" );
 
         securePipe.read({
-            error: function( type, message ) {
-                equal( message, "Error: Authentication Required", "Initial Page load Auth Failure" );
+            error: function( jqXHR, textStatus, errorThrown ) {
+                equal( errorThrown, "UnAuthorized", "Initial Page load Auth Failure" );
                 start();
             }
         });
