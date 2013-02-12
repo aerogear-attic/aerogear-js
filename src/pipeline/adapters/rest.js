@@ -43,7 +43,9 @@
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
+                contentType: "application/json",
+                dataType: "json"
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
@@ -51,16 +53,6 @@
             pageConfig = settings.pageConfig;
 
         // Privileged Methods
-        /**
-            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
-            @private
-            @augments Rest
-            @returns {Boolean}
-         */
-        this.isAuthenticated = function() {
-            return authenticator ? authenticator.isAuthenticated() : true;
-        };
-
         /**
             Adds the auth token to the headers and returns the modified version of the settings
             @private
@@ -199,6 +191,17 @@
 
             return query;
         };
+
+        this.formatJSONError = function( xhr ) {
+            if ( this.getAjaxSettings().dataType === "json" ) {
+                try {
+                    xhr.responseJSON = JSON.parse( xhr.responseText );
+                } catch( error ) {
+                    // Response was not JSON formatted
+                }
+            }
+            return xhr;
+        };
     };
 
     // Public Methods
@@ -294,7 +297,8 @@
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -306,7 +310,8 @@
             error: error,
             url: url,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
         if( options.jsonp ) {
@@ -317,7 +322,7 @@
             }
         }
 
-        return AeroGear.ajax( this, $.extend( {}, this.getAjaxSettings(), extraOptions ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -379,27 +384,34 @@
             url = ajaxSettings.url;
         }
 
-        success = function( data ) {
+        success = function( data, textStatus, jqXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
         };
-        extraOptions = {
+        extraOptions = $.extend( {}, ajaxSettings, {
             data: data,
             type: type,
             url: url,
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
-        };
+            complete: options.complete,
+            headers: options.headers
+        });
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
+        }
+
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -465,12 +477,13 @@
         delPath = delId ? "/" + delId : "";
         url = ajaxSettings.url + delPath;
 
-        success = function( data ) {
+        success = function( data, textStatus, jqXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -481,9 +494,10 @@
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );
     };
 })( AeroGear, jQuery, uuid );

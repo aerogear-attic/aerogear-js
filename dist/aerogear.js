@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-01-28
+/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-02-15
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -113,66 +113,6 @@ AeroGear.Core = function() {
 AeroGear.isArray = function( obj ) {
     return ({}).toString.call( obj ) === "[object Array]";
 };
-
-(function( AeroGear, $, undefined ) {
-    /**
-        Wrapper utility around jQuery.ajax to preform some custom actions
-        @private
-        @method
-        @param {Object} caller - the AeroGear object (pipe, datamanager, etc.) that is calling AeroGear.ajax
-        @param {Object} options - settings for jQuery.ajax
-     */
-    AeroGear.ajax = function( caller, options ) {
-        var deferred = $.Deferred( function() {
-            var that = this,
-                settings = $.extend( {}, {
-                    contentType: "application/json",
-                    dataType: "json"
-                }, options );
-
-            this.done( settings.success );
-            this.fail( settings.error );
-            this.always( settings.complete );
-
-            var ajaxSettings = $.extend( {}, settings, {
-                success: function( data, textStatus, jqXHR ) {
-                    that.resolve( typeof data === "string" && ajaxSettings.dataType === "json" ? JSON.parse( data ) : data, textStatus, jqXHR );
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    if ( ajaxSettings.dataType === "json" ) {
-                        try {
-                            jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
-                        } catch( error ) {}
-                    }
-                    that.reject( jqXHR, textStatus, errorThrown );
-                },
-                complete: function( jqXHR, textStatus ) {
-                    that.resolve( jqXHR, textStatus );
-                }
-            });
-
-            if ( ajaxSettings.contentType === "application/json" && ajaxSettings.data && ( ajaxSettings.type === "POST" || ajaxSettings.type === "PUT" ) ) {
-                ajaxSettings.data = JSON.stringify( ajaxSettings.data );
-            }
-
-            if ( AeroGear.Auth && !caller.isAuthenticated() ) {
-                this.reject( "auth", "Error: Authentication Required" );
-            } else if ( caller.addAuthIdentifier ) {
-                $.ajax( caller.addAuthIdentifier( ajaxSettings ) );
-            } else {
-                $.ajax( ajaxSettings );
-            }
-        });
-
-        var promise = deferred.promise();
-
-        promise.success = deferred.done;
-        promise.error = deferred.fail;
-        promise.complete = deferred.always;
-
-        return promise;
-    };
-})( AeroGear, jQuery );
 
 //     node-uuid/uuid.js
 //
@@ -483,6 +423,7 @@ AeroGear.isArray = function( obj ) {
         The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named `tasks` would use http://mysite.com/myApp/tasks as its REST endpoint.
         @constructs AeroGear.Pipeline.adapters.Rest
         @param {String} pipeName - the name used to reference this particular pipe
+        @param {String} [type="Rest"] - the name used to reference this particular pipe
         @param {Object} [settings={}] - the settings to be passed to the adapter
         @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
@@ -507,7 +448,9 @@ AeroGear.isArray = function( obj ) {
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
+                contentType: "application/json",
+                dataType: "json"
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
@@ -515,16 +458,6 @@ AeroGear.isArray = function( obj ) {
             pageConfig = settings.pageConfig;
 
         // Privileged Methods
-        /**
-            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
-            @private
-            @augments Rest
-            @returns {Boolean}
-         */
-        this.isAuthenticated = function() {
-            return authenticator ? authenticator.isAuthenticated() : true;
-        };
-
         /**
             Adds the auth token to the headers and returns the modified version of the settings
             @private
@@ -620,7 +553,10 @@ AeroGear.isArray = function( obj ) {
                     }
                 }
 
-                query[ identifier ] = params;
+                if( identifier ) {
+                    query[ identifier ] = params;
+                    identifier = undefined;
+                }
             }
 
             return query;
@@ -659,6 +595,17 @@ AeroGear.isArray = function( obj ) {
             }
 
             return query;
+        };
+
+        this.formatJSONError = function( xhr ) {
+            if ( this.getAjaxSettings().dataType === "json" ) {
+                try {
+                    xhr.responseJSON = JSON.parse( xhr.responseText );
+                } catch( error ) {
+                    // Response was not JSON formatted
+                }
+            }
+            return xhr;
         };
     };
 
@@ -755,7 +702,8 @@ AeroGear.isArray = function( obj ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -767,7 +715,8 @@ AeroGear.isArray = function( obj ) {
             error: error,
             url: url,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
         if( options.jsonp ) {
@@ -778,7 +727,7 @@ AeroGear.isArray = function( obj ) {
             }
         }
 
-        return AeroGear.ajax( this, $.extend( {}, this.getAjaxSettings(), extraOptions ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -840,27 +789,34 @@ AeroGear.isArray = function( obj ) {
             url = ajaxSettings.url;
         }
 
-        success = function( data ) {
+        success = function( data, textStatus, jqXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
         };
-        extraOptions = {
+        extraOptions = $.extend( {}, ajaxSettings, {
             data: data,
             type: type,
             url: url,
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
-        };
+            complete: options.complete,
+            headers: options.headers
+        });
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
+        }
+
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -926,12 +882,13 @@ AeroGear.isArray = function( obj ) {
         delPath = delId ? "/" + delId : "";
         url = ajaxSettings.url + delPath;
 
-        success = function( data ) {
+        success = function( data, textStatus, jqXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -942,10 +899,11 @@ AeroGear.isArray = function( obj ) {
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );
     };
 })( AeroGear, jQuery, uuid );
 
@@ -1624,21 +1582,6 @@ AeroGear.isArray = function( obj ) {
 
         // Privileged methods
         /**
-            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
-            @private
-            @augments Rest
-            @returns {Boolean}
-         */
-        this.isAuthenticated = function() {
-            if ( agAuth ) {
-                return !!sessionStorage.getItem( "ag-auth-" + name );
-            } else {
-                // For the default (rest) adapter, we assume if not using agAuth then session so auth will be handled server side
-                return true;
-            }
-        };
-
-        /**
             Adds the auth token to the headers and returns the modified version of the settings
             @private
             @augments Rest
@@ -1646,7 +1589,7 @@ AeroGear.isArray = function( obj ) {
             @returns {Object} Settings extended with auth identifier
          */
         this.addAuthIdentifier = function( settings ) {
-            settings.headers = {};
+            settings.headers = settings.headers ? settings.headers : {};
             settings.headers[ tokenName ] = sessionStorage.getItem( "ag-auth-" + name );
             return $.extend( {}, settings );
         };
@@ -1942,10 +1885,8 @@ AeroGear.isArray = function( obj ) {
             extraOptions.url = url;
         }
 
-        if ( this.isAuthenticated() ) {
-            extraOptions.headers = {};
-            extraOptions.headers[ tokenName ] = sessionStorage.getItem( "ag-auth-" + name );
-        }
+        extraOptions.headers = {};
+        extraOptions.headers[ tokenName ] = sessionStorage.getItem( "ag-auth-" + name );
 
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
     };
