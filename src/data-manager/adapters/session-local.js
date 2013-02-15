@@ -20,7 +20,6 @@
         @mixes AeroGear.DataManager.adapters.Memory
         @param {String} storeName - the name used to reference this particular store
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Boolean} [settings.dataSync=false] - if true, any pipes associated with this store will attempt to keep the data in sync with the server (coming soon)
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
         @param {String} [settings.storageType="sessionStorage"] - the type of store can either be sessionStorage or localStorage
         @returns {Object} The created store
@@ -38,7 +37,6 @@
             type = "SessionLocal",
             storeType = settings.storageType || "sessionStorage",
             name = storeName,
-            dataSync = settings.dataSync,
             appContext = document.location.pathname.replace(/[\/\.]/g,"-"),
             storeKey = name + appContext,
             currentData = JSON.parse( window[ storeType ].getItem( storeKey ) );
