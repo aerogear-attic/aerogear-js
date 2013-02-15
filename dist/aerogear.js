@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-02-11
+/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-02-15
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -816,7 +816,7 @@ AeroGear.isArray = function( obj ) {
             extraOptions.data = JSON.stringify( extraOptions.data );
         }
 
-        return $.ajax( extraOptions );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -903,7 +903,7 @@ AeroGear.isArray = function( obj ) {
             headers: options.headers
         };
 
-        return $.ajax( $.extend( {}, ajaxSettings, this.addAuthIdentifier( extraOptions ) ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );
     };
 })( AeroGear, jQuery, uuid );
 

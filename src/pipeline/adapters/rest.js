@@ -411,7 +411,7 @@
             extraOptions.data = JSON.stringify( extraOptions.data );
         }
 
-        return $.ajax( extraOptions );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -498,6 +498,6 @@
             headers: options.headers
         };
 
-        return $.ajax( $.extend( {}, ajaxSettings, this.addAuthIdentifier( extraOptions ) ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );
     };
 })( AeroGear, jQuery, uuid );
