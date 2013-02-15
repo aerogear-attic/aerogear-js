@@ -136,9 +136,9 @@ var userStoreReload,
 
 // Initialize the data set
 test( "save - initialize", function() {
-    expect( 1 );
+    expect( 2 );
 
-    userStore.save([
+    var returnedData = userStore.save([
         {
             id: 12345,
             fname: "John",
@@ -177,7 +177,8 @@ test( "save - initialize", function() {
         }
     ]);
 
-    equal( userStore.read().length, 6, "Initial data added to store" );
+    equal( returnedData.length, 6, "Initial data returned on save" );
+    equal( userStore.read().length, 6, "Initial data readable from store" );
 
     userStoreReload = AeroGear.DataManager({
         name: "users",
@@ -202,21 +203,22 @@ test( "read", function() {
 
 // Save data
 test( "save single", function() {
-    expect( 2 );
+    expect( 3 );
 
-    userStore.save({
+    var returnedData = userStore.save({
         id: 12351,
         fname: "New",
         lname: "Person",
         dept: "New"
     });
+    equal( returnedData.length, 7, "Save returns updated data set" );
     equal( userStore.read().length, 7, "Read all data including new item" );
     equal( userStore.read( 12351 ).length, 1, "Read new item by id" );
 });
 test( "save multiple", function() {
-    expect( 2 );
+    expect( 3 );
 
-    userStore.save([
+    var returnedData = userStore.save([
         {
             id: 12352,
             fname: "New",
@@ -230,25 +232,27 @@ test( "save multiple", function() {
             dept: "New"
         }
     ]);
+    equal( returnedData.length, 9, "Save returns updated data set" );
     equal( userStore.read().length, 9, "Read all data including new items" );
     equal( userStore.read( 12353 ).length, 1, "Read new item by id" );
 });
 test( "update single", function() {
-    expect( 2 );
+    expect( 3 );
 
-    userStore.save({
+    var returnedData = userStore.save({
         id: 12351,
         fname: "Updated",
         lname: "Person",
         dept: "New"
     });
+    equal( returnedData.length, 9, "Save returns updated data set with same length" );
     equal( userStore.read().length, 9, "Data length unchanged" );
     equal( userStore.read( 12351 )[ 0 ].fname, "Updated", "Check item is updated" );
 });
 test( "update multiple", function() {
-    expect( 2 );
+    expect( 3 );
 
-    userStore.save([
+    var returnedData = userStore.save([
         {
             id: 12352,
             fname: "Updated",
@@ -262,13 +266,14 @@ test( "update multiple", function() {
             dept: "New"
         }
     ]);
+    equal( returnedData.length, 9, "Save returns updated data set with same length" );
     equal( userStore.read().length, 9, "Data length unchanged" );
     equal( userStore.read( 12353 )[ 0 ].fname, "Updated", "Check item is updated" );
 });
 test( "update and add", function() {
-    expect( 3 );
+    expect( 4 );
 
-    userStore.save([
+    var returnedData = userStore.save([
         {
             id: 12352,
             fname: "UpdatedAgain",
@@ -282,6 +287,7 @@ test( "update and add", function() {
             dept: "New"
         }
     ]);
+    equal( returnedData.length, 10, "Save returns updated data set" );
     equal( userStore.read().length, 10, "One new item added" );
     equal( userStore.read( 12352 )[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
     equal( userStore.read( 12354 ).length, 1, "Read new item by id" );
@@ -289,19 +295,21 @@ test( "update and add", function() {
 
 // Remove data
 test( "remove single", function() {
-    expect( 2 );
+    expect( 3 );
 
-    userStore.remove( 12351 );
+    var returnedData = userStore.remove( 12351 );
+    equal( returnedData.length, 9, "Remove returns updated data set" );
     equal( userStore.read().length, 9, "Read all data without removed item" );
     equal( userStore.read( 12351 ).length, 0, "Removed item doesn't exist" );
 });
 test( "remove multiple - different formats", function() {
-    expect( 3 );
+    expect( 4 );
 
-    userStore.remove([
+    var returnedData = userStore.remove([
         12353,
         userStore.read( 12345 )[ 0 ]
     ]);
+    equal( returnedData.length, 7, "Remove returns updated data set" );
     equal( userStore.read().length, 7, "Read all data without removed items" );
     equal( userStore.read( 12353 ).length, 0, "Removed item doesn't exist" );
     equal( userStore.read( 12345 ).length, 0, "Removed item doesn't exist" );
@@ -576,16 +584,15 @@ var userStore2 = AeroGear.DataManager({
     name: "users",
     type: "SessionLocal",
     settings: {
-        storageType: "localStorage",
-        dataSync: true
+        storageType: "localStorage"
     }
 }).stores.users;
 
 // Initialize the data set
 test( "save - initialize", function() {
-    expect( 1 );
+    expect( 2 );
 
-    userStore2.save([
+    var returnedData = userStore2.save([
         {
             id: 12345,
             fname: "John",
@@ -624,6 +631,7 @@ test( "save - initialize", function() {
         }
     ]);
 
+    equal( returnedData.length, 6, "Save returns updated data set" );
     equal( userStore2.read().length, 6, "Initial data added to store" );
 });
 
@@ -637,22 +645,23 @@ test( "read", function() {
 
 // Save data
 test( "save single", function() {
-    expect( 3 );
+    expect( 4 );
 
-    userStore2.save({
+    var returnedData = userStore2.save({
         id: 12351,
         fname: "New",
         lname: "Person",
         dept: "New"
     });
+    equal( returnedData.length, 7, "Save returns updated data set" );
     equal( userStore2.read().length, 7, "Read all data including new item" );
     equal( userStore2.read( 12351 ).length, 1, "Read new item by id" );
     equal( userStore2.read( 12351 )[ 0 ][ "ag-sync-status" ], 1, "Read new item's sync status" );
 });
 test( "save multiple", function() {
-    expect( 4 );
+    expect( 5 );
 
-    userStore2.save([
+    var returnedData = userStore2.save([
         {
             id: 12352,
             fname: "New",
@@ -666,28 +675,30 @@ test( "save multiple", function() {
             dept: "New"
         }
     ]);
+    equal( returnedData.length, 9, "Save returns updated data set" );
     equal( userStore2.read().length, 9, "Read all data including new items" );
     equal( userStore2.read( 12353 ).length, 1, "Read new item by id" );
     equal( userStore2.read( 12352 )[ 0 ][ "ag-sync-status" ], 1, "Read new item's sync status" );
     equal( userStore2.read( 12353 )[ 0 ][ "ag-sync-status" ], 1, "Read new item's sync status" );
 });
 test( "update single", function() {
-    expect( 3 );
+    expect( 4 );
 
-    userStore2.save({
+    var returnedData = userStore2.save({
         id: 12351,
         fname: "Updated",
         lname: "Person",
         dept: "New"
     });
+    equal( returnedData.length, 9, "Save returns updated data set with unchanged length" );
     equal( userStore2.read().length, 9, "Data length unchanged" );
     equal( userStore2.read( 12351 )[ 0 ].fname, "Updated", "Check item is updated" );
     equal( userStore2.read( 12351 )[ 0 ][ "ag-sync-status" ], 2, "Read updated item's sync status" );
 });
 test( "update multiple", function() {
-    expect( 4 );
+    expect( 5 );
 
-    userStore2.save([
+    var returnedData = userStore2.save([
         {
             id: 12352,
             fname: "Updated",
@@ -701,15 +712,16 @@ test( "update multiple", function() {
             dept: "New"
         }
     ]);
+    equal( returnedData.length, 9, "Save returns updated data set with unchanged length" );
     equal( userStore2.read().length, 9, "Data length unchanged" );
     equal( userStore2.read( 12353 )[ 0 ].fname, "Updated", "Check item is updated" );
     equal( userStore2.read( 12352 )[ 0 ][ "ag-sync-status" ], 2, "Read updated item's sync status" );
     equal( userStore2.read( 12353 )[ 0 ][ "ag-sync-status" ], 2, "Read updated item's sync status" );
 });
 test( "update and add", function() {
-    expect( 5 );
+    expect( 6 );
 
-    userStore2.save([
+    var returnedData = userStore2.save([
         {
             id: 12352,
             fname: "UpdatedAgain",
@@ -723,6 +735,7 @@ test( "update and add", function() {
             dept: "New"
         }
     ]);
+    equal( returnedData.length, 10, "Save returns updated data set" );
     equal( userStore2.read().length, 10, "One new item added" );
     equal( userStore2.read( 12352 )[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
     equal( userStore2.read( 12354 ).length, 1, "Read new item by id" );
@@ -732,19 +745,21 @@ test( "update and add", function() {
 
 // Remove data
 test( "remove single", function() {
-    expect( 2 );
+    expect( 3 );
 
-    userStore2.remove( 12351 );
+    var returnedData = userStore2.remove( 12351 );
+    equal( returnedData.length, 9, "Remove returns updated data set" );
     equal( userStore2.read().length, 9, "Read all data without removed item" );
     equal( userStore2.read( 12351 ).length, 0, "Removed item doesn't exist" );
 });
 test( "remove multiple - different formats", function() {
     expect( 3 );
 
-    userStore2.remove([
+    var returnedData = userStore2.remove([
         12353,
         userStore2.read( 12345 )[ 0 ]
     ]);
+    equal( returnedData.length, 7, "Remove returns updated data set" );
     equal( userStore2.read().length, 7, "Read all data without removed items" );
     equal( userStore2.read( 12353 ).length, 0, "Removed item doesn't exist" );
     equal( userStore2.read( 12345 ).length, 0, "Removed item doesn't exist" );

@@ -76,30 +76,38 @@
         save: {
             value: function( data, options ) {
                 // Call the super method
-                AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, arguments );
+                var reset = options && options.reset ? options.reset : false,
+                    oldData = window[ this.getStoreType() ].getItem( this.getStoreKey() ),
+                    newData = AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], reset ] );
 
                 // Sync changes to persistent store
                 try {
-                    window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.getData() ) );
+                    window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( newData ) );
                     if ( options && options.storageSuccess ) {
-                        options.storageSuccess( data );
+                        options.storageSuccess( newData );
                     }
                 } catch( error ) {
+                    oldData = oldData ? JSON.parse( oldData ) : [];
+                    newData = AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ oldData, true ] );
                     if ( options && options.storageError ) {
                         options.storageError( error, data );
                     } else {
                         throw error;
                     }
                 }
+
+                return newData;
             }, enumerable: true, configurable: true, writable: true
         },
         remove: {
-            value: function( toRemove, options ) {
+            value: function( toRemove ) {
                 // Call the super method
-                AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments );
+                var newData = AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments );
 
                 // Sync changes to persistent store
-                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.getData() ) );
+                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( newData ) );
+
+                return newData;
             }, enumerable: true, configurable: true, writable: true
         }
     });
