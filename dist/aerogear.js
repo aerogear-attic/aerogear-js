@@ -636,7 +636,7 @@ AeroGear.isArray = function( obj ) {
         // this object is converted to query string parameters which the server can use.
         // The values would be determined by what the server is expecting
         var filteredData = myPipe.read({
-            data: {
+            query: {
                 limit: 10,
                 date: "2012-08-01"
                 ...
@@ -973,7 +973,6 @@ AeroGear.isArray = function( obj ) {
         @param {String} storeName - the name used to reference this particular store
         @param {Object} [settings={}] - the settings to be passed to the adapter
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
-        @param {Boolean} [settings.dataSync=false] - if true, any pipes associated with this store will attempt to keep the data in sync with the server (coming soon)
         @returns {Object} The created store
      */
     AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
@@ -987,8 +986,7 @@ AeroGear.isArray = function( obj ) {
         // Private Instance vars
         var recordId = settings.recordId ? settings.recordId : "id",
             type = "Memory",
-            data = null,
-            dataSync = !!settings.dataSync;
+            data = null;
 
         // Privileged Methods
         /**
@@ -1002,28 +1000,13 @@ AeroGear.isArray = function( obj ) {
         };
 
         /**
-            Returns the value of the private data var, filtered by sync status if necessary
+            Returns the value of the private data var
             @private
             @augments Memory
-            @param {Boolean} [dataSyncBypass] - get all data no matter it's sync status
             @returns {Array}
          */
-        this.getData = function( dataSyncBypass ) {
-            var activeData = [],
-                item,
-                syncStatus;
-
-            if ( dataSync && !dataSyncBypass ) {
-                for ( item in data ) {
-                    syncStatus = data[ item ][ "ag-sync-status" ];
-                    if ( syncStatus !== AeroGear.DataManager.STATUS_REMOVED ) {
-                        activeData.push( data[ item ] );
-                    }
-                }
-                return activeData;
-            } else {
-                return data;
-            }
+        this.getData = function() {
+            return data;
         };
 
         /**
@@ -1032,11 +1015,6 @@ AeroGear.isArray = function( obj ) {
             @augments Memory
          */
         this.setData = function( newData ) {
-            if ( dataSync ) {
-                for ( var item in newData ) {
-                    newData[ item ][ "ag-sync-status" ] = AeroGear.DataManager.STATUS_NEW;
-                }
-            }
             data = newData;
         };
 
@@ -1046,13 +1024,7 @@ AeroGear.isArray = function( obj ) {
             @augments Memory
          */
         this.emptyData = function() {
-            if ( dataSync ) {
-                for ( var item in data ) {
-                    data[ item ][ "ag-sync-status" ] = AeroGear.DataManager.STATUS_REMOVED;
-                }
-            } else {
-                data = null;
-            }
+            data = null;
         };
 
         /**
@@ -1062,10 +1034,6 @@ AeroGear.isArray = function( obj ) {
          */
         this.addDataRecord = function( record ) {
             data = data || [];
-            if ( dataSync ) {
-                record[ "ag-sync-status" ] = AeroGear.DataManager.STATUS_NEW;
-                record.id = record.id || uuid();
-            }
             data.push( record );
         };
 
@@ -1075,9 +1043,6 @@ AeroGear.isArray = function( obj ) {
             @augments Memory
          */
         this.updateDataRecord = function( index, record ) {
-            if ( dataSync ) {
-                record[ "ag-sync-status" ] = AeroGear.DataManager.STATUS_MODIFIED;
-            }
             data[ index ] = record;
         };
 
@@ -1087,21 +1052,7 @@ AeroGear.isArray = function( obj ) {
             @augments Memory
          */
         this.removeDataRecord = function( index ) {
-            if ( dataSync ) {
-                data[ index ][ "ag-sync-status" ] = AeroGear.DataManager.STATUS_REMOVED;
-            } else {
-                data.splice( index, 1 );
-            }
-        };
-
-        /**
-            Returns the value of the private dataSync var
-            @private
-            @augments Memory
-            @returns {Boolean}
-         */
-        this.getDataSync = function() {
-            return dataSync;
+            data.splice( index, 1 );
         };
 
         /**
@@ -1415,7 +1366,6 @@ AeroGear.isArray = function( obj ) {
         @mixes AeroGear.DataManager.adapters.Memory
         @param {String} storeName - the name used to reference this particular store
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Boolean} [settings.dataSync=false] - if true, any pipes associated with this store will attempt to keep the data in sync with the server (coming soon)
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
         @param {String} [settings.storageType="sessionStorage"] - the type of store can either be sessionStorage or localStorage
         @returns {Object} The created store
@@ -1433,7 +1383,6 @@ AeroGear.isArray = function( obj ) {
             type = "SessionLocal",
             storeType = settings.storageType || "sessionStorage",
             name = storeName,
-            dataSync = settings.dataSync,
             appContext = document.location.pathname.replace(/[\/\.]/g,"-"),
             storeKey = name + appContext,
             currentData = JSON.parse( window[ storeType ].getItem( storeKey ) );
@@ -1471,30 +1420,38 @@ AeroGear.isArray = function( obj ) {
         save: {
             value: function( data, options ) {
                 // Call the super method
-                AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, arguments );
+                var reset = options && options.reset ? options.reset : false,
+                    oldData = window[ this.getStoreType() ].getItem( this.getStoreKey() ),
+                    newData = AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], reset ] );
 
                 // Sync changes to persistent store
                 try {
-                    window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.getData() ) );
+                    window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( newData ) );
                     if ( options && options.storageSuccess ) {
-                        options.storageSuccess( data );
+                        options.storageSuccess( newData );
                     }
                 } catch( error ) {
+                    oldData = oldData ? JSON.parse( oldData ) : [];
+                    newData = AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ oldData, true ] );
                     if ( options && options.storageError ) {
                         options.storageError( error, data );
                     } else {
                         throw error;
                     }
                 }
+
+                return newData;
             }, enumerable: true, configurable: true, writable: true
         },
         remove: {
-            value: function( toRemove, options ) {
+            value: function( toRemove ) {
                 // Call the super method
-                AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments );
+                var newData = AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments );
 
                 // Sync changes to persistent store
-                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.getData() ) );
+                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( newData ) );
+
+                return newData;
             }, enumerable: true, configurable: true, writable: true
         }
     });
