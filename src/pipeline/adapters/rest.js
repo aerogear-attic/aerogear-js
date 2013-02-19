@@ -29,6 +29,7 @@
         @param {String} [settings.pageConfig.nextIdentifier="next"] - the name of the next link header, content var or web link rel
         @param {Function} [settings.pageConfig.parameterProvider] - a function for handling custom parameter placement within header and body based paging - for header paging, the function receives a jqXHR object and for body paging, the function receives the JSON formatted body as an object. the function should then return an object containing keys named for the previous/nextIdentifier options and whos values are either a map of parameters and values or a properly formatted query string
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @param {Number} [settings.timeout=60] - the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request
         @returns {Object} The created pipe
      */
     AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
@@ -50,7 +51,8 @@
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
             type = "Rest",
-            pageConfig = settings.pageConfig;
+            pageConfig = settings.pageConfig,
+            timeout = settings.timeout ? settings.timeout * 1000 : 60000;
 
         // Privileged Methods
         /**
@@ -93,6 +95,16 @@
          */
         this.getRecordId = function() {
             return recordId;
+        };
+
+        /**
+            Returns the value of the private timeout var
+            @private
+            @augments Rest
+            @returns {Number}
+         */
+        this.getTimeout = function() {
+            return timeout;
         };
 
         /**
@@ -311,7 +323,8 @@
             url: url,
             statusCode: options.statusCode,
             complete: options.complete,
-            headers: options.headers
+            headers: options.headers,
+            timeout: this.getTimeout()
         };
 
         if( options.jsonp ) {
@@ -403,7 +416,8 @@
             error: error,
             statusCode: options.statusCode,
             complete: options.complete,
-            headers: options.headers
+            headers: options.headers,
+            timeout: this.getTimeout()
         });
 
         // Stringify data if we actually want to POST/PUT JSON data
@@ -495,7 +509,8 @@
             error: error,
             statusCode: options.statusCode,
             complete: options.complete,
-            headers: options.headers
+            headers: options.headers,
+            timeout: this.getTimeout()
         };
 
         return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );

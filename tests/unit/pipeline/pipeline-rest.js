@@ -822,4 +822,26 @@ asyncTest( "body - custom identifiers and query parameters with parameter provid
         }
     });
 });
+
+module( "Pipeline: Rest - Misc" );
+
+var longPipe = AeroGear.Pipeline({
+        name: "long",
+        type: "Rest",
+        settings: {
+            timeout: 5
+        }
+    }).pipes.long;
+
+asyncTest( "timeout", function() {
+    expect( 1 );
+
+    longPipe.read({
+        complete: function( jqXHR, textStatus ) {
+            equal( textStatus, "timeout", "Timeout Triggered Complete Callback" );
+            start();
+        }
+    });
+});
+
 })( jQuery );
