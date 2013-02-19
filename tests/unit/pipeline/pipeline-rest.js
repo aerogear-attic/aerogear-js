@@ -837,6 +837,9 @@ asyncTest( "timeout", function() {
     expect( 1 );
 
     longPipe.read({
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "This should not happen and will cause the test to fail if it does" );
+        },
         complete: function( jqXHR, textStatus ) {
             equal( textStatus, "timeout", "Timeout Triggered Complete Callback" );
             start();
