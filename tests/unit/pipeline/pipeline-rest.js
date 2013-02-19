@@ -847,4 +847,25 @@ asyncTest( "timeout", function() {
     });
 });
 
+asyncTest( "abort (cancel)", function() {
+    expect( 2 );
+
+    var xhr = longPipe.read({
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "This should not happen and will cause the test to fail if it does" );
+        },
+        error: function( jqXHR, textStatus, errorThrown ) {
+            equal( textStatus, "abort", "Abort Triggered Error Callback" );
+        },
+        complete: function( jqXHR, textStatus ) {
+            equal( textStatus, "abort", "Abort Triggered Complete Callback" );
+            start();
+        }
+    });
+
+    setTimeout( function() {
+        xhr.abort();
+    }, 2000 );
+});
+
 })( jQuery );
