@@ -45,6 +45,7 @@
         The REST adapter is the default type used when creating a new pipe. It uses jQuery.ajax to communicate with the server. By default, the RESTful endpoint used by this pipe is the app's current context, followed by the pipe name. For example, if the app is running on http://mysite.com/myApp, then a pipe named `tasks` would use http://mysite.com/myApp/tasks as its REST endpoint.
         @constructs AeroGear.Pipeline.adapters.Rest
         @param {String} pipeName - the name used to reference this particular pipe
+        @param {String} [type="Rest"] - the name used to reference this particular pipe
         @param {Object} [settings={}] - the settings to be passed to the adapter
         @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
         @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
@@ -55,6 +56,7 @@
         @param {String} [settings.pageConfig.nextIdentifier="next"] - the name of the next link header, content var or web link rel
         @param {Function} [settings.pageConfig.parameterProvider] - a function for handling custom parameter placement within header and body based paging - for header paging, the function receives a jqXHR object and for body paging, the function receives the JSON formatted body as an object. the function should then return an object containing keys named for the previous/nextIdentifier options and whos values are either a map of parameters and values or a properly formatted query string
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @param {Number} [settings.timeout=60] - the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request
         @returns {Object} The created pipe
      */
     AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
@@ -69,24 +71,17 @@
         var endpoint = settings.endpoint || pipeName,
             ajaxSettings = {
                 // use the pipeName as the default rest endpoint
-                url: settings.baseURL ? settings.baseURL + endpoint : endpoint
+                url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
+                contentType: "application/json",
+                dataType: "json"
             },
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
             type = "Rest",
-            pageConfig = settings.pageConfig;
+            pageConfig = settings.pageConfig,
+            timeout = settings.timeout ? settings.timeout * 1000 : 60000;
 
         // Privileged Methods
-        /**
-            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
-            @private
-            @augments Rest
-            @returns {Boolean}
-         */
-        this.isAuthenticated = function() {
-            return authenticator ? authenticator.isAuthenticated() : true;
-        };
-
         /**
             Adds the auth token to the headers and returns the modified version of the settings
             @private
@@ -127,6 +122,16 @@
          */
         this.getRecordId = function() {
             return recordId;
+        };
+
+        /**
+            Returns the value of the private timeout var
+            @private
+            @augments Rest
+            @returns {Number}
+         */
+        this.getTimeout = function() {
+            return timeout;
         };
 
         /**
@@ -182,7 +187,10 @@
                     }
                 }
 
-                query[ identifier ] = params;
+                if( identifier ) {
+                    query[ identifier ] = params;
+                    identifier = undefined;
+                }
             }
 
             return query;
@@ -222,6 +230,17 @@
 
             return query;
         };
+
+        this.formatJSONError = function( xhr ) {
+            if ( this.getAjaxSettings().dataType === "json" ) {
+                try {
+                    xhr.responseJSON = JSON.parse( xhr.responseText );
+                } catch( error ) {
+                    // Response was not JSON formatted
+                }
+            }
+            return xhr;
+        };
     };
 
     // Public Methods
@@ -240,7 +259,7 @@
         @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the &lt;a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page&lt;/a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the &lt;a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page&lt;/a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -251,7 +270,7 @@
         // this object is converted to query string parameters which the server can use.
         // The values would be determined by what the server is expecting
         var filteredData = myPipe.read({
-            data: {
+            query: {
                 limit: 10,
                 date: "2012-08-01"
                 ...
@@ -317,7 +336,8 @@
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -329,7 +349,9 @@
             error: error,
             url: url,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers,
+            timeout: this.getTimeout()
         };
 
         if( options.jsonp ) {
@@ -340,7 +362,7 @@
             }
         }
 
-        return AeroGear.ajax( this, $.extend( {}, this.getAjaxSettings(), extraOptions ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -351,7 +373,7 @@
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the &lt;a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page&lt;/a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the &lt;a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page&lt;/a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -402,27 +424,35 @@
             url = ajaxSettings.url;
         }
 
-        success = function( data ) {
+        success = function( data, textStatus, jqXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
         };
-        extraOptions = {
+        extraOptions = $.extend( {}, ajaxSettings, {
             data: data,
             type: type,
             url: url,
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
-        };
+            complete: options.complete,
+            headers: options.headers,
+            timeout: this.getTimeout()
+        });
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
+        }
+
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
     };
 
     /**
@@ -433,7 +463,7 @@
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the &lt;a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page&lt;/a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the &lt;a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page&lt;/a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -488,12 +518,13 @@
         delPath = delId ? "/" + delId : "";
         url = ajaxSettings.url + delPath;
 
-        success = function( data ) {
+        success = function( data, textStatus, jqXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         };
-        error = function( type, errorMessage ) {
+        error = function( jqXHR, textStatus, errorThrown ) {
+            jqXHR = that.formatJSONError( jqXHR );
             if ( options.error ) {
                 options.error.apply( this, arguments );
             }
@@ -504,10 +535,12 @@
             success: success,
             error: error,
             statusCode: options.statusCode,
-            complete: options.complete
+            complete: options.complete,
+            headers: options.headers,
+            timeout: this.getTimeout()
         };
 
-        return AeroGear.ajax( this, $.extend( {}, ajaxSettings, extraOptions ) );
+        return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );
     };
 })( AeroGear, jQuery, uuid );
 </code></pre>
@@ -526,7 +559,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Jan 28 2013 13:09:59 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue Feb 19 2013 16:14:21 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

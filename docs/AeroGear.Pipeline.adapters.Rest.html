@@ -41,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Rest"><span class="type-signature"></span>new Rest<span class="signature">(pipeName, <span class="optional">settings</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="Rest"><span class="type-signature"></span>new Rest<span class="signature">(pipeName, <span class="optional">type</span>, <span class="optional">settings</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -109,6 +109,43 @@
             
             
                 <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">the name used to reference this particular pipe</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    "Rest"
                 
                 </td>
             
@@ -536,6 +573,43 @@
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>timeout</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    60
+                
+                </td>
+            
+            
+            <td class="description last">the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
             </td>
@@ -569,7 +643,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 33
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 35
     </li></ul></dd>
     
     
@@ -1215,7 +1289,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 234
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 253
     </li></ul></dd>
     
     
@@ -1236,7 +1310,7 @@
     
             
 <div class="param-desc">
-    A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+    The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
 </div>
 
 
@@ -1267,7 +1341,7 @@
         // this object is converted to query string parameters which the server can use.
         // The values would be determined by what the server is expecting
         var filteredData = myPipe.read({
-            data: {
+            query: {
                 limit: 10,
                 date: "2012-08-01"
                 ...
@@ -1576,7 +1650,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 439
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 469
     </li></ul></dd>
     
     
@@ -1597,7 +1671,7 @@
     
             
 <div class="param-desc">
-    A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+    The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
 </div>
 
 
@@ -1944,7 +2018,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 358
+        <a href="6b2ce5cca5.html">pipeline/adapters/rest.js</a>, line 380
     </li></ul></dd>
     
     
@@ -1965,7 +2039,7 @@
     
             
 <div class="param-desc">
-    A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+    The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
 </div>
 
 
@@ -2041,7 +2115,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Jan 28 2013 13:09:59 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue Feb 19 2013 16:14:22 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
