@@ -118,7 +118,7 @@
     });
 
     asyncTest( "Login - Success", function() {
-        expect( 4 );
+        expect( 5 );
 
         //a little clean up
         sessionStorage.removeItem( "ag-auth-auth" );
@@ -132,6 +132,7 @@
 
         restAuth.login( values, {
             success: function( data ) {
+                equal( restAuth.isAuthenticated(), true, "Auth Success" );
                 equal( sessionStorage.getItem( "ag-auth-auth" ), "123456", "Auth-Token set correctly" );
                 equal( data.username, "john", "Username is John" );
                 equal( data.logged, true, "Logged is true" );

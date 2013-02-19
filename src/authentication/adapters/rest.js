@@ -43,6 +43,21 @@
 
         // Privileged methods
         /**
+            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
+            @private
+            @augments Rest
+            @returns {Boolean}
+         */
+        this.isAuthenticated = function() {
+            if ( agAuth ) {
+                return !!sessionStorage.getItem( "ag-auth-" + name );
+            } else {
+                // For the default (rest) adapter, we assume if not using agAuth then session so auth will be handled server side
+                return true;
+            }
+        };
+
+        /**
             Adds the auth token to the headers and returns the modified version of the settings
             @private
             @augments Rest
