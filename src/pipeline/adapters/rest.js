@@ -232,7 +232,7 @@
         @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -346,7 +346,7 @@
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -436,7 +436,7 @@
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
