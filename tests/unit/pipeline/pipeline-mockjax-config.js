@@ -611,4 +611,14 @@ $.mockjax({
     }
 });
 
+$.mockjax({
+    url: "long",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: "returned",
+    responseTime: 6000
+});
+
 })( jQuery );
