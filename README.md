@@ -26,45 +26,20 @@ See the [Pipeline API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.
 
 Building
 --------
+[Grunt](http://gruntjs.com/) is used as the build tool which requires [Node.js](http://nodejs.org/) version >= 0.8.0.   
+Please refer to [nodejs.org](http://nodejs.org) for details regarding installing Node.js.  
+Please refer to Grunt's [getting started](http://gruntjs.com/getting-started) guide for details regarding installing Grunt.
+
+### Installing Dependencies
 To install the dependencies of the project run the following command: 
 
     $ npm install
     
-This will install the versions of the dependencies declared in package.json.
+This will install the versions of the dependencies declared in package.json. This is only requried to be done once before
+building the first time, or if the dependencies in package.json have been updated.
     
-[Grunt](http://gruntjs.com/) is used as the build tool and if you already have Grunt installed you can simply run 
-the following command to build the project:
+### Building the project
 
     grunt
     
-Installing Grunt
-----------------
-Aerogear-js uses version 0.4.x and if you have an earlier version of Grunt installed globally, it must be uninstalled first:
-
-    $ npm uninstall -g grunt
-    
-Grunt requires [Node.js](http://nodejs.org/) version >= 0.8.0  
-
-    $ node --version
-    
-Find the latest version of node:  
-
-    $ nvm ls-remote
-    
-Install the version:  
-
-    $ nvm install v0.9.8
-    
-Use this version:  
-
-    $ nvm use 0.9.8
-
-Now, lets install grunt-cli globally (-g):  
-
-    $ sudo npm install -g grunt-cli@0.1.6
-    
-
-And at the project level (from aergoear-js directory) install grunt:  
-
-    $ npm install grunt@0.4.0rc7
-    
+The produced JavaScript will be in the __dist__ directory.
