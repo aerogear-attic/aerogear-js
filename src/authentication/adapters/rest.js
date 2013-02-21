@@ -38,7 +38,7 @@
             type = "Rest",
             name = moduleName,
             agAuth = !!settings.agAuth,
-            baseURL = settings.baseURL,
+            baseURL = settings.baseURL || "",
             tokenName = settings.tokenName || "Auth-Token";
 
         // Privileged methods
@@ -134,6 +134,34 @@
         this.getTokenName = function() {
             return tokenName;
         };
+
+        /**
+            Process the options passed to a method
+            @private
+            @augments Rest
+         */
+         this.processOptions = function( options ) {
+            var processedOptions = {};
+            if ( options.contentType ) {
+                processedOptions.contentType = options.contentType;
+            } else if ( agAuth ) {
+                processedOptions.contentType = "application/json";
+            }
+
+            if ( options.dataType ) {
+                processedOptions.dataType = options.dataType;
+            } else if ( agAuth ) {
+                processedOptions.dataType = "json";
+            }
+
+            if ( options.baseURL ) {
+                processedOptions.url = options.baseURL;
+            } else {
+                processedOptions.url = baseURL;
+            }
+
+            return processedOptions;
+         };
     };
 
     //Public Methods
@@ -160,9 +188,7 @@
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
-            baseURL = this.getBaseURL(),
             endpoints = this.getEndpoints(),
-            agAuth = this.getAGAuth(),
             success = function( data, textStatus, jqXHR ) {
                 sessionStorage.setItem( "ag-auth-" + name, that.getAGAuth() ? jqXHR.getResponseHeader( tokenName ) : "true" );
 
@@ -184,35 +210,16 @@
                     options.error.apply( this, args );
                 }
             },
-            extraOptions = {
+            extraOptions = $.extend( {}, this.processOptions( options ), {
                 success: success,
                 error: error,
                 data: data
-            },
-            url = "";
+            });
 
-        if ( options.contentType ) {
-            extraOptions.contentType = options.contentType;
-        } else if ( agAuth ) {
-            extraOptions.contentType = "application/json";
-        }
-        if ( options.dataType ) {
-            extraOptions.dataType = options.dataType;
-        } else if ( agAuth ) {
-            extraOptions.dataType = "json";
-        }
-        if ( options.baseURL ) {
-            url = options.baseURL;
-        } else if ( baseURL ) {
-            url = baseURL;
-        }
         if ( endpoints.enroll ) {
-            url += endpoints.enroll;
+            extraOptions.url += endpoints.enroll;
         } else {
-            url += "auth/enroll";
-        }
-        if ( url.length ) {
-            extraOptions.url = url;
+            extraOptions.url += "auth/enroll";
         }
 
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
@@ -241,9 +248,7 @@
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
-            baseURL = this.getBaseURL(),
             endpoints = this.getEndpoints(),
-            agAuth = this.getAGAuth(),
             success = function( data, textStatus, jqXHR ) {
                 sessionStorage.setItem( "ag-auth-" + name, that.getAGAuth() ? jqXHR.getResponseHeader( tokenName ) : "true" );
 
@@ -265,35 +270,16 @@
                     options.error.apply( this, args );
                 }
             },
-            extraOptions = {
+            extraOptions = $.extend( {}, this.processOptions( options ), {
                 success: success,
                 error: error,
                 data: data
-            },
-            url = "";
+            });
 
-        if ( options.contentType ) {
-            extraOptions.contentType = options.contentType;
-        } else if ( agAuth ) {
-            extraOptions.contentType = "application/json";
-        }
-        if ( options.dataType ) {
-            extraOptions.dataType = options.dataType;
-        } else if ( agAuth ) {
-            extraOptions.dataType = "json";
-        }
-        if ( options.baseURL ) {
-            url = options.baseURL;
-        } else if ( baseURL ) {
-            url = baseURL;
-        }
         if ( endpoints.login ) {
-            url += endpoints.login;
+            extraOptions.url += endpoints.login;
         } else {
-            url += "auth/login";
-        }
-        if ( url.length ) {
-            extraOptions.url = url;
+            extraOptions.url += "auth/login";
         }
 
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
@@ -318,7 +304,6 @@
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
-            baseURL = this.getBaseURL(),
             endpoints = this.getEndpoints(),
             success = function( data, textStatus, jqXHR ) {
                 that.deauthorize();
@@ -341,24 +326,15 @@
                     options.error.apply( this, args );
                 }
             },
-            extraOptions = {
+            extraOptions = $.extend( {}, this.processOptions( options ), {
                 success: success,
                 error: error
-            },
-            url = "";
+            });
 
-        if ( options.baseURL ) {
-            url = options.baseURL;
-        } else if ( baseURL ) {
-            url = baseURL;
-        }
         if ( endpoints.logout ) {
-            url += endpoints.logout;
+            extraOptions.url += endpoints.logout;
         } else {
-            url += "auth/logout";
-        }
-        if ( url.length ) {
-            extraOptions.url = url;
+            extraOptions.url += "auth/logout";
         }
 
         extraOptions.headers = {};
