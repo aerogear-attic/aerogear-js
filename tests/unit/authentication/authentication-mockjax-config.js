@@ -6,7 +6,7 @@ $.mockjax({
     url: "auth/enroll",
     type: "POST",
     response: function( event ) {
-        var data = event.data;
+        var data = JSON.parse( event.data );
 
         this.responseText = {
             username: data.username,
@@ -22,7 +22,7 @@ $.mockjax({
     url: "auth/login",
     type: "POST",
     response: function( event ) {
-        var data = event.data;
+        var data = JSON.parse( event.data );
         if( data.username == "john" && data.password == "123" ) {
             this.responseText = {
                 username: "john",

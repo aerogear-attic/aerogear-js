@@ -222,6 +222,11 @@
             extraOptions.url += "auth/enroll";
         }
 
+        // Stringify data if we actually want to POST JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
+        }
+
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
     };
 
@@ -280,6 +285,11 @@
             extraOptions.url += endpoints.login;
         } else {
             extraOptions.url += "auth/login";
+        }
+
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
         }
 
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
