@@ -71,6 +71,17 @@
     // Inherit from the Memory adapter
     AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGear.DataManager.adapters.Memory(), {
         // Public Methods
+        /**
+            Saves data to the store, optionally clearing and resetting the data
+            @method
+            @memberof AeroGear.DataManager.adapters.SessionLocal
+            @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
+            @param {Object} [options] - The options to be passed to the save method
+            @param {Function} [options.error] - A callback to be executed when an error is thrown trying to save data to the store. The most likely error is when the localStorage is full. The callback is passed the error object and the data that was attempted to be saved as arguments.
+            @param {Function} [options.success] - A callback to be called if the save was successful. This probably isn't necessary since the save is synchronous but is provided for API symmetry.
+            @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
+            @returns {Array} Returns the updated data from the store or in the case of a storage error, returns the unchanged data
+         */
         save: {
             value: function( data, options ) {
                 // Call the super method
@@ -97,6 +108,13 @@
                 return newData;
             }, enumerable: true, configurable: true, writable: true
         },
+        /**
+            Removes data from the store
+            @method
+            @memberof AeroGear.DataManager.adapters.SessionLocal
+            @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
+            @returns {Array} Returns the updated data from the store
+         */
         remove: {
             value: function( toRemove ) {
                 // Call the super method
