@@ -169,7 +169,7 @@
                 url: this.getConnectURL(),
                 onConnect: this.getOnConnect(),
                 onDisconnect: this.getOnDisconnect(),
-                onError: this.getOnConnectError()
+                onConnectError: this.getOnConnectError()
             });
         }
     };
@@ -207,9 +207,9 @@
         };
 
         bus.onclose = function() {
-            if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
+            if ( that.getState() === AeroGear.Notifier.CONNECTED ) {
                 // Fire disconnect as usual
-                this.setState( AeroGear.Notifier.CLOSED );
+                that.setState( AeroGear.Notifier.CLOSED );
                 if ( options.onDisconnect ) {
                     options.onDisconnect.apply( this, arguments );
                 }
