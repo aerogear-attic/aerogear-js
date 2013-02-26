@@ -11,6 +11,7 @@
         "jQuery": true,
         "AeroGear": true,
         "uuid": true,
-        "require": true
+        "require": true,
+        "vertx": true
     }
 }
