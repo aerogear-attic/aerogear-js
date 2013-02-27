@@ -128,6 +128,40 @@
         };
 
         /**
+            Adds a channel to the set
+            @param {Object} channel - The channel object to add to the set
+            @private
+            @augments vertx
+         */
+        this.addChannel = function( channel ) {
+            channels.push( channel );
+        };
+
+        /**
+            Removes a channel from the set
+            @param {Object} channel - The channel object to remove from the set
+            @private
+            @augments vertx
+         */
+        this.removeChannel = function( channel ) {
+            for ( var i = 0; i < channels.length; i++ ) {
+                if ( channels[ i ].address === channel.address ) {
+                    channels.splice( i, 1 );
+                    return;
+                }
+            }
+        };
+
+        /**
+            Removes all channels from the set
+            @private
+            @augments vertx
+         */
+        this.removeAllChannels = function() {
+            channels = [];
+        };
+
+        /**
             Returns the value of the private state var
             @private
             @augments vertx
@@ -195,11 +229,7 @@
 
             that.setState( AeroGear.Notifier.CONNECTED );
 
-            for ( var i = 0; i < channels.length; i++ ) {
-                // Subscribe to channels
-                //that.subscribe( channels[ i ] );
-                this.registerHandler( channels[ i ].address, channels[ i ].callback );
-            }
+            that.subscribe( channels, true );
 
             if ( options.onConnect ) {
                 options.onConnect.apply( this, arguments );
@@ -207,9 +237,9 @@
         };
 
         bus.onclose = function() {
-            if ( that.getState() === AeroGear.Notifier.CONNECTED ) {
+            if ( that.getState() === AeroGear.Notifier.DISCONNECTING ) {
                 // Fire disconnect as usual
-                that.setState( AeroGear.Notifier.CLOSED );
+                that.setState( AeroGear.Notifier.DISCONNECTED );
                 if ( options.onDisconnect ) {
                     options.onDisconnect.apply( this, arguments );
                 }
@@ -220,6 +250,58 @@
                 }
             }
         };
+
+        this.setBus( bus );
+    };
+
+    /**
+        Disconnect the client from the messaging service
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
+        var bus = this.getBus();
+        if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
+            this.setState( AeroGear.Notifier.DISCONNECTING );
+            bus.close();
+        }
+    };
+
+    /**
+        Subscribe this client to a new channel
+        @param {Object|Array} channels - a channel object or array of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
+        @param {Boolean} [reset] - if true, remove all channels from the set and replace with the supplied channel(s)
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
+        var bus = this.getBus();
+
+        if ( reset ) {
+            this.removeAllChannels();
+        }
+
+        channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+        for ( var i = 0; i < channels.length; i++ ) {
+            this.addChannel( channels[ i ] );
+            bus.registerHandler( channels[ i ].address, channels[ i ].callback );
+        }
+    };
+
+    /**
+        Unsubscribe this client from a channel
+        @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
+        var bus = this.getBus();
+
+        channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+        for ( var i = 0; i < channels.length; i++ ) {
+            this.removeChannel( channels[ i ] );
+            bus.unregisterHandler( channels[ i ].address, channels[ i ].callback );
+        }
     };
 
 })( AeroGear, vertx );
