@@ -19,7 +19,7 @@
         @constructs AeroGear.Notifier.adapters.vertx
         @param {String} clientName - the name used to reference this particular notifier client
         @param {Object} [settings={}] - the settings to be passed to the adapter
-        @param {Boolean} [settings.autoConnect=true] - Automatically connect the client to the connectURL on creation. This option is ignored and a connection is automatically established of channels are provided as the connection is necessary prior to channel subscription
+        @param {Boolean} [settings.autoConnect=false] - Automatically connect the client to the connectURL on creation. This option is ignored and a connection is automatically established if channels are provided as the connection is necessary prior to channel subscription
         @param {String} [settings.connectURL=""] - defines the URL for connecting to the messaging service
         @param {Function} [settings.onConnect] - callback to be executed when a connection is established
         @param {Function} [settings.onDisconnect] - callback to be executed when a connection is terminated
@@ -38,9 +38,9 @@
         // Private Instance vars
         var type = "vertx",
             name = clientName,
-            autoConnect = settings.autoConnect || true,
-            connectURL = settings.connectURL || "",
             channels = settings.channels || [],
+            autoConnect = !!settings.autoConnect || channels.length,
+            connectURL = settings.connectURL || "",
             state = AeroGear.Notifier.CONNECTING,
             bus = null;
 
