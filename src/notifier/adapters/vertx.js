@@ -138,17 +138,30 @@
         };
 
         /**
+            Check if subscribed to a channel
+            @param {String} address - The address of the channel object to search for in the set
+            @private
+            @augments vertx
+         */
+        this.getChannelIndex = function( address ) {
+            for ( var i = 0; i < channels.length; i++ ) {
+                if ( channels[ i ].address === address ) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        /**
             Removes a channel from the set
             @param {Object} channel - The channel object to remove from the set
             @private
             @augments vertx
          */
         this.removeChannel = function( channel ) {
-            for ( var i = 0; i < channels.length; i++ ) {
-                if ( channels[ i ].address === channel.address ) {
-                    channels.splice( i, 1 );
-                    return;
-                }
+            var index = this.getChannelIndex( channel.address );
+            if ( index >= 0 ) {
+                channels.splice( index, 1 );
             }
         };
 
