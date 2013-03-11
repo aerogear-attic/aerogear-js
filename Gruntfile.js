@@ -92,6 +92,7 @@ module.exports = function(grunt) {
 
     // Default task
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'uglify:all']);
+    grunt.registerTask('dev', ['jshint', 'concat:dist', 'uglify:all']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'uglify:custom']);
