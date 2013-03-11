@@ -86,6 +86,16 @@ module.exports = function(grunt) {
         }
     });
 
+    // IIFE wrapper task
+    grunt.registerTask('iife', function( custom ) {
+        var fs = require("fs"),
+            fileName = "dist/" + grunt.config("pkg").name + (custom ? ".custom" : "") + ".js",
+            fileText = fs.readFileSync( fileName, "utf-8" );
+
+        fileText = fileText.replace( /\*\//, "*/\n(function( window, undefined ) {\n" );
+        fs.writeFileSync( fileName, fileText + "})( this );\n", "utf-8" );
+    });
+
     // grunt-contrib tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -93,10 +103,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'uglify:all']);
-    grunt.registerTask('dev', ['jshint', 'concat:dist', 'uglify:all']);
-    grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'uglify:custom']);
-    grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'uglify:custom']);
-    grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'uglify:custom']);
+    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
+    grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
+    grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
 
 };

@@ -17,7 +17,7 @@
     The AeroGear namespace provides a way to encapsulate the library's properties and methods away from the global namespace
     @namespace
  */
-var AeroGear = {};
+this.AeroGear = {};
 
 /**
     AeroGear.Core is a base for all of the library modules to extend. It is not to be instantiated and will throw an error when attempted
