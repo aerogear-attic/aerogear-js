@@ -84,15 +84,6 @@ module.exports = function(grunt) {
         }
     });
 
-    var exec = require('child_process').exec;
-    grunt.registerTask('docs', function() {
-        grunt.log.writeln('Remove old docs');
-        exec('rm -r docs');
-        grunt.log.writeln('Old docs removed\nGenerate new docs');
-        exec('jsdoc src/ -r -d docs README.md');
-        grunt.log.writeln('New docs generated');
-    });
-
     // grunt-contrib tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -101,7 +92,6 @@ module.exports = function(grunt) {
 
     // Default task
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'uglify:all']);
-    grunt.registerTask('build+docs', ['jshint', 'qunit', 'concat:dist', 'uglify:all', 'docs']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'uglify:custom']);
