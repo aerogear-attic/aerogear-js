@@ -64,6 +64,8 @@ module.exports = function(grunt) {
                 options: {
                     banner: "<%= meta.banner %>",
                     sourceMap: "dist/<%= pkg.name %>.js.map",
+                    sourceMappingURL: "<%= pkg.name %>.js.map",
+                    sourceMapPrefix: 1,
                     beautify: {
                         ascii_only: true
                     }
