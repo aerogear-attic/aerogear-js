@@ -31,12 +31,13 @@ AeroGear.Core = function() {
     }
 
     /**
-        This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection.
+        This function is used by the different parts of AeroGear to add a new Object to its respective collection.
+        @name AeroGear.add
         @method
-        @param {String|Array|Object} config - This can be a variety of types specifying how to create the object
+        @param {String|Array|Object} config - This can be a variety of types specifying how to create the object. See the particular constructor for the object calling .add for more info.
         @returns {Object} The object containing the collection that was updated
      */
-    this.add = function ( config ) {
+    this.add = function( config ) {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
@@ -69,8 +70,9 @@ AeroGear.Core = function() {
     };
     /**
         This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection.
+        @name AeroGear.remove
         @method
-        @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object
+        @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object. See the particular constructor for the object calling .remove for more info.
         @returns {Object} The object containing the collection that was updated
      */
     this.remove = function( config ) {
