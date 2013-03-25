@@ -22,6 +22,13 @@
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @param {String} [settings.storageType="sessionStorage"] - the type of store can either be sessionStorage or localStorage
     @returns {Object} The created store
+    @exmaple
+
+    //Create an empty DataManager
+    var dm = AeroGear.DataManager();
+
+    //Add a custom SessionLocal store using local storage as its storage type
+    dm.add( "newStore", { recordId: "customID", storageType: "localStorage" });
  */
 AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
     // Allow instantiation without using new
