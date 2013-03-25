@@ -30,7 +30,7 @@
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @param {Number} [settings.timeout=60] - the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request
     @returns {Object} The created pipe
-    @exmaple
+    @example
     //Create an empty pipeline
     var pipeline = AeroGear.Pipeline();
 
