@@ -171,8 +171,8 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     @param {String} [options.baseURL] - defines the base URL to use for an endpoint
     @param {String} [options.contentType] - set the content type for the AJAX request (defaults to application/json when using agAuth)
     @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
-    @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
-    @param {Function} [options.success] - callback to be executed if the AJAX request results in success
+    @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
+    @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
     var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
@@ -236,8 +236,8 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     @param {String} [options.baseURL] - defines the base URL to use for an endpoint
     @param {String} [options.contentType] - set the content type for the AJAX request (defaults to application/json when using agAuth)
     @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
-    @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
-    @param {String} [options.success] - callback to be executed if the AJAX request results in success
+    @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
+    @param {String} [AeroGear~successCallbackREST] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
     var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
@@ -298,8 +298,8 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     End a user's authenticated session
     @param {Object} [options={}] - An object containing key/value pairs representing options
     @param {String} [options.baseURL] - defines the base URL to use for an endpoint
-    @param {Function} [options.error] - callback to be executed if the AJAX request results in an error
-    @param {String} [options.success] - callback to be executed if the AJAX request results in success
+    @param {Function} [AeroGear~errorCallbackREST] - callback to be executed if the AJAX request results in an error
+    @param {String} [AeroGear~successCallbackREST] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
     var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ];

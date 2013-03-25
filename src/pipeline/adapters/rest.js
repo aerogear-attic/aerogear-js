@@ -219,8 +219,8 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
 /**
     Reads data from the specified endpoint
     @param {Object} [options={}] - Additional options
-    @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-    @param {Function} [options.error] - a callback to be called when the request to the server results in an error
+    @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+    @param {AeroGear~errorCallbackREST} [options.error] - a callback to be called when the request to the server results in an error
     @param {Object} [options.id] - the value to append to the endpoint URL,  should be the same as the pipelines recordId
     @param {Mixed} [options.jsonp] - Turns jsonp on/off for reads, Set to true, or an object with options
     @param {String} [options.jsonp.callback] - Override the callback function name in a jsonp request. This value will be used instead of 'callback' in the 'callback=?' part of the query string in the url
@@ -230,7 +230,7 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
     @param {Object|Boolean} [options.paging] - this object can be used to overwrite the default paging parameters to request data from other pages or completely customize the paging functionality, leaving undefined will cause paging to use defaults, setting to false will turn off paging and request all data for this single read request
     @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
     @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
-    @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
+    @param {AeroGear~successCallbackREST} [options.success] - a callback to be called when the result of the request to the server is successful
     @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
     @example
     var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
@@ -341,10 +341,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
     Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
     @param {Object} data - For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.
     @param {Object} [options={}] - Additional options
-    @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-    @param {Function} [options.error] - a callback to be called when the request to the server results in an error
+    @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+    @param {AeroGear~errorCallbackREST} [options.error] - a callback to be called when the request to the server results in an error
     @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
-    @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
+    @param {AeroGear~successCallbackREST} [options.success] - a callback to be called when the result of the request to the server is successful
     @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
     @example
     var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
@@ -431,10 +431,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
     Remove data asynchronously from the server. Passing nothing will inform the server to remove all data at this pipe's endpoint.
     @param {String|Object} [data] - A variety of objects can be passed to specify the item(s) to remove
     @param {Object} [options={}] - Additional options
-    @param {Function} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-    @param {Function} [options.error] - a callback to be called when the request to the server results in an error
+    @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+    @param {AeroGear~errorCallbackREST} [options.error] - a callback to be called when the request to the server results in an error
     @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
-    @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
+    @param {AeroGear~successCallbackREST} [options.success] - a callback to be called when the result of the request to the server is successful
     @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
     @example
     var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
