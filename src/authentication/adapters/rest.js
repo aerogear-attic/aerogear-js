@@ -278,7 +278,7 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     @param {String} [options.dataType] - specify the data expected to be returned by the server (defaults to json when using agAuth)
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
-    @param {String} [AeroGear~successCallbackREST] - callback to be executed if the AJAX request results in success
+    @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
     var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
