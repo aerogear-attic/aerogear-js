@@ -20,6 +20,13 @@
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
+    @exmaple
+
+    //Create an empty DataManager
+    var dm = AeroGear.DataManager();
+
+    //Add a custom memory store
+    dm.add( "newStore", { recordId: "customID" });
  */
 AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     // Allow instantiation without using new
@@ -139,6 +146,9 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
 
     // Get an array of all data in the store
     var allData = dm.read();
+
+    //Read a specific piece of data based on an id
+    var justOne = dm.read( 12345 );
  */
 AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
     var filter = {};

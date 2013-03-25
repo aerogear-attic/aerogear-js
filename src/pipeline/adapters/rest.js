@@ -30,6 +30,26 @@
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @param {Number} [settings.timeout=60] - the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request
     @returns {Object} The created pipe
+    @exmaple
+    //Create an empty pipeline
+    var pipeline = AeroGear.Pipeline();
+
+    //Add a new Pipe with a custom baseURL, custom endpoint and default paging turned on
+    pipeline.add( "customPipe", {
+        baseURL: "http://customURL.com",
+        endpoint: "customendpoint",
+        pageConfig: true
+    });
+
+    //Add a new Pipe with a custom paging options
+    pipeline.add( "customPipe", {
+        pageConfig: {
+            metadataLocation: "header",
+            previousIdentifier: "back",
+            nextIdentifier: "forward"
+        }
+    });
+
  */
 AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
     // Allow instantiation without using new
@@ -248,6 +268,79 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
             ...
         }
     });
+
+    //JSONP - Default JSONP call to a JSONP server
+    myPipe.read({
+        jsonp: true,
+        success: function( data ){
+            .....
+        }
+    });
+
+    //JSONP - JSONP call with a changed callback parameter
+    myPipe.read({
+        jsonp: {
+            callback: "jsonp"
+        },
+        success: function( data ){
+            .....
+        }
+    });
+
+    //Paging - using the default weblinking protocal
+    var defaultPagingPipe = AeroGear.Pipeline([{
+        name: "webLinking",
+        settings: {
+            endpoint: "pageTestWebLink",
+            pageConfig: true
+        }
+    }]).pipes[0];
+
+    //Get a limit of 2 pieces of data from the server, starting from the first page
+    //Calling the "next" function will get the next 2 pieces of data, if available.
+    //Similarily, calling the "previous" function will get the previous 2 pieces of data, if available
+    defaultPagingPipe.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.next({
+                success: function( data ) {
+                    data.previous({
+                        success: function() {
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    //Create a new Pipe with a custom paging options
+    var customPagingPipe = AeroGear.Pipeline([{
+        name: "customPipe",
+        settings: {
+            pageConfig: {
+                metadataLocation: "header",
+                previousIdentifier: "back",
+                nextIdentifier: "forward"
+            }
+        }
+    }]).pipes[0];
+
+    //Even with custom options, you use "next" and "previous" the same way
+    customPagingPipe.read({
+        offsetValue: 1,
+        limitValue: 2,
+        success: function( data, textStatus, jqXHR ) {
+            data.next({
+                success: function( data ) {
+                    data.previous({
+                        success: function() {
+                        }
+                    });
+                }
+            });
+        }
+    });
  */
 AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
     var url, success, error, extraOptions,
@@ -372,8 +465,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
     });
 
     // Update an existing piece of data
-    var toUpdate = myPipe.data[ 0 ];
-    toUpdate.data.title = "Updated Task";
+    var toUpdate = {
+        id: "Some Existing ID",
+        title: "Updated Task"
+    }
     myPipe.save( toUpdate );
  */
 AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
@@ -441,26 +536,24 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
 
     // Store a new task
     myPipe.save({
-        title: "Created Task"
+        title: "Created Task",
+        id: 1
     });
 
     // Store another new task
     myPipe.save({
-        title: "Another Created Task"
+        title: "Another Created Task",
+        id: 2
     });
 
     // Store one more new task
     myPipe.save({
-        title: "And Another Created Task"
+        title: "And Another Created Task",
+        id: 3
     });
 
     // Remove a particular item from the server by its id
-    var toRemove = myPipe.data[ 0 ];
-    myPipe.remove( toRemove.id );
-
-    // Remove an item from the server using the data object
-    toRemove = myPipe.data[ 0 ];
-    myPipe.remove( toRemove );
+    myPipe.remove( 1 );
 
     // Delete all remaining data from the server associated with this pipe
     myPipe.remove();
