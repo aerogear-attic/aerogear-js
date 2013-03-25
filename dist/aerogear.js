@@ -1,4 +1,4 @@
-/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-02-15
+/*! AeroGear JavaScript Library - v1.0.0-M3 - 2013-03-25
 * https://github.com/aerogear/aerogear-js
 * JBoss, Home of Professional Open Source
 * Copyright Red Hat, Inc., and individual contributors
@@ -434,6 +434,7 @@ AeroGear.isArray = function( obj ) {
         @param {String} [settings.pageConfig.nextIdentifier="next"] - the name of the next link header, content var or web link rel
         @param {Function} [settings.pageConfig.parameterProvider] - a function for handling custom parameter placement within header and body based paging - for header paging, the function receives a jqXHR object and for body paging, the function receives the JSON formatted body as an object. the function should then return an object containing keys named for the previous/nextIdentifier options and whos values are either a map of parameters and values or a properly formatted query string
         @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+        @param {Number} [settings.timeout=60] - the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request
         @returns {Object} The created pipe
      */
     AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
@@ -455,7 +456,8 @@ AeroGear.isArray = function( obj ) {
             recordId = settings.recordId || "id",
             authenticator = settings.authenticator || null,
             type = "Rest",
-            pageConfig = settings.pageConfig;
+            pageConfig = settings.pageConfig,
+            timeout = settings.timeout ? settings.timeout * 1000 : 60000;
 
         // Privileged Methods
         /**
@@ -498,6 +500,16 @@ AeroGear.isArray = function( obj ) {
          */
         this.getRecordId = function() {
             return recordId;
+        };
+
+        /**
+            Returns the value of the private timeout var
+            @private
+            @augments Rest
+            @returns {Number}
+         */
+        this.getTimeout = function() {
+            return timeout;
         };
 
         /**
@@ -625,7 +637,7 @@ AeroGear.isArray = function( obj ) {
         @param {Object} [options.query] - a hash of key/value pairs that can be passed to the server as additional information for use when determining what data to return
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -716,7 +728,8 @@ AeroGear.isArray = function( obj ) {
             url: url,
             statusCode: options.statusCode,
             complete: options.complete,
-            headers: options.headers
+            headers: options.headers,
+            timeout: this.getTimeout()
         };
 
         if( options.jsonp ) {
@@ -738,7 +751,7 @@ AeroGear.isArray = function( obj ) {
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -808,7 +821,8 @@ AeroGear.isArray = function( obj ) {
             error: error,
             statusCode: options.statusCode,
             complete: options.complete,
-            headers: options.headers
+            headers: options.headers,
+            timeout: this.getTimeout()
         });
 
         // Stringify data if we actually want to POST/PUT JSON data
@@ -827,7 +841,7 @@ AeroGear.isArray = function( obj ) {
         @param {Function} [options.error] - a callback to be called when the request to the server results in an error
         @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @param {Function} [options.success] - a callback to be called when the result of the request to the server is successful
-        @returns {Object} A deferred implementing the promise interface similar to the jqXHR created by jQuery.ajax
+        @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
         @example
         var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
@@ -900,7 +914,8 @@ AeroGear.isArray = function( obj ) {
             error: error,
             statusCode: options.statusCode,
             complete: options.complete,
-            headers: options.headers
+            headers: options.headers,
+            timeout: this.getTimeout()
         };
 
         return $.ajax( this.addAuthIdentifier( $.extend( {}, ajaxSettings, extraOptions ) ) );
@@ -1417,6 +1432,17 @@ AeroGear.isArray = function( obj ) {
     // Inherit from the Memory adapter
     AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGear.DataManager.adapters.Memory(), {
         // Public Methods
+        /**
+            Saves data to the store, optionally clearing and resetting the data
+            @method
+            @memberof AeroGear.DataManager.adapters.SessionLocal
+            @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
+            @param {Object} [options] - The options to be passed to the save method
+            @param {Function} [options.error] - A callback to be executed when an error is thrown trying to save data to the store. The most likely error is when the localStorage is full. The callback is passed the error object and the data that was attempted to be saved as arguments.
+            @param {Function} [options.success] - A callback to be called if the save was successful. This probably isn't necessary since the save is synchronous but is provided for API symmetry.
+            @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
+            @returns {Array} Returns the updated data from the store or in the case of a storage error, returns the unchanged data
+         */
         save: {
             value: function( data, options ) {
                 // Call the super method
@@ -1443,6 +1469,13 @@ AeroGear.isArray = function( obj ) {
                 return newData;
             }, enumerable: true, configurable: true, writable: true
         },
+        /**
+            Removes data from the store
+            @method
+            @memberof AeroGear.DataManager.adapters.SessionLocal
+            @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
+            @returns {Array} Returns the updated data from the store
+         */
         remove: {
             value: function( toRemove ) {
                 // Call the super method
@@ -1534,10 +1567,25 @@ AeroGear.isArray = function( obj ) {
             type = "Rest",
             name = moduleName,
             agAuth = !!settings.agAuth,
-            baseURL = settings.baseURL,
+            baseURL = settings.baseURL || "",
             tokenName = settings.tokenName || "Auth-Token";
 
         // Privileged methods
+        /**
+            Return whether or not the client should consider itself authenticated. Of course, the server may have removed access so that will have to be handled when a request is made
+            @private
+            @augments Rest
+            @returns {Boolean}
+         */
+        this.isAuthenticated = function() {
+            if ( agAuth ) {
+                return !!sessionStorage.getItem( "ag-auth-" + name );
+            } else {
+                // For the default (rest) adapter, we assume if not using agAuth then session so auth will be handled server side
+                return true;
+            }
+        };
+
         /**
             Adds the auth token to the headers and returns the modified version of the settings
             @private
@@ -1615,6 +1663,34 @@ AeroGear.isArray = function( obj ) {
         this.getTokenName = function() {
             return tokenName;
         };
+
+        /**
+            Process the options passed to a method
+            @private
+            @augments Rest
+         */
+         this.processOptions = function( options ) {
+            var processedOptions = {};
+            if ( options.contentType ) {
+                processedOptions.contentType = options.contentType;
+            } else if ( agAuth ) {
+                processedOptions.contentType = "application/json";
+            }
+
+            if ( options.dataType ) {
+                processedOptions.dataType = options.dataType;
+            } else if ( agAuth ) {
+                processedOptions.dataType = "json";
+            }
+
+            if ( options.baseURL ) {
+                processedOptions.url = options.baseURL;
+            } else {
+                processedOptions.url = baseURL;
+            }
+
+            return processedOptions;
+         };
     };
 
     //Public Methods
@@ -1641,9 +1717,7 @@ AeroGear.isArray = function( obj ) {
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
-            baseURL = this.getBaseURL(),
             endpoints = this.getEndpoints(),
-            agAuth = this.getAGAuth(),
             success = function( data, textStatus, jqXHR ) {
                 sessionStorage.setItem( "ag-auth-" + name, that.getAGAuth() ? jqXHR.getResponseHeader( tokenName ) : "true" );
 
@@ -1665,35 +1739,21 @@ AeroGear.isArray = function( obj ) {
                     options.error.apply( this, args );
                 }
             },
-            extraOptions = {
+            extraOptions = $.extend( {}, this.processOptions( options ), {
                 success: success,
                 error: error,
                 data: data
-            },
-            url = "";
+            });
 
-        if ( options.contentType ) {
-            extraOptions.contentType = options.contentType;
-        } else if ( agAuth ) {
-            extraOptions.contentType = "application/json";
-        }
-        if ( options.dataType ) {
-            extraOptions.dataType = options.dataType;
-        } else if ( agAuth ) {
-            extraOptions.dataType = "json";
-        }
-        if ( options.baseURL ) {
-            url = options.baseURL;
-        } else if ( baseURL ) {
-            url = baseURL;
-        }
         if ( endpoints.enroll ) {
-            url += endpoints.enroll;
+            extraOptions.url += endpoints.enroll;
         } else {
-            url += "auth/enroll";
+            extraOptions.url += "auth/enroll";
         }
-        if ( url.length ) {
-            extraOptions.url = url;
+
+        // Stringify data if we actually want to POST JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
         }
 
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
@@ -1722,9 +1782,7 @@ AeroGear.isArray = function( obj ) {
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
-            baseURL = this.getBaseURL(),
             endpoints = this.getEndpoints(),
-            agAuth = this.getAGAuth(),
             success = function( data, textStatus, jqXHR ) {
                 sessionStorage.setItem( "ag-auth-" + name, that.getAGAuth() ? jqXHR.getResponseHeader( tokenName ) : "true" );
 
@@ -1746,35 +1804,21 @@ AeroGear.isArray = function( obj ) {
                     options.error.apply( this, args );
                 }
             },
-            extraOptions = {
+            extraOptions = $.extend( {}, this.processOptions( options ), {
                 success: success,
                 error: error,
                 data: data
-            },
-            url = "";
+            });
 
-        if ( options.contentType ) {
-            extraOptions.contentType = options.contentType;
-        } else if ( agAuth ) {
-            extraOptions.contentType = "application/json";
-        }
-        if ( options.dataType ) {
-            extraOptions.dataType = options.dataType;
-        } else if ( agAuth ) {
-            extraOptions.dataType = "json";
-        }
-        if ( options.baseURL ) {
-            url = options.baseURL;
-        } else if ( baseURL ) {
-            url = baseURL;
-        }
         if ( endpoints.login ) {
-            url += endpoints.login;
+            extraOptions.url += endpoints.login;
         } else {
-            url += "auth/login";
+            extraOptions.url += "auth/login";
         }
-        if ( url.length ) {
-            extraOptions.url = url;
+
+        // Stringify data if we actually want to POST/PUT JSON data
+        if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
+            extraOptions.data = JSON.stringify( extraOptions.data );
         }
 
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
@@ -1799,7 +1843,6 @@ AeroGear.isArray = function( obj ) {
         var that = this,
             name = this.getName(),
             tokenName = this.getTokenName(),
-            baseURL = this.getBaseURL(),
             endpoints = this.getEndpoints(),
             success = function( data, textStatus, jqXHR ) {
                 that.deauthorize();
@@ -1822,24 +1865,15 @@ AeroGear.isArray = function( obj ) {
                     options.error.apply( this, args );
                 }
             },
-            extraOptions = {
+            extraOptions = $.extend( {}, this.processOptions( options ), {
                 success: success,
                 error: error
-            },
-            url = "";
+            });
 
-        if ( options.baseURL ) {
-            url = options.baseURL;
-        } else if ( baseURL ) {
-            url = baseURL;
-        }
         if ( endpoints.logout ) {
-            url += endpoints.logout;
+            extraOptions.url += endpoints.logout;
         } else {
-            url += "auth/logout";
-        }
-        if ( url.length ) {
-            extraOptions.url = url;
+            extraOptions.url += "auth/logout";
         }
 
         extraOptions.headers = {};
@@ -1848,3 +1882,369 @@ AeroGear.isArray = function( obj ) {
         return $.ajax( $.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
     };
 })( AeroGear, jQuery );
+
+(function( AeroGear, undefined ) {
+    /**
+        The AeroGear.Notifier namespace provides a messaging API. Through the use of adapters, this library provides common methods like connect, disconnect, subscribe, unsubscribe and publish.
+        @class
+        @augments AeroGear.Core
+        @param {String|Array|Object} [config] - A configuration for the client(s) being created along with the notifier. If an object or array containing objects is used, the objects can have the following properties:
+        @param {String} config.name - the name that the client will later be referenced by
+        @param {String} [config.type="vertx"] - the type of client as determined by the adapter used
+        @param {Object} [config.settings={}] - the settings to be passed to the adapter
+        @returns {Object} The created notifier containing any messaging clients that may have been created
+        @example
+        // Create an empty notifier
+        var notifier = AeroGear.Notifier();
+
+        // Create a single client using the default adapter
+        var notifier2 = AeroGear.Notifier( "myNotifier" );
+
+        // Create multiple clients using the default adapter
+        var notifier3 = AeroGear.Notifier( [ "someNotifier", "anotherNotifier" ] );
+     */
+    AeroGear.Notifier = function( config ) {
+        // Allow instantiation without using new
+        if ( !( this instanceof AeroGear.Notifier ) ) {
+            return new AeroGear.Notifier( config );
+        }
+        // Super Constructor
+        AeroGear.Core.call( this );
+
+        this.lib = "Notifier";
+        this.type = config ? config.type || "vertx" : "vertx";
+
+        /**
+            The name used to reference the collection of notifier client instances created from the adapters
+            @memberOf AeroGear.Notifier
+            @type Object
+            @default modules
+         */
+        this.collectionName = "clients";
+
+        this.add( config );
+    };
+
+    AeroGear.Notifier.prototype = AeroGear.Core;
+    AeroGear.Notifier.constructor = AeroGear.Notifier;
+
+    /**
+        The adapters object is provided so that adapters can be added to the AeroGear.Notifier namespace dynamically and still be accessible to the add method
+        @augments AeroGear.Notifier
+     */
+    AeroGear.Notifier.adapters = {};
+
+    /**
+        A set of constants used to track the state of a client connection.
+     */
+    AeroGear.Notifier.CONNECTING = 0;
+    AeroGear.Notifier.CONNECTED = 1;
+    AeroGear.Notifier.DISCONNECTING = 2;
+    AeroGear.Notifier.DISCONNECTED = 3;
+})( AeroGear );
+
+(function( AeroGear, VX, undefined ) {
+    /**
+        The vertx adapter is the default type used when creating a new notifier client. It uses the vert.x bus and underlying SockJS implementation for messaging.
+        @constructs AeroGear.Notifier.adapters.vertx
+        @param {String} clientName - the name used to reference this particular notifier client
+        @param {Object} [settings={}] - the settings to be passed to the adapter
+        @param {Boolean} [settings.autoConnect=false] - Automatically connect the client to the connectURL on creation. This option is ignored and a connection is automatically established if channels are provided as the connection is necessary prior to channel subscription
+        @param {String} [settings.connectURL=""] - defines the URL for connecting to the messaging service
+        @param {Function} [settings.onConnect] - callback to be executed when a connection is established
+        @param {Function} [settings.onDisconnect] - callback to be executed when a connection is terminated
+        @param {Function} [settings.onConnectError] - callback to be executed when connecting to a service is unsuccessful
+        @param {Array} [settings.channels=[]] - a set of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
+        @returns {Object} The created notifier client
+     */
+    AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
+        // Allow instantiation without using new
+        if ( !( this instanceof AeroGear.Notifier.adapters.vertx ) ) {
+            return new AeroGear.Notifier.adapters.vertx( clientName, settings );
+        }
+
+        settings = settings || {};
+
+        // Private Instance vars
+        var type = "vertx",
+            name = clientName,
+            channels = settings.channels || [],
+            autoConnect = !!settings.autoConnect || channels.length,
+            connectURL = settings.connectURL || "",
+            state = AeroGear.Notifier.CONNECTING,
+            bus = null;
+
+        // Privileged methods
+        /**
+            Returns the value of the private settings var
+            @private
+            @augments vertx
+         */
+        this.getSettings = function() {
+            return settings;
+        };
+
+        /**
+            Returns the value of the private name var
+            @private
+            @augments vertx
+         */
+        this.getName = function() {
+            return name;
+        };
+
+        /**
+            Returns the value of the private autoConnect var
+            @private
+            @augments vertx
+         */
+        this.getAutoConnect = function() {
+            return autoConnect;
+        };
+
+        /**
+            Returns the onConnect callback
+            @private
+            @augments vertx
+         */
+        this.getOnConnect = function() {
+            return settings.onConnect;
+        };
+
+        /**
+            Returns the onDisconnect callback
+            @private
+            @augments vertx
+         */
+        this.getOnDisconnect = function() {
+            return settings.onDisconnect;
+        };
+
+        /**
+            Returns the onConnectError callback
+            @private
+            @augments vertx
+         */
+        this.getOnConnectError = function() {
+            return settings.onConnectError;
+        };
+
+        /**
+            Returns the value of the private connectURL var
+            @private
+            @augments vertx
+         */
+        this.getConnectURL = function() {
+            return connectURL;
+        };
+
+        /**
+            Set the value of the private connectURL var
+            @private
+            @augments vertx
+            @param {String} url - New connectURL for this client
+         */
+        this.setConnectURL = function( url ) {
+            connectURL = url;
+        };
+
+        /**
+            Returns the value of the private channels var
+            @private
+            @augments vertx
+         */
+        this.getChannels = function() {
+            return channels;
+        };
+
+        /**
+            Adds a channel to the set
+            @param {Object} channel - The channel object to add to the set
+            @private
+            @augments vertx
+         */
+        this.addChannel = function( channel ) {
+            channels.push( channel );
+        };
+
+        /**
+            Check if subscribed to a channel
+            @param {String} address - The address of the channel object to search for in the set
+            @private
+            @augments vertx
+         */
+        this.getChannelIndex = function( address ) {
+            for ( var i = 0; i < channels.length; i++ ) {
+                if ( channels[ i ].address === address ) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        /**
+            Removes a channel from the set
+            @param {Object} channel - The channel object to remove from the set
+            @private
+            @augments vertx
+         */
+        this.removeChannel = function( channel ) {
+            var index = this.getChannelIndex( channel.address );
+            if ( index >= 0 ) {
+                channels.splice( index, 1 );
+            }
+        };
+
+        /**
+            Removes all channels from the set
+            @private
+            @augments vertx
+         */
+        this.removeAllChannels = function() {
+            channels = [];
+        };
+
+        /**
+            Returns the value of the private state var
+            @private
+            @augments vertx
+         */
+        this.getState = function() {
+            return state;
+        };
+
+        /**
+            Sets the value of the private state var
+            @private
+            @augments vertx
+         */
+        this.setState = function( newState ) {
+            state = newState;
+        };
+
+        /**
+            Returns the value of the private bus var
+            @private
+            @augments vertx
+         */
+        this.getBus = function() {
+            return bus;
+        };
+
+        /**
+            Sets the value of the private bus var
+            @private
+            @augments vertx
+         */
+        this.setBus = function( newBus ) {
+            bus = newBus;
+        };
+
+        // Handle auto-connect
+        if ( this.getAutoConnect() || this.getChannels().length ) {
+            this.connect({
+                url: this.getConnectURL(),
+                onConnect: this.getOnConnect(),
+                onDisconnect: this.getOnDisconnect(),
+                onConnectError: this.getOnConnectError()
+            });
+        }
+    };
+
+    //Public Methods
+    /**
+        Connect the client to the messaging service
+        @param {Object} [options={}] - Options to pass to the connect method
+        @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created.
+        @param {Function} [options.onConnect] - callback to be executed when a connection is established
+        @param {Function} [options.onDisconnect] - callback to be executed when a connection is terminated
+        @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
+        options = options || {};
+        var that = this,
+            bus = new VX.EventBus( options.url || this.getConnectURL() );
+
+        bus.onopen = function() {
+            var channels = that.getChannels();
+
+            that.setState( AeroGear.Notifier.CONNECTED );
+
+            that.subscribe( channels, true );
+
+            if ( options.onConnect ) {
+                options.onConnect.apply( this, arguments );
+            }
+        };
+
+        bus.onclose = function() {
+            if ( that.getState() === AeroGear.Notifier.DISCONNECTING ) {
+                // Fire disconnect as usual
+                that.setState( AeroGear.Notifier.DISCONNECTED );
+                if ( options.onDisconnect ) {
+                    options.onDisconnect.apply( this, arguments );
+                }
+            } else {
+                // Error connecting so fire error callback
+                if ( options.onConnectError ) {
+                    options.onConnectError.apply( this, arguments );
+                }
+            }
+        };
+
+        this.setBus( bus );
+    };
+
+    /**
+        Disconnect the client from the messaging service
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
+        var bus = this.getBus();
+        if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
+            this.setState( AeroGear.Notifier.DISCONNECTING );
+            bus.close();
+        }
+    };
+
+    /**
+        Subscribe this client to a new channel
+        @param {Object|Array} channels - a channel object or array of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
+        @param {Boolean} [reset] - if true, remove all channels from the set and replace with the supplied channel(s)
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
+        var bus = this.getBus();
+
+        if ( reset ) {
+            this.removeAllChannels();
+        }
+
+        channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+        for ( var i = 0; i < channels.length; i++ ) {
+            this.addChannel( channels[ i ] );
+            bus.registerHandler( channels[ i ].address, channels[ i ].callback );
+        }
+    };
+
+    /**
+        Unsubscribe this client from a channel
+        @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
+        @example
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
+        var bus = this.getBus();
+
+        channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+        for ( var i = 0; i < channels.length; i++ ) {
+            this.removeChannel( channels[ i ] );
+            bus.unregisterHandler( channels[ i ].address, channels[ i ].callback );
+        }
+    };
+
+})( AeroGear, vertx );
