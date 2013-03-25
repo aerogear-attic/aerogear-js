@@ -372,8 +372,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
     });
 
     // Update an existing piece of data
-    var toUpdate = myPipe.data[ 0 ];
-    toUpdate.data.title = "Updated Task";
+    var toUpdate = {
+        id: "Some Existing ID",
+        title: "Updated Task"
+    }
     myPipe.save( toUpdate );
  */
 AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
@@ -441,26 +443,24 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
 
     // Store a new task
     myPipe.save({
-        title: "Created Task"
+        title: "Created Task",
+        id: 1
     });
 
     // Store another new task
     myPipe.save({
-        title: "Another Created Task"
+        title: "Another Created Task",
+        id: 2
     });
 
     // Store one more new task
     myPipe.save({
-        title: "And Another Created Task"
+        title: "And Another Created Task",
+        id: 3
     });
 
     // Remove a particular item from the server by its id
-    var toRemove = myPipe.data[ 0 ];
-    myPipe.remove( toRemove.id );
-
-    // Remove an item from the server using the data object
-    toRemove = myPipe.data[ 0 ];
-    myPipe.remove( toRemove );
+    myPipe.remove( 1 );
 
     // Delete all remaining data from the server associated with this pipe
     myPipe.remove();
