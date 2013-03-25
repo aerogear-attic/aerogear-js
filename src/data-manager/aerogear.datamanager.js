@@ -32,6 +32,13 @@
 
     // Create multiple stores using the default adapter
     var dm3 = AeroGear.DataManager( [ "tasks", "projects" ] );
+
+    //Create a custom store
+    var dm3 = AeroGear.DataManager([{
+        name: "mySessionStorage",
+        type: "SessionLocal",
+        id: "customID"
+    }])
  */
 AeroGear.DataManager = function( config ) {
     // Allow instantiation without using new

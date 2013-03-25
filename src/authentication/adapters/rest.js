@@ -23,6 +23,25 @@
     @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
     @param {String} [settings.tokenName="Auth-Token"] - defines the name used for the token header when using agAuth
     @returns {Object} The created auth module
+    @example
+    //Create an empty Authenticator
+    var auth = AeroGear.Auth();
+
+    //Add a custom REST module to it
+    auth.add( "module1", {
+        agAuth: true,
+        baseURL: "http://customURL.com"
+    });
+
+    //Add a custom REST module to it with custom security endpoints
+    auth.add( "module2", {
+        agAuth: true,
+        endpoints: {
+            enroll: "register",
+            login: "go",
+            logout: "leave"
+        }
+    });
  */
 AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     // Allow instantiation without using new
@@ -181,6 +200,25 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
 
     // Enroll a new user
     auth.enroll( data );
+
+    //Add a custom REST module to it with custom security endpoints
+    var custom = AeroGear.Auth({
+        name: "customModule",
+        settings: {
+            agAuth: true,
+            endpoints: {
+            enroll: "register",
+            login: "go",
+            logout: "leave"
+        }
+    }).modules[ 0 ],
+    data = { userName: "user", password: "abc123", name: "John" };
+
+    custom.enroll( data, {
+        baseURL: "http://customurl/",
+        success: function( data ) { ... },
+        error: function( error ) { ... }
+    });
  */
 AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     options = options || {};
@@ -248,6 +286,25 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
 
     // Enroll a new user
     auth.login( data );
+
+    //Add a custom REST module to it with custom security endpoints
+    var custom = AeroGear.Auth({
+        name: "customModule",
+        settings: {
+            agAuth: true,
+            endpoints: {
+            enroll: "register",
+            login: "go",
+            logout: "leave"
+        }
+    }).modules[ 0 ],
+    data = { userName: "user", password: "abc123", name: "John" };
+
+    custom.login( data, {
+        baseURL: "http://customurl/",
+        success: function( data ) { ... },
+        error: function( error ) { ... }
+    });
  */
 AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     options = options || {};
@@ -311,6 +368,25 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
 
     // Enroll a new user
     auth.logout();
+
+        //Add a custom REST module to it with custom security endpoints
+    var custom = AeroGear.Auth({
+        name: "customModule",
+        settings: {
+            agAuth: true,
+            endpoints: {
+            enroll: "register",
+            login: "go",
+            logout: "leave"
+        }
+    }).modules[ 0 ],
+    data = { userName: "user", password: "abc123", name: "John" };
+
+    custom.logout({
+        baseURL: "http://customurl/",
+        success: function( data ) { ... },
+        error: function( error ) { ... }
+    });
  */
 AeroGear.Auth.adapters.Rest.prototype.logout = function( options ) {
     options = options || {};
