@@ -23,7 +23,7 @@
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @param {String} [settings.storageType="sessionStorage"] - the type of store can either be sessionStorage or localStorage
     @returns {Object} The created store
-    @exmaple
+    @example
 
     //Create an empty DataManager
     var dm = AeroGear.DataManager();

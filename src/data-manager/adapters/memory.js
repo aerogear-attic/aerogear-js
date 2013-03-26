@@ -21,7 +21,7 @@
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
-    @exmaple
+    @example
 
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
