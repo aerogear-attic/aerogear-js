@@ -15,18 +15,22 @@
 */
 /**
     The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
+    This constructor is instantiated when the "DataManager.add()" method is called
     @constructs AeroGear.DataManager.adapters.Memory
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
-    @exmaple
+    @example
 
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
 
     //Add a custom memory store
-    dm.add( "newStore", { recordId: "customID" });
+    dm.add( "newStore", {
+        recordId: "customID"
+    });
+
  */
 AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     // Allow instantiation without using new
@@ -170,6 +174,19 @@ AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
         date: "2012-07-13",
         ...
     });
+
+    //Store an array of new Tasks
+    dm.save([
+        {
+            title: "Task2",
+            date: "2012-07-13"
+        },
+        {
+            title: "Task3",
+            date: "2012-07-13"
+            ...
+        }
+    ]);
 
     // Update an existing piece of data
     var toUpdate = dm.read()[ 0 ];
