@@ -24,15 +24,14 @@
     @param {String} [settings.storageType="sessionStorage"] - the type of store can either be sessionStorage or localStorage
     @returns {Object} The created store
     @example
+//Create an empty DataManager
+var dm = AeroGear.DataManager();
 
-    //Create an empty DataManager
-    var dm = AeroGear.DataManager();
-
-    //Add a custom SessionLocal store using local storage as its storage type
-    dm.add( "newStore", {
-        recordId: "customID",
-        storageType: "localStorage"
-    });
+//Add a custom SessionLocal store using local storage as its storage type
+dm.add( "newStore", {
+    recordId: "customID",
+    storageType: "localStorage"
+});
  */
 AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
     // Allow instantiation without using new
@@ -92,32 +91,32 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
         @param {AeroGear~successCallbackStorage} [options.reset] - If true, this will empty the current data and set it to the data being saved
         @returns {Array} Returns the updated data from the store or in the case of a storage error, returns the unchanged data
         @example
-        var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
+var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
 
-        // Store a new task
-        dm.save({
-            title: "Created Task",
-            date: "2012-07-13",
-            ...
-        });
+// Store a new task
+dm.save({
+    title: "Created Task",
+    date: "2012-07-13",
+    ...
+});
 
-        //Store an array of new Tasks
-        dm.save([
-            {
-                title: "Task2",
-                date: "2012-07-13"
-            },
-            {
-                title: "Task3",
-                date: "2012-07-13"
-                ...
-            }
-        ]);
+//Store an array of new Tasks
+dm.save([
+    {
+        title: "Task2",
+        date: "2012-07-13"
+    },
+    {
+        title: "Task3",
+        date: "2012-07-13"
+        ...
+    }
+]);
 
-        // Update an existing piece of data
-        var toUpdate = dm.read()[ 0 ];
-        toUpdate.data.title = "Updated Task";
-        dm.save( toUpdate );
+// Update an existing piece of data
+var toUpdate = dm.read()[ 0 ];
+toUpdate.data.title = "Updated Task";
+dm.save( toUpdate );
      */
     save: {
         value: function( data, options ) {
@@ -152,33 +151,33 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
         @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
         @returns {Array} Returns the updated data from the store
         @example
-        var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
+var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
 
-        // Store a new task
-        dm.save({
-            title: "Created Task"
-        });
+// Store a new task
+dm.save({
+    title: "Created Task"
+});
 
-        // Store another new task
-        dm.save({
-            title: "Another Created Task"
-        });
+// Store another new task
+dm.save({
+    title: "Another Created Task"
+});
 
-        // Store one more new task
-        dm.save({
-            title: "And Another Created Task"
-        });
+// Store one more new task
+dm.save({
+    title: "And Another Created Task"
+});
 
-        // Remove a particular item from the store by its id
-        var toRemove = dm.read()[ 0 ];
-        dm.remove( toRemove.id );
+// Remove a particular item from the store by its id
+var toRemove = dm.read()[ 0 ];
+dm.remove( toRemove.id );
 
-        // Remove an item from the store using the data object
-        toRemove = dm.read()[ 0 ];
-        dm.remove( toRemove );
+// Remove an item from the store using the data object
+toRemove = dm.read()[ 0 ];
+dm.remove( toRemove );
 
-        // Delete all remaining data from the store
-        dm.remove();
+// Delete all remaining data from the store
+dm.remove();
      */
     remove: {
         value: function( toRemove ) {

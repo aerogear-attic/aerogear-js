@@ -254,94 +254,96 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
     @param {AeroGear~successCallbackREST} [options.success] - a callback to be called when the result of the request to the server is successful
     @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
     @example
-    var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
+var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
 
-    // Get a set of key/value pairs of all data on the server associated with this pipe
-    var allData = myPipe.read();
+// Get a set of key/value pairs of all data on the server associated with this pipe
+var allData = myPipe.read();
 
-    // A data object can be passed to filter the data and in the case of REST,
-    // this object is converted to query string parameters which the server can use.
-    // The values would be determined by what the server is expecting
-    var filteredData = myPipe.read({
-        query: {
-            limit: 10,
-            date: "2012-08-01"
-            ...
-        }
-    });
+// A data object can be passed to filter the data and in the case of REST,
+// this object is converted to query string parameters which the server can use.
+// The values would be determined by what the server is expecting
+var filteredData = myPipe.read({
+    query: {
+        limit: 10,
+        date: "2012-08-01"
+        ...
+    }
+});
 
-    //JSONP - Default JSONP call to a JSONP server
-    myPipe.read({
-        jsonp: true,
-        success: function( data ){
-            .....
-        }
-    });
+    @example
+//JSONP - Default JSONP call to a JSONP server
+myPipe.read({
+    jsonp: true,
+    success: function( data ){
+        .....
+    }
+});
 
-    //JSONP - JSONP call with a changed callback parameter
-    myPipe.read({
-        jsonp: {
-            callback: "jsonp"
-        },
-        success: function( data ){
-            .....
-        }
-    });
+//JSONP - JSONP call with a changed callback parameter
+myPipe.read({
+    jsonp: {
+        callback: "jsonp"
+    },
+    success: function( data ){
+        .....
+    }
+});
 
-    //Paging - using the default weblinking protocal
-    var defaultPagingPipe = AeroGear.Pipeline([{
-        name: "webLinking",
-        settings: {
-            endpoint: "pageTestWebLink",
-            pageConfig: true
-        }
-    }]).pipes[0];
+    @example
+//Paging - using the default weblinking protocal
+var defaultPagingPipe = AeroGear.Pipeline([{
+    name: "webLinking",
+    settings: {
+        endpoint: "pageTestWebLink",
+        pageConfig: true
+    }
+}]).pipes[0];
 
-    //Get a limit of 2 pieces of data from the server, starting from the first page
-    //Calling the "next" function will get the next 2 pieces of data, if available.
-    //Similarily, calling the "previous" function will get the previous 2 pieces of data, if available
-    defaultPagingPipe.read({
-        offsetValue: 1,
-        limitValue: 2,
-        success: function( data, textStatus, jqXHR ) {
-            data.next({
-                success: function( data ) {
-                    data.previous({
-                        success: function() {
-                        }
-                    });
-                }
-            });
-        }
-    });
-
-    //Create a new Pipe with a custom paging options
-    var customPagingPipe = AeroGear.Pipeline([{
-        name: "customPipe",
-        settings: {
-            pageConfig: {
-                metadataLocation: "header",
-                previousIdentifier: "back",
-                nextIdentifier: "forward"
+//Get a limit of 2 pieces of data from the server, starting from the first page
+//Calling the "next" function will get the next 2 pieces of data, if available.
+//Similarily, calling the "previous" function will get the previous 2 pieces of data, if available
+defaultPagingPipe.read({
+    offsetValue: 1,
+    limitValue: 2,
+    success: function( data, textStatus, jqXHR ) {
+        data.next({
+            success: function( data ) {
+                data.previous({
+                    success: function() {
+                    }
+                });
             }
-        }
-    }]).pipes[0];
+        });
+    }
+});
 
-    //Even with custom options, you use "next" and "previous" the same way
-    customPagingPipe.read({
-        offsetValue: 1,
-        limitValue: 2,
-        success: function( data, textStatus, jqXHR ) {
-            data.next({
-                success: function( data ) {
-                    data.previous({
-                        success: function() {
-                        }
-                    });
-                }
-            });
+//Create a new Pipe with a custom paging options
+var customPagingPipe = AeroGear.Pipeline([{
+    name: "customPipe",
+    settings: {
+        pageConfig: {
+            metadataLocation: "header",
+            previousIdentifier: "back",
+            nextIdentifier: "forward"
         }
-    });
+    }
+}]).pipes[0];
+
+//Even with custom options, you use "next" and "previous" the same way
+customPagingPipe.read({
+    offsetValue: 1,
+    limitValue: 2,
+    success: function( data, textStatus, jqXHR ) {
+        data.next({
+            success: function( data ) {
+                data.previous({
+                    success: function() {
+                    }
+                });
+            }
+        });
+    }
+});
  */
 AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
     var url, success, error, extraOptions,

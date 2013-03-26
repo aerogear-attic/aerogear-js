@@ -22,15 +22,13 @@
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
     @example
+//Create an empty DataManager
+var dm = AeroGear.DataManager();
 
-    //Create an empty DataManager
-    var dm = AeroGear.DataManager();
-
-    //Add a custom memory store
-    dm.add( "newStore", {
-        recordId: "customID"
-    });
-
+//Add a custom memory store
+dm.add( "newStore", {
+    recordId: "customID"
+});
  */
 AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     // Allow instantiation without using new
@@ -146,13 +144,13 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
     @returns {Array} Returns data from the store, optionally filtered by an id
     @example
-    var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
-    // Get an array of all data in the store
-    var allData = dm.read();
+// Get an array of all data in the store
+var allData = dm.read();
 
-    //Read a specific piece of data based on an id
-    var justOne = dm.read( 12345 );
+//Read a specific piece of data based on an id
+var justOne = dm.read( 12345 );
  */
 AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
     var filter = {};
@@ -166,32 +164,32 @@ AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
     @param {Boolean} [reset] - If true, this will empty the current data and set it to the data being saved
     @returns {Array} Returns the updated data from the store
     @example
-    var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
-    // Store a new task
-    dm.save({
-        title: "Created Task",
-        date: "2012-07-13",
+// Store a new task
+dm.save({
+    title: "Created Task",
+    date: "2012-07-13",
+    ...
+});
+
+//Store an array of new Tasks
+dm.save([
+    {
+        title: "Task2",
+        date: "2012-07-13"
+    },
+    {
+        title: "Task3",
+        date: "2012-07-13"
         ...
-    });
+    }
+]);
 
-    //Store an array of new Tasks
-    dm.save([
-        {
-            title: "Task2",
-            date: "2012-07-13"
-        },
-        {
-            title: "Task3",
-            date: "2012-07-13"
-            ...
-        }
-    ]);
-
-    // Update an existing piece of data
-    var toUpdate = dm.read()[ 0 ];
-    toUpdate.data.title = "Updated Task";
-    dm.save( toUpdate );
+// Update an existing piece of data
+var toUpdate = dm.read()[ 0 ];
+toUpdate.data.title = "Updated Task";
+dm.save( toUpdate );
  */
 AeroGear.DataManager.adapters.Memory.prototype.save = function( data, reset ) {
     var itemFound = false;
@@ -229,33 +227,33 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, reset ) {
     @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
     @returns {Array} Returns the updated data from the store
     @example
-    var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
-    // Store a new task
-    dm.save({
-        title: "Created Task"
-    });
+// Store a new task
+dm.save({
+    title: "Created Task"
+});
 
-    // Store another new task
-    dm.save({
-        title: "Another Created Task"
-    });
+// Store another new task
+dm.save({
+    title: "Another Created Task"
+});
 
-    // Store one more new task
-    dm.save({
-        title: "And Another Created Task"
-    });
+// Store one more new task
+dm.save({
+    title: "And Another Created Task"
+});
 
-    // Remove a particular item from the store by its id
-    var toRemove = dm.read()[ 0 ];
-    dm.remove( toRemove.id );
+// Remove a particular item from the store by its id
+var toRemove = dm.read()[ 0 ];
+dm.remove( toRemove.id );
 
-    // Remove an item from the store using the data object
-    toRemove = dm.read()[ 0 ];
-    dm.remove( toRemove );
+// Remove an item from the store using the data object
+toRemove = dm.read()[ 0 ];
+dm.remove( toRemove );
 
-    // Delete all remaining data from the store
-    dm.remove();
+// Delete all remaining data from the store
+dm.remove();
  */
 AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
     if ( !toRemove ) {
@@ -296,13 +294,21 @@ AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
     @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
     @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
     @example
-    var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
-    // An object can be passed to filter the data
-    var filteredData = dm.filter({
-        date: "2012-08-01"
-        ...
-    });
+// An object can be passed to filter the data
+// This would return all records with a user named 'admin' **AND** a date of '2012-08-01'
+var filteredData = dm.filter({
+    date: "2012-08-01",
+    user: "admin"
+});
+
+// The matchAny parameter changes the search to an OR operation
+// This would return all records with a user named 'admin' **OR** a date of '2012-08-01'
+var filteredData = dm.filter({
+    date: "2012-08-01",
+    user: "admin"
+}, true);
  */
 AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
     var filtered, key, j, k, l, nestedKey, nestedFilter, nestedValue,

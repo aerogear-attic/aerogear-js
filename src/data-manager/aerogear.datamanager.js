@@ -21,39 +21,39 @@
     @param {String} config.name - the name that the store will later be referenced by
     @param {String} [config.type="memory"] - the type of store as determined by the adapter used
     @param {String} [config.recordId="id"] - the identifier used to denote the unique id for each record in the data associated with this store
-    @param {Object} [config.settings={}] - the settings to be passed to the adapter
+    @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @returns {object} dataManager - The created DataManager containing any stores that may have been created
     @example
-    // Create an empty DataManager
-    var dm = AeroGear.DataManager();
+// Create an empty DataManager
+var dm = AeroGear.DataManager();
 
-    // Create a single store using the default adapter
-    var dm2 = AeroGear.DataManager( "tasks" );
+// Create a single store using the default adapter
+var dm2 = AeroGear.DataManager( "tasks" );
 
-    // Create multiple stores using the default adapter
-    var dm3 = AeroGear.DataManager( [ "tasks", "projects" ] );
+// Create multiple stores using the default adapter
+var dm3 = AeroGear.DataManager( [ "tasks", "projects" ] );
 
-    //Create a custom store
-    var dm3 = AeroGear.DataManager({
+//Create a custom store
+var dm3 = AeroGear.DataManager({
+    name: "mySessionStorage",
+    type: "SessionLocal",
+    id: "customID"
+});
+
+//Create multiple custom stores
+var dm4 = AeroGear.DataManager([
+    {
         name: "mySessionStorage",
         type: "SessionLocal",
         id: "customID"
-    });
-
-    //Create multiple custom stores
-    var dm4 = AeroGear.DataManager([
-        {
-            name: "mySessionStorage",
-            type: "SessionLocal",
-            id: "customID"
-        },
-        {
-            name: "mySessionStorage2",
-            type: "SessionLocal",
-            id: "otherId",
-            settings: { ... }
-        }
-    ]);
+    },
+    {
+        name: "mySessionStorage2",
+        type: "SessionLocal",
+        id: "otherId",
+        settings: { ... }
+    }
+]);
  */
 AeroGear.DataManager = function( config ) {
     // Allow instantiation without using new

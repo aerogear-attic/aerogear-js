@@ -21,38 +21,38 @@
     @param {String} config.name - the name that the pipe will later be referenced by
     @param {String} [config.type="rest"] - the type of pipe as determined by the adapter used
     @param {String} [config.recordId="id"] - the identifier used to denote the unique id for each record in the data associated with this pipe
-    @param {Object} [config.settings={}] - the settings to be passed to the adapter
+    @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @returns {Object} pipeline - The created Pipeline containing any pipes that may have been created
     @example
-    // Create an empty Pipeline
-    var pl = AeroGear.Pipeline();
+// Create an empty Pipeline
+var pl = AeroGear.Pipeline();
 
-    // Create a single pipe using the default adapter
-    var pl2 = AeroGear.Pipeline( "tasks" );
+// Create a single pipe using the default adapter
+var pl2 = AeroGear.Pipeline( "tasks" );
 
-    // Create multiple pipes using the default adapter
-    var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );
+// Create multiple pipes using the default adapter
+var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );
 
-    //Create a new REST pipe with a custom ID using an object
-    var pl4 = AeroGear.Pipeline({
+//Create a new REST pipe with a custom ID using an object
+var pl4 = AeroGear.Pipeline({
+    name: "customPipe",
+    type: "rest",
+    recordId: "CustomID"
+});
+
+//Create multiple REST pipes using objects
+var pl5 = AeroGear.Pipeline([
+    {
         name: "customPipe",
         type: "rest",
         recordId: "CustomID"
-    });
-
-    //Create multiple REST pipes using objects
-    var pl5 = AeroGear.Pipeline([
-        {
-            name: "customPipe",
-            type: "rest",
-            recordId: "CustomID"
-        },
-        {
-            name: "customPipe2",
-            type: "rest",
-            recordId: "CustomID"
-        }
-    ]);
+    },
+    {
+        name: "customPipe2",
+        type: "rest",
+        recordId: "CustomID"
+    }
+]);
  */
 AeroGear.Pipeline = function( config ) {
     // Allow instantiation without using new

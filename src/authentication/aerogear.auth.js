@@ -19,35 +19,35 @@
     @param {String|Array|Object} [config] - A configuration for the modules(s) being created along with the authenticator. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the module will later be referenced by
     @param {String} [config.type="rest"] - the type of module as determined by the adapter used
-    @param {Object} [config.settings={}] - the settings to be passed to the adapter. Form specific settings, see the documentation for the adapter you are using.
+    @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @returns {Object} The created authenticator containing any auth modules that may have been created
     @example
-    // Create an empty authenticator
-    var auth = AeroGear.Auth();
+// Create an empty authenticator
+var auth = AeroGear.Auth();
 
-    // Create a single module using the default adapter
-    var auth2 = AeroGear.Auth( "myAuth" );
+// Create a single module using the default adapter
+var auth2 = AeroGear.Auth( "myAuth" );
 
-    // Create multiple modules using the default adapter
-    var auth3 = AeroGear.Auth( [ "someAuth", "anotherAuth" ] );
+// Create multiple modules using the default adapter
+var auth3 = AeroGear.Auth( [ "someAuth", "anotherAuth" ] );
 
-    //Create a single module by passing an object using the default adapter
-    var auth4 = AeroGear.Auth(
-        {
-            name: "objectAuth"
-        }
-    );
+//Create a single module by passing an object using the default adapter
+var auth4 = AeroGear.Auth(
+    {
+        name: "objectAuth"
+    }
+);
 
-    //Create multiple modules by passing an array of objects using the default adapter
-    var auth5 = AeroGear.Auth([
-        {
-            name: "objectAuth"
-        },
-        {
-            name: "objectAuth2",
-            settings: { ... }
-        }
-    ]);
+//Create multiple modules by passing an array of objects using the default adapter
+var auth5 = AeroGear.Auth([
+    {
+        name: "objectAuth"
+    },
+    {
+        name: "objectAuth2",
+        settings: { ... }
+    }
+]);
  */
 AeroGear.Auth = function( config ) {
     // Allow instantiation without using new
