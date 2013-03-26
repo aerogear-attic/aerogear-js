@@ -34,11 +34,26 @@
     var dm3 = AeroGear.DataManager( [ "tasks", "projects" ] );
 
     //Create a custom store
-    var dm3 = AeroGear.DataManager([{
+    var dm3 = AeroGear.DataManager({
         name: "mySessionStorage",
         type: "SessionLocal",
         id: "customID"
-    }])
+    });
+
+    //Create multiple custom stores
+    var dm4 = AeroGear.DataManager([
+        {
+            name: "mySessionStorage",
+            type: "SessionLocal",
+            id: "customID"
+        },
+        {
+            name: "mySessionStorage2",
+            type: "SessionLocal",
+            id: "otherId",
+            settings: { ... }
+        }
+    ]);
  */
 AeroGear.DataManager = function( config ) {
     // Allow instantiation without using new

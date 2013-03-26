@@ -15,6 +15,7 @@
 */
 /**
     The REST adapter is the default type used when creating a new authentication module. It uses jQuery.ajax to communicate with the server.
+    This constructor is instantiated when the "Auth.add()" method is called
     @constructs AeroGear.Auth.adapters.Rest
     @param {String} moduleName - the name used to reference this particular auth module
     @param {Object} [settings={}] - the settings to be passed to the adapter
