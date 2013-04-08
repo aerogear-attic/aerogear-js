@@ -1,4 +1,4 @@
-# aerogear-js [![Build Status](https://travis-ci.org/kborchers/aerogear-js.png)](https://travis-ci.org/kborchers/aerogear-js)
+# aerogear-js [![Build Status](https://travis-ci.org/aerogear/aerogear-js.png)](https://travis-ci.org/aerogear/aerogear-js)
 
 JavaScript client library implementation for AeroGear. Eventually, this will include API's for persistence, security, data synchronization and more.
 
