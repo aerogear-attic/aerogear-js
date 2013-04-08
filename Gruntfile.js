@@ -29,19 +29,19 @@ module.exports = function(grunt) {
                 banner: "<%= meta.banner %>"
             },
             dist: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/vertx.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'external/uuid/uuid.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             auth: {
-                src: ['src/aerogear.core.js', 'src/utilities/aerogear.utilities.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             notifier: {
@@ -68,6 +68,8 @@ module.exports = function(grunt) {
                 options: {
                     banner: "<%= meta.banner %>",
                     sourceMap: "dist/<%= pkg.name %>.js.map",
+                    sourceMappingURL: "<%= pkg.name %>.js.map",
+                    sourceMapPrefix: 1,
                     beautify: {
                         ascii_only: true
                     }
@@ -88,13 +90,14 @@ module.exports = function(grunt) {
         }
     });
 
-    var exec = require('child_process').exec;
-    grunt.registerTask('docs', function() {
-        grunt.log.writeln('Remove old docs');
-        exec('rm -r docs');
-        grunt.log.writeln('Old docs removed\nGenerate new docs');
-        exec('jsdoc src/ -r -d docs README.md');
-        grunt.log.writeln('New docs generated');
+    // IIFE wrapper task
+    grunt.registerTask('iife', function( custom ) {
+        var fs = require("fs"),
+            fileName = "dist/" + grunt.config("pkg").name + (custom ? ".custom" : "") + ".js",
+            fileText = fs.readFileSync( fileName, "utf-8" );
+
+        fileText = fileText.replace( /\*\//, "*/\n(function( window, undefined ) {\n" );
+        fs.writeFileSync( fileName, fileText + "})( this );\n", "utf-8" );
     });
 
     // grunt-contrib tasks
@@ -104,12 +107,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'uglify:all']);
-    grunt.registerTask('dev', ['jshint', 'concat:dist', 'uglify:all']);
-    grunt.registerTask('build+docs', ['jshint', 'qunit', 'concat:dist', 'uglify:all', 'docs']);
-    grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'uglify:custom']);
-    grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'uglify:custom']);
-    grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'uglify:custom']);
-    grunt.registerTask('notifier', ['jshint', 'qunit', 'concat:notifier', 'uglify:custom']);
-
+    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
+    grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
+    grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
+	grunt.registerTask('notifier', ['jshint', 'qunit', 'concat:notifier', 'uglify:custom']);
 };

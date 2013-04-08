@@ -17,7 +17,7 @@
     The AeroGear namespace provides a way to encapsulate the library's properties and methods away from the global namespace
     @namespace
  */
-var AeroGear = {};
+this.AeroGear = {};
 
 /**
     AeroGear.Core is a base for all of the library modules to extend. It is not to be instantiated and will throw an error when attempted
@@ -31,12 +31,13 @@ AeroGear.Core = function() {
     }
 
     /**
-        This function is used internally by pipeline, datamanager, etc. to add a new Object (pipe, store, etc.) to the respective collection.
+        This function is used by the different parts of AeroGear to add a new Object to its respective collection.
+        @name AeroGear.add
         @method
-        @param {String|Array|Object} config - This can be a variety of types specifying how to create the object
+        @param {String|Array|Object} config - This can be a variety of types specifying how to create the object. See the particular constructor for the object calling .add for more info.
         @returns {Object} The object containing the collection that was updated
      */
-    this.add = function ( config ) {
+    this.add = function( config ) {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
@@ -69,8 +70,9 @@ AeroGear.Core = function() {
     };
     /**
         This function is used internally by pipeline, datamanager, etc. to remove an Object (pipe, store, etc.) from the respective collection.
+        @name AeroGear.remove
         @method
-        @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object
+        @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object. See the particular constructor for the object calling .remove for more info.
         @returns {Object} The object containing the collection that was updated
      */
     this.remove = function( config ) {
@@ -113,3 +115,35 @@ AeroGear.Core = function() {
 AeroGear.isArray = function( obj ) {
     return ({}).toString.call( obj ) === "[object Array]";
 };
+
+/**
+    This callback is executed when an HTTP request completes whether it was successful or not.
+    @callback AeroGear~completeCallbackREST
+    @param {Object} jqXHR - The jQuery specific XHR object
+    @param {String} textStatus - The text status message returned from the server
+ */
+/**
+    This callback is executed when an HTTP error is encountered during a request.
+    @callback AeroGear~errorCallbackREST
+    @param {Object} jqXHR - The jQuery specific XHR object
+    @param {String} textStatus - The text status message returned from the server
+    @param {Object} errorThrown - The HTTP error thrown which caused the is callback to be called
+ */
+/**
+    This callback is executed when an HTTP success message is returned during a request.
+    @callback AeroGear~successCallbackREST
+    @param {Object} data - The data, if any, returned in the response
+    @param {String} textStatus - The text status message returned from the server
+    @param {Object} jqXHR - The jQuery specific XHR object
+ */
+/**
+    This callback is executed when an error is encountered saving to local or session storage.
+    @callback AeroGear~errorCallbackStorage
+    @param {Object} errorThrown - The HTTP error thrown which caused the is callback to be called
+    @param {Object|Array} data - An object or array of objects representing the data for the failed save attempt.
+ */
+/**
+    This callback is executed when data is successfully saved to session or local storage.
+    @callback AeroGear~successCallbackStorage
+    @param {Object} data - The updated data object after the new saved data has been added
+ */
