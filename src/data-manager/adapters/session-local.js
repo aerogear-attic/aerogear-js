@@ -48,7 +48,8 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
         name = storeName,
         appContext = document.location.pathname.replace(/[\/\.]/g,"-"),
         storeKey = name + appContext,
-        currentData = JSON.parse( window[ storeType ].getItem( storeKey ) );
+        content = window[ storeType ].getItem( storeKey ),
+        currentData = content ? JSON.parse( content ) : null ;
 
     // Initialize data from the persistent store if it exists
     if ( currentData ) {
