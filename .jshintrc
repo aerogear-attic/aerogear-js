@@ -12,6 +12,8 @@
         "AeroGear": true,
         "uuid": true,
         "require": true,
-        "vertx": true
+        "vertx": true,
+        "SockJS": true,
+        "Stomp": true
     }
 }
