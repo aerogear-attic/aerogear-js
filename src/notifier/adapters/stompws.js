@@ -176,9 +176,9 @@
      */
     AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
         var that = this,
-            ws = new sockjs( options.url || this.getConnectURL() ),
-            client = new stomp.over( ws ),
-            //client = new stomp.client( options.url || this.getConnectURL() ),
+            //ws = new sockjs( options.url || this.getConnectURL() ),
+            //client = new stomp.over( ws ),
+            client = new stomp.client( options.url || this.getConnectURL() ),
             onConnect = function() {
                 var channels = that.getChannels();
 
