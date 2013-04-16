@@ -21,6 +21,7 @@
         @param {Object} settings={} - the settings to be passed to the adapter
         @param {String} settings.pushNetworkLogin - push network username
         @param {String} settings.pushNetworkPassword - push network password
+        @param {String} [settings.channelPrefix="jms.topic.aerogear."] - the prefix to add to the session ID to form a personal push notification channel
         @param {String} [settings.pushNetworkURL="<origin>/agPushNetwork"] - defines the base URL for connecting to the push messaging service
         @param {String} [settings.pushServerURL="<origin>/agUnifiedPush"] - defines the URL for connecting to the AeroGear Unified Push server
         @param {String} [settings.endpoints=[]] - the set of endpoints to filter push notifications by
@@ -43,6 +44,7 @@
             endpoints = settings.endpoints || [],
             pushNetworkURL = settings.pushNetworkURL || "http://" + window.location.hostname + ":61614/agPushNetwork",
             pushServerURL = settings.pushServerURL || "http://" + window.location.hostname + ":8080/agUnifiedPush",
+            channelPrefix = settings.channelPrefix || "jms.topic.aerogear.",
             sessionID = null;
 
         // Privileged methods
@@ -168,6 +170,15 @@
             sessionID = newSession;
         };
 
+        /**
+            Returns the value of the private channelPrefix var
+            @private
+            @augments AeroGear.SimplePush.adapters.SimplePush
+         */
+        this.getChannelPrefix = function() {
+            return channelPrefix;
+        };
+
         // Instantiating SimplePush immediately creates a Notifier connection to the Push Network
         stompNotifier = AeroGear.Notifier({
             name: "agPushNetwork",
@@ -183,10 +194,10 @@
             onConnect: function( stompFrame ) {
                 var endpoints = that.getEndpoints(),
                     settings = that.getSettings();
-                that.setSessionID( "jms.topic.aerogear." + stompFrame.headers.session );
+                that.setSessionID( stompFrame.headers.session );
 
                 stompNotifier.subscribe({
-                    address: that.getSessionID(),
+                    address: that.getChannelPrefix() + that.getSessionID(),
                     callback: function( message ) {
                         var endpoint;
                         if ( message.headers && message.headers.endpoint ) {
