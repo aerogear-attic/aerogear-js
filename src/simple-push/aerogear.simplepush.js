@@ -13,41 +13,129 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, undefined ) {
-    /**
-        DESCRIPTION
-        @class
-        @augments AeroGear.Core
-        @example
-     */
-    AeroGear.SimplePush = function( config ) {
-        // Allow instantiation without using new
-        if ( !( this instanceof AeroGear.SimplePush ) ) {
-            return new AeroGear.SimplePush( config );
-        }
-        // Super Constructor
-        AeroGear.Core.call( this );
+(function( AeroGear, $, undefined ) {
+    var stompNotifier;
+    // Use browser push implementation when available
+    // TODO: Test for browser-prefixed implementations
+    if ( navigator.push ) {
+        return;
+    }
 
-        this.lib = "SimplePush";
-        this.type = config ? config.type || "SimplePush" : "SimplePush";
-
-        /**
-            DESCRIPTION
-            @memberOf AeroGear.SimplePush
-            @type Object
-            @default connection
-         */
-        this.collectionName = "connection";
-
-        this.add( config );
+    AeroGear.SimplePush = {};
+    AeroGear.SimplePush.config = {
+        pushAppID: "",
+        appInstanceID: "",
+        pushNetworkLogin: "guest",
+        pushNetworkPassword: "guest",
+        channelPrefix: "jms.topic.aerogear.",
+        pushNetworkURL: "http://" + window.location.hostname + ":61614/agPushNetwork",
+        pushServerURL: "http://" + window.location.hostname + ":8080/registry/device"
     };
 
-    AeroGear.SimplePush.prototype = AeroGear.Core;
-    AeroGear.SimplePush.constructor = AeroGear.SimplePush;
+    AeroGear.SimplePush.endpoints = {};
 
-    /**
-        The adapters object is provided so that adapters can be added to the AeroGear.Notifier namespace dynamically and still be accessible to the add method
-        @augments AeroGear.Notifier
-     */
-    AeroGear.SimplePush.adapters = {};
-})( AeroGear );
+    AeroGear.SimplePush.registerWithChannel = function( name, endpoint ) {
+        // This is redundant but hopefully helpful in future proofing
+        endpoint.name = name;
+
+        AeroGear.SimplePush.endpoints[ name ] = endpoint;
+        // TODO: Inform push server?
+    };
+
+    navigator.push = (function() {
+        function createChannels() {
+            // Temporarily set sessionID to true to avoid multiple inits
+            AeroGear.SimplePush.sessionID = true;
+
+            // Create a Notifier connection to the Push Network
+            stompNotifier = AeroGear.Notifier({
+                name: "agPushNetwork",
+                type: "stompws",
+                settings: {
+                    connectURL: AeroGear.SimplePush.config.pushNetworkURL
+                }
+            }).clients.agPushNetwork;
+
+            stompNotifier.connect({
+                login: AeroGear.SimplePush.config.pushNetworkLogin,
+                password: AeroGear.SimplePush.config.pushNetworkPassword,
+                onConnect: function( stompFrame ) {
+                    AeroGear.SimplePush.sessionID = stompFrame.headers.session;
+
+                    // Register with Unified Push server
+                    $.ajax({
+                        contentType: "application/json",
+                        dataType: "json",
+                        type: "POST",
+                        url: AeroGear.SimplePush.config.pushServerURL,
+                        headers: {
+                            "ag-push-app": AeroGear.SimplePush.config.pushAppID,
+                            "AG-Mobile-APP": AeroGear.SimplePush.config.appInstanceID
+                        },
+                        data: {
+                            token: AeroGear.SimplePush.sessionID,
+                            os: "web"
+                        }
+                    });
+
+                    // Subscribe to personal and broadcast channels
+                    stompNotifier.subscribe([
+                        {
+                            address: AeroGear.SimplePush.config.channelPrefix + AeroGear.SimplePush.sessionID,
+                            callback: function( message ) {
+                                message.pushEndpoint = message.headers ? AeroGear.SimplePush.endpoints[ message.headers.endpoint ] : undefined;
+
+                                $( document ).trigger({
+                                    type: "push",
+                                    message: message
+                                });
+                            }
+                        },
+                        {
+                            address: AeroGear.SimplePush.config.channelPrefix + "broadcast",
+                            callback: function( message ) {
+                                message.pushEndpoint = AeroGear.SimplePush.endpoints.broadcast;
+
+                                $( document ).trigger({
+                                    type: "push",
+                                    message: message
+                                });
+                            }
+                        }
+                    ]);
+                }
+            });
+        }
+
+        return {
+            register: function() {
+                if ( !AeroGear.SimplePush.sessionID ) {
+                    createChannels();
+                }
+
+                return {};
+            },
+
+            unregister: function( endpoint ) {
+                delete AeroGear.SimplePush.endpoints[ endpoint.name ];
+                // TODO: Inform push server?
+            }
+        };
+    })();
+
+    navigator.setMessageHandler = function( messageType, callback ) {
+        var handler;
+        // TODO: Check for other browser implementations
+        if ( navigator.mozSetMessageHandler ) {
+            navigator.mozSetMessageHandler.apply( arguments );
+            return;
+        }
+
+        handler = function( event ) {
+            var message = event.message;
+            callback.call( this, message );
+        };
+
+        $( document ).on( messageType, handler );
+    };
+})( AeroGear, jQuery );
