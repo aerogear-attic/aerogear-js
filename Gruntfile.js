@@ -62,7 +62,7 @@ module.exports = function(grunt) {
                     "dist/<%= pkg.name %>.min.js": [ "dist/<%= pkg.name %>.js" ]
                 },
                 options: {
-                    banner: "<%= meta.banner %>",
+                    preserveComments: "some",
                     sourceMap: "dist/<%= pkg.name %>.js.map",
                     sourceMappingURL: "<%= pkg.name %>.js.map",
                     sourceMapPrefix: 1,
@@ -76,8 +76,10 @@ module.exports = function(grunt) {
                     "dist/<%= pkg.name %>.custom.min.js": [ "dist/<%= pkg.name %>.custom.js" ]
                 },
                 options: {
-                    banner: "<%= meta.banner %>",
+                    preserveComments: "some",
                     sourceMap: "dist/<%= pkg.name %>.custom.js.map",
+                    sourceMappingURL: "<%= pkg.name %>.js.map",
+                    sourceMapPrefix: 1,
                     beautify: {
                         ascii_only: true
                     }
