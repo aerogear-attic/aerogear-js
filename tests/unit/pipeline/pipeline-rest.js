@@ -143,6 +143,30 @@ asyncTest( "read method", function() {
     });
 });
 
+// Read method test with resourcePAth
+asyncTest( "read method with resourcePAth", function() {
+    expect( 2 );
+
+    var read1 = pipe.read({
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            equal( data[ 1 ].id, 1337, "Read all data" );
+        }
+    });
+
+    var read2 = pipe.read({
+        query: { limit: 1 },
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            equal( data.length, 1, "Read only first record - query option" );
+        }
+    });
+
+    $.when( read1, read2 ).done( function( r1, r2 ) {
+        start();
+    });
+});
+
 // Save method test
 asyncTest( "save method", function() {
     expect( 4 );
@@ -200,6 +224,67 @@ asyncTest( "save method", function() {
     });
 });
 
+// Save method test with resourcePath
+asyncTest( "save method", function() {
+    expect( 4 );
+
+    var save1, save2;
+
+    save1 = pipe.save({
+        title: "New Task",
+        date: "2012-08-01"
+    },
+    {
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "POST - new data" );
+        }
+    });
+
+    save2 = pipe2.save({
+        title: "Another Task",
+        date: "2012-08-01"
+    },
+    {
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "POST - new data with custom record id" );
+        }
+    });
+
+    $.when( save1, save2 ).done( function( s1, s2 ) {
+        var save3, save4;
+
+        save3 = pipe.save({
+            id: 11223,
+            title: "Updated Task",
+            date: "2012-08-01"
+        },
+        {
+            resourcePath: "/resourcePath/1337",
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "PUT - update existing data" );
+            }
+        });
+
+        save4 = pipe2.save({
+            taskId: 44556,
+            title: "Another Updated Task",
+            date: "2012-08-01"
+        },
+        {
+            resourcePath: "/resourcePath/1337",
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "PUT - update existing data with custom record id" );
+            }
+        });
+
+        $.when( save3, save4 ).done( function( s3, s4 ) {
+            start();
+        });
+    });
+});
+
 // Remove method test
 asyncTest( "remove method", function() {
     expect( 3 );
@@ -228,11 +313,55 @@ asyncTest( "remove method", function() {
     });
 });
 
+// Remove method test with ResourcePath
+asyncTest( "remove method", function() {
+    expect( 3 );
+
+    var remove1 = pipe.remove( 12345, {
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "DELETE - single record using default integer record identifier" );
+        }
+    });
+
+    var remove2 = pipe2.remove( { taskId: 44556 },
+        {
+            resourcePath: "/resourcePath/1337",
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "DELETE - single record using custom record identifier" );
+            }
+        }
+    );
+
+    $.when( remove1, remove2 ).done( function( r1, r2 ) {
+        pipe.remove({
+            resourcePath: "/resourcePath/1337",
+            success: function( data, textStatus, jqXHR ) {
+                ok( true, "DELETE - all data at end of this pipe" );
+                start();
+            }
+        });
+    });
+});
+
 // Test custom base URL
 asyncTest( "base URL", function() {
     expect( 1 );
 
     var read = pipe3.read({
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from custom base URL" );
+            start();
+        }
+    });
+});
+
+// Test custom base URL with ResoucePath
+asyncTest( "base URL", function() {
+    expect( 1 );
+
+    var read = pipe3.read({
+        resourcePath: "/resourcePath/1337",
         success: function( data, textStatus, jqXHR ) {
             ok( true, "Read success from custom base URL" );
             start();
@@ -252,7 +381,33 @@ asyncTest( "end point", function() {
     });
 });
 
+// Test custom endpoint with ResourcePath
+asyncTest( "end point", function() {
+    expect( 1 );
+
+    var read = pipe4.read({
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from custom end point" );
+            start();
+        }
+    });
+});
+
+
 // Test custom base URL and endpoint
+asyncTest( "base URL + end point", function() {
+    expect( 1 );
+
+    var read = pipe5.read({
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from custom end point" );
+            start();
+        }
+    });
+});
+
+// Test custom base URL and endpoint with ResourcePath
 asyncTest( "base URL + end point", function() {
     expect( 1 );
 
@@ -300,11 +455,39 @@ asyncTest( "ID added to end point", function() {
     });
 });
 
+asyncTest( "ID added to end point with ResourcePath", function() {
+    expect( 2 );
+
+    var read = pipe6.read({
+        id: 12345,
+        resourcePath: "/resourcePath/1337",
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from endpoint with id on the end" );
+            equal( data.id, 12345, "Id is 12345" );
+            start();
+        }
+    });
+});
+
 asyncTest( "ID added to end point with custom recordID", function() {
     expect( 2 );
 
     var read = pipe7.read({
         identifier: 12345,
+        success: function( data, textStatus, jqXHR ) {
+            ok( true, "Read success from endpoint with id on the end" );
+            equal( data.id, 12345, "Id is 12345" );
+            start();
+        }
+    });
+});
+
+asyncTest( "ID added to end point with custom recordID with ResourcePath", function() {
+    expect( 2 );
+
+    var read = pipe7.read({
+        identifier: 12345,
+        resourcePath: "/resourcePath/1337",
         success: function( data, textStatus, jqXHR ) {
             ok( true, "Read success from endpoint with id on the end" );
             equal( data.id, 12345, "Id is 12345" );
