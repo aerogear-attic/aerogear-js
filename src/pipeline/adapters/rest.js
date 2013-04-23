@@ -272,6 +272,15 @@ var filteredData = myPipe.read({
 });
 
     @example
+//ResourcePath - using a the resourcePath option
+myPipe.read({
+    resourcePath: "/subtasks",
+    success: function( data ){
+        .....
+    }
+});
+
+    @example
 //JSONP - Default JSONP call to a JSONP server
 myPipe.read({
     jsonp: true,
@@ -458,6 +467,19 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
         ...
     });
 
+    //Pass a resourcePath
+     myPipe.save({
+        title: "Another Created Task",
+        date: "2012-07-13",
+        ...
+    },
+    {
+        resourcePath: "/subtasks",
+        success: function( data, textStatus, jqXHR ) {
+            ...
+        }
+    });
+
     // Pass a success and error callback, in this case using the REST pipe and jQuery.ajax so the functions take the same parameters.
     myPipe.save({
         title: "Another Created Task",
@@ -568,6 +590,14 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
 
     // Remove a particular item from the server by its id
     myPipe.remove( 1 );
+
+    // Remove a particular item from the server by its id and with resoucePath
+    myPipe.remove( 1, {
+        resourcePath: "/subtasks",
+        success: function( data, textStatus, jqXHR ) {
+            ...
+        }
+    });
 
     // Delete all remaining data from the server associated with this pipe
     myPipe.remove();
