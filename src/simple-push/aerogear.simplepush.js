@@ -14,38 +14,93 @@
 * limitations under the License.
 */
 (function( AeroGear, $, uuid, undefined ) {
-    var stompNotifier, nativePush;
+    var simpleNotifier, nativePush;
     // Use browser push implementation when available
     // TODO: Test for browser-prefixed implementations
     if ( navigator.push ) {
         nativePush = navigator.push;
     }
 
-    AeroGear.SimplePush = {};
-    AeroGear.SimplePush.config = {
-        pushAppID: "",
-        appInstanceID: "",
-        pushNetworkLogin: "guest",
-        pushNetworkPassword: "guest",
-        channelPrefix: "jms.topic.aerogear",
-        pushNetworkURL: "http://" + window.location.hostname + ":61614/agPushNetwork",
-        pushServerURL: "http://" + window.location.hostname + ":8080/registry/device"
-    };
+    AeroGear.SimplePush = AeroGear.SimplePush || {};
+    AeroGear.SimplePush.config = AeroGear.SimplePush.config || {};
+    AeroGear.SimplePush.config.pushAppID = AeroGear.SimplePush.config.pushAppID || "";
+    AeroGear.SimplePush.config.appInstanceID = AeroGear.SimplePush.config.appInstanceID || "";
+    AeroGear.SimplePush.config.pushNetworkURL = AeroGear.SimplePush.config.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
+    AeroGear.SimplePush.config.pushServerURL = AeroGear.SimplePush.config.pushServerURL || "http://" + window.location.hostname + ":8080/registry/device";
+
+    // Create a Notifier connection to the Push Network
+    simpleNotifier = AeroGear.Notifier({
+        name: "agPushNetwork",
+        type: "SimplePush",
+        settings: {
+            connectURL: AeroGear.SimplePush.config.pushNetworkURL
+        }
+    }).clients.agPushNetwork;
+
+    simpleNotifier.connect({
+        onConnect: function( data ) {
+            var channels;
+
+            // TODO: Store UAID for reconnections?
+
+            // Register with Unified Push server
+            // TODO: Commented out for easier testing due to cross-origin issues on localhost
+            /*$.ajax({
+                contentType: "application/json",
+                dataType: "json",
+                type: "POST",
+                url: AeroGear.SimplePush.config.pushServerURL,
+                headers: {
+                    "ag-push-app": AeroGear.SimplePush.config.pushAppID,
+                    "AG-Mobile-APP": AeroGear.SimplePush.config.appInstanceID
+                },
+                data: {
+                    token: data.uaid,
+                    os: "web"
+                }
+            });*/
+
+            // Subscribe to broadcast channel
+            // TODO: How to do broadcast registration?
+            /*simpleNotifier.subscribe({
+                channelID: "broadcast",
+                callback: function( message ) {
+                    $( navigator.push ).trigger({
+                        type: "push",
+                        message: message
+                    });
+                }
+            });*/
+
+            // Subscribe to any channels that already exist
+            channels = simpleNotifier.getChannels();
+            for ( var channel in channels ) {
+                simpleNotifier.subscribe({
+                    channelID: channels[ channel ].channelID,
+                    callback: function( message ) {
+                        $( navigator.push ).trigger({
+                            type: "push",
+                            message: message
+                        });
+                    }
+                });
+            }
+        }
+    });
 
     navigator.push = (function() {
         return {
             register: nativePush ? nativePush.register : function() {
-                var $request, requestEvent,
-                    request = {};
+                var request = {};
 
-                if ( !stompNotifier || !AeroGear.SimplePush.sessionID ) {
+                if ( !simpleNotifier ) {
                     throw "SimplePushConnectionError";
                 }
 
-                request.address = AeroGear.SimplePush.config.channelPrefix + "." + AeroGear.SimplePush.sessionID + "." + uuid();
+                request.channelID = uuid();
 
-                stompNotifier.subscribe({
-                    address: request.address,
+                simpleNotifier.subscribe({
+                    channelID: request.channelID,
                     callback: function( message ) {
                         $( navigator.push ).trigger({
                             type: "push",
@@ -56,88 +111,19 @@
 
                 // Provide method to inform push server
                 request.registerWithPushServer = function( messageType, endpoint ) {
-                    // TODO: Send info to push server which should cleanup / remove the setTimeout below
+                    // TODO: Send info to push server
                 };
 
-                $request = $( request );
-                $request.on( "success", function( event ) {
-                    this.onsuccess( event );
+                $( navigator.push ).on( request.channelID + "-success", function( event ) {
+                    request.onsuccess( event );
                 });
-
-                setTimeout( function() {
-                    requestEvent = jQuery.Event( "success", {
-                        target: {
-                            result: {
-                                address: request.address
-                            }
-                        }
-                    });
-                    $request.trigger( requestEvent );
-                }, 100 );
 
                 return request;
             },
 
             unregister: nativePush ? nativePush.unregister : function( endpoint ) {
-                stompNotifier.unsubscribe( endpoint );
+                simpleNotifier.unsubscribe( endpoint );
                 // TODO: Inform push server?
-            },
-
-            connect: function( pushConnectCallback ) {
-                var that = this;
-
-                if ( stompNotifier ) {
-                    return;
-                }
-
-                // Create a Notifier connection to the Push Network
-                stompNotifier = AeroGear.Notifier({
-                    name: "agPushNetwork",
-                    type: "stompws",
-                    settings: {
-                        connectURL: AeroGear.SimplePush.config.pushNetworkURL
-                    }
-                }).clients.agPushNetwork;
-
-                stompNotifier.connect({
-                    login: AeroGear.SimplePush.config.pushNetworkLogin,
-                    password: AeroGear.SimplePush.config.pushNetworkPassword,
-                    onConnect: function( stompFrame ) {
-                        var endpointID;
-                        // TODO: Replace this with a server and/or client generated UUIDv4 token
-                        AeroGear.SimplePush.sessionID = stompFrame.headers.session;
-
-                        // Register with Unified Push server
-                        $.ajax({
-                            contentType: "application/json",
-                            dataType: "json",
-                            type: "POST",
-                            url: AeroGear.SimplePush.config.pushServerURL,
-                            headers: {
-                                "ag-push-app": AeroGear.SimplePush.config.pushAppID,
-                                "AG-Mobile-APP": AeroGear.SimplePush.config.appInstanceID
-                            },
-                            data: {
-                                token: AeroGear.SimplePush.sessionID,
-                                os: "web"
-                            }
-                        });
-
-                        // Subscribe to broadcast channel
-                        stompNotifier.subscribe({
-                            address: AeroGear.SimplePush.config.channelPrefix + ".broadcast",
-                            callback: function( message ) {
-                                $( navigator.push ).trigger({
-                                    type: "push",
-                                    message: message
-                                });
-                            }
-                        });
-
-                        // Call push.connect callback
-                        pushConnectCallback.call( that, arguments );
-                    }
-                });
             }
         };
     })();
