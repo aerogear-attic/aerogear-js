@@ -40,6 +40,43 @@ $.mockjax({
     ]
 });
 
+// read mocks with resourcePath
+$.mockjax({
+    url: "tasks/resourcePath/1337",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    data: { limit: "1" },
+    response: function( settings ) {
+            this.responseText = JSON.stringify([{
+            id: 1337,
+            title: "Do Something",
+            date: "2012-08-01"
+        }]);
+    }
+});
+
+$.mockjax({
+    url: "tasks/resourcePath/1337",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: [
+        {
+            id: 1337,
+            title: "Do Something",
+            date: "2012-08-01"
+        },
+        {
+            id: 1337,
+            title: "Do Something Else",
+            date: "2012-08-02"
+        }
+    ]
+});
+
 // save mocks
 $.mockjax({
     url: "tasks",
@@ -93,6 +130,59 @@ $.mockjax({
     }
 });
 
+// save mocks with resourcePath
+$.mockjax({
+    url: "tasks/resourcePath/1337",
+    type: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: {
+        id: 1337,
+        title: "New Task",
+        date: "2012-08-01"
+    }
+});
+
+$.mockjax({
+    url: "tasksCustom/resourcePath/1337",
+    type: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: {
+        id: 1337,
+        title: "Another Task",
+        date: "2012-08-01"
+    }
+});
+
+$.mockjax({
+    url: "tasks/*/resourcePath/1337",
+    type: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: {
+        id: 1337,
+        title: "Updated Task",
+        date: "2012-08-01"
+    }
+});
+
+$.mockjax({
+    url: "tasksCustom/*/resourcePath/1337",
+    type: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: {
+        id: 1337,
+        title: "Another Updated Task",
+        date: "2012-08-01"
+    }
+});
+
 // delete mocks
 $.mockjax({
     url: "tasks",
@@ -121,9 +211,47 @@ $.mockjax({
     responseText: []
 });
 
+// delete mocks with resourcePath
+$.mockjax({
+    url: "tasks/resourcePath/1337",
+    type: "DELETE",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: []
+});
+
+$.mockjax({
+    url: "tasks/*/resourcePath/1337",
+    type: "DELETE",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: []
+});
+
+$.mockjax({
+    url: "tasksCustom/*/resourcePath/1337",
+    type: "DELETE",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: []
+});
+
 // custom base URL mock
 $.mockjax({
     url: "baseTest/projects",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: []
+});
+
+// custom base URL mock with ResourcePath
+$.mockjax({
+    url: "baseTest/projects/resourcePath/1337",
     type: "GET",
     headers: {
         "Content-Type": "application/json"
@@ -142,6 +270,16 @@ $.mockjax({
     responseText: []
 });
 
+// custom end point mock with ResourcePath
+$.mockjax({
+    url: "customEndPoint/resourcePath/1337",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: []
+});
+
 // custom base URL + end point mock
 $.mockjax({
     url: "baseURL/customEndPoint",
@@ -152,9 +290,32 @@ $.mockjax({
     responseText: []
 });
 
+// custom base URL + end point mock with ResourcePath
+$.mockjax({
+    url: "baseURL/customEndPoint/resourcePath/1337",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: []
+});
+
 //id added to the end of the endpoint mock
 $.mockjax({
     url: "baseURL/customEndPoint/12345",
+    type: "GET",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    responseText: {
+        name: "My Name",
+        id: 12345
+    }
+});
+
+//id added to the end of the endpoint mock and with ResourcePath
+$.mockjax({
+    url: "baseURL/customEndPoint/12345/resourcePath/1337",
     type: "GET",
     headers: {
         "Content-Type": "application/json"
