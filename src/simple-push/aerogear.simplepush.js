@@ -21,73 +21,15 @@
         nativePush = navigator.push;
     }
 
+    // SimplePush Default Config
     AeroGear.SimplePush = AeroGear.SimplePush || {};
     AeroGear.SimplePush.config = AeroGear.SimplePush.config || {};
     AeroGear.SimplePush.config.pushAppID = AeroGear.SimplePush.config.pushAppID || "";
-    AeroGear.SimplePush.config.appInstanceID = AeroGear.SimplePush.config.appInstanceID || "";
+    AeroGear.SimplePush.config.variantID = AeroGear.SimplePush.config.variantID || "";
     AeroGear.SimplePush.config.pushNetworkURL = AeroGear.SimplePush.config.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
     AeroGear.SimplePush.config.pushServerURL = AeroGear.SimplePush.config.pushServerURL || "http://" + window.location.hostname + ":8080/registry/device";
 
-    // Create a Notifier connection to the Push Network
-    simpleNotifier = AeroGear.Notifier({
-        name: "agPushNetwork",
-        type: "SimplePush",
-        settings: {
-            connectURL: AeroGear.SimplePush.config.pushNetworkURL
-        }
-    }).clients.agPushNetwork;
-
-    simpleNotifier.connect({
-        onConnect: function( data ) {
-            var channels;
-
-            // TODO: Store UAID for reconnections?
-
-            // Register with Unified Push server
-            // TODO: Commented out for easier testing due to cross-origin issues on localhost
-            /*$.ajax({
-                contentType: "application/json",
-                dataType: "json",
-                type: "POST",
-                url: AeroGear.SimplePush.config.pushServerURL,
-                headers: {
-                    "ag-push-app": AeroGear.SimplePush.config.pushAppID,
-                    "AG-Mobile-APP": AeroGear.SimplePush.config.appInstanceID
-                },
-                data: {
-                    token: data.uaid,
-                    os: "web"
-                }
-            });*/
-
-            // Subscribe to broadcast channel
-            // TODO: How to do broadcast registration?
-            /*simpleNotifier.subscribe({
-                channelID: "broadcast",
-                callback: function( message ) {
-                    $( navigator.push ).trigger({
-                        type: "push",
-                        message: message
-                    });
-                }
-            });*/
-
-            // Subscribe to any channels that already exist
-            channels = simpleNotifier.getChannels();
-            for ( var channel in channels ) {
-                simpleNotifier.subscribe({
-                    channelID: channels[ channel ].channelID,
-                    callback: function( message ) {
-                        $( navigator.push ).trigger({
-                            type: "push",
-                            message: message
-                        });
-                    }
-                });
-            }
-        }
-    });
-
+    // Add push to the navigator object
     navigator.push = (function() {
         return {
             register: nativePush ? nativePush.register : function() {
@@ -111,7 +53,19 @@
 
                 // Provide method to inform push server
                 request.registerWithPushServer = function( messageType, endpoint ) {
-                    // TODO: Send info to push server
+                    $.ajax({
+                        contentType: "application/json",
+                        dataType: "json",
+                        type: "POST",
+                        url: AeroGear.SimplePush.config.pushServerURL,
+                        headers: {
+                            "ag-mobile-app": AeroGear.SimplePush.config.variantID
+                        },
+                        data: {
+                            category: messageType,
+                            deviceToken: endpoint.channelID
+                        }
+                    });
                 };
 
                 $( navigator.push ).on( request.channelID + "-success", function( event ) {
@@ -143,4 +97,42 @@
 
         $( navigator.push ).on( messageType, handler );
     };
+
+    // Create a Notifier connection to the Push Network
+    simpleNotifier = AeroGear.Notifier({
+        name: "agPushNetwork",
+        type: "SimplePush",
+        settings: {
+            connectURL: AeroGear.SimplePush.config.pushNetworkURL
+        }
+    }).clients.agPushNetwork;
+
+    simpleNotifier.connect({
+        onConnect: function( data ) {
+            var channels, broadcastRequest, broadcastEndpoint;
+
+            // TODO: Store UAID for reconnections?
+
+            // Register broadcast channel
+            broadcastRequest = navigator.push.register();
+            broadcastRequest.onsuccess = function( event ) {
+                broadcastEndpoint = event.target.result;
+                broadcastRequest.registerWithPushServer( "broadcast", broadcastEndpoint );
+            };
+
+            // Subscribe to any channels that already exist
+            channels = simpleNotifier.getChannels();
+            for ( var channel in channels ) {
+                simpleNotifier.subscribe({
+                    channelID: channels[ channel ].channelID,
+                    callback: function( message ) {
+                        $( navigator.push ).trigger({
+                            type: "push",
+                            message: message
+                        });
+                    }
+                });
+            }
+        }
+    });
 })( AeroGear, jQuery, uuid );
