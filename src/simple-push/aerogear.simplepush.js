@@ -22,12 +22,11 @@
     }
 
     // SimplePush Default Config
-    AeroGear.SimplePush = AeroGear.SimplePush || {};
-    AeroGear.SimplePush.config = AeroGear.SimplePush.config || {};
-    AeroGear.SimplePush.config.pushAppID = AeroGear.SimplePush.config.pushAppID || "";
-    AeroGear.SimplePush.config.variantID = AeroGear.SimplePush.config.variantID || "";
-    AeroGear.SimplePush.config.pushNetworkURL = AeroGear.SimplePush.config.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
-    AeroGear.SimplePush.config.pushServerURL = AeroGear.SimplePush.config.pushServerURL || "http://" + window.location.hostname + ":8080/registry/device";
+    AeroGear.SimplePush = window.AeroGearSimplePush;
+    AeroGear.SimplePush.pushAppID = window.AeroGearSimplePush.pushAppID || "";
+    AeroGear.SimplePush.variantID = window.AeroGearSimplePush.variantID || "";
+    AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
+    AeroGear.SimplePush.pushServerURL = window.AeroGearSimplePush.pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
 
     // Add push to the navigator object
     navigator.push = (function() {
@@ -57,14 +56,14 @@
                         contentType: "application/json",
                         dataType: "json",
                         type: "POST",
-                        url: AeroGear.SimplePush.config.pushServerURL,
+                        url: AeroGear.SimplePush.pushServerURL,
                         headers: {
-                            "ag-mobile-app": AeroGear.SimplePush.config.variantID
+                            "ag-mobile-app": AeroGear.SimplePush.variantID
                         },
-                        data: {
+                        data: JSON.stringify({
                             category: messageType,
                             deviceToken: endpoint.channelID
-                        }
+                        })
                     });
                 };
 
@@ -103,22 +102,15 @@
         name: "agPushNetwork",
         type: "SimplePush",
         settings: {
-            connectURL: AeroGear.SimplePush.config.pushNetworkURL
+            connectURL: AeroGear.SimplePush.pushNetworkURL
         }
     }).clients.agPushNetwork;
 
     simpleNotifier.connect({
         onConnect: function( data ) {
-            var channels, broadcastRequest, broadcastEndpoint;
+            var channels;
 
             // TODO: Store UAID for reconnections?
-
-            // Register broadcast channel
-            broadcastRequest = navigator.push.register();
-            broadcastRequest.onsuccess = function( event ) {
-                broadcastEndpoint = event.target.result;
-                broadcastRequest.registerWithPushServer( "broadcast", broadcastEndpoint );
-            };
 
             // Subscribe to any channels that already exist
             channels = simpleNotifier.getChannels();
@@ -132,6 +124,9 @@
                         });
                     }
                 });
+
+                // Remove the channel since it will be re-added
+                simpleNotifier.removeChannel( channel );
             }
         }
     });
