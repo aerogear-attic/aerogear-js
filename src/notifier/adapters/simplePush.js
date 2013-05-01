@@ -166,8 +166,10 @@
         this.processMessage = function( message ) {
             var channel, updates, updateLength, i;
             if ( message.messageType === "register" && message.status === 200 ) {
-                channel = channels[ this.getChannelIndex( message.channelID ) ];
-                channel.pushEndpoint = message.pushEndpoint;
+                channel = {
+                    channelID: message.channelID,
+                    version: message.version
+                };
                 this.addChannel( channel );
                 $( navigator.push ).trigger( $.Event( message.channelID + "-success", {
                     target: {
