@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, $, uuid, undefined ) {
+(function( AeroGear, $, undefined ) {
     var simpleNotifier, nativePush;
     // Use browser push implementation when available
     // TODO: Test for browser-prefixed implementations
@@ -23,7 +23,6 @@
 
     // SimplePush Default Config
     AeroGear.SimplePush = window.AeroGearSimplePush;
-    AeroGear.SimplePush.pushAppID = window.AeroGearSimplePush.pushAppID || "";
     AeroGear.SimplePush.variantID = window.AeroGearSimplePush.variantID || "";
     AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
     AeroGear.SimplePush.pushServerURL = window.AeroGearSimplePush.pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
@@ -38,19 +37,7 @@
                     throw "SimplePushConnectionError";
                 }
 
-                request.channelID = uuid();
-
-                simpleNotifier.subscribe({
-                    channelID: request.channelID,
-                    callback: function( message ) {
-                        $( navigator.push ).trigger({
-                            type: "push",
-                            message: message
-                        });
-                    }
-                });
-
-                // Provide method to inform push server
+                // Provide methods to inform push server
                 request.registerWithPushServer = function( messageType, endpoint ) {
                     $.ajax({
                         contentType: "application/json",
@@ -67,8 +54,29 @@
                     });
                 };
 
-                $( navigator.push ).on( request.channelID + "-success", function( event ) {
-                    request.onsuccess( event );
+                request.unregisterWithPushServer = function( endpoint ) {
+                    $.ajax({
+                        contentType: "application/json",
+                        dataType: "json",
+                        type: "DELETE",
+                        url: AeroGear.SimplePush.pushServerURL,
+                        headers: {
+                            "ag-mobile-app": AeroGear.SimplePush.variantID
+                        },
+                        data: JSON.stringify({
+                            deviceToken: endpoint.channelID
+                        })
+                    });
+                };
+
+                simpleNotifier.subscribe({
+                    requestObject: request,
+                    callback: function( message ) {
+                        $( navigator.push ).trigger({
+                            type: "push",
+                            message: message
+                        });
+                    }
                 });
 
                 return request;
@@ -76,7 +84,6 @@
 
             unregister: nativePush ? nativePush.unregister : function( endpoint ) {
                 simpleNotifier.unsubscribe( endpoint );
-                // TODO: Inform push server?
             }
         };
     })();
@@ -108,26 +115,23 @@
 
     simpleNotifier.connect({
         onConnect: function( data ) {
-            var channels;
+            var pushStore = JSON.parse( localStorage.getItem("ag-push-store") || '{}' ),
+                channels = pushStore.channels || [];
 
-            // TODO: Store UAID for reconnections?
-
-            // Subscribe to any channels that already exist
-            channels = simpleNotifier.getChannels();
+            // Subscribe to any new channels
             for ( var channel in channels ) {
-                simpleNotifier.subscribe({
-                    channelID: channels[ channel ].channelID,
-                    callback: function( message ) {
-                        $( navigator.push ).trigger({
-                            type: "push",
-                            message: message
-                        });
-                    }
-                });
-
-                // Remove the channel since it will be re-added
-                simpleNotifier.removeChannel( channel );
+                if ( channels[ channel ].state === "new" ) {
+                    simpleNotifier.subscribe({
+                        channelID: channels[ channel ].channelID,
+                        callback: function( message ) {
+                            $( navigator.push ).trigger({
+                                type: "push",
+                                message: message
+                            });
+                        }
+                    });
+                }
             }
         }
     });
-})( AeroGear, jQuery, uuid );
+})( AeroGear, jQuery );
