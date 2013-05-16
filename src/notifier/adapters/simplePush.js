@@ -150,6 +150,10 @@
                         message: updates[ i ]
                     }));
                 }
+
+                // Acknowledge all updates sent in this notification message
+                message.messageType = "ack";
+                client.send( JSON.stringify( message ) );
             }
         };
 
