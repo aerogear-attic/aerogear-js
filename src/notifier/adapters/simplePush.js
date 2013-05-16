@@ -126,7 +126,8 @@
                 channel = {
                     channelID: message.channelID,
                     version: message.version,
-                    state: "used"
+                    state: "used",
+                    registered: false
                 };
                 pushStore.channels = updateChannel( pushStore.channels, channel );
                 this.setPushStore( pushStore );
@@ -287,6 +288,7 @@
                         bindSubscribeSuccess( pushStore.channels[ index ].channelID, channels[ i ].requestObject );
                         channels[ i ].channelID = pushStore.channels[ index ].channelID;
                         channels[ i ].state = "used";
+                        channels[ i ].registered = true;
                         pushStore.channels[ index ] = channels[ i ];
                         processed = true;
                     }

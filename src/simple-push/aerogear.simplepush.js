@@ -39,11 +39,19 @@
 
                 // Provide methods to inform push server
                 request.registerWithPushServer = function( messageType, endpoint ) {
+                    var type = "POST",
+                        url = AeroGear.SimplePush.pushServerURL;
+
+                    if ( endpoint.registered ) {
+                        type = "PUT";
+                        url += "/" + endpoint.channelID;
+                    }
+
                     $.ajax({
                         contentType: "application/json",
                         dataType: "json",
-                        type: "POST",
-                        url: AeroGear.SimplePush.pushServerURL,
+                        type: type,
+                        url: url,
                         headers: {
                             "ag-mobile-app": AeroGear.SimplePush.variantID
                         },
@@ -59,7 +67,7 @@
                         contentType: "application/json",
                         dataType: "json",
                         type: "DELETE",
-                        url: AeroGear.SimplePush.pushServerURL,
+                        url: AeroGear.SimplePush.pushServerURL + "/" + endpoint.channelID,
                         headers: {
                             "ag-mobile-app": AeroGear.SimplePush.variantID
                         },
