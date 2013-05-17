@@ -25,57 +25,16 @@
     AeroGear.SimplePush = window.AeroGearSimplePush;
     AeroGear.SimplePush.variantID = window.AeroGearSimplePush.variantID || "";
     AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
-    AeroGear.SimplePush.pushServerURL = window.AeroGearSimplePush.pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
 
     // Add push to the navigator object
     navigator.push = (function() {
         return {
             register: nativePush ? nativePush.register : function() {
-                var request = {};
+                var request = AeroGear.UnifiedPushClient( AeroGear.SimplePush.variantID );
 
                 if ( !simpleNotifier ) {
                     throw "SimplePushConnectionError";
                 }
-
-                // Provide methods to inform push server
-                request.registerWithPushServer = function( messageType, endpoint ) {
-                    var type = "POST",
-                        url = AeroGear.SimplePush.pushServerURL;
-
-                    if ( endpoint.registered ) {
-                        type = "PUT";
-                        url += "/" + endpoint.channelID;
-                    }
-
-                    $.ajax({
-                        contentType: "application/json",
-                        dataType: "json",
-                        type: type,
-                        url: url,
-                        headers: {
-                            "ag-mobile-app": AeroGear.SimplePush.variantID
-                        },
-                        data: JSON.stringify({
-                            category: messageType,
-                            deviceToken: endpoint.channelID
-                        })
-                    });
-                };
-
-                request.unregisterWithPushServer = function( endpoint ) {
-                    $.ajax({
-                        contentType: "application/json",
-                        dataType: "json",
-                        type: "DELETE",
-                        url: AeroGear.SimplePush.pushServerURL + "/" + endpoint.channelID,
-                        headers: {
-                            "ag-mobile-app": AeroGear.SimplePush.variantID
-                        },
-                        data: JSON.stringify({
-                            deviceToken: endpoint.channelID
-                        })
-                    });
-                };
 
                 simpleNotifier.subscribe({
                     requestObject: request,
