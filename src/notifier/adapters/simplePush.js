@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, $, uuid, undefined ) {
+(function( AeroGear, $, SockJS, uuid, undefined ) {
     /**
         DESCRIPTION
         @constructs AeroGear.Notifier.adapters.SimplePush
@@ -193,13 +193,8 @@
 
      */
     AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
-        // All WS stuff will be replaced by SockJS eventually
-        if ( !window.WebSocket ) {
-            window.WebSocket = window.MozWebSocket;
-        }
-
         var that = this,
-            client = new WebSocket( options.url || this.getConnectURL() );
+            client = new SockJS( options.url || this.getConnectURL() );
 
         client.onopen = function() {
             // Immediately send hello message
@@ -280,7 +275,7 @@
         pushStore.channels = pushStore.channels || [];
 
         for ( var i = 0; i < channels.length; i++ ) {
-            if ( client.readyState === WebSocket.OPEN ) {
+            if ( client.readyState === SockJS.OPEN ) {
                 channelID = uuid();
                 bindSubscribeSuccess( channelID, channels[ i ].requestObject );
                 client.send( '{"messageType": "register", "channelID": "' + channels[ i ].channelID + '"}');
@@ -355,4 +350,4 @@
         });
     }
 
-})( AeroGear, jQuery, uuid );
+})( AeroGear, jQuery, SockJS, uuid );
