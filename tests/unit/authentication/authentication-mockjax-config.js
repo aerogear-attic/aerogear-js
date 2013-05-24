@@ -1,5 +1,7 @@
 (function( $ ) {
 
+var sessionActive = false;
+
 $.mockjaxClear();
 
 $.mockjax({
@@ -11,9 +13,6 @@ $.mockjax({
         this.responseText = {
             username: data.username,
             logged: true
-        },
-        this.headers = {
-            "Auth-Token": "123456789"
         };
     }
 });
@@ -27,17 +26,14 @@ $.mockjax({
             this.responseText = {
                 username: "john",
                 logged: true
-            },
-            this.headers = {
-                "Auth-Token": "123456"
             };
+            sessionActive = true;
         } else {
             this.status = 401,
             this.statusText = "UnAuthorized",
             this.responseText = {
                 message : "User authentication failed"
-            },
-            this.headers = "";
+            };
         }
 
     }
@@ -47,16 +43,14 @@ $.mockjax({
     url: "auth/secured",
     type: "GET",
     response: function( event ) {
-        var authToken = event.headers["Auth-Token"];
-        if( authToken && authToken == "1234567" ) {
+        if( sessionActive ) {
             this.responseText = {
                 value1: "value1",
                 value2: "value2"
             };
         } else {
             this.status = 401,
-            this.statusText = "UnAuthorized",
-            this.headers = "";
+            this.statusText = "UnAuthorized";
         }
     }
 });
@@ -65,6 +59,7 @@ $.mockjax({
     url: "auth/logout",
     type: "POST",
     response: function( event ) {
+        sessionActive = false;
         var data = event.data;
 
         this.status = "204",
