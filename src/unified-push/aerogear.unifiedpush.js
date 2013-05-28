@@ -42,7 +42,7 @@
                 type: type,
                 url: url,
                 headers: {
-                    "ag-mobile-app": variantID
+                    "ag-mobile-variant": variantID
                 },
                 data: JSON.stringify({
                     category: messageType,
@@ -59,7 +59,7 @@
                 type: "DELETE",
                 url: url + "/" + endpoint.channelID,
                 headers: {
-                    "ag-mobile-app": variantID
+                    "ag-mobile-variant": variantID
                 },
                 data: JSON.stringify({
                     deviceToken: endpoint.channelID
