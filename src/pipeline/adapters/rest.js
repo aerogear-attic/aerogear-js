@@ -484,7 +484,7 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
         error,
         extraOptions;
 
-    if ( data instanceof $ ) {
+    if ( data instanceof jQuery ) {
         data = data.serializeObject();
     } else {
         data = data || {};
@@ -616,10 +616,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.remove = function( toRemove, options )
 };
 
 // Serializes a form to a JavaScript Object
-$.fn.serializeObject = function() {
+jQuery.fn.serializeObject = function() {
     var serialized = {};
     var formArray = this.serializeArray();
-    $.each( formArray, function() {
+    jQuery.each( formArray, function() {
         if ( serialized[ this.name ] ) {
             if ( !serialized[ this.name ].push ) {
                 serialized[ this.name ] = [ serialized[ this.name ] ];
