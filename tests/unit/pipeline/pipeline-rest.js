@@ -159,13 +159,10 @@ asyncTest( "save method", function() {
         }
     });
 
-    save2 = pipe2.save({
-        title: "Another Task",
-        date: "2012-08-01"
-    },
+    save2 = pipe2.save($("#form1"),
     {
         success: function( data, textStatus, jqXHR ) {
-            ok( true, "POST - new data with custom record id" );
+            ok( true, "POST - new data with custom record id serialized from a form" );
         }
     });
 
