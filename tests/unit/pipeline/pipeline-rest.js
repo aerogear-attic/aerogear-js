@@ -18,10 +18,7 @@ test( "create - name array", function() {
         {
             name: "createTest22",
             type: "Rest",
-            recordId: "testId",
-            settings: {
-                url: "testURL"
-            }
+            recordId: "testId"
         },
         "createTest23"
     ]).pipes;
@@ -42,16 +39,14 @@ test( "create - object", function() {
         {
             name: "createTest32",
             settings: {
-                recordId: "testId",
-                url: "testURL"
+                recordId: "testId"
             }
         },
         {
             name: "createTest33",
             type: "Rest",
             settings: {
-                recordId: "testId",
-                url: "testURL"
+                recordId: "testId"
             }
         }
     ]).pipes;
