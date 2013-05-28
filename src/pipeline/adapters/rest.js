@@ -435,7 +435,7 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
 
 /**
     Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
-    @param {Object} data - For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.
+    @param {Object|jQuery} data - For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed. The object can also be a jQuery object containing a form which you would like to submit to the endpoint.
     @param {Object} [options={}] - Additional options
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - a callback to be called when the request to the server results in an error
@@ -484,7 +484,11 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
         error,
         extraOptions;
 
-    data = data || {};
+    if ( data instanceof $ ) {
+        data = data.serializeObject();
+    } else {
+        data = data || {};
+    }
     options = options || {};
     type = data[ recordId ] ? "PUT" : "POST";
 
@@ -609,4 +613,21 @@ AeroGear.Pipeline.adapters.Rest.prototype.remove = function( toRemove, options )
     };
 
     return jQuery.ajax( this.addAuthIdentifier( jQuery.extend( {}, ajaxSettings, extraOptions ) ) );
+};
+
+// Serializes a form to a JavaScript Object
+$.fn.serializeObject = function() {
+    var serialized = {};
+    var formArray = this.serializeArray();
+    $.each( formArray, function() {
+        if ( serialized[ this.name ] ) {
+            if ( !serialized[ this.name ].push ) {
+                serialized[ this.name ] = [ serialized[ this.name ] ];
+            }
+            serialized[ this.name ].push( this.value || '' );
+        } else {
+            serialized[ this.name ] = this.value || '';
+        }
+    });
+    return serialized;
 };
