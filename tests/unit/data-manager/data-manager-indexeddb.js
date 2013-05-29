@@ -37,8 +37,8 @@
             type: "IndexedDB",
             settings: {
                 success: function( data ) {
-                	database = data;
-                	ok( true, "IndexedDB test1 created successfully" );
+                    database = data;
+                    ok( true, "IndexedDB test1 created successfully" );
                     equal( data.name, "test1", "Store Name test1" );
                     equal( data.objectStoreNames.length, 1, "Object Store length should be 1" );
                     equal( data.objectStoreNames[ 0 ], "test1", "Object Store name should be test1" );

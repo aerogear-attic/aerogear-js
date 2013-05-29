@@ -14,9 +14,9 @@
 * limitations under the License.
 */
 /**
-    The IndexedDB adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
+    The WebSQL adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
     This constructor is instantiated when the "DataManager.add()" method is called
-    @constructs AeroGear.DataManager.adapters.IndexedDB
+    @constructs AeroGear.DataManager.adapters.WebSQL
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
@@ -25,63 +25,54 @@
 //Create an empty DataManager
 var dm = AeroGear.DataManager();
 
-//Add a custom IndexedDB store
+//Add a custom WebSQL store
 dm.add( "newStore", {
     recordId: "customID"
 });
  */
-AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
-    //Make sure we can do this
-    window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
-    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
 
-    if (!window.indexedDB) {
+    if (!window.openDatabase ) {
         //console.log( "Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available." );
         return;
     }
 
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.DataManager.adapters.IndexedDB ) ) {
-        return new AeroGear.DataManager.adapters.IndexedDB( storeName, settings );
+    if ( !( this instanceof AeroGear.DataManager.adapters.WebSQL ) ) {
+        return new AeroGear.DataManager.adapters.WebSQL( storeName, settings );
     }
 
     settings = settings || {};
 
     // Private Instance vars
     var recordId = settings.recordId ? settings.recordId : "id",
-        type = "IndexedDB",
+        type = "WebSQL",
         data = null,
         request,
+        success,
+        error,
         database,
         objectStore,
         version; //TODO: be a promise
 
     //Do some creation and such
-    request = window.indexedDB.open( storeName );
+    database = window.openDatabase( storeName, "1", "AeroGear WebSQL Store", 2 * 1024 * 1024 );
 
-    request.onsuccess = function( event ) {
-        version = event.target.result.version;
-        database = event.target.result;
-
-        if( settings.success ) {
-            settings.success.call( this, database );
-        }
-    };
-
-    request.onerror = function( event ) {
+    error = function( tx, error ) {
         if( settings.error ) {
-            settings.error.call( this, event.target.error );
+            settings.error.call( this, error );
         }
     };
 
-    request.onupgradeneeded = function( event ) {
-        database = event.target.result;
-        objectStore = database.createObjectStore( storeName, { keyPath: recordId } );
-            //TODO: set up indexes?
-        version = event.newVersion;
+    success = function( tx, result ) {
+        if( settings.success ) {
+            settings.success.call( this, result );
+        }
     };
 
+    database.transaction( function( tx ) {
+        tx.executeSql( "CREATE TABLE IF NOT EXISTS " + storeName + " ( " + recordId + " REAL UNIQUE, json)", [], success, error );
+    });
 
     this.getDatabase = function() {
         return database;
@@ -212,57 +203,45 @@ var allData = dm.read();
 //Read a specific piece of data based on an id
 var justOne = dm.read( 12345 );
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, settings ) {
+AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, settings ) {
     var db,
-        transaction,
         storeName = this.getStoreName(),
-        objectStore,
+        success,
+        error,
+        sql,
         data = [],
-        cursor,
-        request;
+        i = 0;
 
     settings = settings || {};
 
     db = this.getDatabase();
 
-    if( !db.objectStoreNames.contains( storeName ) ) {
-        return [];
-    }
+    error = function( tx, error ) {
+        if( settings.error ) {
+            settings.error.call( this, error );
+        }
+    };
 
-    transaction = db.transaction( storeName );
-    objectStore = transaction.objectStore( storeName );
+    success = function( tx, result ) {
 
-    if( id ) {
-        request = objectStore.get( id );
+        for( i; i < result.rows.length; i++ ) {
+            data.push( JSON.parse( result.rows.item( i ).json ) );
+        }
 
-        request.onsuccess = function( event ) {
-            data.push( request.result );
-        };
-
-        request.onerror = function( event ) {
-        };
-    } else {
-        cursor = objectStore.openCursor();
-        cursor.onsuccess = function( event ) {
-            var result = event.target.result;
-            if( result ) {
-                data.push( result.value );
-                result.continue();
-            }
-        };
-    }
-
-    transaction.oncomplete = function( event ) {
         if( settings.success ) {
             settings.success.call( this, data );
         }
     };
 
-    transaction.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event );
-        }
-    };
+    sql = "SELECT * FROM " + storeName;
+
+    if( id ) {
+        sql += " where id = " + id;
+    }
+
+    db.transaction( function( tx ) {
+        tx.executeSql( sql, [], success, error );
+    });
 };
 
 /**
@@ -298,39 +277,50 @@ var toUpdate = dm.read()[ 0 ];
 toUpdate.data.title = "Updated Task";
 dm.save( toUpdate );
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, settings ) {
+AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, settings ) {
     settings = settings || {};
 
     var that = this,
+        recordId = this.getRecordId(),
         db = this.getDatabase(),
-        transaction,
         storeName = this.getStoreName(),
-        objectStore,
-        request,
+        sql,
+        error,
+        success,
         i = 0;
 
-    transaction = db.transaction( storeName, "readwrite" );
-    objectStore = transaction.objectStore( storeName );
+    error = function( tx, error ) {
+        if( settings.error ) {
+            settings.error.call( this, error );
+        }
+    };
+
+    success = function( tx, result ) {
+        that.read( undefined, settings );
+    };
+
+    //Need to check existence of record in DB first
+    this.read( data[ recordId ], {
+        success: function( result ) {
+            if( result.length ) {
+                sql = "Update " + storeName + " set id = ?,  json = ? ";
+            } else {
+                sql = "INSERT INTO " + storeName + " ( id, json ) values ( ?, ? ) ";
+            }
+
+            db.transaction( function( tx ) {
+                tx.executeSql( sql, [ data[ recordId ], JSON.stringify( data ) ], success, error );
+            });
+        },
+        error: error
+    });
 
     if( AeroGear.isArray( data ) ) {
         for( i; i < data.length; i++ ){
-            request = objectStore.put( data[ i ] );
+            //TODO
+            console.log( "TODO" );
         }
-    } else {
-        request = objectStore.put( data );
     }
-
-    transaction.oncomplete = function( event ) {
-        if( settings.success ) {
-            that.read( undefined, settings );
-        }
-    };
-
-    transaction.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event );
-        }
-    };
 };
 
 /**
@@ -366,70 +356,42 @@ dm.remove( toRemove );
 // Delete all remaining data from the store
 dm.remove();
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, settings ) {
+AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, settings ) {
     settings = settings || {};
 
     var that = this,
-        db = this.getDatabase(),
-        transaction,
         storeName = this.getStoreName(),
-        objectStore,
-        request,
+        db = this.getDatabase(),
+        sql,
+        success,
+        error,
         i = 0;
 
-    transaction = db.transaction( storeName, "readwrite" );
-    objectStore = transaction.objectStore( storeName );
+    error = function( tx, error ) {
+        if( settings.error ) {
+            settings.error.call( this, error );
+        }
+    };
+
+    success = function( tx, result ) {
+        that.read( undefined, settings );
+    };
+
+    sql = "Delete from " + storeName;
 
     if( !toRemove ) {
-        request = objectStore.clear();
+        //remove all
+        db.transaction( function( tx ) {
+            tx.executeSql( sql, [], success, error );
+        });
     } else if( AeroGear.isArray( toRemove ) ) {
         for( i; i < toRemove.length; i++ ) {
-            request = objectStore.delete( toRemove[ i ].id );
+            //request = objectStore.delete( toRemove[ i ].id );
+            console.log( "todo" );
         }
     } else {
-        request = objectStore.delete( toRemove );
+        db.transaction( function( tx ) {
+            tx.executeSql( sql + "where id = ?", [ toRemove ], success, error );
+        });
     }
-
-    transaction.oncomplete = function( event ) {
-        if( settings.success ) {
-            that.read( undefined, settings );
-        }
-    };
-
-    transaction.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event );
-        }
-    };
 };
-
-/**
-    Filter the current store's data
-    @param {Object} [filterParameters] - An object containing key value pairs on which to filter the store's data. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of values to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
-    @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
-    @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
-    @example
-var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
-
-// An object can be passed to filter the data
-// This would return all records with a user named 'admin' **AND** a date of '2012-08-01'
-var filteredData = dm.filter({
-    date: "2012-08-01",
-    user: "admin"
-});
-
-// The matchAny parameter changes the search to an OR operation
-// This would return all records with a user named 'admin' **OR** a date of '2012-08-01'
-var filteredData = dm.filter({
-    date: "2012-08-01",
-    user: "admin"
-}, true);
- */
-AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny ) {
-    return "TODO";
-};
-
-//AeroGear.DataManager.adapters.IndexedDB.prototype.
-
-
-
