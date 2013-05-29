@@ -24,7 +24,7 @@
     // SimplePush Default Config
     AeroGear.SimplePush = window.AeroGearSimplePush;
     AeroGear.SimplePush.variantID = window.AeroGearSimplePush.variantID || "";
-    AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "ws://" + window.location.hostname + ":7777/simplepush";
+    AeroGear.SimplePush.pushNetworkURL = window.AeroGearSimplePush.pushNetworkURL || "http://" + window.location.hostname + ":7777/simplepush";
 
     // Add push to the navigator object
     navigator.push = (function() {
