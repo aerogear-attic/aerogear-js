@@ -27,8 +27,15 @@
             return new AeroGear.UnifiedPushClient( variantID, pushServerURL );
         }
 
-        this.registerWithPushServer = function( messageType, endpoint ) {
+        this.registerWithPushServer = function( messageType, endpoint, alias ) {
             var url = pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
+
+            if ( messageType !== "broadcast" && !alias ) {
+                throw {
+                    name: "UnifiedPushRegistrationException",
+                    message: "An alias must be provided for non-broadcast message types"
+                };
+            }
 
             if ( endpoint.registered ) {
                 url += "/" + endpoint.channelID;
@@ -44,7 +51,8 @@
                 },
                 data: JSON.stringify({
                     category: messageType,
-                    deviceToken: endpoint.channelID
+                    deviceToken: endpoint.channelID,
+                    clientIdentifier: alias
                 })
             });
         };
