@@ -17,6 +17,7 @@
     var simpleNotifier, nativePush;
     // Use browser push implementation when available
     // TODO: Test for browser-prefixed implementations
+    // TODO: Actually use the native version when present
     if ( navigator.push ) {
         nativePush = navigator.push;
     }
