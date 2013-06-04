@@ -28,18 +28,16 @@
         }
 
         this.registerWithPushServer = function( messageType, endpoint ) {
-            var type = "POST",
-                url = pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
+            var url = pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
 
             if ( endpoint.registered ) {
-                type = "PUT";
                 url += "/" + endpoint.channelID;
             }
 
             $.ajax({
                 contentType: "application/json",
                 dataType: "json",
-                type: type,
+                type: "POST",
                 url: url,
                 headers: {
                     "ag-mobile-variant": variantID
