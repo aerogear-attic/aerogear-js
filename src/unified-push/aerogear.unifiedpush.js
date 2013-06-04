@@ -28,13 +28,11 @@
         }
 
         this.registerWithPushServer = function( messageType, endpoint, alias ) {
-            var url = pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
+            var RegistrationError,
+                url = pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
 
             if ( messageType !== "broadcast" && !alias ) {
-                throw {
-                    name: "UnifiedPushRegistrationException",
-                    message: "An alias must be provided for non-broadcast message types"
-                };
+                throw "UnifiedPushRegistrationException";
             }
 
             if ( endpoint.registered ) {
