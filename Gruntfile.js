@@ -66,7 +66,7 @@ module.exports = function(grunt) {
                     "dist/<%= pkg.name %>.min.js": [ "dist/<%= pkg.name %>.js" ]
                 },
                 options: {
-                    banner: "<%= meta.banner %>",
+                    preserveComments: "some",
                     sourceMap: "dist/<%= pkg.name %>.js.map",
                     sourceMappingURL: "<%= pkg.name %>.js.map",
                     sourceMapPrefix: 1,
@@ -80,8 +80,10 @@ module.exports = function(grunt) {
                     "dist/<%= pkg.name %>.custom.min.js": [ "dist/<%= pkg.name %>.custom.js" ]
                 },
                 options: {
-                    banner: "<%= meta.banner %>",
+                    preserveComments: "some",
                     sourceMap: "dist/<%= pkg.name %>.custom.js.map",
+                    sourceMappingURL: "<%= pkg.name %>.js.map",
+                    sourceMapPrefix: 1,
                     beautify: {
                         ascii_only: true
                     }
@@ -113,4 +115,5 @@ module.exports = function(grunt) {
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
 	grunt.registerTask('notifier', ['jshint', 'qunit', 'concat:notifier', 'uglify:custom']);
+    grunt.registerTask('travis', ['jshint', 'qunit']);
 };

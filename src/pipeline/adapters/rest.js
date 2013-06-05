@@ -76,28 +76,6 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
 
     // Privileged Methods
     /**
-        Adds the auth token to the headers and returns the modified version of the settings
-        @private
-        @augments Rest
-        @param {Object} settings - the settings object that will have the auth identifier added
-        @returns {Object} Settings extended with auth identifier
-     */
-    this.addAuthIdentifier = function( settings ) {
-        return authenticator ? authenticator.addAuthIdentifier( settings ) : settings;
-    };
-
-    /**
-        Removes the stored token effectively telling the client it must re-authenticate with the server
-        @private
-        @augments Rest
-     */
-    this.deauthorize = function() {
-        if ( authenticator ) {
-            authenticator.deauthorize();
-        }
-    };
-
-    /**
         Returns the value of the private ajaxSettings var
         @private
         @augments Rest
@@ -430,7 +408,7 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
         }
     }
 
-    return jQuery.ajax( this.addAuthIdentifier( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
+    return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
 };
 
 /**
@@ -522,7 +500,7 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
         extraOptions.data = JSON.stringify( extraOptions.data );
     }
 
-    return jQuery.ajax( this.addAuthIdentifier( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) ) );
+    return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
 };
 
 /**
@@ -608,5 +586,5 @@ AeroGear.Pipeline.adapters.Rest.prototype.remove = function( toRemove, options )
         timeout: this.getTimeout()
     };
 
-    return jQuery.ajax( this.addAuthIdentifier( jQuery.extend( {}, ajaxSettings, extraOptions ) ) );
+    return jQuery.ajax( jQuery.extend( {}, ajaxSettings, extraOptions ) );
 };

@@ -2,7 +2,7 @@
   "name": "aerogear",
   "title": "AeroGear JavaScript Library",
   "description": "Provides a lightweight set of utilities for communication, security, storage and more.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/aerogear/aerogear-js",
   "author": {
     "name": "Red Hat, Inc.",
@@ -30,10 +30,13 @@
   },
   "keywords": [],
   "devDependencies": {
-    "grunt-contrib-concat": "~0.1.2rc5",
-    "grunt-contrib-jshint": "~0.1.1rc5",
-    "grunt-contrib-uglify": "~0.1.1rc5",
-    "grunt-contrib-qunit": "~0.1.1rc5",
-    "grunt": "~0.4.0rc5"
+    "grunt-contrib-concat": "~0.1.2",
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-uglify": "~0.1.2",
+    "grunt-contrib-qunit": "~0.1.1",
+    "grunt": "~0.4.1"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
   }
 }
