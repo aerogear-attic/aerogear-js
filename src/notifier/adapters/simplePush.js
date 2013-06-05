@@ -140,7 +140,8 @@
             } else if ( message.messageType === "register" ) {
                 throw "SimplePushRegistrationError";
             } else if ( message.messageType === "unregister" && message.status === 200 ) {
-                this.removeChannel( channels[ this.getChannelIndex( message.channelID ) ] );
+                pushStore.channels.splice( findChannelIndex( pushStore.channels, "channelID", message.channelID ), 1 );
+                this.setPushStore( pushStore );
             } else if ( message.messageType === "unregister" ) {
                 throw "SimplePushUnregistrationError";
             } else if ( message.messageType === "notification" ) {
@@ -282,7 +283,7 @@
             } else {
                 // check for previously registered channels
                 if ( pushStore.channels.length ) {
-                    index = findAvailableChannelIndex( pushStore.channels );
+                    index = findChannelIndex( pushStore.channels, "state", "available" );
                     if ( index !== undefined ) {
                         bindSubscribeSuccess( pushStore.channels[ index ].channelID, channels[ i ].requestObject );
                         channels[ i ].channelID = pushStore.channels[ index ].channelID;
@@ -324,9 +325,9 @@
     };
 
     // Utility Functions
-    function findAvailableChannelIndex( channels ) {
+    function findChannelIndex( channels, filterField, filterValue ) {
         for ( var i = 0; i < channels.length; i++ ) {
-            if ( channels[ i ].state === "available" ) {
+            if ( channels[ i ][ filterField ] === filterValue ) {
                 return i;
             }
         }
