@@ -138,11 +138,11 @@
                     }
                 }));
             } else if ( message.messageType === "register" ) {
-                // TODO: handle registration errors
+                throw "SimplePushRegistrationError";
             } else if ( message.messageType === "unregister" && message.status === 200 ) {
                 this.removeChannel( channels[ this.getChannelIndex( message.channelID ) ] );
             } else if ( message.messageType === "unregister" ) {
-                // TODO: handle unregistration errors
+                throw "SimplePushUnregistrationError";
             } else if ( message.messageType === "notification" ) {
                 updates = message.updates;
                 for ( var i = 0, updateLength = updates.length; i < updateLength; i++ ) {
