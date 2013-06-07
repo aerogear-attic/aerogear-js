@@ -35,10 +35,6 @@
                 throw "UnifiedPushRegistrationException";
             }
 
-            if ( endpoint.registered ) {
-                url += "/" + endpoint.channelID;
-            }
-
             $.ajax({
                 contentType: "application/json",
                 dataType: "json",
