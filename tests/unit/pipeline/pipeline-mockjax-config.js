@@ -40,6 +40,12 @@ $.mockjax({
     ]
 });
 
+$.mockjax({
+    url: "text",
+    type: "GET",
+    responseText: "plain text response"
+});
+
 // save mocks
 $.mockjax({
     url: "tasks",

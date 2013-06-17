@@ -18,10 +18,7 @@ test( "create - name array", function() {
         {
             name: "createTest22",
             type: "Rest",
-            recordId: "testId",
-            settings: {
-                url: "testURL"
-            }
+            recordId: "testId"
         },
         "createTest23"
     ]).pipes;
@@ -42,16 +39,14 @@ test( "create - object", function() {
         {
             name: "createTest32",
             settings: {
-                recordId: "testId",
-                url: "testURL"
+                recordId: "testId"
             }
         },
         {
             name: "createTest33",
             type: "Rest",
             settings: {
-                recordId: "testId",
-                url: "testURL"
+                recordId: "testId"
             }
         }
     ]).pipes;
@@ -95,21 +90,29 @@ var pipeline = AeroGear.Pipeline([
                 baseURL: "baseURL/",
                 endpoint: "customEndPoint"
             }
+        },
+        {
+            name: "text",
+            settings: {
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                dataType: "text"
+            }
         }
     ]),
     pipe = pipeline.pipes.tasks,
     pipe2 = pipeline.pipes.tasksCustom,
     pipe3 = pipeline.pipes.projects,
     pipe4 = pipeline.pipes.tags,
-    pipe5 = pipeline.pipes.users;
+    pipe5 = pipeline.pipes.users,
+    textPipe = pipeline.pipes.text;
 
 // Add pipe test
 test( "add method", function() {
     expect( 2 );
 
     var pipe = pipeline.add( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 6, "Single Pipe added" );
-    equal( Object.keys( pipe )[ 5 ], "addTest", "Pipe Name addTest" );
+    equal( Object.keys( pipe ).length, 7, "Single Pipe added" );
+    equal( Object.keys( pipe )[ 6 ], "addTest", "Pipe Name addTest" );
 });
 
 // Remove pipe test
@@ -117,13 +120,13 @@ test( "remove method", function() {
     expect( 2 );
 
     var pipe = pipeline.remove( "addTest" ).pipes;
-    equal( Object.keys( pipe ).length, 5, "Single Pipe removed" );
+    equal( Object.keys( pipe ).length, 6, "Single Pipe removed" );
     equal( pipe.addTest, undefined, "Removed pipe is really gone" );
 });
 
 // Read method test
 asyncTest( "read method", function() {
-    expect( 2 );
+    expect( 3 );
 
     var read1 = pipe.read({
         success: function( data, textStatus, jqXHR ) {
@@ -138,7 +141,13 @@ asyncTest( "read method", function() {
         }
     });
 
-    $.when( read1, read2 ).done( function( r1, r2 ) {
+    var read3 = textPipe.read({
+        success: function( data, textStatus, jqXHR ) {
+            equal( data, "plain text response", "Read with non-default dataType" );
+        }
+    });
+
+    $.when( read1, read2, read3 ).done( function( r1, r2, r3 ) {
         start();
     });
 });
