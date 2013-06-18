@@ -46,24 +46,6 @@
 
         // Privileged methods
         /**
-            Returns the value of the private settings var
-            @private
-            @augments vertx
-         */
-        this.getSettings = function() {
-            return settings;
-        };
-
-        /**
-            Returns the value of the private name var
-            @private
-            @augments vertx
-         */
-        this.getName = function() {
-            return name;
-        };
-
-        /**
             Returns the value of the private autoConnect var
             @private
             @augments vertx
