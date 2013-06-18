@@ -40,24 +40,6 @@
 
         // Privileged methods
         /**
-            Returns the value of the private settings var
-            @private
-            @augments AeroGear.Notifier.adapters.stompws
-         */
-        this.getSettings = function() {
-            return settings;
-        };
-
-        /**
-            Returns the value of the private name var
-            @private
-            @augments AeroGear.Notifier.adapters.stompws
-         */
-        this.getName = function() {
-            return name;
-        };
-
-        /**
             Returns the value of the private connectURL var
             @private
             @augments AeroGear.Notifier.adapters.stompws
