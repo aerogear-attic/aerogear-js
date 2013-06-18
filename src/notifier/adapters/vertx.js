@@ -26,6 +26,38 @@
         @param {Function} [settings.onConnectError] - callback to be executed when connecting to a service is unsuccessful if autoConnect === true
         @param {Array} [settings.channels=[]] - a set of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
         @returns {Object} The created notifier client
+        @example
+        // Create an empty Notifier
+        var notifier = AeroGear.Notifier();
+
+        // Create a channel object and the channel callback function
+        var channelObject = {
+            address: "org.aerogear.messaging.global",
+            callback: channelCallback
+        };
+
+        function channelCallback( message ) {
+            console.log( message );
+        }
+
+        // Add a vertx client with all the settings
+        notifier.add({
+            name: "client1",
+            settings: {
+                autoConnect: true,
+                connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+                onConnect: function() {
+                    console.log( "connected" );
+                },
+                onConnectError: function() {
+                    console.log( "connection error" );
+                },
+                onDisconnect: function() {
+                    console.log( "Disconnected" );
+                },
+                channels: [ channelObject ]
+            }
+        });
      */
     AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
         // Allow instantiation without using new
@@ -167,6 +199,28 @@
         @param {Function} [options.onDisconnect] - callback to be executed when a connection is terminated
         @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
         @example
+        // Create an empty Notifier
+        var notifier = AeroGear.Notifier();
+
+        // Add a vertx client
+        notifier.add({
+            name: "client1",
+            settings: {
+                connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+                onConnect: function() {
+                    console.log( "connected" );
+                },
+                onConnectError: function() {
+                    console.log( "connection error" );
+                },
+                onDisconnect: function() {
+                    console.log( "Disconnected" );
+                }
+            }
+        });
+
+        // Connect to the vertx messaging service
+        notifierVertx.clients.client1.connect();
 
      */
     AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
@@ -208,6 +262,31 @@
     /**
         Disconnect the client from the messaging service
         @example
+        // Create an empty Notifier
+        var notifier = AeroGear.Notifier();
+
+        // Add a vertx client
+        notifier.add({
+            name: "client1",
+            settings: {
+                connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+                onConnect: function() {
+                    console.log( "connected" );
+                },
+                onConnectError: function() {
+                    console.log( "connection error" );
+                },
+                onDisconnect: function() {
+                    console.log( "Disconnected" );
+                }
+            }
+        });
+
+        // Connect to the vertx messaging service
+        notifierVertx.clients.client1.connect();
+
+        // Disconnect from the vertx messaging service
+        notifierVertx.clients.client1.disconnect();
 
      */
     AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
@@ -223,7 +302,51 @@
         @param {Object|Array} channels - a channel object or array of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
         @param {Boolean} [reset] - if true, remove all channels from the set and replace with the supplied channel(s)
         @example
+        // Create an empty Notifier
+        var notifier = AeroGear.Notifier();
 
+        // Create a channel object and the channel callback function
+        var channelObject = {
+            address: "org.aerogear.messaging.global",
+            callback: channelCallback
+        };
+
+        function channelCallback( message ) {
+            console.log( message );
+        }
+
+        // Add a vertx client with autoConnect === true and no channels
+        notifier.add({
+            name: "client1",
+            settings: {
+                autoConnect: true,
+                connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+                onConnect: function() {
+                    console.log( "connected" );
+                },
+                onConnectError: function() {
+                    console.log( "connection error" );
+                },
+                onDisconnect: function() {
+                    console.log( "Disconnected" );
+                }
+            }
+        });
+
+        //Subscribe to a channel
+        notifierVertx.clients.client1.subscribe( channelObject );
+
+        //Subscribe to multiple channels at once
+        notifierVertx.clients.client1.subscribe([
+            {
+                address: "newChannel",
+                callback: newCallbackFunction
+            },
+            {
+                address: "anotherChannel",
+                callback: "anotherChannelCallbackFunction"
+            }
+        ]);
      */
     AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
         var bus = this.getBus();
@@ -243,6 +366,26 @@
         Unsubscribe this client from a channel
         @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
         @example
+        // Unsubscribe from a previously subscribed channel
+        notifierVertx.clients.client1.unsubscribe(
+            {
+                address: "org.aerogear.messaging.global",
+                callback: channelCallback
+            }
+        );
+
+        // Unsubscribe from multiple channels
+        notifierVertx.clients.client1.unsubscribe([
+            {
+                address: "newChannel",
+                callback: newCallbackFunction
+            },
+            {
+                address: "anotherChannel",
+                callback: "anotherChannelCallbackFunction"
+            }
+        ]);
+
 
      */
     AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
