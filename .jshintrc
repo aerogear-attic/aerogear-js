@@ -11,6 +11,9 @@
         "jQuery": true,
         "AeroGear": true,
         "uuid": true,
-        "require": true
+        "require": true,
+        "vertx": true,
+        "SockJS": true,
+        "Stomp": true
     }
 }

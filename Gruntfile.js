@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                 banner: "<%= meta.banner %>"
             },
             dist: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
@@ -42,6 +42,14 @@ module.exports = function(grunt) {
             },
             auth: {
                 src: ['src/aerogear.core.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            notifierVertx: {
+                src: ['src/aerogear.core.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/vertx.js'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            notifierStompWS: {
+                src: ['src/aerogear.core.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/stompws.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
@@ -110,6 +118,6 @@ module.exports = function(grunt) {
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
+    grunt.registerTask('notifier', ['jshint', 'qunit', 'concat:notifier', 'uglify:custom']);
     grunt.registerTask('travis', ['jshint', 'qunit']);
-
 };
