@@ -161,7 +161,7 @@
         var that = this,
             client = new stomp.client( options.url || this.getConnectURL() ),
             onConnect = function() {
-                var channels = that.getChannels();
+                var channels = that.getChannels().slice( 0 );
 
                 that.setState( AeroGear.Notifier.CONNECTED );
 
