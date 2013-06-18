@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, sockjs, stomp, undefined ) {
+(function( AeroGear, stomp, undefined ) {
     /**
         The stomp adapter uses an underlying stomp.js implementation for messaging.
         @constructs AeroGear.Notifier.adapters.stompws
@@ -176,8 +176,6 @@
      */
     AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
         var that = this,
-            //ws = new sockjs( options.url || this.getConnectURL() ),
-            //client = new stomp.over( ws ),
             client = new stomp.client( options.url || this.getConnectURL() ),
             onConnect = function() {
                 var channels = that.getChannels();
@@ -283,4 +281,4 @@
         client.send( channel, headers, message );
     };
 
-})( AeroGear, SockJS, Stomp );
+})( AeroGear, Stomp );
