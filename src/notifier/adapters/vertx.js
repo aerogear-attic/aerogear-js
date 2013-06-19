@@ -211,7 +211,7 @@
             bus = new VX.EventBus( options.url || this.getConnectURL() );
 
         bus.onopen = function() {
-            // Make a Copy of the channel array to remove the reference.
+            // Make a Copy of the channel array instead of a reference.
             var channels = that.getChannels().slice( 0 );
 
             that.setState( AeroGear.Notifier.CONNECTED );
