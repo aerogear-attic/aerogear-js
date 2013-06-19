@@ -19,7 +19,12 @@
         @constructs AeroGear.Notifier.adapters.stompws
         @param {String} clientName - the name used to reference this particular notifier client
         @param {Object} [settings={}] - the settings to be passed to the adapter
+        @param {Boolean} [settings.autoConnect=false] - Automatically connect the client to the connectURL on creation IF LOGIN IS NOT NEEDED. This option is ignored and a connection is automatically established if channels are provided as the connection is necessary prior to channel subscription
         @param {String} [settings.connectURL=""] - defines the URL for connecting to the messaging service
+        @param {Function} [settings.onConnect] - callback to be executed when a connection is established if autoConnect === true
+        @param {Function} [settings.onDisconnect] - callback to be executed when a connection is terminated if autoConnect === true
+        @param {Function} [settings.onConnectError] - callback to be executed when connecting to a service is unsuccessful if autoConnect === true
+        @param {Array} [settings.channels=[]] - a set of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
         @returns {Object} The created notifier client
      */
     AeroGear.Notifier.adapters.stompws = function( clientName, settings ) {
@@ -34,6 +39,7 @@
         var type = "stompws",
             name = clientName,
             channels = settings.channels || [],
+            autoConnect = !!settings.autoConnect || channels.length,
             connectURL = settings.connectURL || "",
             state = AeroGear.Notifier.CONNECTING,
             client = null;
@@ -141,14 +147,25 @@
         this.setClient = function( newClient ) {
             client = newClient;
         };
+
+        // Handle auto-connect.
+        // If Login or Password or needed, AutoConnect won't happen
+        if ( ( autoConnect || this.getChannels().length ) && ( !settings.login && !settings.password ) ) {
+            this.connect({
+                url: this.getConnectURL(),
+                onConnect: settings.onConnect,
+                onDisconnect: settings.onDisconnect,
+                onConnectError: settings.onConnectError
+            });
+        }
     };
 
     //Public Methods
     /**
         Connect the client to the messaging service
-        @param {Object} options - Options to pass to the connect method
-        @param {String} options.login - login name used to connect to the server
-        @param {String} options.password - password used to connect to the server
+        @param {Object} [options={}] - Options to pass to the connect method
+        @param {String} [options.login] - login name used to connect to the server
+        @param {String} [options.password] - password used to connect to the server
         @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created.
         @param {Function} [options.onConnect] - callback to be executed when a connection is established
         @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
