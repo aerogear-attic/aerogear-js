@@ -148,15 +148,6 @@
         };
 
         /**
-            Removes all channels from the set
-            @private
-            @augments vertx
-         */
-        this.removeAllChannels = function() {
-            channels = [];
-        };
-
-        /**
             Returns the value of the private state var
             @private
             @augments vertx
@@ -220,7 +211,8 @@
             bus = new VX.EventBus( options.url || this.getConnectURL() );
 
         bus.onopen = function() {
-            var channels = that.getChannels();
+            // Make a Copy of the channel array instead of a reference.
+            var channels = that.getChannels().slice( 0 );
 
             that.setState( AeroGear.Notifier.CONNECTED );
 
@@ -273,7 +265,7 @@
         var bus = this.getBus();
 
         if ( reset ) {
-            this.removeAllChannels();
+            this.unsubscribe( this.getChannels() );
         }
 
         channels = AeroGear.isArray( channels ) ? channels : [ channels ];
