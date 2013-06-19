@@ -148,9 +148,9 @@
         };
 
         // Handle auto-connect
-        if ( autoConnect || this.getChannels().length ) {
+        if ( autoConnect || channels.length ) {
             this.connect({
-                url: this.getConnectURL(),
+                url: connectURL,
                 onConnect: settings.onConnect,
                 onDisconnect: settings.onDisconnect,
                 onConnectError: settings.onConnectError

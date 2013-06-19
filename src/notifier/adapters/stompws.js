@@ -149,10 +149,10 @@
         };
 
         // Handle auto-connect.
-        // If Login or Password or needed, AutoConnect won't happen
-        if ( ( autoConnect || this.getChannels().length ) && ( !settings.login && !settings.password ) ) {
+        // If Login or Password are needed, autoConnect won't happen
+        if ( ( autoConnect || channels.length ) && ( !settings.login && !settings.password ) ) {
             this.connect({
-                url: this.getConnectURL(),
+                url: connectURL,
                 onConnect: settings.onConnect,
                 onDisconnect: settings.onDisconnect,
                 onConnectError: settings.onConnectError
