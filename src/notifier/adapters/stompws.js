@@ -161,7 +161,7 @@
         var that = this,
             client = new stomp.client( options.url || this.getConnectURL() ),
             onConnect = function() {
-                // Make a Copy of the channel array to remove the reference.
+                // Make a copy of the channel array instead of a reference.
                 var channels = that.getChannels().slice( 0 );
 
                 that.setState( AeroGear.Notifier.CONNECTED );
