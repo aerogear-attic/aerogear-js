@@ -340,13 +340,19 @@
         notifierVertx.clients.client1.subscribe([
             {
                 address: "newChannel",
-                callback: newCallbackFunction
+                callback: function(){...}
             },
             {
                 address: "anotherChannel",
-                callback: "anotherChannelCallbackFunction"
+                callback: function(){ ... }
             }
         ]);
+
+        //Subscribe to a channel, but first unsubscribe by adding the reset parameter
+        notifierVertx.clients.client1.subscribe({
+                address: "newChannel",
+                callback: function(){ ... }
+            }, true );
      */
     AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
         var bus = this.getBus();
