@@ -344,7 +344,7 @@
             },
         ]);
 
-        // Subscribe to a channel, but first unsubscribe by adding the reset parameter
+        // Subscribe to a channel, but first unsubscribe from all currently subscribed channels by adding the reset parameter
         notifier.clients.client2.subscribe({
             address: "channelAddress3",
             callback: function(){ ... }
@@ -369,13 +369,13 @@
         Unsubscribe this client from a channel
         @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
         @example
-        // Unsubscribe to a channel
+        // Unsubscribe from a channel
         notifier.clients.client2.unsubscribe({
             address: "channelAddress",
             callback: function(){ ... }
         });
 
-        //Unsubscribe to multiple channels
+        //Unsubscribe from multiple channels
         notifier.clients.client2.unsubscribe([
             {
                 address: "channelAddress1",

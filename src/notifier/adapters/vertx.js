@@ -348,7 +348,7 @@
             }
         ]);
 
-        //Subscribe to a channel, but first unsubscribe by adding the reset parameter
+        //Subscribe to a channel, but first unsubscribe from all currently subscribed channels by adding the reset parameter
         notifierVertx.clients.client1.subscribe({
                 address: "newChannel",
                 callback: function(){ ... }
