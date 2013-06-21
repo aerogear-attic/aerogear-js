@@ -46,7 +46,7 @@
                 data: JSON.stringify({
                     category: messageType,
                     deviceToken: endpoint.channelID,
-                    clientIdentifier: alias
+                    alias: alias
                 })
             });
         };
