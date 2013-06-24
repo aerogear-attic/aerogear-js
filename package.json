@@ -25,9 +25,6 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   ],
-  "dependencies": {
-    "jquery": "1.10.x"
-  },
   "keywords": [],
   "devDependencies": {
     "grunt-contrib-concat": "~0.1.2",
