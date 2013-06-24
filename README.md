@@ -16,12 +16,49 @@ A collection of data connections (stores) and their corresponding data models. T
 
 See the [DataManager API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.DataManager.html) for more info.
 
+## Notifier
+- - -
+
+Notifier is a collection of adapters which provide a unified or similar API for interacting with different messaging services and protocols.
+
+See the [Notifier API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Notifier.html) for more info.
+
 ## Pipeline
 - - -
 
 Pipeline is a JavaScript library that provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, both provided and custom, user supplied, this library provides common methods like read, save and delete that will just work.
 
 See the [Pipeline API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Pipeline.html) for more info.
+
+## Library Dependencies
+- - -
+
+Some parts of AeroGear.js depend on external libraries which are not bundled in the same file. Below is a list of each plugin and their adapters along with dependencies, if they have any.
+
+### Auth
+
+* **REST**
+    * [jQuery](http://jquery.com/download/)
+
+### DataManager
+
+* **Memory**
+    * [jQuery](http://jquery.com/download/)
+* **SessionLocal**
+    * [jQuery](http://jquery.com/download/)
+
+### Notifier
+
+* **STOMP-WS**
+    * [STOMP Over WebSocket](https://github.com/jmesnil/stomp-websocket/)
+* **vert.x**
+    * [vert.x Event Bus](http://vertx.io/downloads.html)
+    * [SockJS](http://cdn.sockjs.org/)
+
+### Pipeline
+
+* **REST**
+    * [jQuery](http://jquery.com/download/)
 
 ## Building
 - - -
@@ -32,7 +69,7 @@ See the [Pipeline API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.
 Please refer to [nodejs.org](http://nodejs.org) for details regarding installing Node.js.
 Please refer to Grunt's [getting started](http://gruntjs.com/getting-started) guide for details regarding installing Grunt.
 
-### Installing Dependencies
+### Installing Build Dependencies
 To install the dependencies of the project run the following command:
 
     $ npm install
