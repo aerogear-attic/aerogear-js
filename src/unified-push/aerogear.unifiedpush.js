@@ -18,13 +18,14 @@
         DESCRIPTION
         @constructs AeroGear.UnifiedPushClient
         @param {String} variantID - the id representing the mobile application variant
+        @param {String} variantSecret - the secret for the mobile application variant
         @param {String} [pushServerURL="http://" + window.location.hostname + ":8080/ag-push/rest/registry/device"] - location of the unified push server
         @returns {Object} The created unified push server client
      */
-    AeroGear.UnifiedPushClient = function( variantID, pushServerURL ) {
+    AeroGear.UnifiedPushClient = function( variantID, variantSecret, pushServerURL ) {
         // Allow instantiation without using new
         if ( !( this instanceof AeroGear.UnifiedPushClient ) ) {
-            return new AeroGear.UnifiedPushClient( variantID, pushServerURL );
+            return new AeroGear.UnifiedPushClient( variantID, variantSecret, pushServerURL );
         }
 
         this.registerWithPushServer = function( messageType, endpoint, alias ) {
@@ -39,9 +40,10 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
+				crossDomain: true,
                 url: url,
                 headers: {
-                    "ag-mobile-variant": variantID
+                    "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
                 data: JSON.stringify({
                     category: messageType,
