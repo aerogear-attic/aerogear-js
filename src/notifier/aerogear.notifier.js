@@ -32,6 +32,34 @@
 
         // Create multiple clients using the default adapter
         var notifier3 = AeroGear.Notifier( [ "someNotifier", "anotherNotifier" ] );
+
+        // Create a default adapter with settings
+        var notifier4 = AeroGear.Notifier({
+            name: "vertxNotifier",
+            type: "vertx",
+            settings: { ... }
+        });
+
+        // Create a stompws adapter with settings
+        var notifier5 = AeroGear.Notifier({
+            name: "STOMPNotifier",
+            type: "stompws",
+            settings: { ... }
+        });
+
+        // Create a vertx and stompws adapter with settings
+        var notifier6 = AeroGear.Notifier([
+            {
+                name: "vertxNotifier",
+                type: "vertx",
+                settings: { ... }
+            },
+            {
+                name: "STOMPNotifier",
+                type: "stompws",
+                settings: { ... }
+            }
+        ]);
      */
     AeroGear.Notifier = function( config ) {
         // Allow instantiation without using new

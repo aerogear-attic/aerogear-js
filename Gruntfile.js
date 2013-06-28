@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                 banner: "<%= meta.banner %>"
             },
             dist: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/unified-push/aerogear.unifiedpush.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simple-push/aerogear.simplepush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/simple-push/aerogear.simplepush.js', 'src/unified-push/aerogear.unifiedpush.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/pipeline/**/*.html']
+            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html']
         },
         jshint: {
             all: {

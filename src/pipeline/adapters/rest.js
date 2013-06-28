@@ -22,6 +22,8 @@
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
     @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
+    @param {String} [settings.contentType="application/json"] - the default type of content being sent to the server
+    @param {String} [settings.dataType="json"] - the default type of data expected to be returned from the server
     @param {String} [settings.endpoint=pipename] - overrides the default naming of the endpoint which uses the pipeName
     @param {Object|Boolean} [settings.pageConfig] - an object containing the current paging configuration, true to use all defaults or false/undefined to not use paging
     @param {String} [settings.pageConfig.metadataLocation="webLinking"] - indicates whether paging information is received from the response "header", the response "body" or via RFC 5988 "webLinking", which is the default.
@@ -65,8 +67,8 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
         ajaxSettings = {
             // use the pipeName as the default rest endpoint
             url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
-            contentType: "application/json",
-            dataType: "json"
+            contentType: settings.contentType || "application/json",
+            dataType: settings.dataType || "json"
         },
         recordId = settings.recordId || "id",
         authenticator = settings.authenticator || null,
