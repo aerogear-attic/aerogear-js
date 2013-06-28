@@ -24,15 +24,15 @@
 
     // SimplePush Default Config
     AeroGear.SimplePush = window.AeroGearSimplePush;
-    AeroGear.SimplePush.variantID = window.AeroGearSimplePush.variantID || "";
     AeroGear.SimplePush.simplePushServerURL = window.AeroGearSimplePush.simplePushServerURL || "http://" + window.location.hostname + ":7777/simplepush";
-    AeroGear.SimplePush.unifiedPushServerURL = window.AeroGearSimplePush.unifiedPushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
 
     // Add push to the navigator object
     navigator.push = (function() {
         return {
             register: nativePush ? nativePush.register : function() {
-                var request = AeroGear.UnifiedPushClient( AeroGear.SimplePush.variantID, AeroGear.SimplePush.unifiedPushServerURL );
+                var request = {
+                    onsuccess: function( event ) {}
+                };
 
                 if ( !simpleNotifier ) {
                     throw "SimplePushConnectionError";
