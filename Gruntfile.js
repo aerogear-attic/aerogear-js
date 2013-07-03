@@ -54,7 +54,13 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html']
+            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html'],
+            options: {
+                urls: [
+                    'http://kborchers.github.io/aerogear-js-integration/unit/notifier/stompws.html'
+                ],
+                "--web-security": false
+            }
         },
         jshint: {
             all: {
@@ -118,6 +124,7 @@ module.exports = function(grunt) {
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('notifier', ['jshint', 'qunit', 'concat:notifier', 'uglify:custom']);
+    grunt.registerTask('notifierVertx', ['jshint', 'qunit', 'concat:notifierVertx', 'uglify:custom']);
+    grunt.registerTask('notifierStompWS', ['jshint', 'qunit', 'concat:notifierStompWS', 'uglify:custom']);
     grunt.registerTask('travis', ['jshint', 'qunit']);
 };
