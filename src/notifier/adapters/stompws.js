@@ -194,6 +194,7 @@
         @param {Object} [options={}] - Options to pass to the connect method
         @param {String} [options.login] - login name used to connect to the server
         @param {String} [options.password] - password used to connect to the server
+        @param {String|Array} [options.protocol="v11.stomp"] - STOMP protocol to use. Can either be a string with a single protocol or an array of protocol strings
         @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created.
         @param {Function} [options.onConnect] - callback to be executed when a connection is established
         @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
@@ -266,7 +267,7 @@
     AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
         options = options || {};
         var that = this,
-            client = new stomp.client( options.url || this.getConnectURL() ),
+            client = new stomp.client( options.url || this.getConnectURL(), options.protocol || "v11.stomp" ),
             onConnect = function() {
                 // Make a copy of the channel array instead of a reference.
                 var channels = that.getChannels().slice( 0 );
