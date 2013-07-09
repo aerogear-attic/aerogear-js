@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             simplePush: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/unified-push/aerogear.unifiedpush.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simple-push/aerogear.simplepush.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/simple-push/aerogear.simplepush.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
