@@ -14,30 +14,28 @@
 * limitations under the License.
 */
 /**
-    The IndexedDB adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
+    The IndexedDB adapter
     This constructor is instantiated when the "DataManager.add()" method is called
     @constructs AeroGear.DataManager.adapters.IndexedDB
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
-    @returns {Object} The created store
+    @param {AeroGear~successCallbackINDEXEDDB} [settings.success] - a callback to be called when after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackINDEXEDDB} [settings.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
+    @returns {Object} // TODO,  should this return a promise?
     @example
-//Create an empty DataManager
-var dm = AeroGear.DataManager();
+    // TODO
 
-//Add a custom IndexedDB store
-dm.add( "newStore", {
-    recordId: "customID"
-});
  */
 AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
-    //Make sure we can do this
+
+    // Normalize
     window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
     window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
     window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
     if (!window.indexedDB) {
-        //console.log( "Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available." );
+        //console.log( "Your browser doesn't support IndexedDB" );
         return;
     }
 
@@ -53,57 +51,53 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
         type = "IndexedDB",
         data = null,
         request,
-        database,
-        objectStore,
-        version; //TODO: be a promise
+        database;
 
-    //Do some creation and such
+    // Attempt to open the indexedDB database
     request = window.indexedDB.open( storeName );
 
     request.onsuccess = function( event ) {
-        version = event.target.result.version;
         database = event.target.result;
 
         if( settings.success ) {
-            settings.success.call( this, database );
+            settings.success.call( this, database, arguments );
         }
     };
 
     request.onerror = function( event ) {
         if( settings.error ) {
-            settings.error.call( this, event.target.error );
+            settings.error.call( this, event.target.error, arguments );
         }
     };
 
+    // Only called when the database doesn't exist and needs to be created
     request.onupgradeneeded = function( event ) {
         database = event.target.result;
-        objectStore = database.createObjectStore( storeName, { keyPath: recordId } );
-            //TODO: set up indexes?
-        version = event.newVersion;
+        database.createObjectStore( storeName, { keyPath: recordId } );
+        //TODO: set up indexes?
     };
 
-
+    // Privileged Methods
+    /**
+        Returns the value of the private database var
+        @private
+        @augments IndexedDB
+        @returns {Object}
+     */
     this.getDatabase = function() {
         return database;
     };
 
-    this.setDatabase = function( db ) {
-        database = db;
-    };
-
-    this.getVersion = function() {
-        return version;
-    };
-
-    this.setVersion = function( newVersion ) {
-        version = newVersion;
-    };
-
+    /**
+        Returns the value of the private storeName var
+        @private
+        @augments IndexedDB
+        @returns {String}
+     */
     this.getStoreName = function() {
         return storeName;
     };
 
-    // Privileged Methods
     /**
         Returns the value of the private recordId var
         @private
@@ -112,62 +106,6 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
      */
     this.getRecordId = function() {
         return recordId;
-    };
-
-    /**
-        Returns the value of the private data var
-        @private
-        @augments IndexedDB
-        @returns {Array}
-     */
-    this.getData = function() {
-        return data;
-    };
-
-    /**
-        Sets the value of the private data var
-        @private
-        @augments IndexedDB
-     */
-    this.setData = function( newData ) {
-        data = newData;
-    };
-
-    /**
-        Empties the value of the private data var
-        @private
-        @augments IndexedDB
-     */
-    this.emptyData = function() {
-        data = null;
-    };
-
-    /**
-        Adds a record to the store's data set
-        @private
-        @augments IndexedDB
-     */
-    this.addDataRecord = function( record ) {
-        data = data || [];
-        data.push( record );
-    };
-
-    /**
-        Adds a record to the store's data set
-        @private
-        @augments IndexedDB
-     */
-    this.updateDataRecord = function( index, record ) {
-        data[ index ] = record;
-    };
-
-    /**
-        Removes a single record from the store's data set
-        @private
-        @augments IndexedDB
-     */
-    this.removeDataRecord = function( index ) {
-        data.splice( index, 1 );
     };
 
     /**
@@ -202,18 +140,16 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 /**
     Read data from a store
     @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
+    @param {Object} [options={}] - additional options
+    @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called when after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
     @returns {Array} Returns data from the store, optionally filtered by an id
     @example
-var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+    //TODO
 
-// Get an array of all data in the store
-var allData = dm.read();
-
-//Read a specific piece of data based on an id
-var justOne = dm.read( 12345 );
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, settings ) {
-    var db,
+AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options ) {
+    var database,
         transaction,
         storeName = this.getStoreName(),
         objectStore,
@@ -221,15 +157,16 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, settings 
         cursor,
         request;
 
-    settings = settings || {};
+    options = options || {};
 
-    db = this.getDatabase();
+    database = this.getDatabase();
 
-    if( !db.objectStoreNames.contains( storeName ) ) {
+    // TODO what if the database is not open,  they called read first
+    if( !database.objectStoreNames.contains( storeName ) ) {
         return [];
     }
 
-    transaction = db.transaction( storeName );
+    transaction = database.transaction( storeName );
     objectStore = transaction.objectStore( storeName );
 
     if( id ) {
@@ -239,8 +176,6 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, settings 
             data.push( request.result );
         };
 
-        request.onerror = function( event ) {
-        };
     } else {
         cursor = objectStore.openCursor();
         cursor.onsuccess = function( event ) {
@@ -253,14 +188,14 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, settings 
     }
 
     transaction.oncomplete = function( event ) {
-        if( settings.success ) {
-            settings.success.call( this, data );
+        if( options.success ) {
+            options.success.call( this, data, arguments );
         }
     };
 
     transaction.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event );
+        if( options.error ) {
+            options.error.call( this, arguments );
         }
     };
 };
@@ -268,67 +203,47 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, settings 
 /**
     Saves data to the store, optionally clearing and resetting the data
     @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
-    @param {Boolean} [reset] - If true, this will empty the current data and set it to the data being saved
+    @param {Object} [options={}] - additional options
+    @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
+    @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called when after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
     @returns {Array} Returns the updated data from the store
     @example
-var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
+    // TODO
 
-// Store a new task
-dm.save({
-    title: "Created Task",
-    date: "2012-07-13",
-    ...
-});
-
-//Store an array of new Tasks
-dm.save([
-    {
-        title: "Task2",
-        date: "2012-07-13"
-    },
-    {
-        title: "Task3",
-        date: "2012-07-13"
-        ...
-    }
-]);
-
-// Update an existing piece of data
-var toUpdate = dm.read()[ 0 ];
-toUpdate.data.title = "Updated Task";
-dm.save( toUpdate );
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, settings ) {
-    settings = settings || {};
+AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options ) {
+    options = options || {};
 
     var that = this,
         db = this.getDatabase(),
         transaction,
         storeName = this.getStoreName(),
         objectStore,
-        request,
         i = 0;
+
+    // TODO implement reset
 
     transaction = db.transaction( storeName, "readwrite" );
     objectStore = transaction.objectStore( storeName );
 
     if( AeroGear.isArray( data ) ) {
         for( i; i < data.length; i++ ){
-            request = objectStore.put( data[ i ] );
+            objectStore.put( data[ i ] );
         }
     } else {
-        request = objectStore.put( data );
+        objectStore.put( data );
     }
 
     transaction.oncomplete = function( event ) {
-        if( settings.success ) {
-            that.read( undefined, settings );
+        if( options.success ) {
+            that.read( undefined, options );
         }
     };
 
     transaction.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event );
+        if( options.error ) {
+            options.error.call( this, arguments );
         }
     };
 };
@@ -336,69 +251,51 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, setting
 /**
     Removes data from the store
     @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
+    @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called when after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
     @returns {Array} Returns the updated data from the store
     @example
-var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
-// Store a new task
-dm.save({
-    title: "Created Task"
-});
-
-// Store another new task
-dm.save({
-    title: "Another Created Task"
-});
-
-// Store one more new task
-dm.save({
-    title: "And Another Created Task"
-});
-
-// Remove a particular item from the store by its id
-var toRemove = dm.read()[ 0 ];
-dm.remove( toRemove.id );
-
-// Remove an item from the store using the data object
-toRemove = dm.read()[ 0 ];
-dm.remove( toRemove );
-
-// Delete all remaining data from the store
-dm.remove();
+    // TODO
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, settings ) {
-    settings = settings || {};
+AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, options ) {
+    options = options || {};
 
     var that = this,
         db = this.getDatabase(),
         transaction,
         storeName = this.getStoreName(),
         objectStore,
-        request,
         i = 0;
 
     transaction = db.transaction( storeName, "readwrite" );
     objectStore = transaction.objectStore( storeName );
 
     if( !toRemove ) {
-        request = objectStore.clear();
-    } else if( AeroGear.isArray( toRemove ) ) {
+        objectStore.clear();
+    } else  {
+        toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
+
         for( i; i < toRemove.length; i++ ) {
-            request = objectStore.delete( toRemove[ i ].id );
+            if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {
+                objectStore.delete( toRemove[ i ] );
+            } else if ( toRemove ) {
+                objectStore.delete( toRemove[ i ][ this.getRecordId() ] );
+            } else {
+                continue;
+            }
         }
-    } else {
-        request = objectStore.delete( toRemove );
     }
 
     transaction.oncomplete = function( event ) {
-        if( settings.success ) {
-            that.read( undefined, settings );
+        if( options.success ) {
+            that.read( undefined, options, arguments );
         }
     };
 
     transaction.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event );
+        if( options.error ) {
+            options.error.call( this, arguments );
         }
     };
 };
@@ -409,27 +306,19 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, s
     @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
     @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
     @example
-var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
-// An object can be passed to filter the data
-// This would return all records with a user named 'admin' **AND** a date of '2012-08-01'
-var filteredData = dm.filter({
-    date: "2012-08-01",
-    user: "admin"
-});
-
-// The matchAny parameter changes the search to an OR operation
-// This would return all records with a user named 'admin' **OR** a date of '2012-08-01'
-var filteredData = dm.filter({
-    date: "2012-08-01",
-    user: "admin"
-}, true);
+    // TODO
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny ) {
     return "TODO";
 };
 
-//AeroGear.DataManager.adapters.IndexedDB.prototype.
+/**
+    Close the current store
+    @example
 
-
-
+    // TODO
+ */
+AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
+    this.getDatabase().close();
+};
