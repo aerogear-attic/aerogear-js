@@ -10,7 +10,6 @@
     "globals": {
         "jQuery": true,
         "AeroGear": true,
-        "uuid": true,
         "require": true,
         "vertx": true,
         "SockJS": true,
