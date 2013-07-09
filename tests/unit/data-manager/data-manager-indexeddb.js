@@ -27,8 +27,7 @@
         };
     });
 
-    var dm = AeroGear.DataManager(),
-        database; //for reference to close,  perhaps add this as a method
+    var dm = AeroGear.DataManager();
 
     asyncTest( "Create - Name String", function() {
         expect( 4 );
@@ -37,7 +36,6 @@
             type: "IndexedDB",
             settings: {
                 success: function( data ) {
-                    database = data;
                     ok( true, "IndexedDB test1 created successfully" );
                     equal( data.name, "test1", "Store Name test1" );
                     equal( data.objectStoreNames.length, 1, "Object Store length should be 1" );
@@ -180,7 +178,7 @@
         var deleteRequest,
             dbs = [ "test1" ];
 
-        database.close();
+       dm.stores.test1.close();
 
         for( var db in dbs ) {
 
