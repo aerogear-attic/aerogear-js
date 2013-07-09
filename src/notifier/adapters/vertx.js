@@ -404,4 +404,27 @@
         }
     };
 
+    /**
+        Send a message to a particular channel
+        @param {String} channel - the channel to which to send the message
+        @param {String|Object} [message=""] - the message object to send
+        @example
+        // Send an empty message to a channel
+        notifier.clients.client1.send( "test.address" );
+
+        // Send a "Hello" message to a channel
+        notifier.clients.client1.send( "test.address", "Hello" );
+
+        // Send a "Hello" message as an object
+        notifier.clients.client1.send( "test.address", { "message": "Hello" } );
+
+     */
+    AeroGear.Notifier.adapters.vertx.prototype.send = function( channel, message ) {
+        var bus = this.getBus();
+
+        message = message || "";
+
+        bus.send( channel, message );
+    };
+
 })( AeroGear, vertx );
