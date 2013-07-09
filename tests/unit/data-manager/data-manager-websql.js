@@ -79,9 +79,9 @@
 
     asyncTest( "Update Data - 1 item", function() {
         expect( 3 );
-        dm.stores.test1.save( { "id": "1", "name": "Lucas", "type": "human" }, {
+        dm.stores.test1.save( [{ "id": "1", "name": "Lucas", "type": "human" }], {
             success: function( data ) {
-                ok( true, "update 1 item successful" );
+                ok( true, "update 2 item successful" );
                 equal( data.length, 1, "1 item still returned" );
                 equal( data[ 0 ].name, "Lucas", "Name field Updated"  );
                 start();
@@ -108,12 +108,12 @@
         }
     ];
 
-    /*asyncTest( "Save Data - Array", function() {
+    asyncTest( "Save Data - Array", function() {
         expect( 2 );
         dm.stores.test1.save( data, {
             success: function( data ) {
                 ok( true, "Data Saved Successfully" );
-                equal( data.length, 2, "2 items in database" );
+                equal( data.length, 3, "3 items in database" );
                 start();
             },
             error: function( error ) {
@@ -122,9 +122,9 @@
                 start();
             }
         });
-    });*/
+    });
 
-    /*asyncTest( "Read Data - All", function() {
+    asyncTest( "Read Data - All", function() {
         expect( 2 );
         dm.stores.test1.read( undefined, {
             success: function( data ) {
@@ -137,9 +137,7 @@
                 start();
             }
         });
-    });*/
-
-    /*
+    });
 
     asyncTest( "Remove Data - 1 item - string", function() {
         expect( 2 );
@@ -155,8 +153,8 @@
             }
         });
     });
-    */
-    asyncTest( "Remove Data - All", function() {
+
+    /*asyncTest( "Remove Data - All", function() {
         expect( 2 );
         dm.stores.test1.remove( undefined, {
             success: function( data ) {
@@ -166,22 +164,6 @@
             },
             error: function( error ) {
                 ok( false, "remove all has errors" + error );
-                start();
-            }
-        });
-    });
-
-    //WebSQL has no remove Database method, perhaps just truncate the table
-    /*asyncTest( "end clean up", function() {
-        expect( 1 );
-        var dbs = [ "test1" ];
-        dm.stores.test1.remove( undefined, {
-            success: function( data ) {
-                ok( true, "data reset" );
-                start();
-            },
-            error: function( error ) {
-                ok( false, "error reseting data" );
                 start();
             }
         });

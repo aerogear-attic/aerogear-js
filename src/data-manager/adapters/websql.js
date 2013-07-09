@@ -199,9 +199,9 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
         recordId = this.getRecordId(),
         database = this.getDatabase(),
         storeName = this.getStoreName(),
-        sql,
         error,
         success,
+        readSuccess,
         i = 0;
 
     error = function( tx, error ) {
@@ -214,28 +214,15 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
         that.read( undefined, options );
     };
 
-    //Need to check existence of record in database first
-    this.read( data[ recordId ], {
-        success: function( result ) {
-            if( result.length ) {
-                sql = "Update " + storeName + " set id = ?,  json = ? ";
-            } else {
-                sql = "INSERT INTO " + storeName + " ( id, json ) values ( ?, ? ) ";
-            }
+    data = AeroGear.isArray( data ) ? data : [ data ];
 
-            database.transaction( function( tx ) {
-                tx.executeSql( sql, [ data[ recordId ], JSON.stringify( data ) ], success, error );
-            });
-        },
-        error: error
-    });
-
-    if( AeroGear.isArray( data ) ) {
-        for( i; i < data.length; i++ ){
-            //TODO
-            console.log( "TODO" );
-        }
-    }
+    database.transaction( function( tx ) {
+        data.forEach( function( value ) {
+            //Not Really Thrilled by this.  TODO: find a better way
+            tx.executeSql( "DELETE FROM " + storeName + " where id = ? ", [ value[ recordId ] ] );
+            tx.executeSql( "INSERT INTO " + storeName + " ( id, json ) values ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
+        });
+    }, error, success );
 };
 
 /**
@@ -276,14 +263,31 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
         db.transaction( function( tx ) {
             tx.executeSql( sql, [], success, error );
         });
-    } else if( AeroGear.isArray( toRemove ) ) {
-        for( i; i < toRemove.length; i++ ) {
-            //request = objectStore.delete( toRemove[ i ].id );
-            console.log( "todo" );
-        }
-    } else {
+    } else  {
+        toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
         db.transaction( function( tx ) {
-            tx.executeSql( sql + "where id = ?", [ toRemove ], success, error );
-        });
+            for( i; i < toRemove.length; i++ ) {
+                if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {
+                    tx.executeSql( sql + " where id = ? ", [ toRemove[ i ] ] );
+                } else if ( toRemove ) {
+                    tx.executeSql( sql + " where id = ? ", [ toRemove[ i ][ this.getRecordId() ] ] );
+                } else {
+                    continue;
+                }
+            }
+        }, error, success );
     }
+};
+
+/**
+    Filter the current store's data
+    @param {Object} [filterParameters] - An object containing key value pairs on which to filter the store's data. To filter a single parameter on multiple values, the value can be an object containing a data key with an Array of values to filter on and its own matchAny key that will override the global matchAny for that specific filter parameter.
+    @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
+    @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
+    @example
+
+    // TODO
+ */
+AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParameters, matchAny ) {
+    return "TODO";
 };
