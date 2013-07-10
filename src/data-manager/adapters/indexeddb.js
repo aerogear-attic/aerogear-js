@@ -79,6 +79,24 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 
     // Privileged Methods
     /**
+        Returns the value of the private data var
+        @private
+        @augments Memory
+        @returns {Array}
+     */
+    this.getData = function() {
+        return data;
+    };
+
+    /**
+        Sets the value of the private data var
+        @private
+        @augments Memory
+     */
+    this.setData = function( newData ) {
+        data = newData;
+    };
+    /**
         Returns the value of the private database var
         @private
         @augments IndexedDB
@@ -309,8 +327,18 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
 
     // TODO
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny ) {
-    return "TODO";
+AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
+    var that = this;
+
+    this.read( undefined, {
+        success: function( data ) {
+            AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
+            var newData = AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny );
+            if( options.success ) {
+                options.success.call( this, newData );
+            }
+        }
+    });
 };
 
 /**

@@ -139,6 +139,22 @@
         });
     });
 
+    asyncTest( "filter Data - 1 item", function() {
+        expect( 3 );
+        dm.stores.test1.filter( { "name": "Lucas" }, true, {
+            success: function( data ) {
+                ok( true, "filter 1 item successfully" );
+                equal( data.length, 1, "1 item returned" );
+                equal( data[ 0 ].name, "Lucas", "Name field returned"  );
+                start();
+            },
+            error: function( error ) {
+                ok( false, "update 1 has errors" + error );
+                start();
+            }
+        });
+    });
+
     asyncTest( "Remove Data - 1 item - string", function() {
         expect( 2 );
         dm.stores.test1.remove( 1, {
@@ -154,7 +170,7 @@
         });
     });
 
-    /*asyncTest( "Remove Data - All", function() {
+    asyncTest( "Remove Data - All", function() {
         expect( 2 );
         dm.stores.test1.remove( undefined, {
             success: function( data ) {
@@ -167,6 +183,6 @@
                 start();
             }
         });
-    });*/
+    });
 
 })( jQuery );
