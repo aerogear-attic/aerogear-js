@@ -74,7 +74,7 @@ To install the dependencies of the project run the following command:
 
     $ npm install
 
-This will install the versions of the dependencies declared in package.json. This is only requried to be done once before
+This will install the versions of the dependencies declared in package.json. This is only required to be done once before
 building the first time, or if the dependencies in package.json have been updated.
 
 ### Building the project
