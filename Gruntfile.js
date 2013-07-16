@@ -117,6 +117,17 @@ module.exports = function(grunt) {
         fs.writeFileSync( fileName, fileText + "})( this );\n", "utf-8" );
     });
 
+    // QUnit Options
+    if ( grunt.option('tests') === 'integration' ) {
+        grunt.config.set('qunit.options', {
+            urls: [
+                'http://aerogear.github.io/aerogear-js-integration/unit/notifier/stompws.html',
+                'http://aerogear.github.io/aerogear-js-integration/unit/notifier/vertx.html'
+            ],
+            "--web-security": false
+        });
+    }
+
     // grunt-contrib tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
