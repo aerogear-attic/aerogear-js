@@ -84,7 +84,7 @@
 
     simpleNotifier.connect({
         onConnect: function( data ) {
-            var pushStore = JSON.parse( localStorage.getItem("ag-push-store") || '{}' ),
+            var pushStore = simpleNotifier.getPushStore(),
                 channels = pushStore.channels || [];
 
             // Subscribe to any new channels
@@ -92,6 +92,7 @@
                 if ( channels[ channel ].state === "new" ) {
                     simpleNotifier.subscribe({
                         channelID: channels[ channel ].channelID,
+                        requestObject: channels[ channel ].requestObject,
                         callback: function( message ) {
                             $( navigator.push ).trigger({
                                 type: "push",
