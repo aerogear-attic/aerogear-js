@@ -53,7 +53,15 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             simplePush: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/simple-push/aerogear.simplepush.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simple-push/aerogear.simplepush.js'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            unifiedPush: {
+                src: ['src/aerogear.core.js', 'src/unified-push/aerogear.unifiedpush.js'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            push: {
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simple-push/aerogear.simplepush.js', 'src/unified-push/aerogear.unifiedpush.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
@@ -143,5 +151,7 @@ module.exports = function(grunt) {
     grunt.registerTask('notifierVertx', ['jshint', 'qunit', 'concat:notifierVertx', 'uglify:custom']);
     grunt.registerTask('notifierStompWS', ['jshint', 'qunit', 'concat:notifierStompWS', 'uglify:custom']);
     grunt.registerTask('simplePush', ['concat:simplePush']);
+    grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
+    grunt.registerTask('push', ['concat:push']);
     grunt.registerTask('travis', ['jshint', 'qunit']);
 };
