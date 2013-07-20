@@ -9,7 +9,7 @@ Have experience with mobile or HTML5 based technologies? Interested in sharing y
 If you've got ideas for the project, or want to discuss ways to improve AeroGear, join the [aerogear-dev](https://lists.jboss.org/mailman/listinfo/aerogear-dev) mailing list and share what your working on, or struggling with. For more immediate gratification join the IRC channel (#aerogear). There are are usually a good bunch of people hanging out there. Ask your questions, share your experience, or just make jokes :-)
 
 ## Found An Issue?
-Have you run into an issue with one of our examples, sites, or have a suggestion? The best place to start is probably talking about it in the forums or IRC. If you've already done that, or just want to create the issue please do at [https://issues.jboss.org/browse/AEROGEAR](https://issues.jboss.org/browse/AEROGEAR).
+Have you run into an issue with one of our examples, sites, or have a suggestion? The best place to start is probably talking about it in the forums or IRC. If you've already done that, or just want to create the issue please do at [https://issues.jboss.org/browse/AGJS](https://issues.jboss.org/browse/AGJS).
 
 We only ask that you review our [AeroGear Jira Usage and Guidelines](http://aerogear.org/docs/guides/JIRAUsage) and use your noodle! Help the community help you :-)
 
