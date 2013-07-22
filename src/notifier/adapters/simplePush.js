@@ -181,22 +181,18 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
         var channels = pushStore.channels,
             msg = {
             messageType: "hello",
-            uaid: ""
+            uaid: "",
+            channelIDs: []
         };
 
         if ( pushStore.uaid ) {
             msg.uaid = pushStore.uaid;
         }
         if ( channels && msg.uaid !== "" ) {
-            msg.channelIDs = [];
             for ( var length = channels.length, i = length - 1; i > -1; i-- ) {
                 if ( pushStore.channels[ i ].status !== "new" ) {
                     msg.channelIDs.push( pushStore.channels[ i ].channelID );
                 }
-            }
-
-            if ( !msg.channelIDs.length ) {
-                delete msg.channelIDs;
             }
         }
 
