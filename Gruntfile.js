@@ -97,7 +97,7 @@ module.exports = function(grunt) {
         shell: {
             integration: {
                 command: [
-                    'rm -r aerogear-js-integration',
+                    'test -d aerogear-js-integration && rm -r aerogear-js-integration || true',
                     'git clone https://github.com/aerogear/aerogear-js-integration.git',
                     'cd aerogear-js-integration',
                     'cp ../dist/aerogear.js .',
