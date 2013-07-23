@@ -135,5 +135,5 @@ module.exports = function(grunt) {
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('notifierVertx', ['jshint', 'qunit', 'concat:notifierVertx', 'uglify:custom']);
     grunt.registerTask('notifierStompWS', ['jshint', 'qunit', 'concat:notifierStompWS', 'uglify:custom']);
-    grunt.registerTask('travis', ['jshint', 'qunit']);
+    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist','shell:integration']);
 };
