@@ -96,9 +96,8 @@ module.exports = function(grunt) {
         },
         shell: {
             integration: {
-                command: ['git clone https://github.com/abstractj/aerogear-js-integration.git',
+                command: ['git clone https://github.com/aerogear/aerogear-js-integration.git',
                           'cd aerogear-js-integration',
-                          'git checkout travisci',
                           'cp ../dist/aerogear.js .',
                           './servers/vertxbustest/server.sh',
                           'npm install'
