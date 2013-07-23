@@ -93,6 +93,20 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        shell: {
+            integration: {
+                command: ['git clone https://github.com/abstractj/aerogear-js-integration.git',
+                          'cd aerogear-js-integration',
+                          'git checkout travisci',
+                          'cp ../dist/aerogear.js .',
+                          './servers/vertxbustest/server.sh',
+                          'npm install'
+                ].join('&&'),
+                options: {
+                    stdout: true
+                }
+            }
         }
     });
 
@@ -111,14 +125,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-shell');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all', 'shell:integration']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('notifierVertx', ['jshint', 'qunit', 'concat:notifierVertx', 'uglify:custom']);
     grunt.registerTask('notifierStompWS', ['jshint', 'qunit', 'concat:notifierStompWS', 'uglify:custom']);
-    grunt.registerTask('travis', ['jshint', 'qunit']);
+    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist','shell:integration']);
 };
