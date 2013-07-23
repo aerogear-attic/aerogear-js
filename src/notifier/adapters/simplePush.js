@@ -221,6 +221,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     };
 
     this.bindSubscribeSuccess = function( channelID, request ) {
+        jQuery( navigator.push ).off( channelID + "-success" );
         jQuery( navigator.push ).on( channelID + "-success", function( event ) {
             request.onsuccess( event );
         });
@@ -257,24 +258,12 @@ AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
         message = JSON.parse( message.data );
 
         if ( message.messageType === "hello" ) {
-            that.setIsConnected( true );
-            if ( message.uaid === pushStore.uaid ) {
-                for ( var channel in pushStore.channels ) {
-                    if ( channel.status === "used" ) {
-                        // Trigger the registration event since there will be no register message
-                        jQuery( navigator.push ).trigger( jQuery.Event( pushStore.channels[ channel ].channelID + "-success", {
-                            target: {
-                                result: pushStore.channels[ channel ]
-                            }
-                        }));
-                    }
-                }
-            } else {
-                // Set uaid to new server provided id
+            if ( message.uaid !== pushStore.uaid ) {
                 pushStore.uaid = message.uaid;
+                that.setPushStore( pushStore );
             }
 
-            that.setPushStore( pushStore );
+            that.setIsConnected( true );
 
             if ( options.onConnect ) {
                 options.onConnect( message );
@@ -340,7 +329,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
                         }
                     }));
                 } else {
-                    channels[ i ].state = "new";
+                    channels[ i ].state = "initialized";
                 }
                 pushStore.channels[ index ] = channels[ i ];
                 processed = true;
@@ -352,14 +341,32 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
             this.bindSubscribeSuccess( channels[ i ].channelID, channels[ i ].requestObject );
 
             if ( client.readyState === SockJS.OPEN && this.getIsConnected() ) {
+                if ( !channels[ i ].state ) {
+                    channels[ i ].channelID = channels[ i ].channelID || uuid();
+                    channels[ i ].state = "new";
+                }
+
+                if ( channels[ i ].state === "new" ) {
+                    client.send('{"messageType": "register", "channelID": "' + channels[ i ].channelID + '"}');
+                } else if ( channels[ i ].state === "initialized" ) {
+                    jQuery( navigator.push ).trigger( jQuery.Event( channels[ i ].channelID + "-success", {
+                        target: {
+                            result: channels[ i ]
+                        }
+                    }));
+                }
                 channels[ i ].state = "used";
-                client.send('{"messageType": "register", "channelID": "' + channels[ i ].channelID + '"}');
             } else {
                 channels[ i ].channelID = uuid();
                 channels[ i ].state = "new";
             }
 
-            pushStore.channels.push( channels[ i ] );
+            index = this.findChannelIndex( pushStore.channels, "channelID", channels[ i ].channelID );
+            if ( index !== undefined ) {
+                pushStore.channels[ index ] = channels[ i ];
+            } else {
+                pushStore.channels.push( channels[ i ] );
+            }
         }
 
         processed = false;

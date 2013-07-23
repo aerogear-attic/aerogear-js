@@ -89,9 +89,10 @@
 
             // Subscribe to any new channels
             for ( var channel in channels ) {
-                if ( channels[ channel ].state === "new" ) {
+                if ( channels[ channel ].state === "new" || channels[ channel ].state === "initialized" ) {
                     simpleNotifier.subscribe({
                         channelID: channels[ channel ].channelID,
+                        state: channels[ channel ].state,
                         requestObject: channels[ channel ].requestObject,
                         callback: function( message ) {
                             $( navigator.push ).trigger({
