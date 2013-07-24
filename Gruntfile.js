@@ -107,7 +107,9 @@ module.exports = function(grunt) {
                     'npm install'
                 ].join('&&'),
                 options: {
-                    stdout: true
+                    stdout: true,
+                    stderr: true,
+                    failOnError: true
                 }
             }
         }
