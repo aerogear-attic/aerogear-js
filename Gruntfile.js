@@ -98,14 +98,17 @@ module.exports = function(grunt) {
             integration: {
                 command: [
                     'test -d aerogear-js-integration && rm -r aerogear-js-integration || true',
-                    'git clone https://github.com/aerogear/aerogear-js-integration.git',
+                    'git clone --depth 1 https://github.com/aerogear/aerogear-js-integration.git',
                     'cd aerogear-js-integration',
                     'cp ../dist/aerogear.js .',
                     './servers/vertxbustest/server.sh',
-                    'npm install'
+                    './servers/activemqtest/server.sh',
+                    'npm install',
+                    './servers/vertxbustest/server.sh stop'
                 ].join('&&'),
                 options: {
-                    stdout: true
+                    stdout: true,
+                    stderr: true
                 }
             }
         }
@@ -136,5 +139,5 @@ module.exports = function(grunt) {
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('notifierVertx', ['jshint', 'qunit', 'concat:notifierVertx', 'uglify:custom']);
     grunt.registerTask('notifierStompWS', ['jshint', 'qunit', 'concat:notifierStompWS', 'uglify:custom']);
-    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist','shell:integration']);
+    grunt.registerTask('travis', ['jshint', 'concat:dist','shell:integration']);
 };
