@@ -34,8 +34,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
         name = clientName,
         connectURL = settings.connectURL || "",
         client = null,
-        pushStore = JSON.parse( localStorage.getItem("ag-push-store") || '{}' ),
-        isConnected = false;
+        pushStore = JSON.parse( localStorage.getItem("ag-push-store") || '{}' );
 
     pushStore.channels = pushStore.channels || [];
     for ( var channel in pushStore.channels ) {
@@ -119,24 +118,6 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     };
 
     /**
-        Returns the value of the private isConnected var
-        @private
-        @augments AeroGear.Notifier.adapters.SimplePush
-     */
-    this.getIsConnected = function() {
-        return isConnected;
-    };
-
-    /**
-        Sets the value of the private isConnected var
-        @private
-        @augments AeroGear.Notifier.adapters.SimplePush
-     */
-    this.setIsConnected = function( value ) {
-        isConnected = value;
-    };
-
-    /**
      */
     this.processMessage = function( message ) {
         var channel, updates;
@@ -190,9 +171,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
         }
         if ( channels && msg.uaid !== "" ) {
             for ( var length = channels.length, i = length - 1; i > -1; i-- ) {
-                if ( pushStore.channels[ i ].status !== "new" ) {
-                    msg.channelIDs.push( pushStore.channels[ i ].channelID );
-                }
+                msg.channelIDs.push( pushStore.channels[ i ].channelID );
             }
         }
 
@@ -263,8 +242,6 @@ AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
                 that.setPushStore( pushStore );
             }
 
-            that.setIsConnected( true );
-
             if ( options.onConnect ) {
                 options.onConnect( message );
             }
@@ -286,7 +263,6 @@ AeroGear.Notifier.adapters.SimplePush.prototype.disconnect = function( onDisconn
     var client = this.getClient();
 
     client.close();
-    this.setIsConnected( false );
     if ( onDisconnect ) {
         onDisconnect();
     }
@@ -320,53 +296,28 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
             if ( index !== undefined ) {
                 this.bindSubscribeSuccess( pushStore.channels[ index ].channelID, channels[ i ].requestObject );
                 channels[ i ].channelID = pushStore.channels[ index ].channelID;
-                if ( client.readyState === SockJS.OPEN && this.getIsConnected() ) {
-                    channels[ i ].state = "used";
-                    // Trigger the registration event since there will be no register message
-                    jQuery( navigator.push ).trigger( jQuery.Event( channels[ i ].channelID + "-success", {
-                        target: {
-                            result: channels[ i ]
-                        }
-                    }));
-                } else {
-                    channels[ i ].state = "initialized";
-                }
+                channels[ i ].state = "used";
+
+                // Trigger the registration event since there will be no register message
+                jQuery( navigator.push ).trigger( jQuery.Event( channels[ i ].channelID + "-success", {
+                    target: {
+                        result: channels[ i ]
+                    }
+                }));
+
                 pushStore.channels[ index ] = channels[ i ];
                 processed = true;
             }
         }
 
+        // No previous channels available so add a new one
         if ( !processed ) {
-            // No previous channels available so add a new one
+            channels[ i ].channelID = channels[ i ].channelID || uuid();
+            channels[ i ].state = "used";
             this.bindSubscribeSuccess( channels[ i ].channelID, channels[ i ].requestObject );
+            client.send('{"messageType": "register", "channelID": "' + channels[ i ].channelID + '"}');
 
-            if ( client.readyState === SockJS.OPEN && this.getIsConnected() ) {
-                if ( !channels[ i ].state ) {
-                    channels[ i ].channelID = channels[ i ].channelID || uuid();
-                    channels[ i ].state = "new";
-                }
-
-                if ( channels[ i ].state === "new" ) {
-                    client.send('{"messageType": "register", "channelID": "' + channels[ i ].channelID + '"}');
-                } else if ( channels[ i ].state === "initialized" ) {
-                    jQuery( navigator.push ).trigger( jQuery.Event( channels[ i ].channelID + "-success", {
-                        target: {
-                            result: channels[ i ]
-                        }
-                    }));
-                }
-                channels[ i ].state = "used";
-            } else {
-                channels[ i ].channelID = uuid();
-                channels[ i ].state = "new";
-            }
-
-            index = this.findChannelIndex( pushStore.channels, "channelID", channels[ i ].channelID );
-            if ( index !== undefined ) {
-                pushStore.channels[ index ] = channels[ i ];
-            } else {
-                pushStore.channels.push( channels[ i ] );
-            }
+            pushStore.channels.push( channels[ i ] );
         }
 
         processed = false;

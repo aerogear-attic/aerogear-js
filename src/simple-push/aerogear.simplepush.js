@@ -14,86 +14,31 @@
 * limitations under the License.
 */
 (function( AeroGear, $, undefined ) {
-    var simpleNotifier, nativePush;
-    // Use browser push implementation when available
-    // TODO: Test for browser-prefixed implementations
-    // TODO: Actually use the native version when present
-    if ( navigator.push ) {
-        nativePush = navigator.push;
-    }
+    /* DOCS */
+    AeroGear.SimplePushClient = function( simplePushServerURL, onConnect ) {
+        // Allow instantiation without using new
+        if ( !( this instanceof AeroGear.SimplePushClient ) ) {
+            return new AeroGear.SimplePushClient( simplePushServerURL, onConnect );
+        }
 
-    // SimplePush Default Config
-    AeroGear.SimplePush = window.AeroGearSimplePush;
-    AeroGear.SimplePush.simplePushServerURL = window.AeroGearSimplePush.simplePushServerURL || "http://" + window.location.hostname + ":7777/simplepush";
+        var spClient = this;
+        spClient.simplePushServerURL = simplePushServerURL || "http://" + window.location.hostname + ":7777/simplepush";
+        spClient.onConnect = onConnect;
 
-    // Add push to the navigator object
-    navigator.push = (function() {
-        return {
-            register: nativePush ? nativePush.register : function() {
-                var request = {
-                    onsuccess: function( event ) {}
-                };
+        // Add push to the navigator object
+        navigator.push = (function() {
+            return {
+                register: function() {
+                    var request = {
+                        onsuccess: function( event ) {}
+                    };
 
-                if ( !simpleNotifier ) {
-                    throw "SimplePushConnectionError";
-                }
-
-                simpleNotifier.subscribe({
-                    requestObject: request,
-                    callback: function( message ) {
-                        $( navigator.push ).trigger({
-                            type: "push",
-                            message: message
-                        });
+                    if ( !spClient.simpleNotifier ) {
+                        throw "SimplePushConnectionError";
                     }
-                });
 
-                return request;
-            },
-
-            unregister: nativePush ? nativePush.unregister : function( endpoint ) {
-                simpleNotifier.unsubscribe( endpoint );
-            }
-        };
-    })();
-
-    navigator.setMessageHandler = function( messageType, callback ) {
-        var handler;
-        // TODO: Check for other browser implementations
-        if ( navigator.mozSetMessageHandler ) {
-            navigator.mozSetMessageHandler.apply( arguments );
-            return;
-        }
-
-        handler = function( event ) {
-            var message = event.message;
-            callback.call( this, message );
-        };
-
-        $( navigator.push ).on( messageType, handler );
-    };
-
-    // Create a Notifier connection to the Push Network
-    simpleNotifier = AeroGear.Notifier({
-        name: "agPushNetwork",
-        type: "SimplePush",
-        settings: {
-            connectURL: AeroGear.SimplePush.simplePushServerURL
-        }
-    }).clients.agPushNetwork;
-
-    simpleNotifier.connect({
-        onConnect: function( data ) {
-            var pushStore = simpleNotifier.getPushStore(),
-                channels = pushStore.channels || [];
-
-            // Subscribe to any new channels
-            for ( var channel in channels ) {
-                if ( channels[ channel ].state === "new" || channels[ channel ].state === "initialized" ) {
-                    simpleNotifier.subscribe({
-                        channelID: channels[ channel ].channelID,
-                        state: channels[ channel ].state,
-                        requestObject: channels[ channel ].requestObject,
+                    spClient.simpleNotifier.subscribe({
+                        requestObject: request,
                         callback: function( message ) {
                             $( navigator.push ).trigger({
                                 type: "push",
@@ -101,8 +46,38 @@
                             });
                         }
                     });
+
+                    return request;
+                },
+
+                unregister: function( endpoint ) {
+                    spClient.simpleNotifier.unsubscribe( endpoint );
+                }
+            };
+        })();
+
+        navigator.setMessageHandler = function( messageType, callback ) {
+            $( navigator.push ).on( messageType, function( event ) {
+                var message = event.message;
+                callback.call( this, message );
+            });
+        };
+
+        // Create a Notifier connection to the Push Network
+        spClient.simpleNotifier = AeroGear.Notifier({
+            name: "agPushNetwork",
+            type: "SimplePush",
+            settings: {
+                connectURL: spClient.simplePushServerURL
+            }
+        }).clients.agPushNetwork;
+
+        spClient.simpleNotifier.connect({
+            onConnect: function() {
+                if ( spClient.onConnect ) {
+                    spClient.onConnect();
                 }
             }
-        }
-    });
+        });
+    };
 })( AeroGear, jQuery );
