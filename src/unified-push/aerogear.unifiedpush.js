@@ -59,9 +59,10 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
+                crossDomain: true,
                 url: url + "/" + endpoint.channelID,
                 headers: {
-                    "ag-mobile-variant": variantID
+                    "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
                 data: JSON.stringify({
                     deviceToken: endpoint.channelID
