@@ -53,19 +53,23 @@
             });
         };
 
-        this.unregisterWithPushServer = function( endpoint ) {
+        /**
+            Performs an unregister request against the UnifiedPush Server for the given deviceToken. The deviceToken identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the channelID of the subscribed channel.
+            @param {String} deviceToken - unique String which identifies the client that is being unregistered.
+         */
+        this.unregisterWithPushServer = function( deviceToken ) {
             var url = pushServerURL || "http://" + window.location.hostname + ":8080/ag-push/rest/registry/device";
             $.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
                 crossDomain: true,
-                url: url + "/" + endpoint.channelID,
+                url: url + "/" + deviceToken,
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
                 data: JSON.stringify({
-                    deviceToken: endpoint.channelID
+                    deviceToken: deviceToken
                 })
             });
         };
