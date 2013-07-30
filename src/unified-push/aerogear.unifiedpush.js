@@ -42,7 +42,7 @@
     AeroGear.UnifiedPushClient = function( variantID, variantSecret, pushServerURL ) {
 
         // we require all arguments to be present, otherwise it does not work
-        if (  !variantID ||  !variantSecret || !pushServerURL ) {
+        if ( !variantID || !variantSecret || !pushServerURL ) {
             throw "UnifiedPushClientException";
         }
 
