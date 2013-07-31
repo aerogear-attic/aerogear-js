@@ -30,10 +30,11 @@
         );
 
         // assemble the metadata for the registration:
-        var metadata = new Object();
-        metadata.deviceToken = theDeviceToken;
-        metadata.alias = "some_username";
-        metadata.category = "email";
+        var metadata = {
+            deviceToken: "theDeviceToken",
+            alias: "some_username",
+            category: "email"
+        };
 
         // perform the registration against the UnifiedPush server:
         client.registerWithPushServer(metadata);
@@ -69,7 +70,7 @@
             }
 
             // if we see a category that is not the (SimplePush) broadcast, we require the alias to be present:
-            if ( metadata.category && metadata.category !== "broadcast" && !metadata.alias ) {
+            if ( metadata.category !== "broadcast" && !metadata.alias ) {
                 throw "UnifiedPushRegistrationException";
             }
 
@@ -81,14 +82,7 @@
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
-                data: JSON.stringify({
-                    category: metadata.category,
-                    deviceToken: metadata.deviceToken,
-                    alias: metadata.alias,
-                    mobileOperatingSystem: metadata.operatingSystem,
-                    osVersion: metadata.osVersion,
-                    deviceType: metadata.deviceType
-                })
+                data: JSON.stringify( metadata )
             });
         };
 
