@@ -112,6 +112,21 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        shell: {
+            integration: {
+                command: [
+                    'test -d aerogear-js-integration && rm -r aerogear-js-integration || true',
+                    'git clone https://github.com/aerogear/aerogear-js-integration.git',
+                    'cd aerogear-js-integration',
+                    'cp ../dist/aerogear.js .',
+                    './servers/vertxbustest/server.sh',
+                    'npm install'
+                ].join('&&'),
+                options: {
+                    stdout: true
+                }
+            }
         }
     });
 
@@ -125,25 +140,15 @@ module.exports = function(grunt) {
         fs.writeFileSync( fileName, fileText + "})( this );\n", "utf-8" );
     });
 
-    // QUnit Options
-    if ( grunt.option('tests') === 'integration' ) {
-        grunt.config.set('qunit.options', {
-            urls: [
-                'http://aerogear.github.io/aerogear-js-integration/unit/notifier/stompws.html',
-                'http://aerogear.github.io/aerogear-js-integration/unit/notifier/vertx.html'
-            ],
-            "--web-security": false
-        });
-    }
-
     // grunt-contrib tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-shell');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all', 'shell:integration']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
@@ -153,5 +158,5 @@ module.exports = function(grunt) {
     grunt.registerTask('simplePush', ['concat:simplePush']);
     grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
     grunt.registerTask('push', ['concat:push']);
-    grunt.registerTask('travis', ['jshint', 'qunit']);
+    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist','shell:integration']);
 };

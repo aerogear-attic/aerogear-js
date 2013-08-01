@@ -135,4 +135,36 @@
         });
 
     });
+
+    asyncTest( "Accessing With Invalid Session then after auth", function() {
+        expect( 5 );
+
+        securePipe.read({
+            error: function( data ) {
+                var values = {
+                    username: "john",
+                    password: "123"
+                };
+
+                equal( data.status, 401, "UnAuthorized Code" );
+                ok( true, "Failed Access with InValid Session" );
+
+                securePipe.getAuthenticator().login( values, {
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function( data ) {
+                        equal( data.username, "john", "Username is John" );
+                        equal( data.logged, true, "Logged is true" );
+
+                        securePipe.read({
+                            success: function( data ) {
+                                ok( true, "Successful Access" );
+                                start();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
 })( jQuery );
