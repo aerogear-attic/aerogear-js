@@ -214,6 +214,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created.
     @param {Function} [options.onConnect] - callback to be executed when a connection is established and hello message has been acknowledged
     @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
+    @param {Function} [options.onClose] - callback to be executed when a connection to the server is closed
     @example
 
  */
@@ -247,6 +248,12 @@ AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
             }
         } else {
             that.processMessage( message );
+        }
+    };
+
+    client.onclose = function() {
+        if ( options.onClose ) {
+            options.onClose.apply( this, arguments );
         }
     };
 
@@ -299,11 +306,15 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
                 channels[ i ].state = "used";
 
                 // Trigger the registration event since there will be no register message
-                jQuery( navigator.push ).trigger( jQuery.Event( channels[ i ].channelID + "-success", {
-                    target: {
-                        result: channels[ i ]
-                    }
-                }));
+                setTimeout((function(channel) {
+                    return function() {
+                        jQuery( navigator.push ).trigger( jQuery.Event( channel.channelID + "-success", {
+                            target: {
+                                result: channel
+                            }
+                        }));
+                    };
+                })(channels[ i ]), 0);
 
                 pushStore.channels[ index ] = channels[ i ];
                 processed = true;
