@@ -15,15 +15,25 @@
 */
 (function( AeroGear, $, undefined ) {
     /* DOCS */
-    AeroGear.SimplePushClient = function( simplePushServerURL, onConnect ) {
+    AeroGear.SimplePushClient = function( options ) {
         // Allow instantiation without using new
         if ( !( this instanceof AeroGear.SimplePushClient ) ) {
-            return new AeroGear.SimplePushClient( simplePushServerURL, onConnect );
+            return new AeroGear.SimplePushClient( options );
         }
 
-        var spClient = this;
-        spClient.simplePushServerURL = simplePushServerURL || "http://" + window.location.hostname + ":7777/simplepush";
-        spClient.onConnect = onConnect;
+        var spClient = this,
+            connectOptions = {
+                onConnect: function() {
+                    if ( spClient.options.onConnect ) {
+                        spClient.options.onConnect();
+                    }
+                },
+                onClose: function() {
+                    spClient.simpleNotifier.disconnect( spClient.options.onClose );
+                }
+            };
+
+        spClient.options = options || {};
 
         // Add push to the navigator object
         navigator.push = (function() {
@@ -52,6 +62,10 @@
 
                 unregister: function( endpoint ) {
                     spClient.simpleNotifier.unsubscribe( endpoint );
+                },
+
+                reconnect: function() {
+                    spClient.simpleNotifier.connect( connectOptions );
                 }
             };
         })();
@@ -68,16 +82,10 @@
             name: "agPushNetwork",
             type: "SimplePush",
             settings: {
-                connectURL: spClient.simplePushServerURL
+                connectURL: spClient.options.simplePushServerURL
             }
         }).clients.agPushNetwork;
 
-        spClient.simpleNotifier.connect({
-            onConnect: function() {
-                if ( spClient.onConnect ) {
-                    spClient.onConnect();
-                }
-            }
-        });
+        spClient.simpleNotifier.connect( connectOptions );
     };
 })( AeroGear, jQuery );
