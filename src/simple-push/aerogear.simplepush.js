@@ -21,9 +21,53 @@
             return new AeroGear.SimplePushClient( options );
         }
 
+        this.options = options || {};
+
         var spClient = this,
             connectOptions = {
                 onConnect: function() {
+                    // Add push to the navigator object
+                    navigator.push = (function() {
+                        return {
+                            register: function() {
+                                var request = {
+                                    onsuccess: function( event ) {}
+                                };
+
+                                if ( !spClient.simpleNotifier ) {
+                                    throw "SimplePushConnectionError";
+                                }
+
+                                spClient.simpleNotifier.subscribe({
+                                    requestObject: request,
+                                    callback: function( message ) {
+                                        $( navigator.push ).trigger({
+                                            type: "push",
+                                            message: message
+                                        });
+                                    }
+                                });
+
+                                return request;
+                            },
+
+                            unregister: function( endpoint ) {
+                                spClient.simpleNotifier.unsubscribe( endpoint );
+                            },
+
+                            reconnect: function() {
+                                spClient.simpleNotifier.connect( connectOptions );
+                            }
+                        };
+                    })();
+
+                    navigator.setMessageHandler = function( messageType, callback ) {
+                        $( navigator.push ).on( messageType, function( event ) {
+                            var message = event.message;
+                            callback.call( this, message );
+                        });
+                    };
+
                     if ( spClient.options.onConnect ) {
                         spClient.options.onConnect();
                     }
@@ -32,50 +76,6 @@
                     spClient.simpleNotifier.disconnect( spClient.options.onClose );
                 }
             };
-
-        spClient.options = options || {};
-
-        // Add push to the navigator object
-        navigator.push = (function() {
-            return {
-                register: function() {
-                    var request = {
-                        onsuccess: function( event ) {}
-                    };
-
-                    if ( !spClient.simpleNotifier ) {
-                        throw "SimplePushConnectionError";
-                    }
-
-                    spClient.simpleNotifier.subscribe({
-                        requestObject: request,
-                        callback: function( message ) {
-                            $( navigator.push ).trigger({
-                                type: "push",
-                                message: message
-                            });
-                        }
-                    });
-
-                    return request;
-                },
-
-                unregister: function( endpoint ) {
-                    spClient.simpleNotifier.unsubscribe( endpoint );
-                },
-
-                reconnect: function() {
-                    spClient.simpleNotifier.connect( connectOptions );
-                }
-            };
-        })();
-
-        navigator.setMessageHandler = function( messageType, callback ) {
-            $( navigator.push ).on( messageType, function( event ) {
-                var message = event.message;
-                callback.call( this, message );
-            });
-        };
 
         // Create a Notifier connection to the Push Network
         spClient.simpleNotifier = AeroGear.Notifier({
