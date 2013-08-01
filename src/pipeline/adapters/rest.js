@@ -88,6 +88,16 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
     };
 
     /**
+        Returns the value of the private authenticator var
+        @private
+        @augments Rest
+        @returns {AeroGear.Authenticator}
+     */
+    this.getAuthenticator = function() {
+        return authenticator;
+    };
+
+    /**
         Returns the value of the private recordId var
         @private
         @augments Rest
