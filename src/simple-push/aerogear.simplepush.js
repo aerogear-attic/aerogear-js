@@ -14,7 +14,22 @@
 * limitations under the License.
 */
 (function( AeroGear, $, undefined ) {
-    /* DOCS */
+    /**
+        The SimplePushClient object is used as a sort of polyfill/implementation of the SimplePush spec implemented in Firefox OS and the Firefox browser and provides a mechanism for subscribing to and acting on push notifications in a web application. See https://wiki.mozilla.org/WebAPI/SimplePush
+        @constructs AeroGear.UnifiedPushClient
+        @param {object} options - an object used to initialize the connection to the SimplePush server
+        @param {String} options.simplePushServerURL - the URL of the SimplePush server
+        @param {Function} options.onConnect - a callback to fire when a connection is established with the SimplePush server. This is a deviation from the SimplePush spec as it is not necessary when you using the in browser functionality since the browser establishes the connection before the application is started.
+        @param {Function} options.onClose - a callback to fire when a connection to the SimplePush server is closed or lost.
+        @returns {Object} The created unified push server client
+        @example
+        //Create the SimplePushClient object:
+        var client = AeroGear.SimplePushClient({
+            simplePushServerURL: "https://localhost:7777/simplepush",
+            onConnect: myConnectCallback,
+            onClose: myCloseCallback
+        });
+     */
     AeroGear.SimplePushClient = function( options ) {
         // Allow instantiation without using new
         if ( !( this instanceof AeroGear.SimplePushClient ) ) {
@@ -26,9 +41,19 @@
         var spClient = this,
             connectOptions = {
                 onConnect: function() {
-                    // Add push to the navigator object
+                    /**
+                        Add the push object to the global navigator object
+                        @constructs navigator.push
+                     */
                     navigator.push = (function() {
                         return {
+                            /**
+                                Register a push notification channel with the SimplePush server
+                                @constructs navigator.push.register
+                                @returns {Object} - The request object where a connection success callback can be registered
+                                @example
+                                var mailRequest = navigator.push.register();
+                             */
                             register: function() {
                                 var request = {
                                     onsuccess: function( event ) {}
@@ -51,16 +76,48 @@
                                 return request;
                             },
 
+                            /**
+                                Unregister a push notification channel from the SimplePush server
+                                @constructs navigator.push.unregister
+                                @example
+                                navigator.push.unregister( mailEndpoint );
+                             */
                             unregister: function( endpoint ) {
                                 spClient.simpleNotifier.unsubscribe( endpoint );
                             },
 
+                            /**
+                                Reestablish the connection with the SimplePush server when closed or lost. This is an addition and not part of the SimplePush spec
+                                @constructs navigator.push.reconnect
+                                @param {Object} options - an object used to initialize the connection to the SimplePush server
+                                @param {String} options.simplePushServerURL - the URL of the SimplePush server
+                                @param {Function} options.onConnect - a callback to fire when a connection is established with the SimplePush server. This is a deviation from the SimplePush spec as it is not necessary when you using the in browser functionality since the browser establishes the connection before the application is started.
+                                @param {Function} options.onClose - a callback to fire when a connection to the SimplePush server is closed or lost.
+                                @example
+                                navigator.push.reconnect({
+                                    simplePushServerURL: "https://localhost:7777/simplepush",
+                                    onConnect: myConnectCallback,
+                                    onClose: myCloseCallback
+                                });
+                             */
                             reconnect: function() {
                                 spClient.simpleNotifier.connect( connectOptions );
                             }
                         };
                     })();
 
+                    /**
+                        Add the setMessageHandler function to the global navigator object
+                        @constructs navigator.setMessageHandler
+                        @param {String} messageType - a name or category to give the messages being received and in this implementation, likely 'push'
+                        @param {Function} callback - the function to be called when a message of this type is received
+                        @example
+                        navigator.setMessageHandler( "push", function( message ) {
+                            if ( message.channelID === mailEndpoint.channelID ) {
+                                console.log("Mail Message Received");
+                            }
+                        });
+                     */
                     navigator.setMessageHandler = function( messageType, callback ) {
                         $( navigator.push ).on( messageType, function( event ) {
                             var message = event.message;
