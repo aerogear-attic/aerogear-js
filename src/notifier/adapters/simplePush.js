@@ -19,6 +19,7 @@
     @param {String} clientName - the name used to reference this particular notifier client
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.connectURL=""] - defines the URL for connecting to the messaging service
+    @param {Boolean} [settings.useNative=false] - Create a WebSocket connection to the Mozilla SimplePush server instead of a SockJS connection to a custom server
     @returns {Object} The created notifier client
  */
 AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
@@ -33,6 +34,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     var type = "SimplePush",
         name = clientName,
         connectURL = settings.connectURL || "",
+        useNative = settings.useNative || false,
         client = null,
         pushStore = JSON.parse( localStorage.getItem("ag-push-store") || '{}' );
 
@@ -78,6 +80,15 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
      */
     this.setConnectURL = function( url ) {
         connectURL = url;
+    };
+
+    /**
+        Returns the value of the private useNative var
+        @private
+        @augments AeroGear.Notifier.adapters.SimplePush
+     */
+    this.getUseNative = function() {
+        return useNative;
     };
 
     /**
@@ -127,6 +138,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
         if ( message.messageType === "register" && message.status === 200 ) {
             channel = {
                 channelID: message.channelID,
+                pushEndpoint: message.pushEndpoint,
                 version: message.version,
                 state: "used"
             };
@@ -213,6 +225,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
             if ( channels[ i ].channelID === channel.channelID ) {
                 channels[ i ].version = channel.version;
                 channels[ i ].state = channel.state;
+                channels[ i ].pushEndpoint = channel.pushEndpoint;
                 break;
             }
         }
@@ -261,8 +274,10 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     });
  */
 AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
+    options = options || {};
+
     var that = this,
-        client = new SockJS( options.url || this.getConnectURL() );
+        client = this.getUseNative() ? new WebSocket( options.url || this.getConnectURL() ) : new SockJS( options.url || this.getConnectURL() );
 
     client.onopen = function() {
         // Immediately send hello message
@@ -372,6 +387,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
             if ( index !== undefined ) {
                 this.bindSubscribeSuccess( pushStore.channels[ index ].channelID, channels[ i ].requestObject );
                 channels[ i ].channelID = pushStore.channels[ index ].channelID;
+                channels[ i ].pushEndpoint = pushStore.channels[ index ].pushEndpoint;
                 channels[ i ].state = "used";
 
                 // Trigger the registration event since there will be no register message

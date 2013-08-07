@@ -17,8 +17,9 @@
     /**
         The SimplePushClient object is used as a sort of polyfill/implementation of the SimplePush spec implemented in Firefox OS and the Firefox browser and provides a mechanism for subscribing to and acting on push notifications in a web application. See https://wiki.mozilla.org/WebAPI/SimplePush
         @constructs AeroGear.UnifiedPushClient
-        @param {object} options - an object used to initialize the connection to the SimplePush server
-        @param {String} options.simplePushServerURL - the URL of the SimplePush server
+        @param {Object} options - an object used to initialize the connection to the SimplePush server
+        @param {Boolean} [options.useNative=false] - if true, the connection will first try to use the Mozilla push network (still in development and not ready for production) before falling back to the SimplePush server specified
+        @param {String} [options.simplePushServerURL] - the URL of the SimplePush server. This option is optional but only if you don't want to support browsers that are missing websocket support and you trust the not yet production ready Mozilla push server.
         @param {Function} options.onConnect - a callback to fire when a connection is established with the SimplePush server. This is a deviation from the SimplePush spec as it is not necessary when you using the in browser functionality since the browser establishes the connection before the application is started.
         @param {Function} options.onClose - a callback to fire when a connection to the SimplePush server is closed or lost.
         @returns {Object} The created unified push server client
@@ -37,6 +38,25 @@
         }
 
         this.options = options || {};
+
+        // Check for native push support
+        if ( !!navigator.push && this.options.useNative ) {
+            // Browser supports push so let it handle it
+            return;
+        }
+
+        if ( this.options.useNative ) {
+            if ("WebSocket" in window ) {
+                // No native push support but want to use Mozilla servers
+                this.options.simplePushServerURL = "wss://push.services.mozilla.com";
+            } else if ( !this.options.simplePushServerURL ) {
+                // No native push support and no websocket support so can't talk to Mozilla server
+                throw "SimplePushConfigurationError";
+            } else {
+                // No websocket, no native support but SimplePush server specified so try SockJS connection
+                this.options.useNative = false;
+            }
+        }
 
         var spClient = this,
             connectOptions = {
@@ -139,7 +159,8 @@
             name: "agPushNetwork",
             type: "SimplePush",
             settings: {
-                connectURL: spClient.options.simplePushServerURL
+                connectURL: spClient.options.simplePushServerURL,
+                useNative: spClient.options.useNative
             }
         }).clients.agPushNetwork;
 
