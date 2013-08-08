@@ -16,7 +16,7 @@
 (function( AeroGear, $, undefined ) {
     /**
         The SimplePushClient object is used as a sort of polyfill/implementation of the SimplePush spec implemented in Firefox OS and the Firefox browser and provides a mechanism for subscribing to and acting on push notifications in a web application. See https://wiki.mozilla.org/WebAPI/SimplePush
-        @constructs AeroGear.UnifiedPushClient
+        @constructs AeroGear.SimplePushClient
         @param {Object} options - an object used to initialize the connection to the SimplePush server
         @param {Boolean} [options.useNative=false] - if true, the connection will first try to use the Mozilla push network (still in development and not ready for production) before falling back to the SimplePush server specified
         @param {String} [options.simplePushServerURL] - the URL of the SimplePush server. This option is optional but only if you don't want to support browsers that are missing websocket support and you trust the not yet production ready Mozilla push server.
@@ -62,6 +62,11 @@
             connectOptions = {
                 onConnect: function() {
                     /**
+                        The window.navigator object
+                        @namespace navigator
+                     */
+
+                    /**
                         Add the push object to the global navigator object
                         @constructs navigator.push
                      */
@@ -69,7 +74,8 @@
                         return {
                             /**
                                 Register a push notification channel with the SimplePush server
-                                @constructs navigator.push.register
+                                @function
+                                @memberof navigator.push
                                 @returns {Object} - The request object where a connection success callback can be registered
                                 @example
                                 var mailRequest = navigator.push.register();
@@ -98,7 +104,8 @@
 
                             /**
                                 Unregister a push notification channel from the SimplePush server
-                                @constructs navigator.push.unregister
+                                @function
+                                @memberof navigator.push
                                 @example
                                 navigator.push.unregister( mailEndpoint );
                              */
@@ -108,7 +115,8 @@
 
                             /**
                                 Reestablish the connection with the SimplePush server when closed or lost. This is an addition and not part of the SimplePush spec
-                                @constructs navigator.push.reconnect
+                                @function
+                                @memberof navigator.push
                                 @param {Object} options - an object used to initialize the connection to the SimplePush server
                                 @param {String} options.simplePushServerURL - the URL of the SimplePush server
                                 @param {Function} options.onConnect - a callback to fire when a connection is established with the SimplePush server. This is a deviation from the SimplePush spec as it is not necessary when you using the in browser functionality since the browser establishes the connection before the application is started.
