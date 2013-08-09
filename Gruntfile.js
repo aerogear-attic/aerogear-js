@@ -114,8 +114,8 @@ module.exports = function(grunt) {
                     'cd aerogear-js-integration',
                     'cp ../dist/aerogear.js .',
                     'cp -rf ../node_modules node_modules',
-                    './servers/vertxbustest/server.sh',
                     './servers/activemqtest/server.sh',
+                    './servers/vertxbustest/server.sh',
                     'grunt integration -v',
                     'pkill java'
                 ].join('&&'),
