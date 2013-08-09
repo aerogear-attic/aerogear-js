@@ -1,10 +1,10 @@
 /*global module:false*/
 module.exports = function(grunt) {
-    "use strict";
+    'use strict';
 
     // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
+        pkg: grunt.file.readJSON('package.json'),
         meta: {
             banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
                 '<%= grunt.template.today("yyyy-mm-dd") %><%= "\\n" %>' +
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
         concat: {
             options: {
                 stripBanners: true,
-                banner: "<%= meta.banner %>"
+                banner: '<%= meta.banner %>'
             },
             dist: {
                 src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/unified-push/aerogear.unifiedpush.js', 'src/simple-push/aerogear.simplepush.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js'],
@@ -70,21 +70,21 @@ module.exports = function(grunt) {
         },
         jshint: {
             all: {
-                src: [ "Gruntfile.js", "src/**/*.js" ],
+                src: [ 'Gruntfile.js', 'src/**/*.js' ],
                 options: {
-                    jshintrc: ".jshintrc"
+                    jshintrc: '.jshintrc'
                 }
             }
         },
         uglify: {
             all: {
                 files: {
-                    "dist/<%= pkg.name %>.min.js": [ "dist/<%= pkg.name %>.js" ]
+                    'dist/<%= pkg.name %>.min.js': [ 'dist/<%= pkg.name %>.js' ]
                 },
                 options: {
-                    preserveComments: "some",
-                    sourceMap: "dist/<%= pkg.name %>.js.map",
-                    sourceMappingURL: "<%= pkg.name %>.js.map",
+                    preserveComments: 'some',
+                    sourceMap: 'dist/<%= pkg.name %>.js.map',
+                    sourceMappingURL: '<%= pkg.name %>.js.map',
                     sourceMapPrefix: 1,
                     beautify: {
                         ascii_only: true
@@ -93,12 +93,12 @@ module.exports = function(grunt) {
             },
             custom: {
                 files: {
-                    "dist/<%= pkg.name %>.custom.min.js": [ "dist/<%= pkg.name %>.custom.js" ]
+                    'dist/<%= pkg.name %>.custom.min.js': [ 'dist/<%= pkg.name %>.custom.js' ]
                 },
                 options: {
-                    preserveComments: "some",
-                    sourceMap: "dist/<%= pkg.name %>.custom.js.map",
-                    sourceMappingURL: "<%= pkg.name %>.js.map",
+                    preserveComments: 'some',
+                    sourceMap: 'dist/<%= pkg.name %>.custom.js.map',
+                    sourceMappingURL: '<%= pkg.name %>.js.map',
                     sourceMapPrefix: 1,
                     beautify: {
                         ascii_only: true
@@ -128,7 +128,7 @@ module.exports = function(grunt) {
                 options: {
                     stdout: true,
                     execOptions: {
-                        cwd: "aerogear-js-integration"
+                        cwd: 'aerogear-js-integration'
                     }
                 }
             },
@@ -141,7 +141,7 @@ module.exports = function(grunt) {
                 options: {
                     stdout: true,
                     execOptions: {
-                        cwd: "aerogear-js-integration"
+                        cwd: 'aerogear-js-integration'
                     }
                 }
             }
@@ -150,12 +150,12 @@ module.exports = function(grunt) {
 
     // IIFE wrapper task
     grunt.registerTask('iife', function( custom ) {
-        var fs = require("fs"),
-            fileName = "dist/" + grunt.config("pkg").name + (custom ? ".custom" : "") + ".js",
-            fileText = fs.readFileSync( fileName, "utf-8" );
+        var fs = require('fs'),
+            fileName = 'dist/' + grunt.config('pkg').name + (custom ? '.custom' : '') + '.js',
+            fileText = fs.readFileSync( fileName, 'utf-8' );
 
-        fileText = fileText.replace( /\*\//, "*/\n(function( window, undefined ) {\n" );
-        fs.writeFileSync( fileName, fileText + "})( this );\n", "utf-8" );
+        fileText = fileText.replace( /\*\//, '*/\n(function( window, undefined ) {\n' );
+        fs.writeFileSync( fileName, fileText + '})( this );\n', 'utf-8' );
     });
 
     // grunt-contrib tasks
@@ -166,7 +166,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all', 'shell:integration']);
+    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
