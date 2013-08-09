@@ -113,8 +113,11 @@ module.exports = function(grunt) {
                     'git clone https://github.com/aerogear/aerogear-js-integration.git',
                     'cd aerogear-js-integration',
                     'cp ../dist/aerogear.js .',
+                    'cp -rf ../node_modules node_modules',
                     './servers/vertxbustest/server.sh',
-                    'npm install'
+                    './servers/activemqtest/server.sh',
+                    'grunt integration -v',
+                    'pkill java'
                 ].join('&&'),
                 options: {
                     stdout: true
