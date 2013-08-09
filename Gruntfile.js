@@ -116,7 +116,8 @@ module.exports = function(grunt) {
                     'cp -rf ../node_modules node_modules'
                 ].join('&&'),
                 options: {
-                    stdout: true
+                    stdout: true,
+                    failOnError: true,
                 }
             },
             integrationVertxRunner: {
@@ -127,6 +128,7 @@ module.exports = function(grunt) {
                 ].join('&&'),
                 options: {
                     stdout: true,
+                    failOnError: true,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }
@@ -140,6 +142,7 @@ module.exports = function(grunt) {
                 ].join(' && '),
                 options: {
                     stdout: true,
+                    failOnError: true,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }
