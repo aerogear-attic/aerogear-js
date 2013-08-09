@@ -123,7 +123,7 @@ module.exports = function(grunt) {
                 command: [
                     './servers/vertxbustest/server.sh',
                     'grunt integration-vertx -v',
-                    './servers/vertxbustest/server.sh stop'
+                    './servers/vertxbustest/server.sh "stop"'
                 ].join('&&'),
                 options: {
                     stdout: true,
@@ -136,7 +136,7 @@ module.exports = function(grunt) {
                 command: [
                     './servers/activemqtest/server.sh',
                     'grunt integration-activemq -v',
-                    './servers/activemqtest/server.sh stop'
+                    './servers/activemqtest/server.sh "stop"'
                 ].join(' && '),
                 options: {
                     stdout: true,
