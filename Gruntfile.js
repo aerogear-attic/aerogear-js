@@ -107,20 +107,43 @@ module.exports = function(grunt) {
             }
         },
         shell: {
-            integration: {
+            integrationSetup: {
                 command: [
                     'test -d aerogear-js-integration && rm -r aerogear-js-integration || true',
-                    'git clone https://github.com/aerogear/aerogear-js-integration.git',
+                    //'git clone https://github.com/aerogear/aerogear-js-integration.git',
+                    'cp -rf ../aerogear-js-integration/ aerogear-js-integration',
                     'cd aerogear-js-integration',
                     'cp ../dist/aerogear.js .',
-                    'cp -rf ../node_modules node_modules',
-                    './servers/activemqtest/server.sh',
-                    './servers/vertxbustest/server.sh',
-                    'grunt integration -v',
-                    'pkill java'
+                    'cp -rf ../node_modules node_modules'
                 ].join('&&'),
                 options: {
                     stdout: true
+                }
+            },
+            integrationVertxRunner: {
+                command: [
+                    './servers/vertxbustest/server.sh',
+                    'grunt integration-vertx -v',
+                    './servers/vertxbustest/server.sh stop'
+                ].join('&&'),
+                options: {
+                    stdout: true,
+                    execOptions: {
+                        cwd: "aerogear-js-integration"
+                    }
+                }
+            },
+            integrationActiveMQRunner: {
+                command: [
+                    './servers/activemqtest/server.sh',
+                    'grunt integration-activemq -v',
+                    './servers/activemqtest/server.sh stop'
+                ].join(' && '),
+                options: {
+                    stdout: true,
+                    execOptions: {
+                        cwd: "aerogear-js-integration"
+                    }
                 }
             }
         }
@@ -154,5 +177,5 @@ module.exports = function(grunt) {
     grunt.registerTask('simplePush', ['concat:simplePush']);
     grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
     grunt.registerTask('push', ['concat:push']);
-    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist','shell:integration']);
+    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner']);
 };
