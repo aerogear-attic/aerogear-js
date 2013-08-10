@@ -116,19 +116,17 @@ module.exports = function(grunt) {
                     'cp -rf ../node_modules node_modules'
                 ].join('&&'),
                 options: {
-                    stdout: true,
-                    failOnError: true,
+                    stdout: true
                 }
             },
             integrationVertxRunner: {
                 command: [
                     './servers/vertxbustest/server.sh',
                     'grunt integration-vertx -v',
-                    './servers/vertxbustest/server.sh "stop"'
+                    './servers/vertxbustest/server.sh stop'
                 ].join('&&'),
                 options: {
                     stdout: true,
-                    failOnError: true,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }
@@ -138,11 +136,10 @@ module.exports = function(grunt) {
                 command: [
                     './servers/activemqtest/server.sh',
                     'grunt integration-activemq -v',
-                    './servers/activemqtest/server.sh "stop"'
+                    './servers/activemqtest/server.sh stop'
                 ].join(' && '),
                 options: {
                     stdout: true,
-                    failOnError: true,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }
