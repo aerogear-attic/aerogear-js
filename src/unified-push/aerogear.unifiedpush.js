@@ -57,6 +57,7 @@
             Performs a register request against the UnifiedPush Server using the given metadata which represents a client that wants to register with the server.
             @param {Object} metadata - the metadata for the client
             @param {String} metadata.deviceToken - identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the channelID of the subscribed channel.
+            @param {String} metadata.simplePushEndpoint - the URL of the given SimplePush server/network that is needed in order to trigger a notification to be sent to the SimplePush client.
             @param {String} [metadata.alias] - Application specific alias to identify users with the system. Common use case would be an email address or a username.
             @param {String} [metadata.category] - In SimplePush this is the name of the registration endpoint. On Hybrid platforms like Apache Cordova this is used for tagging the registered client.
             @param {String} [metadata.operatingSystem] - Useful on Hybrid platforms like Apache Cordova to specifiy the underlying operating system.
