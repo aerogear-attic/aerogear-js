@@ -16,6 +16,7 @@
 (function( AeroGear, $, undefined ) {
     /**
         The SimplePushClient object is used as a sort of polyfill/implementation of the SimplePush spec implemented in Firefox OS and the Firefox browser and provides a mechanism for subscribing to and acting on push notifications in a web application. See https://wiki.mozilla.org/WebAPI/SimplePush
+        @status Experimental
         @constructs AeroGear.SimplePushClient
         @param {Object} options - an object used to initialize the connection to the SimplePush server
         @param {Boolean} [options.useNative=false] - if true, the connection will first try to use the Mozilla push network (still in development and not ready for production) before falling back to the SimplePush server specified
@@ -68,6 +69,7 @@
 
                     /**
                         Add the push object to the global navigator object
+                        @status Experimental
                         @constructs navigator.push
                      */
                     navigator.push = (function() {
@@ -136,6 +138,7 @@
 
                     /**
                         Add the setMessageHandler function to the global navigator object
+                        @status Experimental
                         @constructs navigator.setMessageHandler
                         @param {String} messageType - a name or category to give the messages being received and in this implementation, likely 'push'
                         @param {Function} callback - the function to be called when a message of this type is received

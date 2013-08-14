@@ -16,6 +16,7 @@
 /**
     The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
     This constructor is instantiated when the "DataManager.add()" method is called
+    @status Stable
     @constructs AeroGear.DataManager.adapters.Memory
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter

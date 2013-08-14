@@ -16,6 +16,7 @@
 /**
     The SessionLocal adapter extends the Memory adapter to store data in either session or local storage which makes it a little more persistent than memory
     This constructor is instantiated when the "DataManager.add()" method is called
+    @status Stable
     @constructs AeroGear.DataManager.adapters.SessionLocal
     @mixes AeroGear.DataManager.adapters.Memory
     @param {String} storeName - the name used to reference this particular store

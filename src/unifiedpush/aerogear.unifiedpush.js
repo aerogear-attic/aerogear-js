@@ -16,6 +16,7 @@
 (function( AeroGear, $, undefined ) {
     /**
         The UnifiedPushClient object is used to perfom register and unregister operations against the AeroGear UnifiedPush server.
+        @status Experimental
         @constructs AeroGear.UnifiedPushClient
         @param {String} variantID - the id representing the mobile application variant
         @param {String} variantSecret - the secret for the mobile application variant

@@ -15,6 +15,7 @@
 */
 /**
     The AeroGear.Auth namespace provides an authentication and enrollment API. Through the use of adapters, this library provides common methods like enroll, login and logout that will just work.
+    @status Stable
     @class
     @param {String|Array|Object} [config] - A configuration for the modules(s) being created along with the authenticator. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the module will later be referenced by

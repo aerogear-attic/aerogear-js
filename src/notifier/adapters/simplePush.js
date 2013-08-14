@@ -15,6 +15,7 @@
 */
 /**
     This adapter allows communication with the AeroGear implementation of the SimplePush server protocol. Most of this functionality will be hidden behind the SimplePush client polyfill but is accessible if necessary.
+    @status Experimental
     @constructs AeroGear.Notifier.adapters.SimplePush
     @param {String} clientName - the name used to reference this particular notifier client
     @param {Object} [settings={}] - the settings to be passed to the adapter

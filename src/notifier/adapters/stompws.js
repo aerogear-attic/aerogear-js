@@ -15,6 +15,7 @@
 */
 /**
     The stomp adapter uses an underlying stomp.js implementation for messaging.
+    @status Stable
     @constructs AeroGear.Notifier.adapters.stompws
     @param {String} clientName - the name used to reference this particular notifier client
     @param {Object} [settings={}] - the settings to be passed to the adapter

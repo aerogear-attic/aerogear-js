@@ -15,6 +15,7 @@
 */
 /**
     A collection of data connections (stores) and their corresponding data models. This object provides a standard way to interact with client side data no matter the data format or storage mechanism used.
+    @status Stable
     @class
     @augments AeroGear.Core
     @param {String|Array|Object} [config] - A configuration for the store(s) being created along with the DataManager. If an object or array containing objects is used, the objects can have the following properties:
