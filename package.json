@@ -27,13 +27,15 @@
   ],
   "keywords": [],
   "devDependencies": {
+    "express": "~3.3.5",
     "grunt-contrib-concat": "~0.1.2",
     "grunt-contrib-connect": "0.3.0",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-uglify": "~0.1.2",
     "grunt-contrib-qunit": "~0.1.1",
     "grunt-shell": "0.3.1",
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "request": "~2.27.0"
   },
   "scripts": {
     "test": "grunt travis --verbose"
