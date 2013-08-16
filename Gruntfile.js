@@ -189,5 +189,5 @@ module.exports = function(grunt) {
     grunt.registerTask('simplePush', ['concat:simplePush']);
     grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
     grunt.registerTask('push', ['concat:push']);
-    grunt.registerTask('travis', ['jshint', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
+    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
 };
