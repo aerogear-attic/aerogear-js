@@ -49,7 +49,7 @@ See the [UnifiedPushClient API docs](http://aerogear.org/docs/specs/aerogear-js/
 
 All features of the library are given a stability rating which is noted in the documentation for that feature. The stability ratings are as follows:
 
-* <strong class="labelExperimental">Experimental</strong> - This feature is new and has not been thuroughly tested outside of development. This feature could be changed or removed at any time. Use of these features in a production environment is at your own risk.
+* <strong class="labelExperimental">Experimental</strong> - This feature is new and has not been thoroughly tested outside of development. This feature could be changed or removed at any time. Use of these features in a production environment is at your own risk.
 * <strong class="labelStable">Stable</strong> - This feature has existed for a full release cycle and has been thuroughly tested. These features are considered safe for use in production environments.
 * <strong class="labelDeprecated">Deprecated</strong> - This feature is being removed or replaced. As with eperimental features, these features could be removed at any time and their use in production environments is at your own risk. For features being replaced, it is recommended to update to the next version and begin using the new feature.
 
