@@ -144,6 +144,19 @@ module.exports = function(grunt) {
                         cwd: 'aerogear-js-integration'
                     }
                 }
+            },
+            integrationSimplePushRunner: {
+                command: [
+                    './servers/simplepush/server.sh',
+                    'grunt integration-simplepush -v',
+                    './servers/simplepush/server.sh stop'
+                ].join(' && '),
+                options: {
+                    stdout: true,
+                    execOptions: {
+                        cwd: 'aerogear-js-integration'
+                    }
+                }
             }
         }
     });
@@ -176,5 +189,5 @@ module.exports = function(grunt) {
     grunt.registerTask('simplePush', ['concat:simplePush']);
     grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
     grunt.registerTask('push', ['concat:push']);
-    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner']);
+    grunt.registerTask('travis', ['jshint', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
 };
