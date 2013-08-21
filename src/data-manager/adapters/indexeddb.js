@@ -17,6 +17,7 @@
     The IndexedDB adapter
     This constructor is instantiated when the "DataManager.add()" method is called
     @constructs AeroGear.DataManager.adapters.IndexedDB
+    @status Experimental
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
