@@ -56,7 +56,7 @@ All features of the library are given a stability rating which is noted in the d
 ## Library Dependencies
 - - -
 
-Some parts of AeroGear.js depend on external libraries which are not bundled in the same file. Below is a list of each plugin and their adapters along with dependencies, if they have any.
+Some parts of AeroGear.js depend on external libraries which are not bundled in the same file. Below is a list of each plugin and their adapters along with external dependencies, if they have any. It is recommended to use the latest stable version of each dependency unless otherwise noted.
 
 ### Auth
 
@@ -77,11 +77,20 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 * **vert.x**
     * [vert.x Event Bus](http://vertx.io/downloads.html)
     * [SockJS](http://cdn.sockjs.org/)
+* **SimplePush**
+    * See SimplePush Plugin
 
 ### Pipeline
 
 * **REST**
     * [jQuery](http://jquery.com/download/)
+
+### SimplePush
+* [jQuery](http://jquery.com/download/)
+* [SockJS](http://cdn.sockjs.org/)
+
+### UnifiedPush
+* [jQuery](http://jquery.com/download/)
 
 ## Building
 - - -
