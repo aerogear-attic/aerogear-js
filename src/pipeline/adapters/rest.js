@@ -74,6 +74,7 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
         },
         recordId = settings.recordId || "id",
         authenticator = settings.authenticator || null,
+        authorizer = settings.authorizer || null,
         type = "Rest",
         pageConfig = settings.pageConfig,
         timeout = settings.timeout ? settings.timeout * 1000 : 60000;
@@ -97,6 +98,16 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
      */
     this.getAuthenticator = function() {
         return authenticator;
+    };
+
+    /**
+        Returns the value of the private authenticator var
+        @private
+        @augments Rest
+        @returns {AeroGear.Authenticator}
+     */
+    this.getAuthorizer = function() {
+        return authorizer;
     };
 
     /**
@@ -422,7 +433,11 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
         }
     }
 
-    return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
+    if( !this.getAuthorizer() ) {
+        return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
+    } else {
+        return this.getAuthorizer().execute( jQuery.extend( {}, options, extraOptions ) );
+    }
 };
 
 /**
@@ -547,7 +562,11 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
         extraOptions.data = JSON.stringify( extraOptions.data );
     }
 
-    return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
+    if( !this.getAuthorizer() ) {
+        return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
+    } else {
+        return this.getAuthorizer().execute( jQuery.extend( {}, options, extraOptions ) );
+    }
 };
 
 /**
@@ -633,5 +652,9 @@ AeroGear.Pipeline.adapters.Rest.prototype.remove = function( toRemove, options )
         timeout: this.getTimeout()
     };
 
-    return jQuery.ajax( jQuery.extend( {}, ajaxSettings, extraOptions ) );
+    if( !this.getAuthorizer() ) {
+        return jQuery.ajax( jQuery.extend( {}, this.getAjaxSettings(), extraOptions ) );
+    } else {
+        return this.getAuthorizer().execute( jQuery.extend( {}, options, extraOptions ) );
+    }
 };
