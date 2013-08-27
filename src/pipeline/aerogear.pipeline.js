@@ -23,6 +23,7 @@
     @param {String} [config.type="Rest"] - the type of pipe as determined by the adapter used
     @param {String} [config.recordId="id"] - @deprecated the identifier used to denote the unique id for each record in the data associated with this pipe
     @param {Object} [config.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
+    @param {Object} [settings.authorizer=null] - the AeroGear.authz object used to pass credentials to a secure endpoint
     @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @returns {Object} pipeline - The created Pipeline containing any pipes that may have been created
     @example
