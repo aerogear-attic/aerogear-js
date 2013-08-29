@@ -472,7 +472,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
         url,
         success,
         error,
-        extraOptions;
+        extraOptions,
+        formData,
+        key,
+        hasFile = false;
 
     data = data || {};
     options = options || {};
@@ -507,6 +510,27 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
         timeout: this.getTimeout()
     });
 
+    //Maybe a better way to see if a file is included
+    for( key in data ) {
+        if( data[ key ] instanceof File ) {
+            hasFile = true;
+            break;
+        }
+    }
+
+    // Check to see if there is a file and create a FormData Object to upload
+    if( hasFile ) {
+        formData = new FormData();
+        for( key in data ) {
+            formData.append( key, data[ key ] );
+        }
+        extraOptions.data = formData;
+
+        //Options to tell jQuery not to process data.
+        extraOptions.contentType = "multipart/form-data";
+        extraOptions.cache = false;
+        extraOptions.processData = false;
+    }
     // Stringify data if we actually want to POST/PUT JSON data
     if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
         extraOptions.data = JSON.stringify( extraOptions.data );

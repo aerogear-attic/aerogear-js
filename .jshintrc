@@ -15,6 +15,7 @@
         "uuid": true,
         "vertx": true,
         "SockJS": true,
-        "Stomp": true
+        "Stomp": true,
+        "File": true
     }
 }
