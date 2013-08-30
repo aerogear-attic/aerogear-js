@@ -425,12 +425,13 @@ AeroGear.Pipeline.adapters.Rest.prototype.read = function( options ) {
 
 /**
     Save data asynchronously to the server. If this is a new object (doesn't have a record identifier provided by the server), the data is created on the server (POST) and then that record is sent back to the client including the new server-assigned id, otherwise, the data on the server is updated (PUT).
-    @param {Object} data - For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.
+    @param {Object} data - For new data, this will be an object representing the data to be saved to the server. For updating data, a hash of key/value pairs one of which must be the `recordId` you set during creation of the pipe representing the identifier the server will use to update this record and then any other number of pairs representing the data. The data object is then stringified and passed to the server to be processed.  To upload a File,  pass in a File or Blob object
     @param {Object} [options={}] - Additional options
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - a callback to be called when the request to the server results in an error
     @param {Object} [options.statusCode] - a collection of status codes and callbacks to fire when the request to the server returns on of those codes. For more info see the statusCode option on the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
     @param {AeroGear~successCallbackREST} [options.success] - a callback to be called when the result of the request to the server is successful
+    @param {AeroGear~progressCallbackREST} [options.progress] - a callback that is a hook to monitor the upload progress when uploading a File.( if available )
     @returns {Object} The jqXHR created by jQuery.ajax. To cancel the request, simply call the abort() method of the jqXHR object which will then trigger the error and complete callbacks for this request. For more info, see the <a href="http://api.jquery.com/jQuery.ajax/">jQuery.ajax page</a>.
     @example
     var myPipe = AeroGear.Pipeline( "tasks" ).pipes[ 0 ];
