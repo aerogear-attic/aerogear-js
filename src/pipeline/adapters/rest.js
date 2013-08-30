@@ -523,6 +523,19 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
             }
         }
         extraOptions.data = formData;
+
+        // the jqXHR doesn't expose upload progress, so we need to create a custom xhr object
+        extraOptions.xhr = function() {
+            var myXhr = jQuery.ajaxSettings.xhr();
+            if( myXhr.upload ){
+                myXhr.upload.addEventListener( "progress", function() {
+                    if( options.progress ) {
+                        options.progress.apply( this, arguments );
+                    }
+                }, false );
+            }
+            return myXhr;
+        };
     }
     // Stringify data if we actually want to POST/PUT JSON data
     if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
