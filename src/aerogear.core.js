@@ -55,16 +55,21 @@ AeroGear.Core = function() {
                 if ( typeof current === "string" ) {
                     collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current );
                 } else {
-                    collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings || {} );
+                    if( current.name ) {
+                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings || {} );
+                    }
                 }
             }
         } else {
+            if( !config.name ) {
+                return this;
+            }
             // config is an object so use that signature
             collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings || {} );
         }
 
         // reset the collection instance
-        this[ this.collectionName ] = collection;
+        this[ this.collectionName ] = Object.keys( collection ).length ? collection : undefined;
 
         return this;
     };
