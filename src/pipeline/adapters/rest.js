@@ -20,7 +20,7 @@
     @constructs AeroGear.Pipeline.adapters.Rest
     @param {String} pipeName - the name used to reference this particular pipe
     @param {Object} [settings={}] - the settings to be passed to the adapter
-    @param {Object} [settings.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
+    @param {Object} [settings.authenticator=null] - @deprecated the AeroGear.auth object used to pass credentials to a secure endpoint
     @param {String} [settings.baseURL] - defines the base URL to use for an endpoint
     @param {String} [settings.contentType="application/json"] - the default type of content being sent to the server
     @param {String} [settings.dataType="json"] - the default type of data expected to be returned from the server

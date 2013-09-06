@@ -47,14 +47,14 @@ AeroGear.Core = function() {
             return this;
         } else if ( typeof config === "string" ) {
             // config is a string so use default adapter type
-            collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config );
+            collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config, this.config );
         } else if ( AeroGear.isArray( config ) ) {
             // config is an array so loop through each item in the array
             for ( i = 0; i < config.length; i++ ) {
                 current = config[ i ];
 
                 if ( typeof current === "string" ) {
-                    collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current );
+                    collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current, this.config );
                 } else {
                     if( current.name ) {
                         current.settings = current.settings || {};
@@ -63,8 +63,7 @@ AeroGear.Core = function() {
                         // Added in 1.3 to remove in 1.4
                         current.settings.recordId = current.settings.recordId || current.recordId;
                         // End compat fix
-
-                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings );
+                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, jQuery.extend( {}, current.settings || {}, this.config ) );
                     }
                 }
             }
@@ -80,7 +79,7 @@ AeroGear.Core = function() {
             config.settings.recordId = config.settings.recordId || config.recordId;
             // End compat fix
 
-            collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings );
+            collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, jQuery.extend( {}, config.settings || {}, this.config ) );
         }
 
         // reset the collection instance
