@@ -41,6 +41,7 @@ AeroGear.Core = function() {
         var i,
             current,
             collection = this[ this.collectionName ] || {};
+        this[ this.collectionName ] = collection;
 
         if ( !config ) {
             return this;
@@ -69,7 +70,7 @@ AeroGear.Core = function() {
         }
 
         // reset the collection instance
-        this[ this.collectionName ] = Object.keys( collection ).length ? collection : undefined;
+        this[ this.collectionName ] = collection;
 
         return this;
     };

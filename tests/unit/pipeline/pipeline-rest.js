@@ -6,21 +6,21 @@ test( "create - Empty Pipeline", function() {
     expect( 1 );
 
     var pipeline = AeroGear.Pipeline();
-    equal( pipeline.pipes, undefined, "Empty Pipeline Created" );
+    equal( Object.keys( pipeline.pipes ).length, 0, "Empty Pipeline Created" );
 });
 
 test( "create - Empty Pipeline - with Config", function() {
     expect( 1 );
 
     var pipeline = AeroGear.Pipeline({ type: "Rest" });
-    equal( pipeline.pipes, undefined, "Empty Pipeline Created" );
+    equal( Object.keys( pipeline.pipes ).length, 0, "Empty Pipeline Created" );
 });
 
 test( "create - Empty Pipeline - with Config as Array", function() {
     expect( 1 );
 
     var pipeline = AeroGear.Pipeline([{ type: "Rest" }]);
-    equal( pipeline.pipes, undefined, "Empty Pipeline Created" );
+    equal( Object.keys( pipeline.pipes ).length, 0, "Empty Pipeline Created" );
 });
 
 test( "create - Pipeline - with Config as Array - 2 pipes - one with no name", function() {
