@@ -20,8 +20,8 @@
     @augments AeroGear.Core
     @param {String|Array|Object} [config] - A configuration for the pipe(s) being created along with the Pipeline. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the pipe will later be referenced by
-    @param {String} [config.type="rest"] - the type of pipe as determined by the adapter used
-    @param {String} [config.recordId="id"] - the identifier used to denote the unique id for each record in the data associated with this pipe
+    @param {String} [config.type="Rest"] - the type of pipe as determined by the adapter used
+    @param {String} [config.recordId="id"] - @deprecated the identifier used to denote the unique id for each record in the data associated with this pipe
     @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @returns {Object} pipeline - The created Pipeline containing any pipes that may have been created
     @example
@@ -38,7 +38,9 @@ var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );
 var pl4 = AeroGear.Pipeline({
     name: "customPipe",
     type: "rest",
-    recordId: "CustomID"
+    settings: {
+        recordId: "CustomID"
+    }
 });
 
 //Create multiple REST pipes using objects
@@ -46,12 +48,16 @@ var pl5 = AeroGear.Pipeline([
     {
         name: "customPipe",
         type: "rest",
-        recordId: "CustomID"
+        settings: {
+            recordId: "CustomID"
+        }
     },
     {
         name: "customPipe2",
         type: "rest",
-        recordId: "CustomID"
+        settings: {
+            recordId: "CustomID"
+        }
     }
 ]);
  */

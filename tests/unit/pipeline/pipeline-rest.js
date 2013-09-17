@@ -54,7 +54,9 @@ test( "create - name array", function() {
         {
             name: "createTest22",
             type: "Rest",
-            recordId: "testId"
+            settings: {
+                recordId: "testId"
+            }
         },
         "createTest23"
     ]).pipes;

@@ -20,8 +20,8 @@
     @augments AeroGear.Core
     @param {String|Array|Object} [config] - A configuration for the store(s) being created along with the DataManager. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the store will later be referenced by
-    @param {String} [config.type="memory"] - the type of store as determined by the adapter used
-    @param {String} [config.recordId="id"] - the identifier used to denote the unique id for each record in the data associated with this store
+    @param {String} [config.type="Memory"] - the type of store as determined by the adapter used
+    @param {String} [config.recordId="id"] - @deprecated the identifier used to denote the unique id for each record in the data associated with this store
     @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @returns {object} dataManager - The created DataManager containing any stores that may have been created
     @example
