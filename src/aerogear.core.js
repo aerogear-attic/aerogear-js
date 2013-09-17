@@ -57,13 +57,15 @@ AeroGear.Core = function() {
                     collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current, this.config );
                 } else {
                     if( current.name ) {
-                        current.settings = current.settings || {};
+
+                        // Merge the Pipeline Config with the current settings
+                        current.settings = jQuery.extend( {}, current.settings || {}, this.config );
 
                         // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
                         // Added in 1.3 to remove in 1.4
                         current.settings.recordId = current.settings.recordId || current.recordId;
                         // End compat fix
-                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, jQuery.extend( {}, current.settings || {}, this.config ) );
+                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings );
                     }
                 }
             }
@@ -71,15 +73,17 @@ AeroGear.Core = function() {
             if( !config.name ) {
                 return this;
             }
+
+            // Merge the Pipeline Config with the current config
             // config is an object so use that signature
-            config.settings = config.settings || {};
+            config.settings = jQuery.extend( {}, config.settings || {}, this.config );
 
             // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
             // Added in 1.3 to remove in 1.4
             config.settings.recordId = config.settings.recordId || config.recordId;
             // End compat fix
 
-            collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, jQuery.extend( {}, config.settings || {}, this.config ) );
+            collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings );
         }
 
         // reset the collection instance
