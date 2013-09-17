@@ -57,7 +57,14 @@ AeroGear.Core = function() {
                     collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current );
                 } else {
                     if( current.name ) {
-                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings || {} );
+                        current.settings = current.settings || {};
+
+                        // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
+                        // Added in 1.3 to remove in 1.4
+                        current.settings.recordId = current.settings.recordId || current.recordId;
+                        // End compat fix
+
+                        collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings );
                     }
                 }
             }
@@ -66,7 +73,14 @@ AeroGear.Core = function() {
                 return this;
             }
             // config is an object so use that signature
-            collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings || {} );
+            config.settings = config.settings || {};
+
+            // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
+            // Added in 1.3 to remove in 1.4
+            config.settings.recordId = config.settings.recordId || config.recordId;
+            // End compat fix
+
+            collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings );
         }
 
         // reset the collection instance
