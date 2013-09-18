@@ -59,7 +59,7 @@ AeroGear.Core = function() {
                     if( current.name ) {
 
                         // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
-                        current.settings = jQuery.extend( {}, current.settings || {}, this.config );
+                        current.settings = AeroGear.extend( current.settings || {}, this.config );
 
                         // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
                         // Added in 1.3 to remove in 1.4
@@ -77,7 +77,7 @@ AeroGear.Core = function() {
 
             // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
             // config is an object so use that signature
-            config.settings = jQuery.extend( {}, config.settings || {}, this.config );
+            config.settings = AeroGear.extend( config.settings || {}, this.config );
 
             // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
             // Added in 1.3 to remove in 1.4
@@ -138,6 +138,21 @@ AeroGear.Core = function() {
 */
 AeroGear.isArray = function( obj ) {
     return ({}).toString.call( obj ) === "[object Array]";
+};
+
+/**
+    Utility function to merge 2 Objects together.
+    @private
+    @method
+    @param {Object} obj1 - An Object to be merged.
+    @param {Object} obj2 - An Object to be merged.  This Objects Value takes precendence.
+*/
+AeroGear.extend = function( obj1, obj2 ) {
+    var name;
+    for( name in obj2 ) {
+        obj1[ name ] = obj2[ name ];
+    }
+    return obj1;
 };
 
 /**
