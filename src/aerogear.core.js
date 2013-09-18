@@ -58,7 +58,7 @@ AeroGear.Core = function() {
                 } else {
                     if( current.name ) {
 
-                        // Merge the Pipeline Config with the current settings
+                        // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
                         current.settings = jQuery.extend( {}, current.settings || {}, this.config );
 
                         // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
@@ -75,7 +75,7 @@ AeroGear.Core = function() {
                 return this;
             }
 
-            // Merge the Pipeline Config with the current config
+            // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
             // config is an object so use that signature
             config.settings = jQuery.extend( {}, config.settings || {}, this.config );
 
