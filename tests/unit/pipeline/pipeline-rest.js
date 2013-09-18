@@ -915,4 +915,52 @@ asyncTest( "abort (cancel)", function() {
     }, 2000 );
 });
 
+module( "Pipeline: Rest - Authenticator" );
+
+test( "create - Pipeline/pipe with no Authenticator", function() {
+    expect( 1 );
+
+    var pipeline = AeroGear.Pipeline( "name" );
+    equal( pipeline.pipes.name.getAuthenticator(), undefined, "No authenticator on pipe" );
+});
+
+test( "create - Pipeline with An Authenticator", function() {
+    expect( 1 );
+
+    var pipeline = AeroGear.Pipeline({ name: "name", authenticator: "authenticator object" });
+    equal( pipeline.pipes.name.getAuthenticator(), "authenticator object", "Authenticator object on pipe from the Pipeline Level" );
+});
+
+test( "create - Pipeline with An Authenticator - created on the pipe level", function() {
+    expect( 1 );
+
+    var pipeline = AeroGear.Pipeline({ name: "name", settings: { authenticator: "authenticator object" } });
+    equal( pipeline.pipes.name.getAuthenticator(), "authenticator object", "Authenticator object on pipe from the pipe Level" );
+});
+
+test( "create - Pipeline with An Authenticator - created on the pipe level and Pipeline Level - Pipeline will win", function() {
+    expect( 1 );
+
+    var pipeline = AeroGear.Pipeline({ name: "name", authenticator: "authenticator pipeline level object", settings: { authenticator: "authenticator object" } });
+    equal( pipeline.pipes.name.getAuthenticator(), "authenticator pipeline level object", "Authenticator object on pipe from the Pipeline Level" );
+});
+
+test( "create - Pipeline with An Authenticator - created on the pipe level with 'add' method( No authenticator ) and Pipeline Level", function() {
+    expect( 1 );
+
+    var pipeline = AeroGear.Pipeline({ authenticator: "authenticator pipeline level object" }),
+        pipe = pipeline.add( "name" );
+
+    equal( pipeline.pipes.name.getAuthenticator(), "authenticator pipeline level object", "Authenticator object on pipe from the Pipeline Level" );
+});
+
+test( "create - Pipeline with An Authenticator - created on the pipe level with 'add' method( with authenticator ) and Pipeline Level - Pipeline will win", function() {
+    expect( 1 );
+
+    var pipeline = AeroGear.Pipeline({ authenticator: "authenticator pipeline level object" }),
+        pipe = pipeline.add( { name: "name", settings: { authenticator: "pipe auth object" } } );
+
+    equal( pipeline.pipes.name.getAuthenticator(), "authenticator pipeline level object", "Authenticator object on pipe from the Pipeline Level" );
+});
+
 })( jQuery );

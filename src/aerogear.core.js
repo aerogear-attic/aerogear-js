@@ -47,17 +47,19 @@ AeroGear.Core = function() {
             return this;
         } else if ( typeof config === "string" ) {
             // config is a string so use default adapter type
-            collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config );
+            collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config, this.config );
         } else if ( AeroGear.isArray( config ) ) {
             // config is an array so loop through each item in the array
             for ( i = 0; i < config.length; i++ ) {
                 current = config[ i ];
 
                 if ( typeof current === "string" ) {
-                    collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current );
+                    collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current, this.config );
                 } else {
                     if( current.name ) {
-                        current.settings = current.settings || {};
+
+                        // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
+                        current.settings = AeroGear.extend( current.settings || {}, this.config );
 
                         // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
                         // Added in 1.3 to remove in 1.4
@@ -72,8 +74,10 @@ AeroGear.Core = function() {
             if( !config.name ) {
                 return this;
             }
+
+            // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
             // config is an object so use that signature
-            config.settings = config.settings || {};
+            config.settings = AeroGear.extend( config.settings || {}, this.config );
 
             // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
             // Added in 1.3 to remove in 1.4
@@ -134,6 +138,21 @@ AeroGear.Core = function() {
 */
 AeroGear.isArray = function( obj ) {
     return ({}).toString.call( obj ) === "[object Array]";
+};
+
+/**
+    Utility function to merge 2 Objects together.
+    @private
+    @method
+    @param {Object} obj1 - An Object to be merged.
+    @param {Object} obj2 - An Object to be merged.  This Objects Value takes precendence.
+*/
+AeroGear.extend = function( obj1, obj2 ) {
+    var name;
+    for( name in obj2 ) {
+        obj1[ name ] = obj2[ name ];
+    }
+    return obj1;
 };
 
 /**
