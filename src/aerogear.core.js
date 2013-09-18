@@ -65,6 +65,7 @@ AeroGear.Core = function() {
                         // Added in 1.3 to remove in 1.4
                         current.settings.recordId = current.settings.recordId || current.recordId;
                         // End compat fix
+
                         collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings );
                     }
                 }
