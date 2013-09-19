@@ -519,7 +519,6 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
             if( data[ key ] instanceof File || data[ key ] instanceof Blob ) {
                 //Options to tell jQuery not to process data or worry about content-type.
                 extraOptions.contentType = false;
-                extraOptions.cache = false;
                 extraOptions.processData = false;
             }
         }
