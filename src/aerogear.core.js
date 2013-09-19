@@ -175,6 +175,11 @@ AeroGear.extend = function( obj1, obj2 ) {
     @param {String} textStatus - The text status message returned from the server
     @param {Object} jqXHR - The jQuery specific XHR object
  */
+ /**
+    This callback is executed when an HTTP progress message is returned during a request.
+    @callback AeroGear~progressCallbackREST
+    @param {Object} XMLHttpRequestProgressEvent - The progress event
+ */
 /**
     This callback is executed when an error is encountered saving to local or session storage.
     @callback AeroGear~errorCallbackStorage
