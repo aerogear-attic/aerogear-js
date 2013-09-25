@@ -32,7 +32,7 @@ AeroGear.password = function ( password ) {
 };
 // Method to provide symmetric encryption with GCM by default
 /**
-    Returns the value the encrypted password
+    Encrypts in GCM mode
     @status Experimental
     @param {Object} options - includes IV (Initialization Vector), AAD
         (Additional Authenticated Data), key (private key for encryption),
@@ -50,13 +50,14 @@ AeroGear.password = function ( password ) {
  */
 AeroGear.encrypt = function ( options ) {
     var gcm = sjcl.mode.gcm;
+    options = options || {}
     var key = new sjcl.cipher.aes ( options.key );
     return gcm.encrypt(key, options.data, options.IV, options.aad, 128);
 };
 
 // Method to provide symmetric decryption with GCM by default
 /**
-    Returns the value the encrypted password
+    Decrypts in GCM mode
     @status Experimental
     @param {Object} options - includes IV (Initialization Vector), AAD
         (Additional Authenticated Data), key (private key for encryption),
@@ -74,6 +75,7 @@ AeroGear.encrypt = function ( options ) {
  */
 AeroGear.decrypt = function ( options ) {
    var gcm = sjcl.mode.gcm;
+   options = options || {}
    var key = new sjcl.cipher.aes ( options.key );
    return gcm.decrypt(key, options.data, options.IV, options.aad, 128)
 };
