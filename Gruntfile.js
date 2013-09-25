@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                 banner: '<%= meta.banner %>'
             },
             dist: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'external/crypto/core.js', 'external/crypto/sjcl.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js', 'src/crypto/crypto.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             pipeline: {
@@ -63,10 +63,14 @@ module.exports = function(grunt) {
             push: {
                 src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simplepush/aerogear.simplepush.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            crypto: {
+                src: ['src/aerogear.core.js', 'external/crypto/core.js', 'external/crypto/sjcl.js', 'src/crypto/crypto.js'],
+                dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
         qunit: {
-            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html']
+            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html']
         },
         jshint: {
             all: {
@@ -189,5 +193,6 @@ module.exports = function(grunt) {
     grunt.registerTask('simplePush', ['concat:simplePush']);
     grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
     grunt.registerTask('push', ['concat:push']);
+    grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
 };

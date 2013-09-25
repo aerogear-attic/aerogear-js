@@ -24,7 +24,7 @@
     //Password encryption:
     AeroGear.password('mypassword');
  */
-AeroGear.password = function ( password ) {
+AeroGear.password = function( password ) {
     var hex = sjcl.codec.hex;
     var salt = new sjcl.prng(12);
     var count = 2048;
@@ -48,10 +48,10 @@ AeroGear.password = function ( password ) {
     };
     AeroGear.encrypt( options );
  */
-AeroGear.encrypt = function ( options ) {
-    var gcm = sjcl.mode.gcm;
+AeroGear.encrypt = function( options ) {
     options = options || {};
-    var key = new sjcl.cipher.aes ( options.key );
+    var gcm = sjcl.mode.gcm,
+        key = new sjcl.cipher.aes ( options.key );
     return gcm.encrypt(key, options.data, options.IV, options.aad, 128);
 };
 
@@ -73,9 +73,9 @@ AeroGear.encrypt = function ( options ) {
     };
     AeroGear.decrypt( options );
  */
-AeroGear.decrypt = function ( options ) {
-   var gcm = sjcl.mode.gcm;
-   options = options || {};
-   var key = new sjcl.cipher.aes ( options.key );
-   return gcm.decrypt(key, options.data, options.IV, options.aad, 128);
+AeroGear.decrypt = function( options ) {
+    options = options || {};
+    var gcm = sjcl.mode.gcm,
+        key = new sjcl.cipher.aes ( options.key );
+    return gcm.decrypt(key, options.data, options.IV, options.aad, 128);
 };

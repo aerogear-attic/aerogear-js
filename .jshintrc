@@ -16,6 +16,7 @@
         "vertx": true,
         "SockJS": true,
         "Stomp": true,
-        "File": true
+        "File": true,
+        "sjcl": true
     }
 }
