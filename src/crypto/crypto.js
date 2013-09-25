@@ -50,7 +50,7 @@ AeroGear.password = function ( password ) {
  */
 AeroGear.encrypt = function ( options ) {
     var gcm = sjcl.mode.gcm;
-    options = options || {}
+    options = options || {};
     var key = new sjcl.cipher.aes ( options.key );
     return gcm.encrypt(key, options.data, options.IV, options.aad, 128);
 };
@@ -75,7 +75,7 @@ AeroGear.encrypt = function ( options ) {
  */
 AeroGear.decrypt = function ( options ) {
    var gcm = sjcl.mode.gcm;
-   options = options || {}
+   options = options || {};
    var key = new sjcl.cipher.aes ( options.key );
-   return gcm.decrypt(key, options.data, options.IV, options.aad, 128)
+   return gcm.decrypt(key, options.data, options.IV, options.aad, 128);
 };
