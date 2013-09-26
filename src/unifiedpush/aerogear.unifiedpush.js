@@ -39,7 +39,7 @@
         };
 
         // perform the registration against the UnifiedPush server:
-        client.registerWithPushServer(metadata);
+        client.registerWithPushServer(metadata, { success: function(){ ... }, error: function(){ ... } });
 
      */
     AeroGear.UnifiedPushClient = function( variantID, variantSecret, pushServerURL ) {
@@ -64,8 +64,14 @@
             @param {String} [metadata.operatingSystem] - Useful on Hybrid platforms like Apache Cordova to specifiy the underlying operating system.
             @param {String} [metadata.osVersion] - Useful on Hybrid platforms like Apache Cordova to specify the version of the underlying operating system.
             @param {String} [metadata.deviceType] - Useful on Hybrid platforms like Apache Cordova to specify the type of the used device, like iPad or Android-Phone.
+            @param {Object} [options = {}] The options to pass in
+            @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+            @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
+            @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
+            @returns {Object} The jqXHR created by jQuery.ajax
          */
-        this.registerWithPushServer = function( metadata ) {
+        this.registerWithPushServer = function( metadata, options ) {
+            options = options || {};
 
             // we need a deviceToken, registrationID or a channelID:
             if ( !metadata.deviceToken ) {
@@ -77,7 +83,7 @@
                 throw "UnifiedPushRegistrationException";
             }
 
-            $.ajax({
+            return $.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
@@ -85,16 +91,25 @@
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
-                data: JSON.stringify( metadata )
+                data: JSON.stringify( metadata ),
+                success: options.success,
+                error: options.error,
+                complete: options.complete
             });
         };
 
         /**
             Performs an unregister request against the UnifiedPush Server for the given deviceToken. The deviceToken identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the channelID of the subscribed channel.
             @param {String} deviceToken - unique String which identifies the client that is being unregistered.
+            @param {Object} [options = {}] The options to pass in
+            @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+            @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
+            @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
+            @returns {Object} The jqXHR created by jQuery.ajax
          */
-        this.unregisterWithPushServer = function( deviceToken ) {
-            $.ajax({
+        this.unregisterWithPushServer = function( deviceToken, options ) {
+            options = options || {};
+            return $.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
@@ -104,7 +119,10 @@
                 },
                 data: JSON.stringify({
                     deviceToken: deviceToken
-                })
+                }),
+                success: options.success,
+                error: options.error,
+                complete: options.complete
             });
         };
     };
