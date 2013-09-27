@@ -56,7 +56,8 @@
 
         /**
             Performs a register request against the UnifiedPush Server using the given metadata which represents a client that wants to register with the server.
-            @param {Object} metadata - the metadata for the client
+            @param {Object} settings The settings to pass in
+            @param {Object} settings.metadata - the metadata for the client
             @param {String} metadata.deviceToken - identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the channelID of the subscribed channel.
             @param {String} metadata.simplePushEndpoint - the URL of the given SimplePush server/network that is needed in order to trigger a notification to be sent to the SimplePush client.
             @param {String} [metadata.alias] - Application specific alias to identify users with the system. Common use case would be an email address or a username.
@@ -64,14 +65,14 @@
             @param {String} [metadata.operatingSystem] - Useful on Hybrid platforms like Apache Cordova to specifiy the underlying operating system.
             @param {String} [metadata.osVersion] - Useful on Hybrid platforms like Apache Cordova to specify the version of the underlying operating system.
             @param {String} [metadata.deviceType] - Useful on Hybrid platforms like Apache Cordova to specify the type of the used device, like iPad or Android-Phone.
-            @param {Object} [options = {}] The options to pass in
-            @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-            @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
-            @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
+            @param {AeroGear~completeCallbackREST} [settings.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+            @param {AeroGear~errorCallbackREST} [settings.error] - callback to be executed if the AJAX request results in an error
+            @param {AeroGear~successCallbackREST} [settings.success] - callback to be executed if the AJAX request results in success
             @returns {Object} The jqXHR created by jQuery.ajax
          */
-        this.registerWithPushServer = function( metadata, options ) {
-            options = options || {};
+        this.registerWithPushServer = function( settings ) {
+            settings = settings || {};
+            var metadata = settings.metadata || {};
 
             // we need a deviceToken, registrationID or a channelID:
             if ( !metadata.deviceToken ) {
@@ -92,23 +93,23 @@
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
                 data: JSON.stringify( metadata ),
-                success: options.success,
-                error: options.error,
-                complete: options.complete
+                success: settings.success,
+                error: settings.error,
+                complete: settings.complete
             });
         };
 
         /**
             Performs an unregister request against the UnifiedPush Server for the given deviceToken. The deviceToken identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the channelID of the subscribed channel.
             @param {String} deviceToken - unique String which identifies the client that is being unregistered.
-            @param {Object} [options = {}] The options to pass in
-            @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-            @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
-            @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
+            @param {Object} [settings = {}] The options to pass in
+            @param {AeroGear~completeCallbackREST} [settings.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
+            @param {AeroGear~errorCallbackREST} [settings.error] - callback to be executed if the AJAX request results in an error
+            @param {AeroGear~successCallbackREST} [settings.success] - callback to be executed if the AJAX request results in success
             @returns {Object} The jqXHR created by jQuery.ajax
          */
-        this.unregisterWithPushServer = function( deviceToken, options ) {
-            options = options || {};
+        this.unregisterWithPushServer = function( deviceToken, settings ) {
+            settings = settings || {};
             return $.ajax({
                 contentType: "application/json",
                 dataType: "json",
@@ -120,9 +121,9 @@
                 data: JSON.stringify({
                     deviceToken: deviceToken
                 }),
-                success: options.success,
-                error: options.error,
-                complete: options.complete
+                success: settings.success,
+                error: settings.error,
+                complete: settings.complete
             });
         };
     };
