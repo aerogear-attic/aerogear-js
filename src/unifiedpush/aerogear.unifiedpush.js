@@ -46,7 +46,7 @@
         settings.metadata = metadata;
 
         // perform the registration against the UnifiedPush server:
-        client.registerWithPushServer( setttings );
+        client.registerWithPushServer( settings );
 
      */
     AeroGear.UnifiedPushClient = function( variantID, variantSecret, pushServerURL ) {
