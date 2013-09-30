@@ -32,6 +32,7 @@
     @param {Function} [settings.pageConfig.parameterProvider] - a function for handling custom parameter placement within header and body based paging - for header paging, the function receives a jqXHR object and for body paging, the function receives the JSON formatted body as an object. the function should then return an object containing keys named for the previous/nextIdentifier options and whos values are either a map of parameters and values or a properly formatted query string
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @param {Number} [settings.timeout=60] - the amount of time, in seconds, to wait before timing out a connection and firing the complete callback for that request
+    @param {Object} [settings.xhrFields] - specify extra xhr options, like the withCredentials flag
     @returns {Object} The created pipe
     @example
     //Create an empty pipeline
@@ -68,7 +69,8 @@ AeroGear.Pipeline.adapters.Rest = function( pipeName, settings ) {
             // use the pipeName as the default rest endpoint
             url: settings.baseURL ? settings.baseURL + endpoint : endpoint,
             contentType: settings.contentType || "application/json",
-            dataType: settings.dataType || "json"
+            dataType: settings.dataType || "json",
+            xhrFields: settings.xhrFields
         },
         recordId = settings.recordId || "id",
         authenticator = settings.authenticator || null,

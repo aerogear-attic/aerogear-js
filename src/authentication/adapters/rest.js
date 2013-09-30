@@ -114,6 +114,10 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
             processedOptions.url = baseURL;
         }
 
+        if( options.xhrFields ) {
+            processedOptions.xhrFields = options.xhrFields;
+        }
+
         return processedOptions;
      };
 };
@@ -126,6 +130,7 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     @param {String} [options.baseURL] - defines the base URL to use for an endpoint
     @param {String} [options.contentType] - set the content type for the AJAX request
     @param {String} [options.dataType] - specify the data expected to be returned by the server
+    @param {Object} [options.xhrFields] - specify extra xhr options, like the withCredentials flag
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
