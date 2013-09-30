@@ -68,7 +68,7 @@ test( "create - name array", function() {
 });
 
 test( "create - object", function() {
-    expect( 7 );
+    expect( 8 );
 
     var pipe = AeroGear.Pipeline([
         {
@@ -86,16 +86,24 @@ test( "create - object", function() {
             settings: {
                 recordId: "testId"
             }
+        },
+        {
+            name: "createTest34",
+            type: "Rest",
+            settings: {
+                xhrFields: { withCredentials: true}
+            }
         }
     ]).pipes;
 
-    equal( Object.keys( pipe ).length, 3, "3 Pipes created" );
+    equal( Object.keys( pipe ).length, 4, "4 Pipes created" );
     equal( Object.keys( pipe )[ 0 ], "createTest31", "Pipe Name createTest31" );
     equal( Object.keys( pipe )[ 1 ], "createTest32", "Pipe Name createTest32" );
     equal( Object.keys( pipe )[ 2 ], "createTest33", "Pipe Name createTest33" );
     equal( pipe.createTest31.getRecordId(), "id", "Default recordId (id)" );
     equal( pipe.createTest32.getRecordId(), "testId", "Specified recordId (testId)" );
     equal( pipe.createTest33.getRecordId(), "testId", "Specified recordId (testId)" );
+    equal( pipe.createTest34.getAjaxSettings().xhrFields.withCredentials, true, "xhrFields passed" );
 });
 
 
