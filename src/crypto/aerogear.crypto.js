@@ -79,3 +79,7 @@ AeroGear.decrypt = function( options ) {
         key = new sjcl.cipher.aes ( options.key );
     return gcm.decrypt(key, options.data, options.IV, options.aad, 128);
 };
+
+AeroGear.hash = function( data ) {
+    return sjcl.hash.sha256.hash( data );
+};

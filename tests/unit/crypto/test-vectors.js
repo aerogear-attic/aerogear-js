@@ -1,10 +1,22 @@
-    //Test vectors for PBKDF2
+/**
+ * SHA256 test vectors
+ */
+
+var SHA256_MESSAGE = "My Bonnie lies over the ocean, my Bonnie lies over the sea";
+var SHA256_DIGEST = "d281d10296b7bde20df3f3f4a6d1bdb513f4aa4ccb0048c7b2f7f5786b4bcb77";
+var SHA256_DIGEST_EMPTY_STRING = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+
+/**
+  * Test vectors for PBKDF2
+  */
 
 var PASSWORD = "Bacon ipsum dolor sit amet prosciutto ground round short ribs" +
                "short loin tri-tip meatball jowl frankfurter turducken pork belly";
 var ENCRYPTED_PASSWORD = "269a804bf4584bbda65c72143aa86b73449618aeb7fa636ec2fa05d1146f2379";
 
-    //Test vectors for symmetric encryption
+/**
+  * Test vectors for symmetric encryption
+  */
 var PLAIN_TEXT = "My Bonnie lies over the ocean, my Bonnie lies over the sea";
 var BOB_SECRET_KEY = "f3a9375ec8746cc6e78e4b02d7e748988e10c74525e5c0a41d63fe5d21f84224";
 var BOB_AAD = "feedfacedeadbeeffeedfacedeadbeefabaddad2";
