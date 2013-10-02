@@ -1,6 +1,6 @@
 (function( $ ) {
 
-module( "PBKDF2 - Password encrytion" );
+module( "PBKDF2 - Password-based key derivation" );
 
 test( "Password validation with random salt provided", function() {
 

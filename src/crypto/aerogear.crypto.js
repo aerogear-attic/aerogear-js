@@ -16,11 +16,11 @@
 
 AeroGear.crypto = {};
 
-// Method to provide password encryption with PBKDF2
+// Method to provide key derivation with PBKDF2
 /**
-    Returns the value the encrypted password
+    Returns the value the key
     @status Experimental
-    @param {String} password - password to be encrypted
+    @param {String} password - master password
     @return {bitArray} - the derived key
     @example
     //Password encryption:
