@@ -24,9 +24,9 @@ AeroGear.crypto = {};
     @return {bitArray} - the derived key
     @example
     //Password encryption:
-    AeroGear.crypto.encryptPassword( 'mypassword' );
+    AeroGear.crypto.deriveKey( 'mypassword' );
  */
-AeroGear.crypto.encryptPassword = function( password ) {
+AeroGear.crypto.deriveKey = function( password ) {
     var hex = sjcl.codec.hex;
     var salt = new sjcl.prng(12);
     var count = 2048;
