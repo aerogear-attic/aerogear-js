@@ -87,6 +87,51 @@ test( "Should generated a valid SHA output for empty strings", function() {
     equal( hex.fromBits( digest ),  SHA256_DIGEST_EMPTY_STRING, "Hash is invalid" );
 });
 
+module( "Digital signatures" );
+
+test( "Should generate a valid signature", function() {
+    var options = {
+        keys: sjcl.ecc.ecdsa.generateKeys(192),
+        message: PLAIN_TEXT
+    };
+    options.signature = AeroGear.sign( options );
+    var validation = AeroGear.verify( options );
+
+    ok( validation, "Signature should be valid" );
+
+});
+
+test( "Should raise an error with corrupted key", function() {
+    var options = {
+        keys: sjcl.ecc.ecdsa.generateKeys(192),
+        message: PLAIN_TEXT
+    };
+    options.signature = AeroGear.sign( options );
+    options.keys = sjcl.ecc.ecdsa.generateKeys(192,10);
+
+    throws(function(){
+        AeroGear.verify( options );
+    }, "Should throw an exception for corrupted or wrong keys");
+});
+
+test( "Should raise an error with corrupted signature", function() {
+    var options = {
+        keys: sjcl.ecc.ecdsa.generateKeys(192),
+        message: PLAIN_TEXT
+    };
+    options.signature = AeroGear.sign( options );
+    options.signature[1] = ' ';
+
+    throws(function(){
+        AeroGear.verify( options );
+    }, "Should throw an exception for corrupted signatures");
+});
+
+test( "TODO", function() {
+    ok( 1 == "1", "Passed!" );
+});
+
+
 module( "TODO - Asymmetric encryption with ECC" );
 
 test( "TODO", function() {

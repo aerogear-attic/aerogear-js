@@ -77,9 +77,62 @@ AeroGear.decrypt = function( options ) {
     options = options || {};
     var gcm = sjcl.mode.gcm,
         key = new sjcl.cipher.aes ( options.key );
-    return gcm.decrypt(key, options.data, options.IV, options.aad, 128);
+    return gcm.decrypt( key, options.data, options.IV, options.aad, 128 );
 };
 
+// Method to provide secure hashing
+/**
+    Generates a hash output based on SHA-256
+    @status Experimental
+    @param {bitArray|String} data to hash.
+    @return {bitArray} - Hash value
+    @example
+    //Data hashing:
+    AeroGear.hash( options );
+ */
 AeroGear.hash = function( data ) {
     return sjcl.hash.sha256.hash( data );
+};
+
+// Method to provide digital signatures
+/**
+    Sign messages with ECDSA
+    @status Experimental
+    @param {Object} options - includes keys (provided keys to sign the message),
+        message (message to be signed)
+    @return {bitArray} - Digital signature
+    @example
+    //Message sign:
+    var options = {
+        keys: providedKey,
+        message: PLAIN_TEXT
+    };
+    AeroGear.sign( options );
+ */
+AeroGear.sign = function( options ) {
+    options = options || {};
+    var keys = options.keys || sjcl.ecc.ecdsa.generateKeys( 192 ),
+        hash = sjcl.hash.sha256.hash( options.message );
+    return keys.sec.sign( hash );
+};
+
+// Method to verify digital signatures
+/**
+    Verify signed messages with ECDSA
+    @status Experimental
+    @param {Object} options - includes keys (provided keys to sign the message),
+        message (message to be verified), signature (Digital signature)
+    @return {bitArray} - Signature
+    @example
+    //Message validation
+    var options = {
+        keys: sjcl.ecc.ecdsa.generateKeys(192),
+        signature: signatureToBeVerified
+    };
+    AeroGear.verify( options );
+ */
+AeroGear.verify = function ( options ) {
+    options = options || {};
+    var message = sjcl.hash.sha256.hash( options.message );
+    return options.keys.pub.verify( message, options.signature );
 };
