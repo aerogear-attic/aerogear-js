@@ -5,7 +5,7 @@ module( "PBKDF2 - Password-based key derivation" );
 test( "Password validation with random salt provided", function() {
 
     var hex = sjcl.codec.hex;
-    rawPassword = AeroGear.crypto.encryptPassword(PASSWORD);
+    rawPassword = AeroGear.crypto.deriveKey(PASSWORD);
     equal( hex.fromBits(rawPassword), ENCRYPTED_PASSWORD, "Password is not the same" );
 
 });
