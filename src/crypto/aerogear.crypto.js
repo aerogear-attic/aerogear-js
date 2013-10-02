@@ -18,7 +18,7 @@ AeroGear.crypto = {};
 
 // Method to provide key derivation with PBKDF2
 /**
-    Returns the value the key
+    Returns the value of the key
     @status Experimental
     @param {String} password - master password
     @return {bitArray} - the derived key
