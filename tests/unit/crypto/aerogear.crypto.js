@@ -5,7 +5,7 @@ module( "PBKDF2 - Password encrytion" );
 test( "Password validation with random salt provided", function() {
 
     var hex = sjcl.codec.hex;
-    rawPassword = AeroGear.password(PASSWORD);
+    rawPassword = AeroGear.crypto.encryptPassword(PASSWORD);
     equal( hex.fromBits(rawPassword), ENCRYPTED_PASSWORD, "Password is not the same" );
 
 });
@@ -20,7 +20,7 @@ test( "Encrypt raw bytes", function() {
         key: hex.toBits( BOB_SECRET_KEY ),
         data: hex.toBits( MESSAGE )
     };
-    var cipherText = AeroGear.encrypt( options );
+    var cipherText = AeroGear.crypto.encrypt( options );
     equal( hex.fromBits( cipherText ),  CIPHERTEXT, "Encryption has failed" );
 });
 
@@ -34,8 +34,8 @@ test( "Decrypt raw bytes", function() {
         key: hex.toBits( BOB_SECRET_KEY ),
         data: hex.toBits( MESSAGE )
     };
-    options.data = AeroGear.encrypt( options );
-    var plainText = AeroGear.decrypt ( options );
+    options.data = AeroGear.crypto.encrypt( options );
+    var plainText = AeroGear.crypto.decrypt ( options );
     equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
 });
 
@@ -48,7 +48,7 @@ test( "Decrypt corrupted ciphertext", function() {
         key: hex.toBits( BOB_SECRET_KEY ),
         data: hex.toBits( MESSAGE )
     };
-    options.data = AeroGear.encrypt( options );
+    options.data = AeroGear.crypto.encrypt( options );
     options.data[23] = ' ';
 
     throws( function() {
@@ -65,11 +65,11 @@ test( "Decrypt with corrupted IV", function() {
         key: hex.toBits( BOB_SECRET_KEY ),
         data: hex.toBits( MESSAGE )
     };
-    options.data = AeroGear.encrypt( options );
+    options.data = AeroGear.crypto.encrypt( options );
     options.IV[23] = ' ';
 
     throws(function(){
-        AeroGear.decrypt ( options )
+        AeroGear.crypto.decrypt ( options )
     }, "Should throw an exception for corrupted IVs");
 });
 
@@ -77,13 +77,13 @@ module( "Secure Hash Algorithm (SHA-256)" );
 
 test( "Should generated a valid SHA output", function() {
     var hex = sjcl.codec.hex;
-    var digest = AeroGear.hash(SHA256_MESSAGE);
+    var digest = AeroGear.crypto.hash(SHA256_MESSAGE);
     equal( hex.fromBits( digest ),  SHA256_DIGEST, "Hash is invalid" );
 });
 
 test( "Should generated a valid SHA output for empty strings", function() {
     var hex = sjcl.codec.hex;
-    var digest = AeroGear.hash("");
+    var digest = AeroGear.crypto.hash("");
     equal( hex.fromBits( digest ),  SHA256_DIGEST_EMPTY_STRING, "Hash is invalid" );
 });
 
@@ -94,8 +94,8 @@ test( "Should generate a valid signature", function() {
         keys: sjcl.ecc.ecdsa.generateKeys(192),
         message: PLAIN_TEXT
     };
-    options.signature = AeroGear.sign( options );
-    var validation = AeroGear.verify( options );
+    options.signature = AeroGear.crypto.sign( options );
+    var validation = AeroGear.crypto.verify( options );
 
     ok( validation, "Signature should be valid" );
 
@@ -106,11 +106,11 @@ test( "Should raise an error with corrupted key", function() {
         keys: sjcl.ecc.ecdsa.generateKeys(192),
         message: PLAIN_TEXT
     };
-    options.signature = AeroGear.sign( options );
+    options.signature = AeroGear.crypto.sign( options );
     options.keys = sjcl.ecc.ecdsa.generateKeys(192,10);
 
     throws(function(){
-        AeroGear.verify( options );
+        AeroGear.crypto.verify( options );
     }, "Should throw an exception for corrupted or wrong keys");
 });
 
@@ -119,7 +119,7 @@ test( "Should raise an error with corrupted signature", function() {
         keys: sjcl.ecc.ecdsa.generateKeys(192),
         message: PLAIN_TEXT
     };
-    options.signature = AeroGear.sign( options );
+    options.signature = AeroGear.crypto.sign( options );
     options.signature[1] = ' ';
 
     throws(function(){

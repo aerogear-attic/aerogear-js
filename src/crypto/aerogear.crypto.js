@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+AeroGear.crypto = {};
+
 // Method to provide password encryption with PBKDF2
 /**
     Returns the value the encrypted password
@@ -22,9 +24,9 @@
     @return {bitArray} - the derived key
     @example
     //Password encryption:
-    AeroGear.password('mypassword');
+    AeroGear.crypto.encryptPassword( 'mypassword' );
  */
-AeroGear.password = function( password ) {
+AeroGear.crypto.encryptPassword = function( password ) {
     var hex = sjcl.codec.hex;
     var salt = new sjcl.prng(12);
     var count = 2048;
@@ -46,9 +48,9 @@ AeroGear.password = function( password ) {
         key: mySecretKey,
         data: message
     };
-    AeroGear.encrypt( options );
+    AeroGear.crypto.encrypt( options );
  */
-AeroGear.encrypt = function( options ) {
+AeroGear.crypto.encrypt = function( options ) {
     options = options || {};
     var gcm = sjcl.mode.gcm,
         key = new sjcl.cipher.aes ( options.key );
@@ -71,9 +73,9 @@ AeroGear.encrypt = function( options ) {
         key: mySecretKey,
         data: ciphertext
     };
-    AeroGear.decrypt( options );
+    AeroGear.crypto.decrypt( options );
  */
-AeroGear.decrypt = function( options ) {
+AeroGear.crypto.decrypt = function( options ) {
     options = options || {};
     var gcm = sjcl.mode.gcm,
         key = new sjcl.cipher.aes ( options.key );
@@ -88,9 +90,9 @@ AeroGear.decrypt = function( options ) {
     @return {bitArray} - Hash value
     @example
     //Data hashing:
-    AeroGear.hash( options );
+    AeroGear.crypto.hash( options );
  */
-AeroGear.hash = function( data ) {
+AeroGear.crypto.hash = function( data ) {
     return sjcl.hash.sha256.hash( data );
 };
 
@@ -107,9 +109,9 @@ AeroGear.hash = function( data ) {
         keys: providedKey,
         message: PLAIN_TEXT
     };
-    AeroGear.sign( options );
+    AeroGear.crypto.sign( options );
  */
-AeroGear.sign = function( options ) {
+AeroGear.crypto.sign = function( options ) {
     options = options || {};
     var keys = options.keys || sjcl.ecc.ecdsa.generateKeys( 192 ),
         hash = sjcl.hash.sha256.hash( options.message );
@@ -129,9 +131,9 @@ AeroGear.sign = function( options ) {
         keys: sjcl.ecc.ecdsa.generateKeys(192),
         signature: signatureToBeVerified
     };
-    AeroGear.verify( options );
+    AeroGear.crypto.verify( options );
  */
-AeroGear.verify = function ( options ) {
+AeroGear.crypto.verify = function ( options ) {
     options = options || {};
     var message = sjcl.hash.sha256.hash( options.message );
     return options.keys.pub.verify( message, options.signature );
