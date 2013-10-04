@@ -522,7 +522,10 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
                 extraOptions.processData = false;
             }
         }
-        extraOptions.data = formData;
+
+        if( extraOptions.contentType === false ) {
+            extraOptions.data = formData;
+        }
 
         // the jqXHR doesn't expose upload progress, so we need to create a custom xhr object
         extraOptions.xhr = function() {
