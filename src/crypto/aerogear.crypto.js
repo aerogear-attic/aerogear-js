@@ -138,3 +138,15 @@ AeroGear.crypto.verify = function ( options ) {
     var message = sjcl.hash.sha256.hash( options.message );
     return options.keys.pub.verify( message, options.signature );
 };
+
+AeroGear.crypto.KeyPair = function( privateKey, publicKey ) {
+
+    var keys = (privateKey && publicKey) || sjcl.ecc.elGamal.generateKeys(192,0);
+
+    this.privateKey = function ( tag ) {
+        return keys.sec.unkem( tag );
+    };
+    this.publicKey = function ( ) {
+        return keys.pub.kem();
+    };
+};

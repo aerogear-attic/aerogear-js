@@ -127,12 +127,30 @@ test( "Should raise an error with corrupted signature", function() {
     }, "Should throw an exception for corrupted signatures");
 });
 
+module( "Asymmetric encryption with ECC" );
+
 test( "TODO", function() {
+    var keyPair = new AeroGear.crypto.KeyPair();
+    var hex = sjcl.codec.hex;
+
+    var publicKey = keyPair.publicKey();
+    var privateKey = keyPair.privateKey( publicKey.tag );
+
+    var options = {
+        IV: hex.toBits( BOB_IV ),
+        AAD: hex.toBits( BOB_AAD ),
+        key: publicKey.key,
+        data: hex.toBits( MESSAGE )
+    };
+    var cipherText = AeroGear.crypto.encrypt( options );
+    options.key = privateKey;
+    options.data = cipherText;
+    var plainText = AeroGear.crypto.decrypt( options );
+
+    console.log(plainText);
+
     ok( 1 == "1", "Passed!" );
 });
-
-
-module( "TODO - Asymmetric encryption with ECC" );
 
 test( "TODO", function() {
     ok( 1 == "1", "Passed!" );
