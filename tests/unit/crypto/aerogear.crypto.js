@@ -24,7 +24,7 @@ test( "Encrypt raw bytes", function() {
     equal( hex.fromBits( cipherText ),  CIPHERTEXT, "Encryption has failed" );
 });
 
-test( "Decrypt raw bytes", function() {
+test( "Encrypt/Decrypt raw bytes", function() {
 
     var hex = sjcl.codec.hex;
 
@@ -52,7 +52,7 @@ test( "Decrypt corrupted ciphertext", function() {
     options.data[23] = ' ';
 
     throws( function() {
-        AeroGear.decrypt ( options )
+        AeroGear.crypto.decrypt ( options )
     }, "Should throw an exception for corrupted ciphers");
 });
 
@@ -123,7 +123,7 @@ test( "Should raise an error with corrupted signature", function() {
     options.signature[1] = ' ';
 
     throws(function(){
-        AeroGear.verify( options );
+        AeroGear.crypto.verify( options );
     }, "Should throw an exception for corrupted signatures");
 });
 
