@@ -99,6 +99,21 @@ $.mockjax({
     }
 });
 
+$.mockjax({
+    url: "saveme",
+    type: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    response: function( request ) {
+        if( Object.keys( JSON.parse( request.data ) ).length ) {
+            this.responseText = JSON.parse( request.data );
+        } else {
+            this.responseText = {};
+        }
+    }
+});
+
 // delete mocks
 $.mockjax({
     url: "tasks",
