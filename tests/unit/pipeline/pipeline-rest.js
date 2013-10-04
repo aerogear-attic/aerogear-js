@@ -247,6 +247,25 @@ asyncTest( "save method", function() {
     });
 });
 
+//Save with no FormData, echo back the json submitted
+
+asyncTest( "save with no FormData", function() {
+    expect(3);
+
+    var line = AeroGear.Pipeline({ name: "saveme" }),
+        saveme = line.pipes.saveme,
+        data = { data1: "data1", data2: "data2" };
+
+    saveme.save( data, {
+        success: function( response ) {
+            ok( true, "SAVE - return successful" );
+            equal( response.data1, "data1", "data1 should be the same as above" );
+            equal( response.data2, "data2", "data2 should be the same as above" );
+            start();
+        },
+    });
+});
+
 // Remove method test
 asyncTest( "remove method", function() {
     expect( 3 );
