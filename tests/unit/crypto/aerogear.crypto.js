@@ -133,21 +133,19 @@ test( "TODO", function() {
     var keyPair = new AeroGear.crypto.KeyPair();
     var hex = sjcl.codec.hex;
 
-    var publicKey = keyPair.publicKey();
-    var privateKey = keyPair.privateKey( publicKey.tag );
+    var publicKey = keyPair.publicKey;
+    var privateKey = keyPair.privateKey;
 
     var options = {
         IV: hex.toBits( BOB_IV ),
         AAD: hex.toBits( BOB_AAD ),
-        key: publicKey.key,
+        key: publicKey,
         data: hex.toBits( MESSAGE )
     };
     var cipherText = AeroGear.crypto.encrypt( options );
     options.key = privateKey;
     options.data = cipherText;
     var plainText = AeroGear.crypto.decrypt( options );
-
-    console.log(plainText);
 
     ok( 1 == "1", "Passed!" );
 });

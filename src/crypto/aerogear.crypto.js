@@ -141,12 +141,16 @@ AeroGear.crypto.verify = function ( options ) {
 
 AeroGear.crypto.KeyPair = function( privateKey, publicKey ) {
 
-    var keys = (privateKey && publicKey) || sjcl.ecc.elGamal.generateKeys(192,0);
+    var keys, pub;
 
-    this.privateKey = function ( tag ) {
-        return keys.sec.unkem( tag );
-    };
-    this.publicKey = function ( ) {
-        return keys.pub.kem();
-    };
+    if ( privateKey && publicKey ) {
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+    } else {
+        keys = sjcl.ecc.elGamal.generateKeys( 192,0 );
+        //kem - key encapsulation mechanism
+        pub = keys.pub.kem();
+        this.publicKey = pub.key;
+        this.privateKey = keys.sec.unkem( pub.tag );
+    }
 };
