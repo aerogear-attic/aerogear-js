@@ -408,6 +408,7 @@ AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
     Send a message to a particular channel
     @param {String} channel - the channel to which to send the message
     @param {String|Object} [message=""] - the message object to send
+    @param {Boolean} [publish=false] - tell vert.x if this is a publish to all subscribed clients
     @example
     // Send an empty message to a channel
     notifier.clients.client1.send( "test.address" );
@@ -418,11 +419,19 @@ AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
     // Send a "Hello" message as an object
     notifier.clients.client1.send( "test.address", { "message": "Hello" } );
 
+    // Send a "Hello" message as an object to all subscribed clients on that channel
+    notifier.clients.client1.send( "test.address", { "message": "Hello" }, true );
+
+
  */
-AeroGear.Notifier.adapters.vertx.prototype.send = function( channel, message ) {
+AeroGear.Notifier.adapters.vertx.prototype.send = function( channel, message, publish ) {
     var bus = this.getBus();
 
+    if ( typeof message === Boolean && !publish ) {
+        publish = message;
+        message = "";
+    }
     message = message || "";
 
-    bus.send( channel, message );
+    bus[ publish ? "publish" : "send" ]( channel, message );
 };
