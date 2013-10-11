@@ -5,8 +5,51 @@ module( "PBKDF2 - Password-based key derivation" );
 test( "Password validation with random salt provided", function() {
 
     var hex = sjcl.codec.hex,
-        rawPassword = AeroGear.crypto.deriveKey(PASSWORD);
-    equal( hex.fromBits(rawPassword), ENCRYPTED_PASSWORD, "Password is not the same" );
+        rawPassword = AeroGear.crypto.deriveKey( PASSWORD );
+    equal( hex.fromBits( rawPassword ), ENCRYPTED_PASSWORD, "Password is not the same" );
+
+});
+
+
+module( "Password based encrytion with GCM" );
+
+test( "Encrypt/Decrypt raw bytes providing password", function() {
+
+    var rawPassword = AeroGear.crypto.deriveKey( PASSWORD ),
+        utf8String = sjcl.codec.utf8String,
+        hex = sjcl.codec.hex,
+        cipherText,
+        options = {
+            IV: hex.toBits( BOB_IV ),
+            AAD: hex.toBits( BOB_AAD ),
+            key: rawPassword,
+            data: utf8String.toBits( PLAIN_TEXT )
+    };
+    cipherText = AeroGear.crypto.encrypt( options );
+    options.data = cipherText;
+    plainText = AeroGear.crypto.decrypt ( options );
+    equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
+});
+
+test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
+
+    var rawPassword = AeroGear.crypto.deriveKey( PASSWORD ),
+        utf8String = sjcl.codec.utf8String,
+        hex = sjcl.codec.hex,
+        cipherText,
+        options = {
+            IV: hex.toBits( BOB_IV ),
+            AAD: hex.toBits( BOB_AAD ),
+            key: rawPassword,
+            data: utf8String.toBits( PLAIN_TEXT )
+    };
+    cipherText = AeroGear.crypto.encrypt( options );
+    options.key[0] = ' ';
+    options.data = cipherText;
+
+    throws( function() {
+        AeroGear.crypto.decrypt ( options )
+    }, "Should throw an exception for corrupted password");
 
 });
 
