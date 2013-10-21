@@ -126,33 +126,6 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     this.getRecordId = function() {
         return recordId;
     };
-
-    /**
-        Little utility used to compare nested object values in the filter method
-        @private
-        @augments IndexedDB
-        @param {String} nestedKey - Filter key to test
-        @param {Object} nestedFilter - Filter object to test
-        @param {Object} nestedValue - Value object to test
-        @returns {Boolean}
-     */
-    this.traverseObjects = function( nestedKey, nestedFilter, nestedValue ) {
-        while ( typeof nestedFilter === "object" ) {
-            if ( nestedValue ) {
-                // Value contains this key so continue checking down the object tree
-                nestedKey = Object.keys( nestedFilter )[ 0 ];
-                nestedFilter = nestedFilter[ nestedKey ];
-                nestedValue = nestedValue[ nestedKey ];
-            } else {
-                break;
-            }
-        }
-        if ( nestedFilter === nestedValue ) {
-            return true;
-        } else {
-            return false;
-        }
-    };
 };
 
 // Public Methods
