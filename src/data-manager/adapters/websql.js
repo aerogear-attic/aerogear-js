@@ -14,15 +14,15 @@
 * limitations under the License.
 */
 /**
-    The WebSQL adapter
+    The WebSQL adapter stores data in a WebSQL database for more persistent client side storage
     This constructor is instantiated when the "DataManager.add()" method is called
     @constructs AeroGear.DataManager.adapters.WebSQL
     @status Experimental
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
-    @param {AeroGear~successCallbackWEBSQL} [settings.success] - a callback to be called when after successful creation/opening of an IndexedDB
-    @param {AeroGear~errorCallbackWEBSQL} [settings.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
+    @param {AeroGear~successCallbackWEBSQL} [settings.success] - a callback to be called after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackWEBSQL} [settings.error] - a callback to be called when there is an error with the creation/opening of an IndexedDB
     @returns {Object} // TODO,  should this return a promise?
     @example
     // TODO
@@ -43,13 +43,13 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     settings = settings || {};
 
     // Private Instance vars
-    var recordId = settings.recordId ? settings.recordId : "id",
-        type = "WebSQL",
-        data = null,
-        success,
+    var success,
         error,
         database,
-        objectStore;
+        objectStore,
+        data = null,
+        type = "WebSQL",
+        recordId = settings.recordId ? settings.recordId : "id";
 
     //Do some creation and such
     database = window.openDatabase( storeName, "1", "AeroGear WebSQL Store", 2 * 1024 * 1024 );
@@ -118,33 +118,6 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     this.getRecordId = function() {
         return recordId;
     };
-
-    /**
-        Little utility used to compare nested object values in the filter method
-        @private
-        @augments WebSQL
-        @param {String} nestedKey - Filter key to test
-        @param {Object} nestedFilter - Filter object to test
-        @param {Object} nestedValue - Value object to test
-        @returns {Boolean}
-     */
-    this.traverseObjects = function( nestedKey, nestedFilter, nestedValue ) {
-        while ( typeof nestedFilter === "object" ) {
-            if ( nestedValue ) {
-                // Value contains this key so continue checking down the object tree
-                nestedKey = Object.keys( nestedFilter )[ 0 ];
-                nestedFilter = nestedFilter[ nestedKey ];
-                nestedValue = nestedValue[ nestedKey ];
-            } else {
-                break;
-            }
-        }
-        if ( nestedFilter === nestedValue ) {
-            return true;
-        } else {
-            return false;
-        }
-    };
 };
 
 // Public Methods
@@ -152,8 +125,8 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     Read data from a store
     @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
     @param {Object} [options={}] - additional options
-    @param {AeroGear~successCallbackWEBSQL} [options.success] - a callback to be called when after successful creation/opening of an IndexedDB
-    @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
+    @param {AeroGear~successCallbackWEBSQL} [options.success] - a callback to be called after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when there is an error with the creation/opening of an IndexedDB
     @returns {Array} Returns data from the store, optionally filtered by an id
     @example
     //TODO
@@ -161,11 +134,11 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
  */
 AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     var database,
-        storeName = this.getStoreName(),
         success,
         error,
         sql,
         data = [],
+        storeName = this.getStoreName(),
         i = 0;
 
     options = options || {};
@@ -205,8 +178,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
     @param {Object} [options={}] - additional options
     @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
-    @param {AeroGear~successCallbackWEBSQL} [options.success] - a callback to be called when after successful creation/opening of an IndexedDB
-    @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
+    @param {AeroGear~successCallbackWEBSQL} [options.success] - a callback to be called after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when there is an error with the creation/opening of an IndexedDB
     @returns {Array} Returns the updated data from the store
     @example
     // TODO
@@ -215,12 +188,12 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
     options = options || {};
 
     var that = this,
-        recordId = this.getRecordId(),
-        database = this.getDatabase(),
-        storeName = this.getStoreName(),
         error,
         success,
         readSuccess,
+        recordId = this.getRecordId(),
+        database = this.getDatabase(),
+        storeName = this.getStoreName(),
         i = 0;
 
     error = function( tx, error ) {
@@ -247,8 +220,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
 /**
     Removes data from the store
     @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
-    @param {AeroGear~successCallbackWEBSQL} [options.success] - a callback to be called when after successful creation/opening of an IndexedDB
-    @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
+    @param {AeroGear~successCallbackWEBSQL} [options.success] - a callback to be called after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when there is an error with the creation/opening of an IndexedDB
     @returns {Array} Returns the updated data from the store
     @example
     // TODO
@@ -258,11 +231,11 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
     options = options || {};
 
     var that = this,
-        storeName = this.getStoreName(),
-        db = this.getDatabase(),
         sql,
         success,
         error,
+        storeName = this.getStoreName(),
+        db = this.getDatabase(),
         i = 0;
 
     error = function( tx, error ) {
