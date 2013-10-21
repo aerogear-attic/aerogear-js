@@ -35,11 +35,6 @@
  */
 AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 
-    // Normalize
-    window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
-    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-
     if (!window.indexedDB) {
         //console.log( "Your browser doesn't support IndexedDB" );
         return;
