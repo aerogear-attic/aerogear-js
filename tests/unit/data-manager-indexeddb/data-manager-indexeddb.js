@@ -29,23 +29,76 @@
 
     var dm = AeroGear.DataManager();
 
-    asyncTest( "Create - Name String", function() {
-        expect( 4 );
         dm.add({
             name: "test1",
-            type: "IndexedDB",
-            settings: {
-                success: function( data ) {
-                    ok( true, "IndexedDB test1 created successfully" );
-                    equal( data.name, "test1", "Store Name test1" );
-                    equal( data.objectStoreNames.length, 1, "Object Store length should be 1" );
-                    equal( data.objectStoreNames[ 0 ], "test1", "Object Store name should be test1" );
-                    start();
-                },
-                error: function( error ) {
-                    ok( false, "error, IndexedDB create error" + error );
-                    start();
-                }
+            type: "IndexedDB"
+        });
+
+    test( "Create - Name String", function(){
+        expect( 2 );
+
+        equal( Object.keys( dm.stores ).length, 1, "1 store created" );
+        equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.IndexedDB, true, "new Indexed DB instance created" );
+    });
+
+    asyncTest( "Read - DB not open.  Should Fail", function() {
+        expect( 1 );
+
+        dm.stores.test1.read( undefined, {
+            error: function( error ) {
+                ok( true, "Read All has errors" + error );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Save - DB not open.  Should Fail", function() {
+        expect( 1 );
+
+        dm.stores.test1.save( {}, {
+            error: function( error ) {
+                ok( true, "Read All has errors" + error );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Remove - DB not open.  Should Fail", function() {
+        expect( 1 );
+
+        dm.stores.test1.remove( undefined, {
+            error: function( error ) {
+                ok( true, "Read All has errors" + error );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Filter - DB not open.  Should Fail", function() {
+        expect( 1 );
+
+        dm.stores.test1.filter( { "name": "Lucas" }, true, {
+            error: function( error ) {
+                ok( true, "Read All has errors" + error );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Create - Name String", function() {
+        expect( 4 );
+
+        dm.stores.test1.open({
+            success: function( data ) {
+                ok( true, "IndexedDB test1 created successfully" );
+                equal( data.name, "test1", "Store Name test1" );
+                equal( data.objectStoreNames.length, 1, "Object Store length should be 1" );
+                equal( data.objectStoreNames[ 0 ], "test1", "Object Store name should be test1" );
+                start();
+            },
+            error: function( error ) {
+                ok( false, "error, IndexedDB create error" + error );
+                start();
             }
         });
     });

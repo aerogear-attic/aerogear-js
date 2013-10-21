@@ -54,30 +54,6 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
         request,
         database;
 
-    // Attempt to open the indexedDB database
-    request = window.indexedDB.open( storeName );
-
-    request.onsuccess = function( event ) {
-        database = event.target.result;
-
-        if( settings.success ) {
-            settings.success.call( this, database, arguments );
-        }
-    };
-
-    request.onerror = function( event ) {
-        if( settings.error ) {
-            settings.error.call( this, event.target.error, arguments );
-        }
-    };
-
-    // Only called when the database doesn't exist and needs to be created
-    request.onupgradeneeded = function( event ) {
-        database = event.target.result;
-        database.createObjectStore( storeName, { keyPath: recordId } );
-        //TODO: set up indexes?
-    };
-
     // Privileged Methods
     /**
         Returns the value of the private data var
@@ -108,6 +84,15 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     };
 
     /**
+        Sets the value of the private database var
+        @private
+        @augments IndexedDB
+     */
+    this.setDatabase = function( db ) {
+        database = db;
+    };
+
+    /**
         Returns the value of the private storeName var
         @private
         @augments IndexedDB
@@ -129,6 +114,47 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 };
 
 // Public Methods
+/**
+    Open the Database
+    @param {Object} [options={}] - options
+    @param {AeroGear~successCallbackINDEXEDDB} [settings.success] - a callback to be called when after successful creation/opening of an IndexedDB
+    @param {AeroGear~errorCallbackINDEXEDDB} [settings.error] - a callback to be called when the there is an error with the creation/opening of an IndexedDB
+    @example
+*/
+AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
+    options = options || {};
+
+    var that = this,
+        request,
+        database,
+        storeName = this.getStoreName(),
+        recordId = this.getRecordId();
+
+        // Attempt to open the indexedDB database
+    request = window.indexedDB.open( storeName );
+
+    request.onsuccess = function( event ) {
+        database = event.target.result;
+        that.setDatabase( database );
+        if( options.success ) {
+            options.success.call( this, database, arguments );
+        }
+    };
+
+    request.onerror = function( event ) {
+        if( options.error ) {
+            options.error.call( this, event.target.error, arguments );
+        }
+    };
+
+    // Only called when the database doesn't exist and needs to be created
+    request.onupgradeneeded = function( event ) {
+        database = event.target.result;
+        database.createObjectStore( storeName, { keyPath: recordId } );
+    };
+};
+
+
 /**
     Read data from a store
     @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
@@ -152,6 +178,15 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     options = options || {};
 
     database = this.getDatabase();
+
+    if( !database ) {
+        //hasn't been opened yet
+        if( options.error ) {
+            options.error.call( this, "Database not opened" );
+        }
+
+        return;
+    }
 
     // TODO what if the database is not open,  they called read first
     if( !database.objectStoreNames.contains( storeName ) ) {
@@ -214,6 +249,16 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
         objectStore,
         i = 0;
 
+    db = this.getDatabase();
+
+    if( !db ) {
+        //hasn't been opened yet
+        if( options.error ) {
+            options.error.call( this, "Database not opened" );
+        }
+        return;
+    }
+
     // TODO implement reset
 
     transaction = db.transaction( storeName, "readwrite" );
@@ -260,6 +305,14 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
         objectStore,
         i = 0;
 
+    if( !db ) {
+        //hasn't been opened yet
+        if( options.error ) {
+            options.error.call( this, "Database not opened" );
+        }
+        return;
+    }
+
     transaction = db.transaction( storeName, "readwrite" );
     objectStore = transaction.objectStore( storeName );
 
@@ -302,7 +355,18 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     // TODO
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
-    var that = this;
+    var that = this,
+        db;
+
+    db = this.getDatabase();
+
+    if( !db ) {
+        //hasn't been opened yet
+        if( options.error ) {
+            options.error.call( this, "Database not opened" );
+        }
+        return;
+    }
 
     this.read( undefined, {
         success: function( data ) {
@@ -322,5 +386,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
     // TODO
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
-    this.getDatabase().close();
+    if( this.getDatabase() ) {
+        this.getDatabase().close();
+    }
 };
