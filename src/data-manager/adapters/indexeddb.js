@@ -116,8 +116,8 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 /**
     Open the Database
     @param {Object} [options={}] - options
-    @param {AeroGear~successCallbackINDEXEDDB} [settings.success] - a callback to be called when after successful opening of an IndexedDB
-    @param {AeroGear~errorCallbackINDEXEDDB} [settings.error] - a callback to be called when the there is an error with the opening of an IndexedDB
+    @param {AeroGear~successCallbackINDEXEDDB} [settings.success] - a callback to be called after successfully opening an IndexedDB
+    @param {AeroGear~errorCallbackINDEXEDDB} [settings.error] - a callback to be called when there is an error with the opening of an IndexedDB
     @example
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
@@ -136,13 +136,12 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     options = options || {};
 
-    var that = this,
-        request,
-        database,
+    var request, database,
+        that = this,
         storeName = this.getStoreName(),
         recordId = this.getRecordId();
 
-        // Attempt to open the indexedDB database
+    //Attempt to open the indexedDB database
     request = window.indexedDB.open( storeName );
 
     request.onsuccess = function( event ) {
@@ -201,17 +200,12 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     });
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options ) {
-    var database,
-        transaction,
-        objectStore,
+    var transaction, objectStore, cursor, request,
         data = [],
-        cursor,
-        request,
+        database = this.getDatabase(),
         storeName = this.getStoreName();
 
     options = options || {};
-
-    database = this.getDatabase();
 
     if( !database ) {
         //hasn't been opened yet
@@ -303,9 +297,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
 AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options ) {
     options = options || {};
 
-    var that = this,
-        transaction,
-        objectStore,
+    var transaction, objectStore,
+        that = this,
         db = this.getDatabase(),
         storeName = this.getStoreName(),
         i = 0;
@@ -382,9 +375,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
 AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, options ) {
     options = options || {};
 
-    var that = this,
-        objectStore,
-        transaction,
+    var objectStore, transaction,
+        that = this,
         db = this.getDatabase(),
         storeName = this.getStoreName(),
         i = 0;

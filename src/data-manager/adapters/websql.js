@@ -35,7 +35,7 @@
  */
 AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
 
-    if (!window.openDatabase ) {
+    if ( !window.openDatabase ) {
         throw "Your browser doesn't support WebSQL";
     }
 
@@ -135,10 +135,8 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     })
 */
 AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
-    var that = this,
-        success,
-        error,
-        database,
+    var success, error, database,
+        that = this,
         recordId = this.getRecordId(),
         storeName = this.getStoreName();
 
@@ -198,9 +196,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
 
  */
 AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
-    var success,
-        error,
-        sql,
+    var success, error, sql,
         data = [],
         storeName = this.getStoreName(),
         database = this.getDatabase(),
@@ -288,10 +284,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
 AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) {
     options = options || {};
 
-    var that = this,
-        error,
-        success,
-        readSuccess,
+    var error, success, readSuccess,
+        that = this,
         recordId = this.getRecordId(),
         database = this.getDatabase(),
         storeName = this.getStoreName(),
@@ -364,10 +358,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
 AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, options ) {
     options = options || {};
 
-    var that = this,
-        sql,
-        success,
-        error,
+    var sql, success, error,
+        that = this,
         storeName = this.getStoreName(),
         database = this.getDatabase(),
         i = 0;
