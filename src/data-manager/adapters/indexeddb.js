@@ -36,8 +36,7 @@
 AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 
     if (!window.indexedDB) {
-        //console.log( "Your browser doesn't support IndexedDB" );
-        return;
+        throw "Your browser doesn't support IndexedDB";
     }
 
     // Allow instantiation without using new
@@ -459,9 +458,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
     var that = this,
-        db;
-
-    db = this.getDatabase();
+        db = this.getDatabase();
 
     if( !db ) {
         //hasn't been opened yet
