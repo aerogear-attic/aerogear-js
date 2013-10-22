@@ -12,21 +12,29 @@
 
     var dm = AeroGear.DataManager();
 
+    dm.add({
+        name: "test1",
+        type: "WebSQL"
+    });
+
+    test( "Create - Name String", function(){
+        expect( 2 );
+
+        equal( Object.keys( dm.stores ).length, 1, "1 store created" );
+        equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.WebSQL, true, "new Indexed DB instance created" );
+    });
+
     asyncTest( "Create - Name String", function() {
         expect( 1 );
-        dm.add({
-            name: "test1",
-            type: "WebSQL",
-            settings: {
-                success: function( data ) {
-                    database = data;
-                    ok( true, "WebSQl test1 created successfully" );
-                    start();
-                },
-                error: function( error ) {
-                    ok( false, "error, WebSQL create error" + error );
-                    start();
-                }
+        dm.stores.test1.open({
+            success: function( data ) {
+                database = data;
+                ok( true, "WebSQl test1 created successfully" );
+                start();
+            },
+            error: function( error ) {
+                ok( false, "error, WebSQL create error" + error );
+                start();
             }
         });
     });
