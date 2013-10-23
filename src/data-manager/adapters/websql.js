@@ -151,12 +151,14 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
 
     var success, error, database,
         that = this,
+        version = "1",
+        databaseSize = 2 * 1024 * 1024,
         recordId = this.getRecordId(),
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred();
 
     //Do some creation and such
-    database = window.openDatabase( storeName, "1", "AeroGear WebSQL Store", 2 * 1024 * 1024 );
+    database = window.openDatabase( storeName, version, "AeroGear WebSQL Store", databaseSize );
 
     error = function( transaction, error ) {
         deferred.reject( error, "error", options.error );
