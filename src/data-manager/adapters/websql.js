@@ -406,7 +406,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
         database.transaction( function( transaction ) {
             transaction.executeSql( sql, [], success, error );
         });
-    } else  {
+    } else {
         toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
         database.transaction( function( transaction ) {
             for( i; i < toRemove.length; i++ ) {
