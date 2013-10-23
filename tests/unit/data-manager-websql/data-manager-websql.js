@@ -24,7 +24,7 @@
         equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.WebSQL, true, "new Indexed DB instance created" );
     });
 
-    asyncTest( "Create - Name String", function() {
+    asyncTest( "Open", function() {
         expect( 1 );
         dm.stores.test1.open({
             success: function( data ) {
@@ -36,6 +36,15 @@
                 ok( false, "error, WebSQL create error" + error );
                 start();
             }
+        });
+    });
+
+    asyncTest( "Open - with promises", function() {
+        expect( 1 );
+        dm.stores.test1.open().then( function( data ) {
+            database = data;
+            ok( true, "WebSQl test1 created successfully" );
+            start();
         });
     });
 
