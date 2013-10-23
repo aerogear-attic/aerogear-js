@@ -453,6 +453,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
     });
  */
 AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParameters, matchAny, options ) {
+    options = options || {};
+
     var that = this,
         deferred = jQuery.Deferred(),
         db = this.getDatabase();

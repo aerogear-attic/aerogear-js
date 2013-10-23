@@ -463,6 +463,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     });
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
+    options = options || {};
+
     var that = this,
         deferred = jQuery.Deferred(),
         database = this.getDatabase();
