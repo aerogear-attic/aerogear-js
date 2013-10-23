@@ -110,6 +110,17 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     this.getRecordId = function() {
         return recordId;
     };
+
+    /**
+        A Function for a jQuery.Deferred to always call
+        @private
+        @augments IndexedDB
+     */
+    this.always = function( value, status, callback ) {
+        if( callback ) {
+            callback.call( this, value, status );
+        }
+    };
 };
 
 // Public Methods
@@ -118,6 +129,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackINDEXEDDB} [settings.success] - a callback to be called after successfully opening an IndexedDB
     @param {AeroGear~errorCallbackINDEXEDDB} [settings.error] - a callback to be called when there is an error with the opening of an IndexedDB
+    @return {Object} A jQuery.Deferred promise
     @example
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
@@ -139,7 +151,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     var request, database,
         that = this,
         storeName = this.getStoreName(),
-        recordId = this.getRecordId();
+        recordId = this.getRecordId(),
+        deferred = jQuery.Deferred();
 
     //Attempt to open the indexedDB database
     request = window.indexedDB.open( storeName );
@@ -147,15 +160,11 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     request.onsuccess = function( event ) {
         database = event.target.result;
         that.setDatabase( database );
-        if( options.success ) {
-            options.success.call( this, database, arguments );
-        }
+        deferred.resolve( database, "success", options.success );
     };
 
     request.onerror = function( event ) {
-        if( options.error ) {
-            options.error.call( this, event.target.error, arguments );
-        }
+        deferred.reject( event, "error", options.error );
     };
 
     // Only called when the database doesn't exist and needs to be created
@@ -163,6 +172,9 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
         database = event.target.result;
         database.createObjectStore( storeName, { keyPath: recordId } );
     };
+
+    deferred.always( this.always );
+    return deferred.promise();
 };
 
 
@@ -172,7 +184,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     @param {Object} [options={}] - additional options
     @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called after the successful reading of an IndexedDB
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when there is an error reading an IndexedDB
-    @returns {Array} Returns data from the store, optionally filtered by an id
+    @return {Object} A jQuery.Deferred promise
     @example
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
@@ -200,24 +212,21 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     });
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options ) {
+    options = options || {};
+
     var transaction, objectStore, cursor, request,
         data = [],
         database = this.getDatabase(),
-        storeName = this.getStoreName();
-
-    options = options || {};
+        storeName = this.getStoreName(),
+        deferred = options.deferred || jQuery.Deferred();
 
     if( !database ) {
         //hasn't been opened yet
-        if( options.error ) {
-            options.error.call( this, "Database not opened" );
-        }
-
-        return;
+        throw "Database not opened";
     }
 
     if( !database.objectStoreNames.contains( storeName ) ) {
-        return [];
+        deferred.resolve( [], "success", options.success );
     }
 
     transaction = database.transaction( storeName );
@@ -242,16 +251,15 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     }
 
     transaction.oncomplete = function( event ) {
-        if( options.success ) {
-            options.success.call( this, data, arguments );
-        }
+        deferred.resolve( data, "success", options.success );
     };
 
     transaction.onerror = function( event ) {
-        if( options.error ) {
-            options.error.call( this, arguments );
-        }
+        deferred.reject( event, "error", options.error );
     };
+
+    deferred.always( this.always );
+    return deferred.promise();
 };
 
 /**
@@ -261,7 +269,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
     @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called after the successful saving of a record into an IndexedDB
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when there is an error with the saving of a record into an IndexedDB
-    @returns {Array} Returns the updated data from the store
+    @return {Object} A jQuery.Deferred promise
     @example
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
@@ -301,16 +309,12 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
         that = this,
         db = this.getDatabase(),
         storeName = this.getStoreName(),
+        deferred = jQuery.Deferred(),
         i = 0;
-
-    db = this.getDatabase();
 
     if( !db ) {
         //hasn't been opened yet
-        if( options.error ) {
-            options.error.call( this, "Database not opened" );
-        }
-        return;
+        throw "Database not opened";
     }
 
     // TODO implement reset
@@ -327,16 +331,22 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
     }
 
     transaction.oncomplete = function( event ) {
-        if( options.success ) {
-            that.read( undefined, options );
-        }
+        that.read( undefined ).done( function( data, status ) {
+            if( status === "success" ) {
+                deferred.resolve( data, status, options.success );
+            } else {
+                deferred.reject( data, status, options.error );
+            }
+        });
     };
 
     transaction.onerror = function( event ) {
-        if( options.error ) {
-            options.error.call( this, arguments );
-        }
+        deferred.reject( event, "error", options.error );
     };
+
+    deferred.always( this.always );
+
+    return deferred.promise();
 };
 
 /**
@@ -344,7 +354,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
     @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
     @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called after successfully removing a record out of an IndexedDB
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when there is an error removing a record out of an IndexedDB
-    @returns {Array} Returns the updated data from the store
+    @return {Object} A jQuery.Deferred promise
     @example
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
@@ -379,14 +389,12 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
         that = this,
         db = this.getDatabase(),
         storeName = this.getStoreName(),
+        deferred = jQuery.Deferred(),
         i = 0;
 
     if( !db ) {
         //hasn't been opened yet
-        if( options.error ) {
-            options.error.call( this, "Database not opened" );
-        }
-        return;
+        throw "Database not opened";
     }
 
     transaction = db.transaction( storeName, "readwrite" );
@@ -409,16 +417,22 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     }
 
     transaction.oncomplete = function( event ) {
-        if( options.success ) {
-            that.read( undefined, options, arguments );
-        }
+        that.read( undefined ).done( function( data, status ) {
+            if( status === "success" ) {
+                deferred.resolve( data, status, options.success );
+            } else {
+                deferred.reject( data, status, options.error );
+            }
+        });
     };
 
     transaction.onerror = function( event ) {
-        if( options.error ) {
-            options.error.call( this, arguments );
-        }
+        deferred.reject( event, "error", options.error );
     };
+
+    deferred.always( this.always );
+
+    return deferred.promise();
 };
 
 /**
@@ -427,7 +441,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     @param {Boolean} [matchAny] - When true, an item is included in the output if any of the filter parameters is matched.
     @param {AeroGear~successCallbackINDEXEDDB} [options.success] - a callback to be called after successful filtering of an IndexedDB
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be calledd after an error filtering of an IndexedDB
-    @returns {Array} Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
+    @return {Object} A jQuery.Deferred promise
     @example
     //Create an empty DataManager
     var dm = AeroGear.DataManager();
@@ -450,25 +464,27 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
     var that = this,
+        deferred = jQuery.Deferred(),
         db = this.getDatabase();
 
     if( !db ) {
         //hasn't been opened yet
-        if( options.error ) {
-            options.error.call( this, "Database not opened" );
-        }
-        return;
+        throw "Database not opened";
     }
 
-    this.read( undefined, {
-        success: function( data ) {
-            AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
-            var newData = AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny );
-            if( options.success ) {
-                options.success.call( this, newData );
-            }
+    this.read( undefined ).then( function( data, status ) {
+        if( status !== "success" ) {
+            deferred.reject( data, status, options.error );
+            return;
         }
+
+        AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
+        var newData = AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny );
+        deferred.resolve( newData, "success", options.success );
     });
+
+    deferred.always( this.always );
+    return deferred.promise();
 };
 
 /**

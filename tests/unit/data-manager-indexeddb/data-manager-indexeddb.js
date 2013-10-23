@@ -41,51 +41,51 @@
         equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.IndexedDB, true, "new Indexed DB instance created" );
     });
 
-    asyncTest( "Read - DB not open.  Should Fail", function() {
+    test( "Read - DB not open.  Should Fail", function() {
         expect( 1 );
 
-        dm.stores.test1.read( undefined, {
-            error: function( error ) {
-                ok( true, "Read All has errors" + error );
-                start();
-            }
-        });
+        raises( function() {
+                dm.stores.test1.read( undefined );
+            },
+            "Database not opened",
+            "throws"
+        );
     });
 
-    asyncTest( "Save - DB not open.  Should Fail", function() {
+    test( "Save - DB not open.  Should Fail", function() {
         expect( 1 );
 
-        dm.stores.test1.save( {}, {
-            error: function( error ) {
-                ok( true, "Read All has errors" + error );
-                start();
-            }
-        });
+        raises( function() {
+                dm.stores.test1.save( {} );
+            },
+            "Database not opened",
+            "throws"
+        );
     });
 
-    asyncTest( "Remove - DB not open.  Should Fail", function() {
+    test( "Remove - DB not open.  Should Fail", function() {
         expect( 1 );
 
-        dm.stores.test1.remove( undefined, {
-            error: function( error ) {
-                ok( true, "Read All has errors" + error );
-                start();
-            }
-        });
+        raises( function() {
+                dm.stores.test1.remove( undefined );
+            },
+            "Database not opened",
+            "throws"
+        );
     });
 
-    asyncTest( "Filter - DB not open.  Should Fail", function() {
+    test( "Filter - DB not open.  Should Fail", function() {
         expect( 1 );
 
-        dm.stores.test1.filter( { "name": "Lucas" }, true, {
-            error: function( error ) {
-                ok( true, "Read All has errors" + error );
-                start();
-            }
-        });
+        raises( function() {
+                dm.stores.test1.filter( { "name": "Lucas" }, true );
+            },
+            "Database not opened",
+            "throws"
+        );
     });
 
-    asyncTest( "Create - Name String", function() {
+    asyncTest( "Open", function() {
         expect( 4 );
 
         dm.stores.test1.open({
@@ -102,6 +102,19 @@
             }
         });
     });
+
+    asyncTest( "Open as a promise", function() {
+        expect( 4 );
+
+        dm.stores.test1.open().then( function( data ) {
+            ok( true, "IndexedDB test1 created successfully" );
+            equal( data.name, "test1", "Store Name test1" );
+            equal( data.objectStoreNames.length, 1, "Object Store length should be 1" );
+            equal( data.objectStoreNames[ 0 ], "test1", "Object Store name should be test1" );
+            start();
+        });
+    });
+
 
 
     var data = [
@@ -254,6 +267,7 @@
         }
 
         deleteRequest.onsuccess = function( event ) {
+            console.log( event );
             start();
         };
 
