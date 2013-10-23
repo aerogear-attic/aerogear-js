@@ -231,8 +231,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     };
 
     success = function( transaction, result ) {
-
-        for( i; i < result.rows.length; i++ ) {
+        var rowLength = result.rows.length;
+        for( i; i < rowLength; i++ ) {
             data.push( JSON.parse( result.rows.item( i ).json ) );
         }
         deferred.resolve( data, "success", options.success );
