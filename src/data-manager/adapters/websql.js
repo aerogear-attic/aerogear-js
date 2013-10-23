@@ -311,7 +311,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
     };
 
     success = function( tx, result ) {
-        that.read( undefined ).done( function( result, status ) {
+        that.read().done( function( result, status ) {
             if( status === "success" ) {
                 deferred.resolve( result, status, options.success );
             } else {
@@ -388,7 +388,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
     };
 
     success = function( tx, result ) {
-        that.read( undefined ).done( function( result, status ) {
+        that.read().done( function( result, status ) {
             if( status === "success" ) {
                 deferred.resolve( result, status, options.success );
             } else {
@@ -460,7 +460,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParamete
         throw "Database not opened";
     }
 
-    this.read( undefined ).then( function( data, status ) {
+    this.read().then( function( data, status ) {
         if( status !== "success" ) {
             deferred.reject( data, status, options.error );
             return;

@@ -331,7 +331,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
     }
 
     transaction.oncomplete = function( event ) {
-        that.read( undefined ).done( function( data, status ) {
+        that.read().done( function( data, status ) {
             if( status === "success" ) {
                 deferred.resolve( data, status, options.success );
             } else {
@@ -417,7 +417,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     }
 
     transaction.oncomplete = function( event ) {
-        that.read( undefined ).done( function( data, status ) {
+        that.read().done( function( data, status ) {
             if( status === "success" ) {
                 deferred.resolve( data, status, options.success );
             } else {
@@ -472,7 +472,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
         throw "Database not opened";
     }
 
-    this.read( undefined ).then( function( data, status ) {
+    this.read().then( function( data, status ) {
         if( status !== "success" ) {
             deferred.reject( data, status, options.error );
             return;
