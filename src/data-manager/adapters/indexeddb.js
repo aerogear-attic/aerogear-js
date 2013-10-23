@@ -35,7 +35,7 @@
  */
 AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 
-    if (!window.indexedDB) {
+    if ( !window.indexedDB ) {
         throw "Your browser doesn't support IndexedDB";
     }
 
@@ -323,7 +323,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
     objectStore = transaction.objectStore( storeName );
 
     if( AeroGear.isArray( data ) ) {
-        for( i; i < data.length; i++ ){
+        for( i; i < data.length; i++ ) {
             objectStore.put( data[ i ] );
         }
     } else {
