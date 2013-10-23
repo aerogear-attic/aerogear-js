@@ -218,7 +218,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
         data = [],
         database = this.getDatabase(),
         storeName = this.getStoreName(),
-        deferred = options.deferred || jQuery.Deferred();
+        deferred = jQuery.Deferred();
 
     if( !database ) {
         //hasn't been opened yet
