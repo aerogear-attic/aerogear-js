@@ -502,7 +502,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
     dm.stores.newStore.close();
  */
 AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
-    if( this.getDatabase() ) {
-        this.getDatabase().close();
+    var database = this.getDatabase();
+    if( database ) {
+        database.close();
     }
 };
