@@ -307,19 +307,19 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
 
     var transaction, objectStore,
         that = this,
-        db = this.getDatabase(),
+        database = this.getDatabase(),
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred(),
         i = 0;
 
-    if( !db ) {
+    if( !database ) {
         //hasn't been opened yet
         throw "Database not opened";
     }
 
     // TODO implement reset
 
-    transaction = db.transaction( storeName, "readwrite" );
+    transaction = database.transaction( storeName, "readwrite" );
     objectStore = transaction.objectStore( storeName );
 
     if( AeroGear.isArray( data ) ) {
@@ -387,17 +387,17 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
 
     var objectStore, transaction,
         that = this,
-        db = this.getDatabase(),
+        database = this.getDatabase(),
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred(),
         i = 0;
 
-    if( !db ) {
+    if( !database ) {
         //hasn't been opened yet
         throw "Database not opened";
     }
 
-    transaction = db.transaction( storeName, "readwrite" );
+    transaction = database.transaction( storeName, "readwrite" );
     objectStore = transaction.objectStore( storeName );
 
     if( !toRemove ) {
@@ -465,9 +465,9 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
     var that = this,
         deferred = jQuery.Deferred(),
-        db = this.getDatabase();
+        database = this.getDatabase();
 
-    if( !db ) {
+    if( !database ) {
         //hasn't been opened yet
         throw "Database not opened";
     }
