@@ -241,7 +241,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     sql = "SELECT * FROM " + storeName;
 
     if( id ) {
-        sql += " where id = " + id;
+        sql += " WHERE ID = " + id;
     }
 
     database.transaction( function( transaction ) {
@@ -327,8 +327,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
     database.transaction( function( transaction ) {
         data.forEach( function( value ) {
             //Not Really Thrilled by this.  TODO: find a better way
-            transaction.executeSql( "DELETE FROM " + storeName + " where id = ? ", [ value[ recordId ] ] );
-            transaction.executeSql( "INSERT INTO " + storeName + " ( id, json ) values ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
+            transaction.executeSql( "DELETE FROM " + storeName + " WHERE ID = ? ", [ value[ recordId ] ] );
+            transaction.executeSql( "INSERT INTO " + storeName + " ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
         });
     }, error, success );
 
@@ -399,7 +399,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
         });
     };
 
-    sql = "Delete from " + storeName;
+    sql = "DELETE FROM " + storeName;
 
     if( !toRemove ) {
         //remove all
@@ -411,9 +411,9 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
         database.transaction( function( transaction ) {
             for( i; i < toRemove.length; i++ ) {
                 if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {
-                    transaction.executeSql( sql + " where id = ? ", [ toRemove[ i ] ] );
+                    transaction.executeSql( sql + " WHERE ID = ? ", [ toRemove[ i ] ] );
                 } else if ( toRemove ) {
-                    transaction.executeSql( sql + " where id = ? ", [ toRemove[ i ][ this.getRecordId() ] ] );
+                    transaction.executeSql( sql + " WHERE ID = ? ", [ toRemove[ i ][ this.getRecordId() ] ] );
                 } else {
                     continue;
                 }
