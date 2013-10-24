@@ -1,3 +1,7 @@
+function doAlways() {
+    start();
+}
+
 ( function( $ ) {
 
     module( "DataManager: WebSQL" );
@@ -108,13 +112,11 @@
         dm.stores.test1.open({
             success: function( data ) {
                 ok( true, "WebSQL test1 created successfully" );
-                start();
             },
             error: function( error ) {
                 ok( false, "error, WebSQL create error" + error );
-                start();
             }
-        });
+        }).always( doAlways );
     });
 
     asyncTest( "Open as a promise", function() {
@@ -122,8 +124,7 @@
 
         dm.stores.test1.open().then( function( data ) {
             ok( true, "WebSQL test1 created successfully" );
-            start();
-        });
+        }).always( doAlways );
     });
 })( jQuery );
 
@@ -173,14 +174,12 @@
             success: function( data ) {
                 ok( true, "Data Saved Successfully" );
                 equal( data.length, 2, "2 items in database" );
-                start();
             },
             error: function( error ) {
                 console.log( error );
                 ok( false, "Failed to save records" + error );
-                start();
             }
-            });
+            }).always( doAlways );
         });
     });
 
@@ -191,14 +190,12 @@
                 success: function( data ) {
                     ok( true, "Data Saved Successfully" );
                     equal( data.length, 1, "1 items in database" );
-                    start();
                 },
                 error: function( error ) {
                     console.log( error );
                     ok( false, "Failed to save records" + error );
-                    start();
                 }
-            });
+            }).always( doAlways );
         });
     });
 
@@ -208,8 +205,7 @@
             dm.stores.test1.save( data ).then( function( data ) {
                 ok( true, "Data Saved Successfully" );
                 equal( data.length, 2, "2 items in database" );
-                start();
-            });
+            }).always( doAlways );
         });
     });
 
@@ -235,8 +231,7 @@
                 dm.stores.test1.save( newData, { reset: true } ).then( function( data ) {
                     ok( true, "Data Saved Successfully" );
                     equal( data.length, 2, "2 items in database" );
-                    start();
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -289,13 +284,11 @@
                     success: function( data ) {
                         ok( true, "read all data successful" );
                         equal( data.length, 2, "2 items returned" );
-                        start();
                     },
                     error: function( error ) {
                         ok( false, "Read All has errors" + error );
-                        start();
                     }
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -308,13 +301,11 @@
                     success: function( data ) {
                         ok( true, "read 1 item successful" );
                         equal( data.length, 1, "1 items returned" );
-                        start();
                     },
                     error: function( error ) {
                         ok( false, "Read 1 has errors" + error );
-                        start();
                     }
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -326,8 +317,7 @@
                 dm.stores.test1.read().then( function( data ) {
                     ok( true, "read all data successful" );
                     equal( data.length, 2, "2 items returned" );
-                    start();
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -381,13 +371,11 @@
                         ok( true, "update 1 item successful" );
                         equal( data.length, 2, "2 items still returned" );
                         equal( data[ 1 ].name, "Lucas", "Name field Updated"  );
-                        start();
                     },
                     error: function( error ) {
                         ok( false, "update 1 has errors" + error );
-                        start();
                     }
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -400,8 +388,7 @@
                     ok( true, "update 1 item successful" );
                     equal( data.length, 2, "2 items still returned" );
                     equal( data[ 1 ].name, "Lucas", "Name field Updated"  );
-                    start();
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -454,13 +441,11 @@
                     success: function( data ) {
                         ok( true, "remove 1 item successful" );
                         equal( data.length, 1, "1 items returned" );
-                        start();
                     },
                     error: function( error ) {
                         ok( false, "remove 1 has errors" + error );
-                        start();
                     }
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -473,13 +458,11 @@
                     success: function( data ) {
                         ok( true, "remove all items" );
                         equal( data.length, 0, "0 items returned" );
-                        start();
                     },
                     error: function( error ) {
                         ok( false, "remove all has errors" + error );
-                        start();
                     }
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -491,8 +474,7 @@
                 dm.stores.test1.remove().then( function( data ) {
                     ok( true, "remove all items" );
                     equal( data.length, 0, "0 items returned" );
-                    start();
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -546,13 +528,11 @@
                         ok( true, "filter 1 item successfully" );
                         equal( data.length, 1, "1 item returned" );
                         equal( data[ 0 ].name, "Luke", "Name field returned"  );
-                        start();
                     },
                     error: function( error ) {
                         ok( false, "update 1 has errors" + error );
-                        start();
                     }
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -565,8 +545,7 @@
                     ok( true, "filter 1 item successfully" );
                     equal( data.length, 1, "1 item returned" );
                     equal( data[ 0 ].name, "Luke", "Name field returned"  );
-                    start();
-                });
+                }).always( doAlways );
             });
         });
     });
@@ -590,12 +569,10 @@
         hasopened.done( function() {
             dm.stores.test1.remove( undefined, {
                 success: function( data ) {
-                    start();
                 },
                 error: function( error ) {
-                    start();
                 }
-            });
+            }).always( doAlways );
         });
     });
 })( jQuery );
