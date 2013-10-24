@@ -328,11 +328,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
             transaction.executeSql( "CREATE TABLE IF NOT EXISTS " + storeName + " ( " + recordId + " REAL UNIQUE, json)" );
         }
         data.forEach( function( value ) {
-            //Not Really Thrilled by this.  TODO: find a better way
-            if( !options.reset ) {
-                transaction.executeSql( "DELETE FROM " + storeName + " WHERE ID = ? ", [ value[ recordId ] ] );
-            }
-            transaction.executeSql( "INSERT INTO " + storeName + " ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
+            transaction.executeSql( "INSERT OR REPLACE INTO " + storeName + " ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
         });
     }, error, success );
 
