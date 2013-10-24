@@ -251,6 +251,34 @@
             });
         });
     });
+
+    asyncTest( "Save Data - Array - Reset - as a promise", function() {
+        expect( 4 );
+        var newData = [
+                {
+                    "id": 3,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": 4,
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+
+        hasopened.always( function() {
+            dm.stores.test1.save( data ).then( function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 2, "2 items in database" );
+                dm.stores.test1.save( newData, { reset: true } ).then( function( data ) {
+                    ok( true, "Data Saved Successfully" );
+                    equal( data.length, 2, "2 items in database" );
+                    start();
+                });
+            });
+        });
+    });
 })( jQuery );
 
 (function( $ ) {

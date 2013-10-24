@@ -323,9 +323,15 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
     data = AeroGear.isArray( data ) ? data : [ data ];
 
     database.transaction( function( transaction ) {
+        if( options.reset ) {
+            transaction.executeSql( "DROP TABLE " + storeName );
+            transaction.executeSql( "CREATE TABLE IF NOT EXISTS " + storeName + " ( " + recordId + " REAL UNIQUE, json)" );
+        }
         data.forEach( function( value ) {
             //Not Really Thrilled by this.  TODO: find a better way
-            transaction.executeSql( "DELETE FROM " + storeName + " WHERE ID = ? ", [ value[ recordId ] ] );
+            if( !options.reset ) {
+                transaction.executeSql( "DELETE FROM " + storeName + " WHERE ID = ? ", [ value[ recordId ] ] );
+            }
             transaction.executeSql( "INSERT INTO " + storeName + " ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
         });
     }, error, success );

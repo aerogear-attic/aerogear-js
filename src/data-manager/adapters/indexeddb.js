@@ -316,10 +316,12 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
         throw "Database not opened";
     }
 
-    // TODO implement reset
-
     transaction = database.transaction( storeName, "readwrite" );
     objectStore = transaction.objectStore( storeName );
+
+    if( options.reset ) {
+        objectStore.clear();
+    }
 
     if( AeroGear.isArray( data ) ) {
         for( i; i < data.length; i++ ) {
