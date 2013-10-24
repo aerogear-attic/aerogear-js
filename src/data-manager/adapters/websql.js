@@ -47,9 +47,7 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     settings = settings || {};
 
     // Private Instance vars
-    var success,
-        error,
-        database,
+    var success, error, database,
         data = null,
         type = "WebSQL",
         recordId = settings.recordId ? settings.recordId : "id";
@@ -144,7 +142,7 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     dm.stores.newStore.open({
         success: function() { ... },
         error: function() { ... }
-    })
+    });
 */
 AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
     options = options || {};

@@ -47,8 +47,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     settings = settings || {};
 
     // Private Instance vars
-    var request,
-        database,
+    var request, database,
         data = null,
         recordId = settings.recordId ? settings.recordId : "id",
         type = "IndexedDB";
@@ -143,7 +142,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     dm.stores.newStore.open({
         success: function() { ... },
         error: function() { ... }
-    })
+    });
 */
 AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     options = options || {};
