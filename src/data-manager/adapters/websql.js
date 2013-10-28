@@ -120,6 +120,16 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
             callback.call( this, value, status );
         }
     };
+
+    /**
+        @private
+        @augments Memory
+        Compatibility fix
+        Added in 1.3 to remove in 1.4
+    */
+    this.getAsync = function() {
+        return true;
+    };
 };
 
 // Public Methods
@@ -471,8 +481,9 @@ AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParamete
         }
 
         AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
-        var newData = AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny );
-        deferred.resolve( newData, "success", options.success );
+        AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( data ) {
+            deferred.resolve( data, "success", options.success );
+        });
     });
 
     deferred.always( this.always );
