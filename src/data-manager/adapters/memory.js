@@ -124,6 +124,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     };
 
     /**
+        Returns the value of the async setting
         @private
         @augments Memory
         Compatibility fix
@@ -182,8 +183,9 @@ var justOne = dm.read( 12345 );
 AeroGear.DataManager.adapters.Memory.prototype.read = function( id, options ) {
     var filter = {},
         data,
-        async = this.getAsync(), //added in 1.3.0,  will be removed in 1.4.0
-        deferred = jQuery.Deferred();
+        deferred = jQuery.Deferred(),
+        async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0;
+
     filter[ this.getRecordId() ] = id;
     if( id ) {
         if( async ) {
@@ -240,7 +242,8 @@ dm.save( toUpdate );
  */
 AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) {
     var itemFound = false,
-        deferred = jQuery.Deferred();
+        deferred = jQuery.Deferred(),
+        async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0
 
     data = AeroGear.isArray( data ) ? data : [ data ];
 
@@ -266,7 +269,7 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
             this.setData( data );
         }
     }
-    if( this.getAsync() ) {
+    if( async ) {
         deferred.always( this.always );
         return deferred.resolve( this.getData(), "success", options ? options.success : undefined );
     } else {
@@ -311,8 +314,8 @@ dm.remove();
  */
 AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove, options ) {
     var delId, data, item,
-        async = this.getAsync(),
-        deferred = jQuery.Deferred();
+        deferred = jQuery.Deferred(),
+        async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0
 
     deferred.always( this.always );
 

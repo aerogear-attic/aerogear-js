@@ -122,6 +122,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     };
 
     /**
+        Returns true - only for api symmetry
         @private
         @augments Memory
         Compatibility fix

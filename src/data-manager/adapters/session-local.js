@@ -128,7 +128,7 @@ dm.save( toUpdate );
                 deferred = jQuery.Deferred(),
                 reset = options && options.reset ? options.reset : false,
                 oldData = window[ this.getStoreType() ].getItem( this.getStoreKey() ),
-                async = this.getAsync();
+                async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0
 
             if( async ) {
                 AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], { reset: reset, async: async } ] ).then( function( data ) {
@@ -211,8 +211,8 @@ dm.remove();
         value: function( toRemove, options ) {
             // Call the super method
             var newData,
-                async = this.getAsync(),
-                deferred = jQuery.Deferred();
+                deferred = jQuery.Deferred(),
+                async = this.getAsync();  //added in 1.3.0,  will be removed in 1.4.0;
 
             if( async ) {
                 AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, [ arguments[ 0 ], { async: true } ] ).then( function( data ) {
