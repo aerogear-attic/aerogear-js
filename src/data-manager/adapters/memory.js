@@ -168,9 +168,8 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully reading a Memory Store -  this read is synchronous but the callback is provided for API symmetry.
-    @return {Object} A jQuery.Deferred promise
-
-    @returns {Array} Returns data from the store, optionally filtered by an id
+    @returns {Object} A jQuery.Deferred promise
+    @returns {Array} @deprecated Returns data from the store, optionally filtered by an id
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
@@ -211,7 +210,8 @@ AeroGear.DataManager.adapters.Memory.prototype.read = function( id, options ) {
     @param {Object} [options={}] - options
     @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully saving data from a Memory Store -  this save is synchronous but the callback is provided for API symmetry.
-    @return {Object} A jQuery.Deferred promise
+    @returns {Object} A jQuery.Deferred promise
+    @returns {Array} @deprecated Returns the updated data from the store
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
@@ -282,7 +282,8 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
     @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully removing data from a  Memory Store -  this remove is synchronous but the callback is provided for API symmetry.
-    @return {Object} A jQuery.Deferred promise
+    @returns {Object} A jQuery.Deferred promise
+    @returns {Array} @deprecated Returns the updated data from the store
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
@@ -355,6 +356,7 @@ AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove, opti
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully filter data from a Memory Store -  this filter is synchronous but the callback is provided for API symmetry.
     @return {Object} A jQuery.Deferred promise
+    @returns {Array} @deprecated Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 

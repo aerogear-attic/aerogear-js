@@ -92,7 +92,8 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
         @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
         @param {AeroGear~errorCallbackStorage} [options.error] - A callback to be executed when an error is thrown trying to save data to the store. The most likely error is when the localStorage is full. The callback is passed the error object and the data that was attempted to be saved as arguments.
         @param {AeroGear~success} [options.success] - A callback to be called if the save was successful. This probably isn't necessary since the save is synchronous but is provided for API symmetry.
-        @return {Object} A jQuery.Deferred promise
+        @returns {Object} A jQuery.Deferred promise
+        @returns {Array} @deprecated Returns the updated data from the store
         @example
 var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
 
@@ -177,7 +178,8 @@ dm.save( toUpdate );
         @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
         @param {Object} [options] - The options to be passed to the save method
         @param {AeroGear~successrCallbackStorage} [options.success] - A callback to be called if the remove was successful. This probably isn't necessary since the remove is synchronous but is provided for API symmetry.
-        @return {Object} A jQuery.Deferred promise
+        @returns {Object} A jQuery.Deferred promise
+        @returns {Array} @deprecated Returns the updated data from the store
         @example
 var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
 
