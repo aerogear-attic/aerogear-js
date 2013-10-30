@@ -20,7 +20,7 @@
     @constructs AeroGear.DataManager.adapters.Memory
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
-    @param {Boolean} [settings.async=false] -  If true, all operations will be simulated as asynchronous and return a promise. This is a Compatibility option for the Memory and SessionLocal adapters only for 1.3.0 and will be removed in the 1.4.0 release
+    @param {Boolean} [settings.async=false] -  If true, all operations will be simulated as asynchronous and return a promise. This is a compatibility option for the Memory and SessionLocal adapters only for 1.3.0 and will be removed in the 1.4.0 release
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
     @example
@@ -115,7 +115,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     /**
         A Function for a jQuery.Deferred to always call
         @private
-        @augments IndexedDB
+        @augments Memory
      */
     this.always = function( value, status, callback ) {
         if( callback ) {

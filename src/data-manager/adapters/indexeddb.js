@@ -56,7 +56,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     /**
         Returns the value of the private data var
         @private
-        @augments Memory
+        @augments IndexedDB
         @returns {Array}
      */
     this.getData = function() {
@@ -66,7 +66,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     /**
         Sets the value of the private data var
         @private
-        @augments Memory
+        @augments IndexedDB
      */
     this.setData = function( newData ) {
         data = newData;
@@ -111,7 +111,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     };
 
     /**
-        A Function for a jQuery.Deferred to always call
+        A function for a jQuery.Deferred to always call
         @private
         @augments IndexedDB
      */
@@ -122,9 +122,9 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     };
 
     /**
-        Returns true - only for api symmetry
+        Returns true - only for API symmetry
         @private
-        @augments Memory
+        @augments IndexedDB
         Compatibility fix
         Added in 1.3 to remove in 1.4
     */

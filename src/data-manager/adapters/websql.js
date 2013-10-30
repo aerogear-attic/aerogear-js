@@ -111,9 +111,9 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     };
 
     /**
-        A Function for a jQuery.Deferred to always call
+        A function for a jQuery.Deferred to always call
         @private
-        @augments IndexedDB
+        @augments WebSQL
      */
     this.always = function( value, status, callback ) {
         if( callback ) {
@@ -122,9 +122,9 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     };
 
     /**
-        Returns true - only for api symmetry
+        Returns true - only for API symmetry
         @private
-        @augments Memory
+        @augments WebSQL
         Compatibility fix
         Added in 1.3 to remove in 1.4
     */
