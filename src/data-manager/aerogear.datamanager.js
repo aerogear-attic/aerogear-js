@@ -17,7 +17,7 @@
     A collection of data connections (stores) and their corresponding data models. This object provides a standard way to interact with client side data no matter the data format or storage mechanism used.
     @status Stable
     @class
-    @augments AeroGear.Core
+    @augments AeroGear.DataManagerCore
     @param {String|Array|Object} [config] - A configuration for the store(s) being created along with the DataManager. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the store will later be referenced by
     @param {String} [config.type="Memory"] - the type of store as determined by the adapter used
@@ -63,9 +63,10 @@ AeroGear.DataManager = function( config ) {
     }
 
     // Super Constructor
-    AeroGear.Core.call( this );
+    AeroGear.DataManagerCore.call( this );
 
     this.lib = "DataManager";
+
     this.type = config ? config.type || "Memory" : "Memory";
 
     /**
@@ -77,9 +78,10 @@ AeroGear.DataManager = function( config ) {
     this.collectionName = "stores";
 
     this.add( config );
+
 };
 
-AeroGear.DataManager.prototype = AeroGear.Core;
+AeroGear.DataManager.prototype = AeroGear.DataManagerCore;
 AeroGear.DataManager.constructor = AeroGear.DataManager;
 
 /**

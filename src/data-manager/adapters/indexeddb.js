@@ -44,33 +44,14 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
         return new AeroGear.DataManager.adapters.IndexedDB( storeName, settings );
     }
 
+    AeroGear.DataManager.adapters.base.apply( this, arguments );
+
     settings = settings || {};
 
     // Private Instance vars
-    var request, database,
-        data = null,
-        recordId = settings.recordId ? settings.recordId : "id",
-        type = "IndexedDB";
+    var request, database;
 
     // Privileged Methods
-    /**
-        Returns the value of the private data var
-        @private
-        @augments IndexedDB
-        @returns {Array}
-     */
-    this.getData = function() {
-        return data;
-    };
-
-    /**
-        Sets the value of the private data var
-        @private
-        @augments IndexedDB
-     */
-    this.setData = function( newData ) {
-        data = newData;
-    };
     /**
         Returns the value of the private database var
         @private
@@ -101,28 +82,6 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     };
 
     /**
-        Returns the value of the private recordId var
-        @private
-        @augments IndexedDB
-        @returns {String}
-     */
-    this.getRecordId = function() {
-        return recordId;
-    };
-
-    /**
-        A function for a jQuery.Deferred to always call
-        @private
-        @augments IndexedDB
-     */
-    this.always = function( value, status, callback ) {
-        if( callback ) {
-            callback.call( this, value, status );
-        }
-    };
-
-    /**
-        Returns true - only for API symmetry
         @private
         @augments IndexedDB
         Compatibility fix
@@ -132,8 +91,14 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
         return true;
     };
 };
-
 // Public Methods
+/**
+    Determine if this adapter is supported in the current environment
+*/
+AeroGear.DataManager.adapters.IndexedDB.isValid = function() {
+    return !!window.indexedDB;
+};
+
 /**
     Open the Database
     @param {Object} [options={}] - options
@@ -522,3 +487,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
         database.close();
     }
 };
+
+/**
+    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+*/
+AeroGear.DataManagerCore.validateAdapter( "IndexedDB", AeroGear.DataManager.adapters.IndexedDB );

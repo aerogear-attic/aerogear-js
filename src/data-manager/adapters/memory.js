@@ -38,50 +38,14 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
         return new AeroGear.DataManager.adapters.Memory( storeName, settings );
     }
 
-    settings = settings || {};
-
-    // Private Instance vars
-    var recordId = settings.recordId ? settings.recordId : "id",
-        type = "Memory",
-        data = null;
-
-    // Privileged Methods
-    /**
-        Returns the value of the private recordId var
-        @private
-        @augments Memory
-        @returns {String}
-     */
-    this.getRecordId = function() {
-        return recordId;
-    };
-
-    /**
-        Returns the value of the private data var
-        @private
-        @augments Memory
-        @returns {Array}
-     */
-    this.getData = function() {
-        return data;
-    };
-
-    /**
-        Sets the value of the private data var
-        @private
-        @augments Memory
-     */
-    this.setData = function( newData ) {
-        data = newData;
-    };
-
+    AeroGear.DataManager.adapters.base.apply( this, arguments );
     /**
         Empties the value of the private data var
         @private
         @augments Memory
      */
     this.emptyData = function() {
-        data = null;
+        this.setData( null );
     };
 
     /**
@@ -90,8 +54,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
         @augments Memory
      */
     this.addDataRecord = function( record ) {
-        data = data || [];
-        data.push( record );
+        this.getData().push( record );
     };
 
     /**
@@ -100,7 +63,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
         @augments Memory
      */
     this.updateDataRecord = function( index, record ) {
-        data[ index ] = record;
+        this.getData()[ index ] = record;
     };
 
     /**
@@ -109,7 +72,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
         @augments Memory
      */
     this.removeDataRecord = function( index ) {
-        data.splice( index, 1 );
+        this.getData().splice( index, 1 );
     };
 
     /**
@@ -132,6 +95,24 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     */
     this.getAsync = function() {
         return settings && settings.async ? true : false;
+    };
+
+    /**
+        Returns a synchronous jQuery.Deferred for api symmetry
+        @private
+        @augments base
+     */
+    this.open = function( options ) {
+        return jQuery.Deferred().resolve( undefined, "success", options && options.success );
+    };
+
+    /**
+        Returns a synchronous jQuery.Deferred for api symmetry
+        @private
+        @augments base
+    */
+    this.close = function() {
+        //purposefully left empty
     };
 
     /**
@@ -163,6 +144,13 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
 };
 
 // Public Methods
+/**
+    Determine if this adapter is supported in the current environment
+*/
+AeroGear.DataManager.adapters.Memory.isValid = function() {
+    return true;
+};
+
 /**
     Read data from a store
     @param {String|Number} [id] - Usually a String or Number representing a single "record" in the data set or if no id is specified, all data is returned
@@ -507,3 +495,8 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
     return async ? deferred.resolve( filtered, "success", options ? options.success : undefined ) : filtered;
     //return deferred.resolve( filtered, "success", options ? options.success : undefined );
 };
+
+/**
+    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+*/
+AeroGear.DataManagerCore.validateAdapter( "Memory", AeroGear.DataManager.adapters.Memory );
