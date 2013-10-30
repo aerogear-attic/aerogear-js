@@ -44,9 +44,7 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
     AeroGear.DataManager.adapters.Memory.apply( this, arguments );
 
     // Private Instance vars
-    var data = null,
-        type = "SessionLocal",
-        storeType = settings.storageType || "sessionStorage",
+    var storeType = settings.storageType || "sessionStorage",
         name = storeName,
         appContext = document.location.pathname.replace(/[\/\.]/g,"-"),
         storeKey = name + appContext,
@@ -78,6 +76,13 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
     this.getStoreKey = function() {
         return storeKey;
     };
+};
+
+/**
+    Determine if this adapter is supported in the current environment
+*/
+AeroGear.DataManager.adapters.SessionLocal.isValid = function() {
+    return !!(window.localStorage && window.sessionStorage);
 };
 
 // Inherit from the Memory adapter
@@ -236,3 +241,8 @@ dm.remove();
         }, enumerable: true, configurable: true, writable: true
     }
 });
+
+/**
+    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+*/
+AeroGear.DataManagerCore.validateAdapter( "SessionLocal", AeroGear.DataManager.adapters.SessionLocal );
