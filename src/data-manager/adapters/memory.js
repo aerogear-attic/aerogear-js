@@ -499,4 +499,4 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
 /**
     Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
 */
-AeroGear.DataManagerCore.validateAdapter( "Memory", AeroGear.DataManager.adapters.Memory );
+AeroGear.DataManager.validateAdapter( "Memory", AeroGear.DataManager.adapters.Memory );
