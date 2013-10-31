@@ -34,21 +34,28 @@ AeroGear.DataManagerCore = function() {
     this.add = function( config ){
         config = config || {};
 
-        var i,
-            type = config.type || "Memory";
+        var i, type;
 
-        if( !( type in this.adapters ) ) {
-            for( i = 0; i < AeroGear.DataManagerCore.prefered.length; i++ ) {
-                if( AeroGear.DataManagerCore.prefered[ i ] in this.adapters ) {
-                    //For Deprecation purposes in 1.3.0  will be removed in 1.4.0
-                    if( type === "IndexedDB" || type === "WebSQL" ) {
-                        config.settings = AeroGear.extend( config.settings || {}, { async: true } );
+        config = AeroGear.isArray( config ) ? config : [ config ];
+
+        config = config.map( function( value, index, array ) {
+            if ( typeof value !== "string" ) {
+                type = value.type || "Memory";
+                if( !( type in this.adapters ) ) {
+                    for( i = 0; i < AeroGear.DataManagerCore.prefered.length; i++ ) {
+                        if( AeroGear.DataManagerCore.prefered[ i ] in this.adapters ) {
+                            //For Deprecation purposes in 1.3.0  will be removed in 1.4.0
+                            if( type === "IndexedDB" || type === "WebSQL" ) {
+                                value.settings = AeroGear.extend( value.settings || {}, { async: true } );
+                            }
+                            value.type = AeroGear.DataManagerCore.prefered[ i ];
+                            return value;
+                        }
                     }
-                    config.type = AeroGear.DataManagerCore.prefered[ i ];
-                    break;
                 }
             }
-        }
+            return value;
+        }, this );
 
         AeroGear.Core.call( this );
         this.add( config );
