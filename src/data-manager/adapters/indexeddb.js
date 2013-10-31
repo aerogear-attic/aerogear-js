@@ -491,4 +491,4 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
 /**
     Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
 */
-AeroGear.DataManagerCore.validateAdapter( "IndexedDB", AeroGear.DataManager.adapters.IndexedDB );
+AeroGear.DataManager.validateAdapter( "IndexedDB", AeroGear.DataManager.adapters.IndexedDB );

@@ -245,4 +245,4 @@ dm.remove();
 /**
     Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
 */
-AeroGear.DataManagerCore.validateAdapter( "SessionLocal", AeroGear.DataManager.adapters.SessionLocal );
+AeroGear.DataManager.validateAdapter( "SessionLocal", AeroGear.DataManager.adapters.SessionLocal );
