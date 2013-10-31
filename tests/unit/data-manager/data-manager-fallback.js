@@ -4,19 +4,19 @@
     //Remove the indexedDB and webSQL adapters from our list of valid adapters
     // so we can show the fallback to sessionLocal.
     //but first lets save a reference
-    var validAdapters = AeroGear.DataManagerCore.adapters;
+    var validAdapters = AeroGear.DataManager.validAdapters;
 
     module( "DataManager Creation with fallbacks", {
         setup: function() {
 
-            for( var adapter in AeroGear.DataManagerCore.adapters ) {
+            for( var adapter in AeroGear.DataManager.validAdapters ) {
                 if( adapter === "IndexedDB" || adapter === "WebSQL") {
-                    delete AeroGear.DataManagerCore.adapters[ adapter ];
+                    delete AeroGear.DataManager.validAdapters[ adapter ];
                 }
             }
         },
         teardown: function() {
-            AeroGear.DataManagerCore.adapters = validAdapters;
+            AeroGear.DataManager.validAdapters = validAdapters;
         }
     });
 
