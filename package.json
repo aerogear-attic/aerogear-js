@@ -9,8 +9,8 @@
     "url": "http://aerogear.org"
   },
   "maintainers": {
-    "name": "Kris Borchers",
-    "email": "kris@redhat.com"
+    "name": "Lucas Holmquist",
+    "email": "lholmqui@redhat.com"
   },
   "repository": {
     "type": "git",
