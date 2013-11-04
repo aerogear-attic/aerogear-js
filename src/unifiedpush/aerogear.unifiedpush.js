@@ -125,9 +125,6 @@
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
-                data: JSON.stringify({
-                    deviceToken: deviceToken
-                }),
                 success: settings.success,
                 error: settings.error,
                 complete: settings.complete
