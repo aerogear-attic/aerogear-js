@@ -162,6 +162,12 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        retire: {
+          /** Scan js-files in app/src/ directory and subdirectories. **/
+          js: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'external/crypto/sjcl.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js', 'src/crypto/aerogear.crypto.js'],
+          options: {
+          }
         }
     });
 
@@ -181,9 +187,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-retire');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('default', ['jshint', 'qunit', 'retire', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
