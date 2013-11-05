@@ -17,7 +17,7 @@
     A collection of data connections (stores) and their corresponding data models. This object provides a standard way to interact with client side data no matter the data format or storage mechanism used.
     @status Stable
     @class
-    @augments AeroGear.Core
+    @augments AeroGear.DataManagerCore
     @param {String|Array|Object} [config] - A configuration for the store(s) being created along with the DataManager. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the store will later be referenced by
     @param {String} [config.type="Memory"] - the type of store as determined by the adapter used
@@ -62,10 +62,69 @@ AeroGear.DataManager = function( config ) {
         return new AeroGear.DataManager( config );
     }
 
-    // Super Constructor
-    AeroGear.Core.call( this );
+    /**
+        This function is used by the AeroGear.DataManager to add a new Object to its respective collection.
+        @name AeroGear.add
+        @method
+        @param {String|Array|Object} config - This can be a variety of types specifying how to create the object. See the particular constructor for the object calling .add for more info.
+        @returns {Object} The object containing the collection that was updated
+     */
+    this.add = function( config ){
+        config = config || {};
+
+        var i, type;
+
+        config = AeroGear.isArray( config ) ? config : [ config ];
+
+        config = config.map( function( value, index, array ) {
+            if ( typeof value !== "string" ) {
+                type = value.type || "Memory";
+                if( !( type in AeroGear.DataManager.validAdapters ) ) {
+                    for( i = 0; i < AeroGear.DataManager.prefered.length; i++ ) {
+                        if( AeroGear.DataManager.prefered[ i ] in AeroGear.DataManager.validAdapters ) {
+                            //For Deprecation purposes in 1.3.0  will be removed in 1.4.0
+                            if( type === "IndexedDB" || type === "WebSQL" ) {
+                                value.settings = AeroGear.extend( value.settings || {}, { async: true } );
+                            }
+                            value.type = AeroGear.DataManager.prefered[ i ];
+                            return value;
+                        }
+                    }
+                }
+            }
+            return value;
+        }, this );
+
+        AeroGear.Core.call( this );
+        this.add( config );
+
+        //Put back DataManager.add
+        this.add = this._add;
+    };
+
+    //Save a reference to DataManager.add to put back later
+    this._add = this.add;
+
+    /**
+        This function is used internally by datamanager to remove an Object from the respective collection.
+        @name AeroGear.remove
+        @method
+        @param {String|String[]|Object[]|Object} config - This can be a variety of types specifying how to remove the object.
+        @returns {Object} The object containing the collection that was updated
+     */
+    this.remove = function( config ){
+        AeroGear.Core.call( this );
+        this.remove( config );
+
+        //Put back DataManager.remove
+        this.remove = this._remove;
+    };
+
+    //Save a reference to DataManager.remove to put back later
+    this._remove = this.remove;
 
     this.lib = "DataManager";
+
     this.type = config ? config.type || "Memory" : "Memory";
 
     /**
@@ -81,6 +140,25 @@ AeroGear.DataManager = function( config ) {
 
 AeroGear.DataManager.prototype = AeroGear.Core;
 AeroGear.DataManager.constructor = AeroGear.DataManager;
+
+/**
+    Stores the valid adapters
+*/
+AeroGear.DataManager.validAdapters = {};
+
+/**
+    prefered adapters for the fallback strategy
+*/
+AeroGear.DataManager.prefered = [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ];
+
+/**
+    Method to determine and store what adapters are valid for this environment
+*/
+AeroGear.DataManager.validateAdapter = function( id, obj ) {
+    if( obj.isValid() ) {
+        AeroGear.DataManager.validAdapters[ id ] = obj;
+    }
+};
 
 /**
     The adapters object is provided so that adapters can be added to the AeroGear.DataManager namespace dynamically and still be accessible to the add method
