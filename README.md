@@ -97,7 +97,7 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 
 ### Grunt
 
-[Grunt](http://gruntjs.com/) is used as the build tool which requires [Node.js](http://nodejs.org/) version >= 0.8.0.
+[Grunt](http://gruntjs.com/) is used as the build tool which requires [Node.js](http://nodejs.org/) version >= 0.10.
 Please refer to [nodejs.org](http://nodejs.org) for details regarding installing Node.js.
 Please refer to Grunt's [getting started](http://gruntjs.com/getting-started) guide for details regarding installing Grunt.
 
