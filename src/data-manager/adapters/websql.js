@@ -44,33 +44,14 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
         return new AeroGear.DataManager.adapters.WebSQL( storeName, settings );
     }
 
+    AeroGear.DataManager.adapters.base.apply( this, arguments );
+
     settings = settings || {};
 
     // Private Instance vars
-    var success, error, database,
-        data = null,
-        type = "WebSQL",
-        recordId = settings.recordId ? settings.recordId : "id";
+    var database;
 
     // Privileged Methods
-    /**
-        Returns the value of the private data var
-        @private
-        @augments WebSQL
-        @returns {Array}
-     */
-    this.getData = function() {
-        return data;
-    };
-
-    /**
-        Sets the value of the private data var
-        @private
-        @augments WebSQL
-     */
-    this.setData = function( newData ) {
-        data = newData;
-    };
     /**
         Returns the value of the private database var
         @private
@@ -101,28 +82,6 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
     };
 
     /**
-        Returns the value of the private recordId var
-        @private
-        @augments WebSQL
-        @returns {String}
-     */
-    this.getRecordId = function() {
-        return recordId;
-    };
-
-    /**
-        A function for a jQuery.Deferred to always call
-        @private
-        @augments WebSQL
-     */
-    this.always = function( value, status, callback ) {
-        if( callback ) {
-            callback.call( this, value, status );
-        }
-    };
-
-    /**
-        Returns true - only for API symmetry
         @private
         @augments WebSQL
         Compatibility fix
@@ -134,6 +93,13 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
 };
 
 // Public Methods
+/**
+    Determine if this adapter is supported in the current environment
+*/
+AeroGear.DataManager.adapters.WebSQL.isValid = function() {
+    return !!window.openDatabase;
+};
+
 /**
     Open the Database
     @param {Object} [options={}] - options
@@ -490,3 +456,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParamete
     deferred.always( this.always );
     return deferred.promise();
 };
+
+/**
+    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+*/
+AeroGear.DataManager.validateAdapter( "WebSQL", AeroGear.DataManager.adapters.WebSQL );
