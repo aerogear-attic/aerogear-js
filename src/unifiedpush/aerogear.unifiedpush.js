@@ -34,7 +34,7 @@
         var metadata = {
             deviceToken: "theDeviceToken",
             alias: "some_username",
-            category: "email",
+            categories: [ "email" ],
             simplePushEndpoint: "http://server.com/simplePushEndpoint"
         };
 
@@ -68,7 +68,7 @@
             @param {String} settings.metadata.deviceToken - identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the channelID of the subscribed channel.
             @param {String} settings.metadata.simplePushEndpoint - the URL of the given SimplePush server/network that is needed in order to trigger a notification to be sent to the SimplePush client.
             @param {String} [settings.metadata.alias] - Application specific alias to identify users with the system. Common use case would be an email address or a username.
-            @param {String} [settings.metadata.category] - In SimplePush this is the name of the registration endpoint. On Hybrid platforms like Apache Cordova this is used for tagging the registered client.
+            @param {Array} [settings.metadata.categories] - In SimplePush this is the name of the registration endpoint. On Hybrid platforms like Apache Cordova this is used for tagging the registered client.
             @param {String} [settings.metadata.operatingSystem] - Useful on Hybrid platforms like Apache Cordova to specifiy the underlying operating system.
             @param {String} [settings.metadata.osVersion] - Useful on Hybrid platforms like Apache Cordova to specify the version of the underlying operating system.
             @param {String} [settings.metadata.deviceType] - Useful on Hybrid platforms like Apache Cordova to specify the type of the used device, like iPad or Android-Phone.
@@ -86,10 +86,8 @@
                 throw "UnifiedPushRegistrationException";
             }
 
-            // if we see a category that is not the (SimplePush) broadcast, we require the alias to be present:
-            if ( metadata.category !== "broadcast" && !metadata.alias ) {
-                throw "UnifiedPushRegistrationException";
-            }
+            // Make sure that settings.metadata.categories is an Array
+            metadata.categories = AeroGear.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
 
             return $.ajax({
                 contentType: "application/json",
