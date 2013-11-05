@@ -86,11 +86,6 @@
                 throw "UnifiedPushRegistrationException";
             }
 
-            // if we see a category that is not the (SimplePush) broadcast, we require the alias to be present:
-            if ( metadata.category !== "broadcast" && !metadata.alias ) {
-                throw "UnifiedPushRegistrationException";
-            }
-
             return $.ajax({
                 contentType: "application/json",
                 dataType: "json",
