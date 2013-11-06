@@ -12,6 +12,18 @@
     "name": "Lucas Holmquist",
     "email": "lholmqui@redhat.com"
   },
+  "contributors": [
+    {"name": "Kris Borchers", "url": "http://twitter.com/kborchers"},
+	{"name": "Lucas Holmquist", "url": "http://twitter.com/sienaluke"},
+	{"name": "Bruno Oliveira", "url": "http://twitter.com/abstractj"},
+	{"name": "Matthias Wessendorf", "url": "http://twitter.com/mwessendorf"},
+	{"name": "Daniel Bevenius", "url": "http://twitter.com/dbevenius"},
+	{"name": "Douglas Campos", "url": "http://twitter.com/qmx"},
+	{"name": "Sebastien Blanc", "url": "http://twitter.com/sebi2706"},
+	{"name": "Jay Balunas", "url": "http://twitter.com/tech4j"},
+	{"name": "Christos Vasilakis", "url": "http://twitter.com/cvasilak"},
+	{"name": "Yavuz Yilmaz", "url": "https://github.com/yavuzsel"}
+  ],
   "repository": {
     "type": "git",
     "url": "aerogear/aerogear-js.git"
