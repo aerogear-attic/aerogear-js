@@ -14,7 +14,15 @@
 * limitations under the License.
 */
 
-AeroGear.crypto = {};
+AeroGear.crypto = function(){
+    IV: {};
+};
+
+AeroGear.crypto.randomValue = function() {
+    var random = new Uint32Array( 1 );
+    crypto.getRandomValues( random );
+    return random[0];
+};
 
 // Method to provide key derivation with PBKDF2
 /**
@@ -54,8 +62,13 @@ AeroGear.crypto.deriveKey = function( password ) {
 AeroGear.crypto.encrypt = function( options ) {
     options = options || {};
     var gcm = sjcl.mode.gcm,
+        random = new Uint32Array( 1 ),
         key = new sjcl.cipher.aes ( options.key );
-    return gcm.encrypt( key, options.data, options.IV, options.aad, 128 );
+
+    crypto.getRandomValues( random );
+    AeroGear.crypto.IV = options.IV || random[0];
+
+    return gcm.encrypt( key, options.data, AeroGear.crypto.IV, options.aad, 128 );
 };
 
 // Method to provide symmetric decryption with GCM by default
@@ -80,7 +93,7 @@ AeroGear.crypto.decrypt = function( options ) {
     options = options || {};
     var gcm = sjcl.mode.gcm,
         key = new sjcl.cipher.aes ( options.key );
-    return gcm.decrypt( key, options.data, options.IV, options.aad, 128 );
+    return gcm.decrypt( key, options.data, AeroGear.crypto.IV, options.aad, 128 );
 };
 
 // Method to provide secure hashing
