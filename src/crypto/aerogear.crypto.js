@@ -27,11 +27,11 @@ AeroGear.crypto = {};
     AeroGear.crypto.deriveKey( 'mypassword' );
  */
 AeroGear.crypto.deriveKey = function( password ) {
-    var hex = sjcl.codec.hex;
-    var array = new Uint32Array(1);
-    var salt = crypto.getRandomValues(array)[0];
+    var utf8String = sjcl.codec.utf8String;
+    var array = new Uint32Array( 1 );
+    var salt = crypto.getRandomValues( array )[0];
     var count = 2048;
-    return sjcl.misc.pbkdf2(password, hex.fromBits(salt), count);
+    return sjcl.misc.pbkdf2(password, utf8String.toBits( salt ), count);
 };
 // Method to provide symmetric encryption with GCM by default
 /**
