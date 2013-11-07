@@ -18,6 +18,7 @@
         "SockJS": true,
         "Stomp": true,
         "File": true,
-        "sjcl": true
+        "sjcl": true,
+        "crypto": true
     }
 }
