@@ -21,6 +21,9 @@
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+    @param {Object} [settings.crypto] - the crypto settings to be passed to the adapter
+    @param {Object} [settings.crypto.agcrypto] - the AeroGear.Crypto object to be used
+    @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
     @returns {Object} The created store
     @example
     //Create an empty DataManager
@@ -190,6 +193,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     options = options || {};
 
     var success, error, sql,
+        that = this,
         data = [],
         storeName = this.getStoreName(),
         database = this.getDatabase(),
@@ -210,7 +214,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
         for( i; i < rowLength; i++ ) {
             data.push( JSON.parse( result.rows.item( i ).json ) );
         }
-        deferred.resolve( data, "success", options.success );
+        deferred.resolve( that.decrypt( data ), "success", options.success );
     };
 
     sql = "SELECT * FROM " + storeName;
@@ -305,6 +309,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
             transaction.executeSql( "CREATE TABLE IF NOT EXISTS " + storeName + " ( " + recordId + " REAL UNIQUE, json)" );
         }
         data.forEach( function( value ) {
+            value = that.encrypt( value );
             transaction.executeSql( "INSERT OR REPLACE INTO " + storeName + " ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
         });
     }, error, success );

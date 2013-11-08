@@ -24,6 +24,9 @@
     @param {Boolean} [settings.async=false] -  If true, all operations will be simulated as asynchronous and return a promise. This is a compatibility option for the Memory and SessionLocal adapters only for 1.3.0 and will be removed in the 1.4.0 release
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @param {String} [settings.storageType="sessionStorage"] - the type of store can either be sessionStorage or localStorage
+    @param {Object} [settings.crypto] - the crypto settings to be passed to the adapter
+    @param {Object} [settings.crypto.agcrypto] - the AeroGear.Crypto object to be used
+    @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
     @returns {Object} The created store
     @example
 //Create an empty DataManager
@@ -49,7 +52,7 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
         appContext = document.location.pathname.replace(/[\/\.]/g,"-"),
         storeKey = name + appContext,
         content = window[ storeType ].getItem( storeKey ),
-        currentData = content ? JSON.parse( content ) : null ;
+        currentData = content ? this.decrypt( JSON.parse( content ), true ) : null ;
 
     // Initialize data from the persistent store if it exists
     if ( currentData ) {
@@ -148,7 +151,7 @@ dm.save( toUpdate );
 
             // Sync changes to persistent store
             try {
-                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( newData ) );
+                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.encrypt( newData ) ) );
                 if ( options && options.success ) {
                     options.storageSuccess( newData );
                 }
@@ -230,7 +233,7 @@ dm.remove();
             }
 
             // Sync changes to persistent store
-            window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( newData ) );
+            window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.encrypt( newData ) ) );
 
             if( async ) {
                 deferred.always( this.always );
