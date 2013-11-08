@@ -14,16 +14,24 @@
 * limitations under the License.
 */
 
-AeroGear.crypto = function(){
+AeroGear.crypto = function() {
     IV: {};
 };
 
-AeroGear.crypto.randomValue = function() {
+// Method to retrieve random values
+/**
+    Returns the random value
+    @status Experimental
+    @return {Number} - the random value
+    @example
+    //Random number generator:
+    AeroGear.crypto.getRandomValue();
+*/
+AeroGear.crypto.getRandomValue = function() {
     var random = new Uint32Array( 1 );
     crypto.getRandomValues( random );
-    return random[0];
+    return random[ 0 ];
 };
-
 // Method to provide key derivation with PBKDF2
 /**
     Returns the value of the key
@@ -36,10 +44,9 @@ AeroGear.crypto.randomValue = function() {
  */
 AeroGear.crypto.deriveKey = function( password ) {
     var utf8String = sjcl.codec.utf8String,
-        salt = new Uint32Array( 1 ),
+        salt = AeroGear.crypto.getRandomValue(),
         count = 2048;
-    crypto.getRandomValues( salt );
-    return sjcl.misc.pbkdf2( password, utf8String.toBits( salt[0] ), count );
+    return sjcl.misc.pbkdf2( password, utf8String.toBits( salt ), count );
 };
 // Method to provide symmetric encryption with GCM by default
 /**
@@ -62,11 +69,10 @@ AeroGear.crypto.deriveKey = function( password ) {
 AeroGear.crypto.encrypt = function( options ) {
     options = options || {};
     var gcm = sjcl.mode.gcm,
-        random = new Uint32Array( 1 ),
+        random = AeroGear.crypto.getRandomValue(),
         key = new sjcl.cipher.aes ( options.key );
 
-    crypto.getRandomValues( random );
-    AeroGear.crypto.IV = options.IV || random[0];
+    AeroGear.crypto.IV = options.IV || random;
 
     return gcm.encrypt( key, options.data, AeroGear.crypto.IV, options.aad, 128 );
 };
