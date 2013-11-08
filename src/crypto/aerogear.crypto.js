@@ -14,11 +14,11 @@
 * limitations under the License.
 */
 
-AeroGear.crypto = function() {
+AeroGear.Crypto = function() {
 
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.crypto ) ) {
-        return new AeroGear.crypto();
+    if ( !( this instanceof AeroGear.Crypto ) ) {
+        return new AeroGear.Crypto();
     }
 
     // Local Variables
