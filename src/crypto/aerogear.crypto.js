@@ -16,6 +16,25 @@
 
 AeroGear.crypto = {};
 
+// Data encoding
+function Encoder( options ) {
+    options = options || {};
+    var codec = options.codec || sjcl.codec.utf8String;
+    // Convert the a raw or hex string to bytes
+    this.toBits = function() {
+        for( var i in options ) {
+            if( typeof options[ i ] === 'string' ) {
+                options[ i ] = codec.toBits( options[ i ] );
+            }
+        }
+        return options;
+    };
+    // Convert an array of bytes to string
+    this.fromBits = function( ciphertext ) {
+        return codec.fromBits( ciphertext );
+    };
+}
+
 // Method to provide key derivation with PBKDF2
 /**
     Returns the value of the key
@@ -51,10 +70,11 @@ AeroGear.crypto.deriveKey = function( password ) {
     };
     AeroGear.crypto.encrypt( options );
  */
-AeroGear.crypto.encrypt = function( options ) {
-    options = options || {};
+AeroGear.crypto.encrypt = function( options, codec ) {
+    options = new Encoder( options ).toBits();
     var gcm = sjcl.mode.gcm,
         key = new sjcl.cipher.aes ( options.key );
+
     return gcm.encrypt( key, options.data, options.IV, options.aad, 128 );
 };
 
@@ -77,10 +97,12 @@ AeroGear.crypto.encrypt = function( options ) {
     AeroGear.crypto.decrypt( options );
  */
 AeroGear.crypto.decrypt = function( options ) {
-    options = options || {};
+    var encoder = new Encoder( options );
+    options = encoder.toBits();
     var gcm = sjcl.mode.gcm,
-        key = new sjcl.cipher.aes ( options.key );
-    return gcm.decrypt( key, options.data, options.IV, options.aad, 128 );
+        key = new sjcl.cipher.aes ( options.key ),
+        ciphertext = gcm.decrypt( key, options.data, options.IV, options.aad, 128 );
+    return encoder.fromBits(ciphertext);
 };
 
 // Method to provide secure hashing

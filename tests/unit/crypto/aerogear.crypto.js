@@ -17,19 +17,18 @@ module( "Password based encrytion with GCM" );
 test( "Encrypt/Decrypt raw bytes providing password", function() {
 
     var rawPassword = AeroGear.crypto.deriveKey( PASSWORD ),
-        utf8String = sjcl.codec.utf8String,
-        hex = sjcl.codec.hex,
         cipherText,
         options = {
-            IV: hex.toBits( BOB_IV ),
-            AAD: hex.toBits( BOB_AAD ),
+            IV: BOB_IV,
+            AAD: BOB_AAD,
             key: rawPassword,
-            data: utf8String.toBits( PLAIN_TEXT )
+            data: MESSAGE,
+            codec: sjcl.codec.hex
     };
     cipherText = AeroGear.crypto.encrypt( options );
     options.data = cipherText;
     plainText = AeroGear.crypto.decrypt ( options );
-    equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
+    equal( plainText, MESSAGE, "Encryption has failed" );
 });
 
 test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
@@ -57,13 +56,14 @@ test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
 module( "Symmetric encrytion with GCM" );
 
 test( "Encrypt raw bytes", function() {
-    var hex = sjcl.codec.hex,
-        cipherText,
+    var cipherText,
+        hex = sjcl.codec.hex,
         options = {
-            IV: hex.toBits( BOB_IV ),
-            AAD: hex.toBits( BOB_AAD ),
-            key: hex.toBits( BOB_SECRET_KEY ),
-            data: hex.toBits( MESSAGE )
+            IV: BOB_IV,
+            AAD: BOB_AAD,
+            key: BOB_SECRET_KEY,
+            data: MESSAGE,
+            codec: hex
     };
     cipherText = AeroGear.crypto.encrypt( options );
     equal( hex.fromBits( cipherText ),  CIPHERTEXT, "Encryption has failed" );
@@ -74,14 +74,15 @@ test( "Encrypt/Decrypt raw bytes", function() {
     var hex = sjcl.codec.hex,
         plainText,
         options = {
-            IV: hex.toBits( BOB_IV ),
-            AAD: hex.toBits( BOB_AAD ),
-            key: hex.toBits( BOB_SECRET_KEY ),
-            data: hex.toBits( MESSAGE )
+            IV: BOB_IV,
+            AAD: BOB_AAD,
+            key: BOB_SECRET_KEY,
+            data: MESSAGE,
+            codec: hex
         };
     options.data = AeroGear.crypto.encrypt( options );
     plainText = AeroGear.crypto.decrypt ( options );
-    equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
+    equal( plainText,  MESSAGE, "Encryption has failed" );
 });
 
 test( "Decrypt corrupted ciphertext", function() {
@@ -178,16 +179,17 @@ test( "Encrypt/Decrypt raw bytes", function() {
         keyPair = new AeroGear.crypto.KeyPair(),
         cipherText, plainText,
         options = {
-            IV: hex.toBits( BOB_IV ),
-            AAD: hex.toBits( BOB_AAD ),
+            IV: BOB_IV,
+            AAD: BOB_AAD,
             key: keyPair.publicKey,
-            data: hex.toBits( MESSAGE )
+            data: MESSAGE,
+            codec: hex
         };
     cipherText = AeroGear.crypto.encrypt( options );
     options.key = keyPair.privateKey;
     options.data = cipherText;
     plainText = AeroGear.crypto.decrypt( options );
-    equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
+    equal( plainText,  MESSAGE, "Encryption has failed" );
 });
 
 test( "Decrypt corrupted ciphertext", function() {
