@@ -15,7 +15,7 @@
 */
 
 AeroGear.crypto = function() {
-    IV: {};
+    this.IV = "";
 };
 
 // Method to retrieve random values
