@@ -32,6 +32,23 @@ test( "Encrypt/Decrypt raw bytes providing password", function() {
     equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
 });
 
+test( "Encrypt/Decrypt raw bytes providing password with implicit IV", function() {
+
+    var rawPassword = AeroGear.crypto.deriveKey( PASSWORD ),
+        utf8String = sjcl.codec.utf8String,
+        hex = sjcl.codec.hex,
+        cipherText,
+        options = {
+            AAD: hex.toBits( BOB_AAD ),
+            key: rawPassword,
+            data: utf8String.toBits( PLAIN_TEXT )
+    };
+    cipherText = AeroGear.crypto.encrypt( options );
+    options.data = cipherText;
+    plainText = AeroGear.crypto.decrypt ( options );
+    equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
+});
+
 test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
 
     var rawPassword = AeroGear.crypto.deriveKey( PASSWORD ),
