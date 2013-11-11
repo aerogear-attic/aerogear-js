@@ -97,10 +97,14 @@ AeroGear.Crypto = function() {
     this.encrypt = function( options ) {
         options = options || {};
         var gcm = sjcl.mode.gcm,
-            random = options.IV || this.getRandomValue(),
             key = new sjcl.cipher.aes ( options.key );
 
-        return gcm.encrypt( key, options.data, random, options.aad, 128 );
+        IV = options.IV || ( IV ? IV : this.getRandomValue() ); // this will always use the value in options.IV if available
+                                                                    // or it will check to see if the local var IV is not null/undefined
+                                                                    // it that is there, then it uses it, else it gets a randomValue
+                                                                    // what ever it uses,  it stores in the local var IV
+
+        return gcm.encrypt( key, options.data, IV, options.aad, 128 );
     };
 
     // Method to provide symmetric decryption with GCM by default
@@ -124,9 +128,8 @@ AeroGear.Crypto = function() {
     this.decrypt = function( options ) {
         options = options || {};
         var gcm = sjcl.mode.gcm,
-            random = options.IV || IV,
             key = new sjcl.cipher.aes ( options.key );
-        return gcm.decrypt( key, options.data, random, options.aad, 128 );
+        return gcm.decrypt( key, options.data, options.IV || IV, options.aad, 128 );
     };
 
     // Method to provide secure hashing
