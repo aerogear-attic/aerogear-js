@@ -51,7 +51,7 @@ AeroGear.Crypto = function() {
         @return {Number} - the random value
         @example
         //Random number generator:
-        AeroGear.crypto.getRandomValue();
+        AeroGear.Crypto().getRandomValue();
     */
     this.getRandomValue = function() {
         var random = new Uint32Array( 1 );
@@ -66,7 +66,7 @@ AeroGear.Crypto = function() {
         @return {bitArray} - the derived key
         @example
         //Password encryption:
-        AeroGear.crypto.deriveKey( 'mypassword' );
+        AeroGear.Crypto().deriveKey( 'mypassword' );
      */
     this.deriveKey = function( password ) {
         var utf8String = sjcl.codec.utf8String,
@@ -92,7 +92,7 @@ AeroGear.Crypto = function() {
             key: mySecretKey,
             data: message
         };
-        AeroGear.crypto.encrypt( options );
+        AeroGear.Crypto().encrypt( options );
      */
     this.encrypt = function( options ) {
         options = options || {};
@@ -123,7 +123,7 @@ AeroGear.Crypto = function() {
             key: mySecretKey,
             data: ciphertext
         };
-        AeroGear.crypto.decrypt( options );
+        AeroGear.Crypto().decrypt( options );
      */
     this.decrypt = function( options ) {
         options = options || {};
@@ -140,7 +140,7 @@ AeroGear.Crypto = function() {
         @return {bitArray} - Hash value
         @example
         //Data hashing:
-        AeroGear.crypto.hash( options );
+        AeroGear.Crypto().hash( options );
      */
     this.hash = function( data ) {
         return sjcl.hash.sha256.hash( data );
@@ -159,7 +159,7 @@ AeroGear.Crypto = function() {
             keys: providedKey,
             message: PLAIN_TEXT
         };
-        AeroGear.crypto.sign( options );
+        AeroGear.Crypto().sign( options );
      */
     this.sign = function( options ) {
         options = options || {};
@@ -181,7 +181,7 @@ AeroGear.Crypto = function() {
             keys: sjcl.ecc.ecdsa.generateKeys(192),
             signature: signatureToBeVerified
         };
-        AeroGear.crypto.verify( options );
+        AeroGear.Crypto().verify( options );
      */
     this.verify = function ( options ) {
         options = options || {};
