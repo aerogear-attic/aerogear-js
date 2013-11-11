@@ -22,7 +22,7 @@ AeroGear.Crypto = function() {
     }
 
     // Local Variables
-    var privateKey, publicKey;
+    var privateKey, publicKey, IV;
 
     /**
         Returns the value of the private key var
@@ -44,6 +44,20 @@ AeroGear.Crypto = function() {
         return publicKey;
     };
 
+    // Method to retrieve random values
+    /**
+        Returns the random value
+        @status Experimental
+        @return {Number} - the random value
+        @example
+        //Random number generator:
+        AeroGear.crypto.getRandomValue();
+    */
+    this.getRandomValue = function() {
+        var random = new Uint32Array( 1 );
+        crypto.getRandomValues( random );
+        return random[ 0 ];
+    };
     // Method to provide key derivation with PBKDF2
     /**
         Returns the value of the key
@@ -83,8 +97,10 @@ AeroGear.Crypto = function() {
     this.encrypt = function( options ) {
         options = options || {};
         var gcm = sjcl.mode.gcm,
+            random = options.IV || this.getRandomValue(),
             key = new sjcl.cipher.aes ( options.key );
-        return gcm.encrypt( key, options.data, options.IV, options.aad, 128 );
+
+        return gcm.encrypt( key, options.data, random, options.aad, 128 );
     };
 
     // Method to provide symmetric decryption with GCM by default
@@ -108,8 +124,9 @@ AeroGear.Crypto = function() {
     this.decrypt = function( options ) {
         options = options || {};
         var gcm = sjcl.mode.gcm,
+            random = options.IV || IV,
             key = new sjcl.cipher.aes ( options.key );
-        return gcm.decrypt( key, options.data, options.IV, options.aad, 128 );
+        return gcm.decrypt( key, options.data, random, options.aad, 128 );
     };
 
     // Method to provide secure hashing
