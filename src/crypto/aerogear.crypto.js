@@ -22,8 +22,26 @@ AeroGear.Crypto = function() {
     }
 
     // Local Variables
-    var privateKey, publicKey, IV;
+    var privateKey, publicKey, IV, salt;
 
+    /**
+        Returns the value of the salt var
+        @private
+        @augments Crypto
+        @returns {Object}
+     */
+    this.getSalt = function() {
+        return salt;
+    };
+    /**
+        Returns the value of the IV var
+        @private
+        @augments Crypto
+        @returns {Object}
+     */
+    this.getIV = function() {
+        return IV;
+    };
     /**
         Returns the value of the private key var
         @private
@@ -63,17 +81,17 @@ AeroGear.Crypto = function() {
         Returns the value of the key
         @status Experimental
         @param {String} password - master password
+        @param {Number} providedSalt - salt provided to recreate the key
         @return {bitArray} - the derived key
         @example
         //Password encryption:
-        AeroGear.Crypto().deriveKey( 'mypassword' );
+        AeroGear.Crypto().deriveKey( 'mypassword', 42 );
      */
-    this.deriveKey = function( password ) {
+    this.deriveKey = function( password, providedSalt ) {
+        salt = providedSalt || ( salt ? salt : this.getRandomValue() );
         var utf8String = sjcl.codec.utf8String,
-            salt = new Uint32Array( 1 ),
             count = 2048;
-        crypto.getRandomValues( salt );
-        return sjcl.misc.pbkdf2( password, utf8String.toBits( salt[0] ), count );
+        return sjcl.misc.pbkdf2( password, utf8String.toBits( salt ), count );
     };
 
     // Method to provide symmetric encryption with GCM by default
