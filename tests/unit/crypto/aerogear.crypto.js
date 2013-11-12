@@ -50,6 +50,25 @@ test( "Encrypt/Decrypt raw bytes providing password with implicit IV", function(
     equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
 });
 
+test( "Encrypt/Decrypt raw bytes providing password with IV being provided", function() {
+
+    var agCrypto = new AeroGear.Crypto(),
+        rawPassword = agCrypto.deriveKey( PASSWORD ),
+        utf8String = sjcl.codec.utf8String,
+        hex = sjcl.codec.hex,
+        cipherText,
+        options = {
+            AAD: hex.toBits( BOB_AAD ),
+            key: rawPassword,
+            data: utf8String.toBits( PLAIN_TEXT )
+    };
+    cipherText = agCrypto.encrypt( options );
+    options.data = cipherText;
+    options.IV = agCrypto.getIV();
+    plainText = agCrypto.decrypt ( options );
+    equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
+});
+
 test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
 
     var rawPassword = AeroGear.Crypto().deriveKey( PASSWORD ),

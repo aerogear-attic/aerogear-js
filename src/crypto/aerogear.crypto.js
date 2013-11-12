@@ -25,6 +25,15 @@ AeroGear.Crypto = function() {
     var privateKey, publicKey, IV;
 
     /**
+        Returns the value of the IV var
+        @private
+        @augments Crypto
+        @returns {Object}
+     */
+    this.getIV = function() {
+        return IV;
+    };
+    /**
         Returns the value of the private key var
         @private
         @augments Crypto
