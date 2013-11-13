@@ -26,7 +26,9 @@ AeroGear.DataManager.adapters.base = function( storeName, settings ) {
 
     // Private Instance vars
     var data = null,
-        recordId = settings.recordId ? settings.recordId : "id";
+        recordId = settings.recordId ? settings.recordId : "id",
+        crypto = settings.crypto || {},
+        cryptoOptions = crypto.options || {};
 
     // Privileged Methods
     /**
@@ -66,5 +68,49 @@ AeroGear.DataManager.adapters.base = function( storeName, settings ) {
         if( callback ) {
             callback.call( this, value, status );
         }
+    };
+
+    /**
+        Encrypt data being saved or updated if applicable
+        @private
+        @augments base
+     */
+    this.encrypt = function( data ) {
+        var content;
+
+        if( crypto.agcrypto ) {
+            cryptoOptions.data = sjcl.codec.utf8String.toBits( JSON.stringify( data ) );
+            content = {
+                id: data[ recordId ],
+                data: crypto.agcrypto.encrypt( cryptoOptions )
+            };
+            window.localStorage.setItem( "ag-" + storeName + "-IV", JSON.stringify( { id: crypto.agcrypto.getIV() } ) );
+            return content;
+        }
+
+        return data;
+    };
+
+    /**
+        Decrypt data being read if applicable
+        @private
+        @augments base
+     */
+    this.decrypt = function( data, isSessionLocal ) {
+        var content, IV;
+
+        if( crypto.agcrypto ) {
+            IV = JSON.parse( window.localStorage.getItem( "ag-" + storeName + "-IV" ) ) || {};
+            cryptoOptions.IV = IV.id;
+            data = AeroGear.isArray( data ) ? data : [ data ];
+            content = data.map( function( value ) {
+                cryptoOptions.data = value.data;
+                return JSON.parse( sjcl.codec.utf8String.fromBits( crypto.agcrypto.decrypt( cryptoOptions ) ) );
+            });
+
+            return isSessionLocal ? content[ 0 ] : content;
+        }
+
+        return data;
     };
 };

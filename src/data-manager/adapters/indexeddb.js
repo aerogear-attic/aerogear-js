@@ -21,6 +21,9 @@
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+    @param {Object} [settings.crypto] - the crypto settings to be passed to the adapter
+    @param {Object} [settings.crypto.agcrypto] - the AeroGear.Crypto object to be used
+    @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
     @returns {Object} The created store
     @example
     //Create an empty DataManager
@@ -190,6 +193,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     options = options || {};
 
     var transaction, objectStore, cursor, request,
+        that = this,
         data = [],
         database = this.getDatabase(),
         storeName = this.getStoreName(),
@@ -226,7 +230,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     }
 
     transaction.oncomplete = function( event ) {
-        deferred.resolve( data, "success", options.success );
+        deferred.resolve( that.decrypt( data ), "success", options.success );
     };
 
     transaction.onerror = function( event ) {
@@ -301,10 +305,10 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
 
     if( AeroGear.isArray( data ) ) {
         for( i; i < data.length; i++ ) {
-            objectStore.put( data[ i ] );
+            objectStore.put( this.encrypt( data[ i ] ) );
         }
     } else {
-        objectStore.put( data );
+        objectStore.put( this.encrypt( data ) );
     }
 
     transaction.oncomplete = function( event ) {
