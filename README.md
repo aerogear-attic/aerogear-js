@@ -9,6 +9,13 @@ The AeroGear.Auth namespace provides an authentication and enrollment API. Throu
 
 See the [Auth API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Auth.html) for more info.
 
+## Crypto
+- - -
+
+The AeroGear.Crypto namespace provides an encryption and decryption API for data as well as an interface for password encryption
+
+See the [Crypto API Docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Crypto.html) for more info.
+
 ## DataManager
 - - -
 
@@ -63,11 +70,18 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 * **REST**
     * [jQuery](http://jquery.com/download/)
 
+### Crypto
+* [SJCL](https://github.com/bitwiseshiftleft/sjcl) - bundled w/ AeroGear.js
+
 ### DataManager
 
 * **Memory**
     * [jQuery](http://jquery.com/download/)
 * **SessionLocal**
+    * [jQuery](http://jquery.com/download/)
+* **IndexedDB**
+    * [jQuery](http://jquery.com/download/)
+* **WebSQL**
     * [jQuery](http://jquery.com/download/)
 
 ### Notifier
