@@ -246,6 +246,6 @@ dm.remove();
 });
 
 /**
-    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+    Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
 AeroGear.DataManager.validateAdapter( "SessionLocal", AeroGear.DataManager.adapters.SessionLocal );

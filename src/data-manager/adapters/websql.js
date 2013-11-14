@@ -463,6 +463,6 @@ AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParamete
 };
 
 /**
-    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+    Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
 AeroGear.DataManager.validateAdapter( "WebSQL", AeroGear.DataManager.adapters.WebSQL );

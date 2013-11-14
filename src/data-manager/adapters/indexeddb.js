@@ -493,6 +493,6 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
 };
 
 /**
-    Validate this adapter and add it to AeroGear.DataManagerCore.adapters if valid
+    Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
 AeroGear.DataManager.validateAdapter( "IndexedDB", AeroGear.DataManager.adapters.IndexedDB );
