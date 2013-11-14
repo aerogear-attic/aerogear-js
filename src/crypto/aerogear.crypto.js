@@ -13,7 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+/**
+    AeroGear.Crypto is used to provide various crypto methods
+    @status Experimental
+    @class
+    @augments AeroGear.Core
+    @returns {object} agCrypto - The created Crypto Object
+    @example
+    // Create a AeroGear.Crypto Object
 
+    var agCrypto = AeroGear.Crypto();
+ */
 AeroGear.Crypto = function() {
 
     // Allow instantiation without using new
