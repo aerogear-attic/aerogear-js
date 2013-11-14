@@ -114,3 +114,10 @@ building the first time, or if the dependencies in package.json have been update
     $ grunt
 
 The produced JavaScript will be in the __dist__ directory.
+
+### Generating the documentation
+To generate the API docs, run the following command:
+
+    $ jsdoc-aerogear src/ -r -d docs README.md
+
+_The docs use a slightly modified version of jsdoc_
