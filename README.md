@@ -12,7 +12,7 @@ See the [Auth API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Auth
 ## Crypto
 - - -
 
-The AeroGear.Crypto namespace provides an encryption and decryption API for data as well as an interface for password encryption
+The AeroGear.Crypto namespace provides a straightforward API to provide an easy to use cryptography interface for data encryption and decryption.
 
 See the [Crypto API Docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Crypto.html) for more info.
 
