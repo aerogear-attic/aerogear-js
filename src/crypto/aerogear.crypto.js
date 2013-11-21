@@ -217,6 +217,16 @@ AeroGear.Crypto = function() {
         return options.keys.pub.verify( message, options.signature );
     };
 
+    // A pair of cryptographic keys (a public and a private key) used for asymmetric encryption
+    /**
+        Initialize the key pair with the keys provided
+        @status Experimental
+        @param {Object} prKey - private key
+        @param {Object} pubKey - public key
+        @returns {Object} the object containing the key pair
+        @example
+        AeroGear.Crypto().KeyPair();
+     */
     this.KeyPair = function( prKey, pubKey ) {
 
         var keys, pub;
