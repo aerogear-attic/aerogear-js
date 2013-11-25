@@ -238,6 +238,107 @@ function doAlways() {
 })( jQuery );
 
 (function( $ ) {
+    var dm = AeroGear.DataManager(),
+        data = null;
+
+    module( "DataManager: WebSQL - Save using 'Auto Connect' param", {
+        setup: function() {
+            dm.add({
+                name: "test1",
+                type: "WebSQL",
+                settings: {
+                    auto: true
+                }
+            });
+
+            data = [
+                {
+                    "id": 1,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": 2,
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+        },
+        teardown: function() {
+            var dbs = [ "test1" ];
+            hasopened = undefined;
+            dm.stores.test1.remove( undefined, {
+                success: function( data ) {
+                },
+                error: function( error ) {
+                }
+            });
+        }
+    });
+
+    asyncTest( "Save Data - Array", function() {
+        expect( 2 );
+        dm.stores.test1.save( data, {
+            success: function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 2, "2 items in database" );
+            },
+            error: function( error ) {
+                console.log( error );
+                ok( false, "Failed to save records" + error );
+            }
+        }).always( doAlways );
+    });
+
+    asyncTest( "Save Data - 1 Item", function() {
+        expect( 2 );
+            dm.stores.test1.save( { "id": 3, "name": "Grace", "type": "Little Person" }, {
+                success: function( data ) {
+                    ok( true, "Data Saved Successfully" );
+                    equal( data.length, 1, "1 items in database" );
+                },
+                error: function( error ) {
+                    console.log( error );
+                    ok( false, "Failed to save records" + error );
+                }
+            }).always( doAlways );
+    });
+
+    asyncTest( "Save Data - Array - as a promise", function() {
+        expect( 2 );
+            dm.stores.test1.save( data ).then( function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 2, "2 items in database" );
+            }).always( doAlways );
+    });
+
+    asyncTest( "Save Data - Array - Reset - as a promise", function() {
+        expect( 4 );
+        var newData = [
+                {
+                    "id": 3,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": 4,
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+
+            dm.stores.test1.save( data ).then( function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 2, "2 items in database" );
+                dm.stores.test1.save( newData, { reset: true } ).then( function( data ) {
+                    ok( true, "Data Saved Successfully" );
+                    equal( data.length, 2, "2 items in database" );
+                }).always( doAlways );
+            });
+    });
+})( jQuery );
+
+(function( $ ) {
     var hasopened,
         dm = AeroGear.DataManager(),
         data = null;

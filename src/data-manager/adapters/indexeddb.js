@@ -21,6 +21,7 @@
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
+    @param {Boolean} [settings.auto=false] - set to 'true' to enable 'auto-connect' for read/remove/save/filter
     @param {Object} [settings.crypto] - the crypto settings to be passed to the adapter
     @param {Object} [settings.crypto.agcrypto] - the AeroGear.Crypto object to be used
     @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
@@ -52,7 +53,8 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     settings = settings || {};
 
     // Private Instance vars
-    var request, database;
+    var request, database,
+        auto = settings.auto;
 
     // Privileged Methods
     /**
@@ -93,7 +95,37 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
     this.getAsync = function() {
         return true;
     };
+
+    /**
+        This function will check if the database is open.
+        If 'auto' is not true, an error is thrown.
+        If 'auto' is true, attempt to open the databse then
+        run the function passed in
+        @private
+        @augments IndexedDB
+     */
+    this.run = function( fn ) {
+        var that = this;
+
+        if( !database ) {
+            if( !auto ) {
+                //hasn't been opened yet
+                throw "Database not opened";
+            } else {
+                this.open().always( function( value, status ) {
+                    if( status === "error" ) {
+                        throw "Database not opened";
+                    } else {
+                        fn.call( that, database );
+                    }
+                });
+            }
+        } else {
+            fn.call( this, database );
+        }
+    };
 };
+
 // Public Methods
 /**
     Determine if this adapter is supported in the current environment
@@ -192,52 +224,53 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
 AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options ) {
     options = options || {};
 
-    var transaction, objectStore, cursor, request,
+    var transaction, objectStore, cursor, request, _read,
         that = this,
         data = [],
         database = this.getDatabase(),
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred();
 
-    if( !database ) {
-        //hasn't been opened yet
-        throw "Database not opened";
-    }
+    _read = function( database ) {
 
-    if( !database.objectStoreNames.contains( storeName ) ) {
-        deferred.resolve( [], "success", options.success );
-    }
+        if( !database.objectStoreNames.contains( storeName ) ) {
+            deferred.resolve( [], "success", options.success );
+        }
 
-    transaction = database.transaction( storeName );
-    objectStore = transaction.objectStore( storeName );
+        transaction = database.transaction( storeName );
+        objectStore = transaction.objectStore( storeName );
 
-    if( id ) {
-        request = objectStore.get( id );
+        if( id ) {
+            request = objectStore.get( id );
 
-        request.onsuccess = function( event ) {
-            data.push( request.result );
+            request.onsuccess = function( event ) {
+                data.push( request.result );
+            };
+
+        } else {
+            cursor = objectStore.openCursor();
+            cursor.onsuccess = function( event ) {
+                var result = event.target.result;
+                if( result ) {
+                    data.push( result.value );
+                    result.continue();
+                }
+            };
+        }
+
+        transaction.oncomplete = function( event ) {
+            deferred.resolve( that.decrypt( data ), "success", options.success );
         };
 
-    } else {
-        cursor = objectStore.openCursor();
-        cursor.onsuccess = function( event ) {
-            var result = event.target.result;
-            if( result ) {
-                data.push( result.value );
-                result.continue();
-            }
+        transaction.onerror = function( event ) {
+            deferred.reject( event, "error", options.error );
         };
-    }
-
-    transaction.oncomplete = function( event ) {
-        deferred.resolve( that.decrypt( data ), "success", options.success );
     };
 
-    transaction.onerror = function( event ) {
-        deferred.reject( event, "error", options.error );
-    };
+    this.run.call( this, _read );
 
     deferred.always( this.always );
+
     return deferred.promise();
 };
 
@@ -284,46 +317,45 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
 AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options ) {
     options = options || {};
 
-    var transaction, objectStore,
+    var transaction, objectStore, _save,
         that = this,
         database = this.getDatabase(),
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred(),
         i = 0;
 
-    if( !database ) {
-        //hasn't been opened yet
-        throw "Database not opened";
-    }
+    _save = function( database ) {
+        transaction = database.transaction( storeName, "readwrite" );
+        objectStore = transaction.objectStore( storeName );
 
-    transaction = database.transaction( storeName, "readwrite" );
-    objectStore = transaction.objectStore( storeName );
-
-    if( options.reset ) {
-        objectStore.clear();
-    }
-
-    if( AeroGear.isArray( data ) ) {
-        for( i; i < data.length; i++ ) {
-            objectStore.put( this.encrypt( data[ i ] ) );
+        if( options.reset ) {
+            objectStore.clear();
         }
-    } else {
-        objectStore.put( this.encrypt( data ) );
-    }
 
-    transaction.oncomplete = function( event ) {
-        that.read().done( function( data, status ) {
-            if( status === "success" ) {
-                deferred.resolve( data, status, options.success );
-            } else {
-                deferred.reject( data, status, options.error );
+        if( AeroGear.isArray( data ) ) {
+            for( i; i < data.length; i++ ) {
+                objectStore.put( this.encrypt( data[ i ] ) );
             }
-        });
+        } else {
+            objectStore.put( this.encrypt( data ) );
+        }
+
+        transaction.oncomplete = function( event ) {
+            that.read().done( function( data, status ) {
+                if( status === "success" ) {
+                    deferred.resolve( data, status, options.success );
+                } else {
+                    deferred.reject( data, status, options.error );
+                }
+            });
+        };
+
+        transaction.onerror = function( event ) {
+            deferred.reject( event, "error", options.error );
+        };
     };
 
-    transaction.onerror = function( event ) {
-        deferred.reject( event, "error", options.error );
-    };
+    this.run.call( this, _save );
 
     deferred.always( this.always );
 
@@ -366,50 +398,49 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
 AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, options ) {
     options = options || {};
 
-    var objectStore, transaction,
+    var objectStore, transaction, _remove,
         that = this,
         database = this.getDatabase(),
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred(),
         i = 0;
 
-    if( !database ) {
-        //hasn't been opened yet
-        throw "Database not opened";
-    }
+    _remove = function() {
+        transaction = database.transaction( storeName, "readwrite" );
+        objectStore = transaction.objectStore( storeName );
 
-    transaction = database.transaction( storeName, "readwrite" );
-    objectStore = transaction.objectStore( storeName );
+        if( !toRemove ) {
+            objectStore.clear();
+        } else  {
+            toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
 
-    if( !toRemove ) {
-        objectStore.clear();
-    } else  {
-        toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
-
-        for( i; i < toRemove.length; i++ ) {
-            if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {
-                objectStore.delete( toRemove[ i ] );
-            } else if ( toRemove ) {
-                objectStore.delete( toRemove[ i ][ this.getRecordId() ] );
-            } else {
-                continue;
+            for( i; i < toRemove.length; i++ ) {
+                if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {
+                    objectStore.delete( toRemove[ i ] );
+                } else if ( toRemove ) {
+                    objectStore.delete( toRemove[ i ][ this.getRecordId() ] );
+                } else {
+                    continue;
+                }
             }
         }
-    }
 
-    transaction.oncomplete = function( event ) {
-        that.read().done( function( data, status ) {
-            if( status === "success" ) {
-                deferred.resolve( data, status, options.success );
-            } else {
-                deferred.reject( data, status, options.error );
-            }
-        });
+        transaction.oncomplete = function( event ) {
+            that.read().done( function( data, status ) {
+                if( status === "success" ) {
+                    deferred.resolve( data, status, options.success );
+                } else {
+                    deferred.reject( data, status, options.error );
+                }
+            });
+        };
+
+        transaction.onerror = function( event ) {
+            deferred.reject( event, "error", options.error );
+        };
     };
 
-    transaction.onerror = function( event ) {
-        deferred.reject( event, "error", options.error );
-    };
+    this.run.call( this, _remove );
 
     deferred.always( this.always );
 
@@ -446,26 +477,26 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
 AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny, options ) {
     options = options || {};
 
-    var that = this,
+    var _filter,
+        that = this,
         deferred = jQuery.Deferred(),
         database = this.getDatabase();
 
-    if( !database ) {
-        //hasn't been opened yet
-        throw "Database not opened";
-    }
+    _filter = function() {
+        this.read().then( function( data, status ) {
+            if( status !== "success" ) {
+                deferred.reject( data, status, options.error );
+                return;
+            }
 
-    this.read().then( function( data, status ) {
-        if( status !== "success" ) {
-            deferred.reject( data, status, options.error );
-            return;
-        }
-
-        AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
-        AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( data ) {
-            deferred.resolve( data, "success", options.success );
+            AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
+            AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( data ) {
+                deferred.resolve( data, "success", options.success );
+            });
         });
-    });
+    };
+
+    this.run.call( this, _filter );
 
     deferred.always( this.always );
     return deferred.promise();
