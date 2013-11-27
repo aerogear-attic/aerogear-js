@@ -248,6 +248,27 @@ test( "Encrypt/Decrypt raw bytes", function() {
     equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
 });
 
+test( "Encrypt/Decrypt raw bytes - Provided keys", function() {
+    var hex = sjcl.codec.hex,
+        keys = sjcl.ecc.elGamal.generateKeys( 192,0 ),
+        pub = keys.pub.kem(),
+        publicKey = pub.key,
+        privateKey = keys.sec.unkem( pub.tag ),
+        keyPair = new AeroGear.Crypto().KeyPair( publicKey, privateKey ),
+        cipherText, plainText,
+        options = {
+            IV: hex.toBits( BOB_IV ),
+            AAD: hex.toBits( BOB_AAD ),
+            key: keyPair.getPublicKey(),
+            data: hex.toBits( MESSAGE )
+        };
+    cipherText = AeroGear.Crypto().encrypt( options );
+    options.key = keyPair.getPrivateKey();
+    options.data = cipherText;
+    plainText = AeroGear.Crypto().decrypt( options );
+    equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
+});
+
 test( "Decrypt corrupted ciphertext", function() {
     var hex = sjcl.codec.hex,
         keyPair = new AeroGear.Crypto().KeyPair(),
