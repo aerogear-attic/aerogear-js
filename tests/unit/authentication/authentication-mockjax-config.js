@@ -9,11 +9,18 @@ $.mockjax({
     type: "POST",
     response: function( event ) {
         var data = JSON.parse( event.data );
-
-        this.responseText = {
-            username: data.username,
-            logged: true
-        };
+        if( data.username != "" && data.password != "" ) {
+            this.responseText = {
+                username: data.username,
+                logged: true
+            };
+        } else {
+            this.status = 400,
+            this.statusText = "Bad Request",
+            this.responseText = {
+                message : 'User enrollment failed'
+            };
+        }
     }
 });
 
@@ -59,11 +66,16 @@ $.mockjax({
     url: "auth/logout",
     type: "POST",
     response: function( event ) {
-        sessionActive = false;
-        var data = event.data;
+        if( sessionActive ) {
+            sessionActive = false;
+            var data = event.data;
 
-        this.status = "204",
-        this.statusText = "No Content";
+            this.status = "204",
+            this.statusText = "No Content";
+        } else {
+            this.status = 410,
+            this.statusText = "Gone";
+        }
     },
     responseText: []
 });
