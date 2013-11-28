@@ -62,6 +62,26 @@
             }
         });
     });
+
+    asyncTest( "Register - Failure", function() {
+        expect( 2 );
+
+        var values = {
+            username: "",
+            password: "1234"
+        };
+
+        restAuth.enroll( values, {
+            contentType: "application/json",
+            dataType: "json",
+            error: function( data ) {
+                equal( data.status, 400, "Bad Request Code");
+                equal( data.responseJSON.message, "User enrollment failed", "Enrollment Failure Message" );
+                start();
+            }
+        });
+    });
+
     asyncTest( "Login - Failure", function() {
         expect( 2 );
 
@@ -91,6 +111,18 @@
                 start();
             }
         });
+    });
+
+    asyncTest( "Log Out With Invalid Session", function() {
+        expect( 1 );
+
+        restAuth.logout({
+            error: function( data ) {
+                equal( data.status, 410, "Gone Code");
+                start();
+            }
+        });
+
     });
 
     asyncTest( "Login - Success", function() {
