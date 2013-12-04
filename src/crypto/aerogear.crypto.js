@@ -26,6 +26,10 @@
  */
 AeroGear.Crypto = function() {
 
+    if( !window.crypto || !window.crypto.getRandomValues ) {
+        throw "Your browser does not support the Web Crypto API";
+    }
+
     // Allow instantiation without using new
     if ( !( this instanceof AeroGear.Crypto ) ) {
         return new AeroGear.Crypto();
