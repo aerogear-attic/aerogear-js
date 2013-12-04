@@ -142,7 +142,7 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
+var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
     data = { userName: "user", password: "abc123", name: "John" };
 
 // Enroll a new user
@@ -158,7 +158,7 @@ var custom = AeroGear.Auth({
             logout: "leave"
         }
     }
-}).modules[ 0 ],
+}).modules.customModule,
 data = { userName: "user", password: "abc123", name: "John" };
 
 custom.enroll( data, {
@@ -225,7 +225,7 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ],
+var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
     data = { userName: "user", password: "abc123" };
 
 // Enroll a new user
@@ -241,7 +241,7 @@ var custom = AeroGear.Auth({
             logout: "leave"
         }
     }
-}).modules[ 0 ],
+}).modules.customModule,
 data = { userName: "user", password: "abc123", name: "John" };
 
 custom.login( data, {
@@ -305,7 +305,7 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-var auth = AeroGear.Auth( "userAuth" ).modules[ 0 ];
+var auth = AeroGear.Auth( "userAuth" ).modules.userAuth;
 
 // Enroll a new user
 auth.logout();
@@ -320,7 +320,7 @@ var custom = AeroGear.Auth({
             logout: "leave"
         }
     }
-}).modules[ 0 ],
+}).modules.customModule,
 data = { userName: "user", password: "abc123", name: "John" };
 
 custom.logout({
