@@ -38,7 +38,7 @@ AeroGear.DataManager.adapters.base = function( storeName, settings ) {
         @returns {Array}
      */
     this.getData = function() {
-        return data;
+        return data || [];
     };
 
     /**
