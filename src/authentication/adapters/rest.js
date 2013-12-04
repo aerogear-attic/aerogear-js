@@ -28,16 +28,22 @@
 var auth = AeroGear.Auth();
 
 //Add a custom REST module to it
-auth.add( "module1", {
-    baseURL: "http://customURL.com"
+auth.add( {
+    name: "module1",
+    settings: {
+        baseURL: "http://customURL.com"
+    }
 });
 
 //Add a custom REST module to it with custom security endpoints
-auth.add( "module2", {
-    endpoints: {
-        enroll: "register",
-        login: "go",
-        logout: "leave"
+auth.add( {
+    name: "module2",
+    settings: {
+        endpoints: {
+            enroll: "register",
+            login: "go",
+            logout: "leave"
+        }
     }
 });
  */
