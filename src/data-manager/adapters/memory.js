@@ -238,7 +238,7 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
     if ( options && options.reset ) {
         this.setData( data );
     } else {
-        if ( this.getData() ) {
+        if ( this.getData() && this.getData().length !== 0 ) {
             for ( var i = 0; i < data.length; i++ ) {
                 for( var item in this.getData() ) {
                     if ( this.getData()[ item ][ this.getRecordId() ] === data[ i ][ this.getRecordId() ] ) {

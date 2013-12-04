@@ -164,6 +164,16 @@
         }
     });
 
+    // Read data from empty store
+    test( "read from empty store", function() {
+        var emptyStore = AeroGear.DataManager( "empty" ).stores.empty;
+
+        expect( 2 );
+
+        deepEqual( emptyStore.read(), [], "Read initial data from empty store" );
+        deepEqual( emptyStore.read( 12345 ), [], "Read non-existing item" );
+    });
+
     // Read data
     test( "read", function() {
         expect( 2 );
