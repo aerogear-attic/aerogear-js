@@ -2,6 +2,32 @@
 
     module( "authentication" );
 
+    test( "Custom REST Authentication module init", function() {
+        expect( 7 );
+
+        var auth1 = AeroGear.Auth();
+
+        auth1.add( {
+            name: "module1", 
+            settings: {
+                baseURL: "http://customURL.com",
+                endpoints: {
+                    enroll: "register",
+                    login: "go",
+                    logout: "leave"
+                }
+            }
+        });
+
+        equal( Object.keys( auth1.modules ).length, 1, "Single Auth Module Created" );
+        equal( Object.keys( auth1.modules )[ 0 ], "module1", "Module name module1" );
+        equal( auth1.modules[ Object.keys( auth1.modules )[ 0 ] ].getBaseURL(), "http://customURL.com", "Base URL is http://customURL.com" );
+        equal( Object.keys( auth1.modules[ Object.keys( auth1.modules )[ 0 ] ].getEndpoints() ).length, 3, "Endpoints are set" );
+        equal( auth1.modules[ Object.keys( auth1.modules )[ 0 ] ].getEndpoints().enroll, "register", "Enroll endpoint is enroll" );
+        equal( auth1.modules[ Object.keys( auth1.modules )[ 0 ] ].getEndpoints().login, "go", "Login endpoint is go" );
+        equal( auth1.modules[ Object.keys( auth1.modules )[ 0 ] ].getEndpoints().logout, "leave", "Logout endpoint is leave" );
+    });
+
     test( "Authentication init", function() {
         expect( 2 );
 
@@ -10,6 +36,7 @@
         equal( Object.keys( auth1 ).length, 1, "Single Auth Module Created" );
         equal( Object.keys( auth1 )[ 0 ], "auth", "Module name auth" );
     });
+
     test( "Authentication Pipeline init", function() {
         expect( 3 );
 
