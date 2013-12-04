@@ -185,109 +185,158 @@
 
     });
 
-    asyncTest( "Login - Success", function() {
-        expect( 2 );
+    asyncTest( "Login & Logout - Success", function() {
+        expect( 3 );
 
         var values = {
             username: "john",
             password: "123"
         };
 
-        restAuth.login( values, {
+        var login = restAuth.login( values, {
             contentType: "application/json",
             dataType: "json",
             success: function( data ) {
                 equal( data.username, "john", "Username is John" );
                 equal( data.logged, true, "Logged is true" );
-                start();
             }
+        });
+
+        $.when( login ).done( function ( s1 ) {
+
+            var logout = restAuth.logout({
+                success: function() {
+                    ok( true, "Logout Successful");
+                }
+            });
+
+            $.when( logout ).done( function ( s2 ) {
+                start();
+            });
         });
     });
 
-    asyncTest( "Login - Custom Authenticator - Success", function() {
-        expect( 2 );
+    asyncTest( "Login & Logout - Custom Authenticator - Success", function() {
+        expect( 3 );
 
         var values = {
             username: "john",
             password: "123"
         };
 
-        customRestAuth.login( values, {
+        var login = customRestAuth.login( values, {
             contentType: "application/json",
             dataType: "json",
             success: function( data ) {
                 equal( data.username, "john", "Username is John" );
                 equal( data.logged, true, "Logged is true" );
-                start();
             }
         });
+
+        $.when( login ).done( function ( s1 ) {
+
+            var logout = customRestAuth.logout({
+                success: function() {
+                    ok( true, "Logout Successful");
+                }
+            });
+
+            $.when( logout ).done( function ( s2 ) {
+                start();
+            });
+        }); 
     });
 
-    asyncTest( "Access With Valid Session", function() {
-        expect( 1 );
+    asyncTest( "Login & Access With Valid Session & Logout", function() {
+        expect( 4 );
+        
+        var values = {
+            username: "john",
+            password: "123"
+        };
 
-        securePipe.read({
+        var login = restAuth.login( values, {
+            contentType: "application/json",
+            dataType: "json",
             success: function( data ) {
-                ok( true, "Successful Access" );
-                start();
+                equal( data.username, "john", "Username is John" );
+                equal( data.logged, true, "Logged is true" );
             }
         });
 
-    });
+        $.when( login ).done( function ( s1 ) {
 
-    asyncTest( "Log Out", function() {
-        expect( 1 );
-
-        restAuth.logout({
-            success: function() {
-                ok( true, "Logout Successful");
-                start();
-            }
+            var read = securePipe.read({
+                success: function( data ) {
+                    ok( true, "Successful Access" );
+                }
+            });
+            
+            $.when( read ).done( function ( s2 ) {
+                
+                var logout = restAuth.logout( {
+                    success: function() {
+                        ok( true, "Logout Successful");
+                    }
+                });
+                
+                $.when( logout ).done( function ( s3 ) {
+                    start();
+                });
+                
+            });
         });
 
     });
+    
+    asyncTest( "Accessing With Invalid Session then after auth and logout", function() {
+        expect( 6 );
 
-    asyncTest( "Log Out - Custom Authenticator", function() {
-        expect( 1 );
-
-        customRestAuth.logout({
-            success: function( ) {
-                ok( true, "Logout Successful");
-                start();
-            }
-        });
-
-    });
-
-    asyncTest( "Accessing With Invalid Session then after auth", function() {
-        expect( 5 );
-
-        securePipe.read({
+        var unauthorizedRead = securePipe.read( {
             error: function( data ) {
-                var values = {
-                    username: "john",
-                    password: "123"
-                };
 
                 equal( data.status, 401, "UnAuthorized Code" );
                 ok( true, "Failed Access with InValid Session" );
+            }
+        });
 
-                securePipe.getAuthenticator().login( values, {
+        $.when( unauthorizedRead ).fail( function ( s1 ) {
+
+            var values = {
+                username: "john",
+                password: "123"
+            };
+
+            var login = securePipe.getAuthenticator().login( values, {
                     contentType: "application/json",
                     dataType: "json",
                     success: function( data ) {
                         equal( data.username, "john", "Username is John" );
                         equal( data.logged, true, "Logged is true" );
+                    }
+            });
 
-                        securePipe.read({
-                            success: function( data ) {
-                                ok( true, "Successful Access" );
-                                start();
-                            }
-                        });
+            $.when( login ).done( function ( s2 ) {
+                
+                var read = securePipe.read({
+                    success: function( data ) {
+                        ok( true, "Successful Access" );
                     }
                 });
-            }
+                
+                $.when( read ).done( function ( s3 ) {
+
+                    var logout = securePipe.getAuthenticator().logout( {
+                        success: function() {
+                            ok( true, "Logout Successful");
+                        }
+                    });
+
+                    $.when( logout ).done( function ( s4 ) {
+                        start();
+                    });
+                });
+            });
         });
     });
 })( jQuery );
