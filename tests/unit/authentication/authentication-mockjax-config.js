@@ -54,12 +54,14 @@ $.mockjax({
                 username: "john",
                 logged: true
             };
+            sessionActive = true;
         } else {
             this.status = 401,
             this.statusText = "UnAuthorized",
             this.responseText = {
                 message : "User authentication failed"
             };
+            sessionActive = false;
         }
 
     }
@@ -77,6 +79,7 @@ $.mockjax({
             };
             sessionActive = true;
         } else {
+            sessionActive = false;
             this.status = 401,
             this.statusText = "UnAuthorized",
             this.responseText = {
@@ -107,10 +110,16 @@ $.mockjax({
     url: "baseTest/leave",
     type: "POST",
     response: function( event ) {
-        var data = event.data;
+        if( sessionActive ) {
+            sessionActive = false;
+            var data = event.data;
 
-        this.status = "204",
-        this.statusText = "No Content";
+            this.status = "204",
+            this.statusText = "No Content";
+        } else {
+            this.status = 410,
+            this.statusText = "Gone";
+        }
     },
     responseText: []
 });
