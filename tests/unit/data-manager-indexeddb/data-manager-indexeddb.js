@@ -277,6 +277,119 @@ function doAlways() {
 })( jQuery );
 
 (function( $ ) {
+    var dm = AeroGear.DataManager(),
+        data = null;
+
+    module( "DataManager: IndexedDB - Save using 'Auto Connect param'", {
+        setup: function() {
+            dm.add({
+                name: "test1",
+                type: "IndexedDB",
+                settings: {
+                    auto: true
+                }
+            });
+
+            data = [
+                {
+                    "id": 1,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": 2,
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+        },
+        teardown: function() {
+            var deleteRequest,
+                dbs = [ "test1" ];
+
+            dm.stores.test1.close();
+
+            dm.remove( "test1" );
+            hasopened = undefined;
+
+            for( var db in dbs ) {
+
+                deleteRequest = window.indexedDB.deleteDatabase( dbs[ db ] );
+            }
+
+            deleteRequest.onsuccess = function( event ) {
+                console.log( event );
+            };
+
+            deleteRequest.onerror = function( event ) {
+                console.log( event );
+            };
+        }
+    });
+
+    asyncTest( "Save Data - Array", function() {
+        expect( 2 );
+        dm.stores.test1.save( data, {
+            success: function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 2, "2 items in database" );
+            },
+            error: function( error ) {
+                console.log( error );
+                ok( false, "Failed to save records" + error );
+            }
+        }).always( doAlways );
+    });
+
+    asyncTest( "Save Data - 1 Item", function() {
+        expect( 2 );
+        dm.stores.test1.save( { "id": 3, "name": "Grace", "type": "Little Person" }, {
+            success: function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 1, "1 items in database" );
+            },
+            error: function( error ) {
+                console.log( error );
+                ok( false, "Failed to save records" + error );
+            }
+        }).always( doAlways );
+    });
+
+    asyncTest( "Save Data - Array - as a promise", function() {
+        expect( 2 );
+        dm.stores.test1.save( data ).then( function( data ) {
+            ok( true, "Data Saved Successfully" );
+            equal( data.length, 2, "2 items in database" );
+        }).always( doAlways );
+    });
+
+    asyncTest( "Save Data - Array - Reset - as a promise", function() {
+        expect( 4 );
+        var newData = [
+                {
+                    "id": 3,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": 4,
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+
+        dm.stores.test1.save( data ).then( function( data ) {
+            ok( true, "Data Saved Successfully" );
+            equal( data.length, 2, "2 items in database" );
+            dm.stores.test1.save( newData, { reset: true } ).then( function( data ) {
+                ok( true, "Data Saved Successfully" );
+                equal( data.length, 2, "2 items in database" );
+            }).always( doAlways );
+        });
+    });
+})( jQuery );
+
+(function( $ ) {
     var hasopened,
         dm = AeroGear.DataManager(),
         data = null;
@@ -371,6 +484,71 @@ function doAlways() {
                 }).always( doAlways );
             });
         });
+    });
+})( jQuery );
+
+(function( $ ) {
+    var dm = AeroGear.DataManager(),
+        data = null;
+
+    module( "DataManager: IndexedDB - Read using 'Auto Connect param'", {
+        setup: function() {
+            dm.add({
+                name: "test1",
+                type: "IndexedDB",
+                settings: {
+                    auto: true
+                }
+            });
+
+            data = [
+                {
+                    "id": 1,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": 2,
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+        },
+        teardown: function() {
+            var deleteRequest,
+                dbs = [ "test1" ];
+
+            dm.stores.test1.close();
+
+            dm.remove( "test1" );
+            hasopened = undefined;
+
+            for( var db in dbs ) {
+
+                deleteRequest = window.indexedDB.deleteDatabase( dbs[ db ] );
+            }
+
+            deleteRequest.onsuccess = function( event ) {
+                console.log( event );
+            };
+
+            deleteRequest.onerror = function( event ) {
+                console.log( event );
+            };
+        }
+    });
+
+    asyncTest( "Read Data - All", function() {
+        expect( 2 );
+        dm.stores.test1.read( undefined, {
+            success: function( data ) {
+                ok( true, "read all data successful" );
+                equal( data.length, 0, "0 items returned" );
+            },
+            error: function( error ) {
+                ok( false, "Read All has errors" + error );
+            }
+        }).always( doAlways );
     });
 })( jQuery );
 
