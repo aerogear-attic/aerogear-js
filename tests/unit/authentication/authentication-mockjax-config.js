@@ -25,6 +25,47 @@ $.mockjax({
 });
 
 $.mockjax({
+    url: "baseTest/register",
+    type: "POST",
+    response: function( event ) {
+        var data = JSON.parse( event.data );
+        if( data.username != "" && data.password != "" ) {
+            this.responseText = {
+                username: data.username,
+                logged: true
+            };
+        } else {
+            this.status = 400,
+            this.statusText = "Bad Request",
+            this.responseText = {
+                message : 'User enrollment failed'
+            };
+        }
+    }
+});
+
+$.mockjax({
+    url: "baseTest/go",
+    type: "POST",
+    response: function( event ) {
+        var data = JSON.parse( event.data );
+        if( data.username == "john" && data.password == "123" ) {
+            this.responseText = {
+                username: "john",
+                logged: true
+            };
+        } else {
+            this.status = 401,
+            this.statusText = "UnAuthorized",
+            this.responseText = {
+                message : "User authentication failed"
+            };
+        }
+
+    }
+});
+
+$.mockjax({
     url: "auth/login",
     type: "POST",
     response: function( event ) {
@@ -60,6 +101,18 @@ $.mockjax({
             this.statusText = "UnAuthorized";
         }
     }
+});
+
+$.mockjax({
+    url: "baseTest/leave",
+    type: "POST",
+    response: function( event ) {
+        var data = event.data;
+
+        this.status = "204",
+        this.statusText = "No Content";
+    },
+    responseText: []
 });
 
 $.mockjax({

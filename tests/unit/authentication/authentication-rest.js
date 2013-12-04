@@ -70,6 +70,19 @@
         }
     ]).pipes.secured;
 
+    // create a custom Authenticator
+    var customRestAuth = AeroGear.Auth({
+        name: "customModule",
+        settings: {
+            baseURL: "baseTest/",
+            endpoints: {
+                enroll: "register",
+                login: "go",
+                logout: "leave"
+            }
+        }
+    }).modules.customModule;
+
     asyncTest( "Register", function() {
         expect( 3 );
 
@@ -104,6 +117,26 @@
             error: function( data ) {
                 equal( data.status, 400, "Bad Request Code");
                 equal( data.responseJSON.message, "User enrollment failed", "Enrollment Failure Message" );
+                start();
+            }
+        });
+    });
+
+    asyncTest( "Register - Custom Authenticator", function() {
+        expect( 3 );
+
+        var values = {
+            username: "john",
+            password: "1234"
+        };
+
+        customRestAuth.enroll( values, {
+            contentType: "application/json",
+            dataType: "json",
+            success: function( data ) {
+                ok( true, "Successful Register" );
+                equal( data.username, "john", "Username is john" );
+                equal( data.logged, true, "Logged is true" );
                 start();
             }
         });
@@ -171,6 +204,25 @@
         });
     });
 
+    asyncTest( "Login - Custom Authenticator - Success", function() {
+        expect( 2 );
+
+        var values = {
+            username: "john",
+            password: "123"
+        };
+
+        customRestAuth.login( values, {
+            contentType: "application/json",
+            dataType: "json",
+            success: function( data ) {
+                equal( data.username, "john", "Username is John" );
+                equal( data.logged, true, "Logged is true" );
+                start();
+            }
+        });
+    });
+
     asyncTest( "Access With Valid Session", function() {
         expect( 1 );
 
@@ -188,6 +240,18 @@
 
         restAuth.logout({
             success: function() {
+                ok( true, "Logout Successful");
+                start();
+            }
+        });
+
+    });
+
+    asyncTest( "Log Out - Custom Authenticator", function() {
+        expect( 1 );
+
+        customRestAuth.logout({
+            success: function( ) {
                 ok( true, "Logout Successful");
                 start();
             }
