@@ -148,7 +148,7 @@
         equal( dm.createTest32 instanceof AeroGear.DataManager.adapters.WebSQL, true, "Didn't Fallback" );
     });
 
-    module( "DataManager Creation with fallbacks while supplying prefered list", {
+    module( "DataManager Creation with fallbacks while supplying preferred list", {
         setup: function() {
 
             for( var adapter in AeroGear.DataManager.validAdapters ) {
@@ -165,7 +165,7 @@
     test( "create IndexedDB - Fallsback to Memory - name string", function() {
         expect( 4 );
 
-        var dm = AeroGear.DataManager( { name: "createTest1", type: "IndexedDB", settings: { prefered: [ "Memory" ] } } ).stores;
+        var dm = AeroGear.DataManager( { name: "createTest1", type: "IndexedDB", settings: { preferred: [ "Memory" ] } } ).stores;
         equal( Object.keys( dm ).length, 1, "Single Store created" );
         equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
         equal( dm.createTest1 instanceof AeroGear.DataManager.adapters.Memory, true, "Fellback to Memory" );
@@ -179,7 +179,7 @@
             {
                 name: "createTest21",
                 type: "WebSQL",
-                settings: { prefered: [ "Memory" ] }
+                settings: { preferred: [ "Memory" ] }
             },
             {
                 name: "createTest22",

@@ -24,7 +24,7 @@
     @param {String} [config.recordId="id"] - @deprecated the identifier used to denote the unique id for each record in the data associated with this store
     @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
     @param {Boolean} [config.settings.fallback=true] - falling back to a supported adapter is on by default, to opt-out, set this setting to false
-    @param {Array} [config.settings.prefered] - a list of prefered adapters to try when falling back. Defaults to [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ]
+    @param {Array} [config.settings.preferred] - a list of preferred adapters to try when falling back. Defaults to [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ]
     @returns {object} dataManager - The created DataManager containing any stores that may have been created
     @example
 // Create an empty DataManager
@@ -74,7 +74,7 @@ AeroGear.DataManager = function( config ) {
     this.add = function( config ){
         config = config || {};
 
-        var i, type, fallback, prefered, settings;
+        var i, type, fallback, preferred, settings;
 
         config = AeroGear.isArray( config ) ? config : [ config ];
 
@@ -82,17 +82,17 @@ AeroGear.DataManager = function( config ) {
             settings = value.settings || {};
             fallback = settings.fallback === false ? false : true;
             if( fallback ) {
-                prefered = settings.prefered ? settings.prefered : AeroGear.DataManager.prefered;
+                preferred = settings.preferred ? settings.preferred : AeroGear.DataManager.preferred;
                 if ( typeof value !== "string" ) {
                     type = value.type || "Memory";
                     if( !( type in AeroGear.DataManager.validAdapters ) ) {
-                        for( i = 0; i < prefered.length; i++ ) {
-                            if( prefered[ i ] in AeroGear.DataManager.validAdapters ) {
+                        for( i = 0; i < preferred.length; i++ ) {
+                            if( preferred[ i ] in AeroGear.DataManager.validAdapters ) {
                                 //For Deprecation purposes in 1.3.0  will be removed in 1.4.0
                                 if( type === "IndexedDB" || type === "WebSQL" ) {
                                     value.settings = AeroGear.extend( value.settings || {}, { async: true } );
                                 }
-                                value.type = prefered[ i ];
+                                value.type = preferred[ i ];
                                 return value;
                             }
                         }
@@ -154,9 +154,9 @@ AeroGear.DataManager.constructor = AeroGear.DataManager;
 AeroGear.DataManager.validAdapters = {};
 
 /**
-    prefered adapters for the fallback strategy
+    preferred adapters for the fallback strategy
 */
-AeroGear.DataManager.prefered = [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ];
+AeroGear.DataManager.preferred = [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ];
 
 /**
     Method to determine and store what adapters are valid for this environment

@@ -17,10 +17,10 @@
             adapter = AeroGear.DataManager.adapters.IndexedDB;
             type = "IndexedDB";
         } else {
-            for( var i = 0; i < AeroGear.DataManager.prefered.length; i++ ) {
-                if( AeroGear.DataManager.prefered[ i ] in AeroGear.DataManager.validAdapters ) {
-                    adapter = AeroGear.DataManager.adapters[ AeroGear.DataManager.prefered[ i ] ];
-                    type = AeroGear.DataManager.prefered[ i ];
+            for( var i = 0; i < AeroGear.DataManager.preferred.length; i++ ) {
+                if( AeroGear.DataManager.preferred[ i ] in AeroGear.DataManager.validAdapters ) {
+                    adapter = AeroGear.DataManager.adapters[ AeroGear.DataManager.preferred[ i ] ];
+                    type = AeroGear.DataManager.preferred[ i ];
                     break;
                 }
             }
@@ -41,10 +41,10 @@
             adapter = AeroGear.DataManager.adapters.WebSQL;
             type = "WebSQL";
         } else {
-            for( var i = 0; i < AeroGear.DataManager.prefered.length; i++ ) {
-                if( AeroGear.DataManager.prefered[ i ] in AeroGear.DataManager.validAdapters ) {
-                    adapter = AeroGear.DataManager.adapters[ AeroGear.DataManager.prefered[ i ] ];
-                    type = AeroGear.DataManager.prefered[ i ];
+            for( var i = 0; i < AeroGear.DataManager.preferred.length; i++ ) {
+                if( AeroGear.DataManager.preferred[ i ] in AeroGear.DataManager.validAdapters ) {
+                    adapter = AeroGear.DataManager.adapters[ AeroGear.DataManager.preferred[ i ] ];
+                    type = AeroGear.DataManager.preferred[ i ];
                     break;
                 }
             }
