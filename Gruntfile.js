@@ -161,6 +161,14 @@ module.exports = function(grunt) {
                         cwd: 'aerogear-js-integration'
                     }
                 }
+            },
+            docs: {
+                command: [
+                    'jsdoc-aerogear src/ -r -d docs README.md'
+                ].join(' && '),
+                options: {
+                    stdout: true
+                }
             }
         }
     });
@@ -195,4 +203,5 @@ module.exports = function(grunt) {
     grunt.registerTask('push', ['concat:push']);
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
+    grunt.registerTask('docs',['shell:docs']);
 };
