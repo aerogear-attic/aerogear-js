@@ -134,4 +134,8 @@ To generate the API docs, run the following command:
 
     $ jsdoc-aerogear src/ -r -d docs README.md
 
+or by running the grunt `docs` task
+
+    $ grunt docs
+
 _The docs use a slightly modified version of jsdoc_
