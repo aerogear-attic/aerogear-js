@@ -18,13 +18,13 @@
     This constructor is instantiated when the "Authorizer.add()" method is called
     @status Experimental
     @constructs AeroGear.Authorization.adapters.OAuth2
-    @param {String} name - the name used to reference this particular auth module
+    @param {String} name - the name used to reference this particular authz module
     @param {Object} settings={} - the settings to be passed to the adapter
     @param {String} settings.clientId - the client id/ app Id of the protected service
     @param {String} settings.redirectURL - the URL to redirect to
     @param {String} settings.authEndpoint - the endpoint for authorization
-    @param {String} settings.scopes - a space seperated list of "scopes" or things you want to access
-    @returns {Object} The created auth module
+    @param {String} settings.scopes - a space separated list of "scopes" or things you want to access
+    @returns {Object} The created authz module
     @example
     //Create an empty Authenticator
     var authz = AeroGear.Authorization();
@@ -34,7 +34,7 @@
         settings: {
             clientId: "12345",
             redirectURL: "http://localhost:3000/redirector.html",
-            authEndpoint: "http://localhost:3000/v1/auth",
+            authEndpoint: "http://localhost:3000/v1/authz",
             scopes: "userinfo coolstuff"
         }
     });
@@ -141,7 +141,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         settings: {
             clientId: "12345",
             redirectURL: "http://localhost:3000/redirector.html",
-            authEndpoint: "http://localhost:3000/v1/auth",
+            authEndpoint: "http://localhost:3000/v1/authz",
             scopes: "userinfo coolstuff"
         }
     });
@@ -247,7 +247,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     settings: {
         clientId: "12345",
         redirectURL: "http://localhost:3000/redirector.html",
-        authEndpoint: "http://localhost:3000/v1/auth",
+        authEndpoint: "http://localhost:3000/v1/authz",
         scopes: "userinfo coolstuff"
     }
     });
