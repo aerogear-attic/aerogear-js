@@ -23,6 +23,7 @@
     @param {String} settings.clientId - the client id/ app Id of the protected service
     @param {String} settings.redirectURL - the URL to redirect to
     @param {String} settings.authEndpoint - the endpoint for authorization
+    @param {String} [settings.validationEndpoint] - the optional endpoint to validate your token.  Not in the Spec, but recommend for use with Google's API's
     @param {String} settings.scopes - a space separated list of "scopes" or things you want to access
     @returns {Object} The created authz module
     @example
@@ -51,7 +52,8 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     var type = "OAuth2",
         state = uuid(), //Recommended in the spec,
         clientId = settings.clientId, //Required by the spec
-        redirectURL = settings.redirectURL, //optional in the spec, but doesn't make sense without it
+        redirectURL = settings.redirectURL, //optional in the spec, but doesn't make sense without it,
+        validationEndpoint = settings.validationEndpoint, //optional,  not in the spec, but recommend to use with Google's API's
         scopes = settings.scopes, //Optional by the spec
         accessToken,
         localStorageName = "ag-oauth2-" + clientId,
@@ -90,8 +92,26 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         @private
         @augments OAuth2
      */
+    this.getClientId = function() {
+        return clientId;
+    };
+
+    /**
+        Returns the value of the private settings var
+        @private
+        @augments OAuth2
+     */
     this.getLocalStorageName = function() {
         return localStorageName;
+    };
+
+    /**
+        Returns the value of the private settings var
+        @private
+        @augments OAuth2
+     */
+    this.getValidationEndpoint = function() {
+        return validationEndpoint;
     };
 
     /**
@@ -226,8 +246,25 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
         return;
     }
 
-    // The Spec does not specify that you need to validate the token
-    success.call( this, parsedQuery );
+    if( this.getValidationEndpoint() ) {
+        jQuery.ajax({
+            url: this.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token,
+            success: function( response ) {
+              // Must Check the audience field that is returned.  This should be the same as the registered clientID
+                if( that.getClientId() !== response.audience ) {
+                    error.call( this, { "error": "invalid_token" } );
+                    return ;
+                }
+                success.call( this, parsedQuery );
+            },
+            error: function( err ) {
+                error.call( this, { "error": "invalid_token" } );
+            }
+        });
+    } else {
+        // The Spec does not specify that you need to validate the token
+        success.call( this, parsedQuery );
+    }
 };
 
 /**
