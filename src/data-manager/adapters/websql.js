@@ -247,7 +247,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
         sql = "SELECT * FROM " + storeName;
 
         if( id ) {
-            sql += " WHERE ID = " + id;
+            sql += " WHERE ID = '" + id + "'";
         }
 
         database.transaction( function( transaction ) {
