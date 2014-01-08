@@ -429,6 +429,63 @@ function doAlways() {
         dm = AeroGear.DataManager(),
         data = null;
 
+    module( "DataManager: WebSQL - Read - id is a string", {
+        setup: function() {
+            dm.add({
+                name: "test1",
+                type: "WebSQL"
+            });
+
+            data = [
+                {
+                    "id": 1,
+                    "name": "Luke",
+                    "type": "Human"
+                },
+                {
+                    "id": "aa",
+                    "name": "Otter",
+                    "type": "Cat"
+                }
+            ];
+
+            hasopened = dm.stores.test1.open();
+        },
+        teardown: function() {
+            var dbs = [ "test1" ];
+            hasopened = undefined;
+            dm.stores.test1.remove( undefined, {
+                success: function( data ) {
+                },
+                error: function( error ) {
+                }
+            });
+        }
+    });
+
+    asyncTest( "Read Data - 1 item - string", function() {
+        expect( 2 );
+        hasopened.always( function() {
+            dm.stores.test1.save( data ).done( function() {
+                dm.stores.test1.read( "aa", {
+                    success: function( data ) {
+                        ok( true, "read 1 item successful" );
+                        equal( data.length, 1, "1 items returned" );
+                    },
+                    error: function( error ) {
+                        ok( false, "Read 1 has errors" + error );
+                    }
+                }).always( doAlways );
+            });
+        });
+    });
+})( jQuery );
+
+(function( $ ) {
+    var hasopened,
+        dm = AeroGear.DataManager(),
+        data = null;
+
     module( "DataManager: WebSQL - Update", {
         setup: function() {
             dm.add({
