@@ -74,7 +74,7 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/unit/authentication/**/*.html','tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html']
+            files: ['tests/unit/authentication/**/*.html', 'tests/unit/authorization/**/*.html', 'tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html']
         },
         jshint: {
             all: {
