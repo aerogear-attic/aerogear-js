@@ -2,13 +2,7 @@
 
     module( "authorization" );
    
-    var suiteData = {
-            accessToken: "2YotnFZFEjr1zCsicMWpAA",
-            tokenExpireTime: 3600,
-            clientId: "s6BhdRkqt3",
-            wrongAccessToken: "wrongToken"
-        },
-        authz = AeroGear.Authorization();
+    var authz = AeroGear.Authorization();
         
     authz.add({
         name: "drive",
@@ -20,7 +14,7 @@
             scopes: "user"
         }
     });
-
+    
     var pipeline = AeroGear.Pipeline( { authorizer: authz.services.drive } );
     pipeline.add([
         {
@@ -39,7 +33,7 @@
         ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getLocalStorageName(), "Local Storage Name exists" );
     });
  
-    test( "Validate Response - Success case - OAuth2 Implicit Grant flow", function() {
+    asyncTest( "Validate Response - Success case - OAuth2 Implicit Grant flow", function() {
         expect( 4 );
 
         var state = authz.services[ Object.keys( authz.services )[ 0 ] ].getState();
@@ -53,17 +47,18 @@
                                 suiteData.tokenExpireTime].join(''),
             success = function ( response ) {
                 ok( true, 'Successful validation' );
+                ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), "AccessToken exists" );
+                strictEqual( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), suiteData.accessToken, "Access Token is the expected");
+                start();
             },
             error = function ( error ) {
                 ok( false, 'Unsuccessful validation' );
             };
 
         authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
-        ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), "AccessToken exists" );
-        strictEqual( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), suiteData.accessToken, "Access Token is the expected");
     });
 
-    test( "Validate Response - Failure case - OAuth2 Implicit Grant flow", function() {
+    asyncTest( "Validate Response - Failure case - OAuth2 Implicit Grant flow", function() {
         expect( 1 );
 
         var wrongState = authz.services[ Object.keys( authz.services )[ 0 ] ].getState() + '__',
@@ -78,6 +73,30 @@
             },
             error = function ( error ) {
                 ok( true, 'Unsuccessful validation' );
+                start();
+            };
+
+        authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
+    });
+
+    asyncTest( "Validate Response - Failure case - Wrong Audience - OAuth2 Implicit Grant flow", function() {
+        expect( 2 );
+
+        var state = authz.services[ Object.keys( authz.services )[ 0 ] ].getState();
+        ok( state, "State exists" );
+
+        var accessTokenResponseURI = ["http://example.com/cb#access_token=",
+                                suiteData.accessTokenWrongAudience,
+                                "&state=",
+                                state,
+                                "&token_type=example&expires_in=",
+                                suiteData.tokenExpireTime].join(''),
+            success = function ( response ) {
+                ok( false, 'Successful validation' );
+            },
+            error = function ( error ) {
+                ok( true, 'Unsuccessful validation' );
+                start();
             };
 
         authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
@@ -95,29 +114,31 @@
                                 suiteData.tokenExpireTime].join(''),
             success = function ( response ) {
                 ok( true, 'Successful validation' );
+                ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), "AccessToken exists" );
+                strictEqual( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), suiteData.accessToken, "Access Token is the expected");
             },
             error = function ( error ) {
                 ok( false, 'Unsuccessful validation' );
             };
 
-        authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
-        ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), "AccessToken exists" );
-        strictEqual( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), suiteData.accessToken, "Access Token is the expected");
+        var validate = authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
 
-        pipeline.pipes.messages.read({
-            success: function( data ) {
-                ok( true, "Success callback" );
-                start();
-            }
+        $.when( validate ).done( function ( s1)  {
+            pipeline.pipes.messages.read({
+                success: function( data ) {
+                    ok( true, "Success callback" );
+                    start();
+                }
+            });
         });
     });
 
     asyncTest( "Accessing Resources - Error case - OAuth2 Implicit Grant flow", function() {
-        expect( 4 );
+        expect( 2 );
         
         var state = authz.services[ Object.keys( authz.services )[ 0 ] ].getState(),
             accessTokenResponseURI = ["http://example.com/cb#access_token=",
-                                suiteData.wrongAccessToken,
+                                suiteData.accessToken,
                                 "&state=",
                                 state,
                                 "&token_type=example&expires_in=",
@@ -129,15 +150,19 @@
                 ok( false, 'Unsuccessful validation' );
             };
 
-        authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
-        ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), "AccessToken exists" );
-        strictEqual( authz.services[ Object.keys( authz.services )[ 0 ] ].getAccessToken(), suiteData.wrongAccessToken, "Access Token is the expected");
+        var validate = authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
 
-        pipeline.pipes.messages.read({
-            error: function( data ) {
-                ok( true, "Error callback" );
-                start();
-            }
+        $.when ( validate ).done ( function ( s1 ) {
+            // explicitly set wrong access token
+            var wrongTokenJSON = { accessToken: suiteData.wrongAccessToken};
+            localStorage.setItem( authz.services[ Object.keys( authz.services )[ 0 ] ].getLocalStorageName(), JSON.stringify( wrongTokenJSON ) );
+            // access resources using wrong access token
+            pipeline.pipes.messages.read({
+                error: function( data ) {
+                    ok( true, "Error callback" );
+                    start();
+                }
+            });
         });
     });
 
