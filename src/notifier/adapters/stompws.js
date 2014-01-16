@@ -367,6 +367,30 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
 };
 
 /**
+    Set the client's debug property. Used to see the data being sent and received.
+    @param {Function} [onData] - callback to be executed when data is sent and received
+    @example
+    // Log data being sent and received
+    notifier.clients.client2.debug({
+        function(data) {
+            console.log( data );
+        }
+    );
+ */
+AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
+    var client = this.getClient(),
+        debug = function() {
+            if ( onData ) {
+                onData.apply( this, arguments );
+            }
+        };
+    
+    if ( client ) {
+        client.debug = debug;
+    }
+};
+
+/**
     Unsubscribe this client from a channel
     @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
     @example
