@@ -296,11 +296,11 @@ AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
     @param {Function} [onDisconnect] - callback to be executed when a connection is terminated
     @example
     // Disconnect from the messaging service and pass a function to be called after disconnecting
-    notifier.clients.client2.disconnect({
-        onDisconnect: function() {
+    notifier.clients.client2.disconnect(
+        function() {
             console.log( "connected" );
         }
-    });
+    );
 
  */
 AeroGear.Notifier.adapters.stompws.prototype.disconnect = function( onDisconnect ) {
@@ -367,6 +367,30 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
 };
 
 /**
+    Set the client's debug property. Used to see the data being sent and received.
+    @param {Function} [onData] - callback to be executed when data is sent and received
+    @example
+    // Log data being sent and received
+    notifier.clients.client2.debug({
+        function(data) {
+            console.log( data );
+        }
+    );
+ */
+AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
+    var client = this.getClient(),
+        debug = function() {
+            if ( onData ) {
+                onData.apply( this, arguments );
+            }
+        };
+    
+    if ( client ) {
+        client.debug = debug;
+    }
+};
+
+/**
     Unsubscribe this client from a channel
     @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
     @example
@@ -389,12 +413,18 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
     ]);
  */
 AeroGear.Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) {
-    var client = this.getClient();
+    var index, i,
+        client = this.getClient(),
+        thisChannels = this.getChannels();
 
     channels = AeroGear.isArray( channels ) ? channels : [ channels ];
-    for ( var i = 0; i < channels.length; i++ ) {
-        client.unsubscribe( channels[ i ].id );
-        this.removeChannel( channels[ i ] );
+    for ( i = 0; i < channels.length; i++ ) {
+        index = this.getChannelIndex( channels[ i ].address );
+        client.unsubscribe( thisChannels[ index ].id );
+        this.removeChannel( thisChannels[ index ] );
+        if ( channels[ i ].callback ) {
+            channels[ i ].callback.apply( this, arguments );
+        }
     }
 };
 
