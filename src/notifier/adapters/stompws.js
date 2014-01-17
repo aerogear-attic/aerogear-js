@@ -413,12 +413,18 @@ AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
     ]);
  */
 AeroGear.Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) {
-    var client = this.getClient();
+    var index, i,
+        client = this.getClient(),
+        thisChannels = this.getChannels();
 
     channels = AeroGear.isArray( channels ) ? channels : [ channels ];
-    for ( var i = 0; i < channels.length; i++ ) {
-        client.unsubscribe( channels[ i ].id );
-        this.removeChannel( channels[ i ] );
+    for ( i = 0; i < channels.length; i++ ) {
+        index = this.getChannelIndex( channels[ i ].address );
+        client.unsubscribe( thisChannels[ index ].id );
+        this.removeChannel( thisChannels[ index ] );
+        if ( channels[ i ].callback ) {
+            channels[ i ].callback.apply( this, arguments );
+        }
     }
 };
 
