@@ -296,11 +296,11 @@ AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
     @param {Function} [onDisconnect] - callback to be executed when a connection is terminated
     @example
     // Disconnect from the messaging service and pass a function to be called after disconnecting
-    notifier.clients.client2.disconnect({
-        onDisconnect: function() {
+    notifier.clients.client2.disconnect(
+        function() {
             console.log( "connected" );
         }
-    });
+    );
 
  */
 AeroGear.Notifier.adapters.stompws.prototype.disconnect = function( onDisconnect ) {
