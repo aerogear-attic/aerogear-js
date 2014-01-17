@@ -384,7 +384,7 @@ AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
                 onData.apply( this, arguments );
             }
         };
-    
+
     if ( client ) {
         client.debug = debug;
     }
