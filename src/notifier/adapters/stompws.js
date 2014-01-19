@@ -371,7 +371,7 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
     @param {Function} [onData] - callback to be executed when data is sent and received
     @example
     // Log data being sent and received
-    notifier.clients.client2.debug({
+    notifier.clients.client2.debug(
         function(data) {
             console.log( data );
         }
