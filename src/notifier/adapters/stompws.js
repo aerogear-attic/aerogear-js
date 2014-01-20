@@ -371,7 +371,7 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
     @param {Function} [onData] - callback to be executed when data is sent and received
     @example
     // Log data being sent and received
-    notifier.clients.client2.debug({
+    notifier.clients.client2.debug(
         function(data) {
             console.log( data );
         }
@@ -413,18 +413,13 @@ AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
     ]);
  */
 AeroGear.Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) {
-    var index, i,
-        client = this.getClient(),
+    var client = this.getClient(),
         thisChannels = this.getChannels();
 
     channels = AeroGear.isArray( channels ) ? channels : [ channels ];
-    for ( i = 0; i < channels.length; i++ ) {
-        index = this.getChannelIndex( channels[ i ].address );
-        client.unsubscribe( thisChannels[ index ].id );
-        this.removeChannel( thisChannels[ index ] );
-        if ( channels[ i ].callback ) {
-            channels[ i ].callback.apply( this, arguments );
-        }
+    for ( var i = 0; i < channels.length; i++ ) {
+        client.unsubscribe( channels[ i ].id || thisChannels[ this.getChannelIndex( channels[ i ].address ) ].id );
+        this.removeChannel( channels[ i ] );
     }
 };
 

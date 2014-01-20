@@ -370,7 +370,7 @@ AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset
 
 /**
     Unsubscribe this client from a channel
-    @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe
+    @param {Object|Array} channels - a channel object or a set of channel objects to which this client nolonger wishes to subscribe. Each object should have a String address and an optional callback which needs to be the same as the callback passed to the subscribe method while subscribing the client to the channel.
     @example
     // Unsubscribe from a previously subscribed channel
     notifierVertx.clients.client1.unsubscribe(
@@ -395,12 +395,13 @@ AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset
 
  */
 AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
-    var bus = this.getBus();
+    var bus = this.getBus(),
+        thisChannels = this.getChannels();
 
     channels = AeroGear.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
+        bus.unregisterHandler( channels[ i ].address, channels[ i ].callback || thisChannels[ this.getChannelIndex( channels[ i ].address ) ].callback );
         this.removeChannel( channels[ i ] );
-        bus.unregisterHandler( channels[ i ].address, channels[ i ].callback );
     }
 };
 
