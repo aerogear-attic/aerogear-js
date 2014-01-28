@@ -15,6 +15,7 @@
 */
 /**
     The OAuth2 adapter is the default type used when creating a new authorization module. It uses jQuery.ajax to communicate with the server.
+    While this library can be used "standalone", we recommend using it with Pipeline to get the most benefit
     This constructor is instantiated when the "Authorizer.add()" method is called
     @status Experimental
     @constructs AeroGear.Authorization.adapters.OAuth2
@@ -143,9 +144,8 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     };
 };
 
-//Takes the querystring that is returned after the "dance" unparsed.
 /**
-    Enroll a new user in the authentication system
+    Validate the Authorization endpoints - Takes the querystring that is returned after the "dance" unparsed.
     @param {String} queryString - The returned query string to be parsed
     @param {Object} [options={}] - Options to pass to the enroll method
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
