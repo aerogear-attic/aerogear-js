@@ -2,6 +2,13 @@
 
 JavaScript client library implementation for AeroGear. Eventually, this will include API's for persistence, security, data synchronization and more. For more information and downloads, visit [AeroGear.org](http://aerogear.org/javascript).
 
+## Authorization
+- - -
+
+The AeroGear.Authorization namespace provides an authorization API. Through the use of adapters as well as coupled with Pipeline, this library will help provide access to services that need authorization.
+
+See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Authorization.html) for more info.
+
 ## Auth
 - - -
 
@@ -64,6 +71,11 @@ All features of the library are given a stability rating which is noted in the d
 - - -
 
 Some parts of AeroGear.js depend on external libraries which are not bundled in the same file. Below is a list of each plugin and their adapters along with external dependencies, if they have any. It is recommended to use the latest stable version of each dependency unless otherwise noted.
+
+### Authorization
+
+* **OAuth2**
+    * [jQuery](http://jquery.com/download/)
 
 ### Auth
 
