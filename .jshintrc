@@ -17,6 +17,7 @@
         "vertx": true,
         "SockJS": true,
         "Stomp": true,
+        "Messaging": true,
         "File": true,
         "sjcl": true,
         "crypto": true

@@ -103,6 +103,8 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 * **vert.x**
     * [vert.x Event Bus](http://vertx.io/downloads.html)
     * [SockJS](http://cdn.sockjs.org/)
+* **MQTT-WS**
+    * [Eclipse Paho mqttws31.js](http://git.eclipse.org/c/paho/org.eclipse.paho.mqtt.javascript.git/tree/src/mqttws31.js)
 * **SimplePush**
     * See SimplePush Plugin
 
