@@ -57,7 +57,7 @@
 
     });
 
-    //create an Authenticator and Pipeline to be used for other tests
+    // create an Authenticator and Pipeline to be used for other tests
     var restAuth = AeroGear.Auth("auth").modules.auth;
 
     var securePipe = AeroGear.Pipeline([

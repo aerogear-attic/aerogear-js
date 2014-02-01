@@ -36,7 +36,7 @@ var pl2 = AeroGear.Pipeline( "tasks" );
 // Create multiple pipes using the default adapter
 var pl3 = AeroGear.Pipeline( [ "tasks", "projects" ] );
 
-//Create a new REST pipe with a custom ID using an object
+// Create a new REST pipe with a custom ID using an object
 var pl4 = AeroGear.Pipeline({
     name: "customPipe",
     type: "rest",
@@ -45,7 +45,7 @@ var pl4 = AeroGear.Pipeline({
     }
 });
 
-//Create multiple REST pipes using objects
+// Create multiple REST pipes using objects
 var pl5 = AeroGear.Pipeline([
     {
         name: "customPipe",

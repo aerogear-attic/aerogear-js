@@ -82,7 +82,7 @@ AeroGear.Crypto = function() {
         @status Experimental
         @return {Number} - the random value
         @example
-        //Random number generator:
+        // Random number generator:
         AeroGear.Crypto().getRandomValue();
     */
     this.getRandomValue = function() {
@@ -98,7 +98,7 @@ AeroGear.Crypto = function() {
         @param {Number} providedSalt - salt provided to recreate the key
         @return {bitArray} - the derived key
         @example
-        //Password encryption:
+        // Password encryption:
         AeroGear.Crypto().deriveKey( 'mypassword', 42 );
      */
     this.deriveKey = function( password, providedSalt ) {
@@ -117,7 +117,7 @@ AeroGear.Crypto = function() {
             plainText (data to be encrypted)
         @return {bitArray} - The encrypted data represented by an array of bytes
         @example
-        //Data encryption:
+        // Data encryption:
         var options = {
             IV: myIV,
             AAD: myAAD,
@@ -148,7 +148,7 @@ AeroGear.Crypto = function() {
             ciphertext (data to be decrypted)
         @return {bitArray} - The decrypted data
         @example
-        //Data decryption:
+        // Data decryption:
         var options = {
             IV: myIV,
             AAD: myAAD,
@@ -171,7 +171,7 @@ AeroGear.Crypto = function() {
         @param {bitArray|String} data to hash.
         @return {bitArray} - Hash value
         @example
-        //Data hashing:
+        // Data hashing:
         AeroGear.Crypto().hash( options );
      */
     this.hash = function( data ) {
@@ -186,7 +186,7 @@ AeroGear.Crypto = function() {
             message (message to be signed)
         @return {bitArray} - Digital signature
         @example
-        //Message sign:
+        // Message sign:
         var options = {
             keys: providedKey,
             message: PLAIN_TEXT
@@ -208,7 +208,7 @@ AeroGear.Crypto = function() {
             message (message to be verified), signature (Digital signature)
         @return {bitArray} - Signature
         @example
-        //Message validation
+        // Message validation
         var options = {
             keys: sjcl.ecc.ecdsa.generateKeys(192),
             signature: signatureToBeVerified
@@ -240,7 +240,7 @@ AeroGear.Crypto = function() {
             publicKey = pubKey;
         } else {
             keys = sjcl.ecc.elGamal.generateKeys( 192,0 );
-            //kem - key encapsulation mechanism
+            // kem - key encapsulation mechanism
             pub = keys.pub.kem();
             publicKey = pub.key;
             privateKey = keys.sec.unkem( pub.tag );

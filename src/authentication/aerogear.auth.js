@@ -32,14 +32,14 @@ var auth2 = AeroGear.Auth( "myAuth" );
 // Create multiple modules using the default adapter
 var auth3 = AeroGear.Auth( [ "someAuth", "anotherAuth" ] );
 
-//Create a single module by passing an object using the default adapter
+// Create a single module by passing an object using the default adapter
 var auth4 = AeroGear.Auth(
     {
         name: "objectAuth"
     }
 );
 
-//Create multiple modules by passing an array of objects using the default adapter
+// Create multiple modules by passing an array of objects using the default adapter
 var auth5 = AeroGear.Auth([
     {
         name: "objectAuth"

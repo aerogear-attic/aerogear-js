@@ -188,7 +188,7 @@ AeroGear.Notifier.adapters.stompws = function( clientName, settings ) {
     }
 };
 
-//Public Methods
+// Public Methods
 /**
     Connect the client to the messaging service
     @param {Object} [options={}] - Options to pass to the connect method
@@ -333,7 +333,7 @@ AeroGear.Notifier.adapters.stompws.prototype.disconnect = function( onDisconnect
         callback: function(){ ... }
     });
 
-    //Subscribe to multiple channels
+    // Subscribe to multiple channels
     notifier.clients.client2.subscribe([
         {
             address: "channelAddress1",
@@ -400,7 +400,7 @@ AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
         callback: function(){ ... }
     });
 
-    //Unsubscribe from multiple channels
+    // Unsubscribe from multiple channels
     notifier.clients.client2.unsubscribe([
         {
             address: "channelAddress1",

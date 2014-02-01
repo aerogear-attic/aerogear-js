@@ -28,7 +28,7 @@
     @param {String} settings.scopes - a space separated list of "scopes" or things you want to access
     @returns {Object} The created authz module
     @example
-    //Create an empty Authenticator
+    // Create an empty Authenticator
     var authz = AeroGear.Authorization();
 
     authz.add({
@@ -131,7 +131,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         @augments OAuth2
      */
     this.parseQueryString = function( locationString ) {
-        //taken from https://developers.google.com/accounts/docs/OAuth2Login
+        // taken from https://developers.google.com/accounts/docs/OAuth2Login
         // First, parse the query string
         var params = {},
             queryString = locationString.substr( locationString.indexOf( "#" ) + 1 ),
@@ -152,7 +152,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-    //Create the Authorizer
+    // Create the Authorizer
     var authz = AeroGear.Authorization(),
         pipe;
 
@@ -166,10 +166,10 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         }
     });
 
-    //Create a new Pipeline with an authorizer
+    // Create a new Pipeline with an authorizer
     pipe = AeroGear.Pipeline( { authorizer: authz.services.coolThing } );
 
-    //Add a pipe
+    // Add a pipe
     pipe.add([
     {
         name: "cal",
@@ -180,17 +180,17 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     }
     ]);
 
-    //Make the call. OAuth2.read() will be called by Pipe.Read
+    // Make the call. OAuth2.read() will be called by Pipe.Read
     pipe.pipes.cal.read({
         success:function( response ) {
             ....
         },
         error: function( error ) {
-            //an error happened, so take the authURL and do the "OAuth2 Dance",
+            // an error happened, so take the authURL and do the "OAuth2 Dance",
         }
     });
 
-    //After a successful response from the "OAuth2 Dance", validate that the query string is valid, If all is well, the access_token will be stored.
+    // After a successful response from the "OAuth2 Dance", validate that the query string is valid, If all is well, the access_token will be stored.
     authz.services.coolThing.validate( responseFromAuthEndpoint, {
         success: function( response ){
             ...
@@ -200,10 +200,10 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         }
     });
 
-    //Make pipe.read calls
+    // Make pipe.read calls
     pipe.pipes.cal.read({
         success:function( response ) {
-            //Should be success calls
+            // Should be success calls
         },
         error: function( error ) {
             ....
@@ -221,7 +221,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
         success;
 
     success = function( response ) {
-        //Perhaps we can use crypt here to be more secure
+        // Perhaps we can use crypt here to be more secure
         localStorage.setItem( that.getLocalStorageName(), JSON.stringify( { "accessToken": parsedQuery.access_token } ) );
         if( options.success ) {
             options.success.apply( this, arguments );
@@ -239,9 +239,9 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
         return;
     }
 
-    //Make sure that the "state" value returned is the same one we sent
+    // Make sure that the "state" value returned is the same one we sent
     if( parsedQuery.state !== state ) {
-        //No Good
+        // No Good
         error.call( this, { error: "invalid_request", state: state, error_description: "state's do not match"  } );
         return;
     }
@@ -275,7 +275,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax - IF an error is returned,  the authentication URL will be appended to the response object
     @example
-    //Create the Authorizer
+    // Create the Authorizer
     var authz = AeroGear.Authorization(),
     pipe;
 
@@ -289,10 +289,10 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     }
     });
 
-    //Create a new Pipeline with an authorizer
+    // Create a new Pipeline with an authorizer
     pipe = AeroGear.Pipeline( { authorizer: authz.services.coolThing } );
 
-    //Add a pipe
+    // Add a pipe
     pipe.add([
     {
         name: "cal",
@@ -303,7 +303,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     }
     ]);
 
-    //Make the call. OAuth2.read() will be called by Pipe.Read
+    // Make the call. OAuth2.read() will be called by Pipe.Read
     pipe.pipes.cal.read({
         success:function( response ) {
             ....

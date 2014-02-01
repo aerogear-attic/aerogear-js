@@ -23,7 +23,7 @@
         @param {String} pushServerURL - the location of the UnifiedPush server
         @returns {Object} The created unified push server client
         @example
-        //Create the UnifiedPush client object:
+        // Create the UnifiedPush client object:
         var client = AeroGear.UnifiedPushClient(
             "myVariantID",
             "myVariantSecret",

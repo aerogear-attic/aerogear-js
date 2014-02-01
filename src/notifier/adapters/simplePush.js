@@ -248,7 +248,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     };
 };
 
-//Public Methods
+// Public Methods
 /**
     Connect the client to the messaging service
     @param {Object} [options] - Options to pass to the connect method

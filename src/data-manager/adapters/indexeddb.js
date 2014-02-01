@@ -27,10 +27,10 @@
     @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
     @returns {Object} The created store
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"
@@ -109,7 +109,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 
         if( !database ) {
             if( !auto ) {
-                //hasn't been opened yet
+                // hasn't been opened yet
                 throw "Database not opened";
             } else {
                 this.open().always( function( value, status ) {
@@ -141,10 +141,10 @@ AeroGear.DataManager.adapters.IndexedDB.isValid = function() {
     @param {AeroGear~errorCallbackINDEXEDDB} [settings.error] - a callback to be called when there is an error with the opening of an IndexedDB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"
@@ -164,7 +164,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
         recordId = this.getRecordId(),
         deferred = jQuery.Deferred();
 
-    //Attempt to open the indexedDB database
+    // Attempt to open the indexedDB database
     request = window.indexedDB.open( storeName );
 
     request.onsuccess = function( event ) {
@@ -196,10 +196,10 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when there is an error reading an IndexedDB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"
@@ -215,7 +215,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
         error: function( error ) { ... }
     });
 
-    //read a record with a particular id
+    // read a record with a particular id
     dm.stores.test1.read( 5, {
         success: function( data ) { ... },
         error: function( error ) { ... }
@@ -283,10 +283,10 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when there is an error with the saving of a record into an IndexedDB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"
@@ -302,7 +302,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
         error: function( error ) { ... }
     });
 
-    //Save multiple Records
+    // Save multiple Records
     dm.stores.newStore.save(
         [
             { "id": 3, "name": "Grace", "type": "Little Person" },
@@ -369,10 +369,10 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be called when there is an error removing a record out of an IndexedDB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"
@@ -389,7 +389,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
         error: function( error ) { ... }
     });
 
-    //Remove all data
+    // Remove all data
     dm.stores.newStore.remove( undefined, {
         success: function( data ) { ... },
         error: function( error ) { ... }
@@ -455,10 +455,10 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     @param {AeroGear~errorCallbackINDEXEDDB} [options.error] - a callback to be calledd after an error filtering of an IndexedDB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"
@@ -505,10 +505,10 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
 /**
     Close the current store
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store and then delete a record
+    // Add an IndexedDB store and then delete a record
     dm.add({
         name: "newStore",
         storageType: "IndexedDB"

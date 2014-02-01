@@ -234,7 +234,7 @@
             equal( data.length, 1, "Read new item by id" );
         });
 
-        //Now Update
+        // Now Update
         userStore.save({
             id: 12351,
             fname: "Updated",
@@ -253,7 +253,7 @@
     test( "update multiple", function() {
         expect( 2 );
 
-        //Save New ones first
+        // Save New ones first
         userStore.save([
             {
                 id: 12352,
@@ -269,7 +269,7 @@
             }
         ]);
 
-        //Now Update
+        // Now Update
         userStore.save([
             {
                 id: 12352,
@@ -502,7 +502,7 @@
         ok( filtered[ 0 ].id !== 12350 && filtered[ 1 ].id !== 12350 && filtered[ 2 ].id !== 12350 && filtered[ 3 ].id !== 12350 && filtered[ 4 ].id !== 12350, "Correct items returned" );
     });
 
-    //create a default(memory) dataManager to store data for some tests
+    // create a default(memory) dataManager to store data for some tests
     var tasksStore = AeroGear.DataManager( { name: "tasks", settings: { async: true } } ).stores.tasks;
 
     module( "Filter - Advanced", {

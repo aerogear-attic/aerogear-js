@@ -24,10 +24,10 @@
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
     @example
-//Create an empty DataManager
+// Create an empty DataManager
 var dm = AeroGear.DataManager();
 
-//Add a custom memory store
+// Add a custom memory store
 dm.add( "newStore", {
     recordId: "customID"
 });
@@ -112,7 +112,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
         @augments base
     */
     this.close = function() {
-        //purposefully left empty
+        // purposefully left empty
     };
 
     /**
@@ -164,7 +164,7 @@ var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 // Get an array of all data in the store
 var allData = dm.read();
 
-//Read a specific piece of data based on an id
+// Read a specific piece of data based on an id
 var justOne = dm.read( 12345 );
  */
 AeroGear.DataManager.adapters.Memory.prototype.read = function( id, options ) {
@@ -183,7 +183,7 @@ AeroGear.DataManager.adapters.Memory.prototype.read = function( id, options ) {
     } else {
         data = this.getData();
     }
-    //data = id ? this.filter( filter ).then( function( data ) {  } ) : this.getData();
+    // data = id ? this.filter( filter ).then( function( data ) {  } ) : this.getData();
     if( async ) {
         deferred.always( this.always );
         return deferred.resolve( data, "success", options ? options.success : undefined );
@@ -210,7 +210,7 @@ dm.save({
     ...
 });
 
-//Store an array of new Tasks
+// Store an array of new Tasks
 dm.save([
     {
         title: "Task2",
@@ -366,15 +366,15 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
     var filtered, key, j, k, l, nestedKey, nestedFilter, nestedValue,
         that = this,
         deferred = jQuery.Deferred(),
-        async = this.getAsync(); //Added in 1.3.0  Will Be Removed in 1.4.0
+        async = this.getAsync(); // Added in 1.3.0  Will Be Removed in 1.4.0
 
     deferred.always( this.always );
 
     if ( !filterParameters ) {
         filtered = this.getData() || [];
-        //Added in 1.3.0  Will Be Removed in 1.4.0
+        // Added in 1.3.0  Will Be Removed in 1.4.0
         return async ? deferred.resolve( filtered, "success", options ? options.success : undefined ) : filtered;
-        //return deferred.resolve( filtered, "success", options ? options.success : undefined );
+        // return deferred.resolve( filtered, "success", options ? options.success : undefined );
     }
 
     filtered = this.getData().filter( function( value, index, array) {
@@ -455,12 +455,12 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
                     if( value[ keys[ key ] ].length ) {
                         for(j = 0; j < value[ keys[ key ] ].length; j++ ) {
                             if( matchAny && filterParameters[ keys[ key ] ] === value[ keys[ key ] ][ j ]  ) {
-                                //at least one must match and this one does so return true
+                                // at least one must match and this one does so return true
                                 paramResult = true;
                                 break;
                             }
                             if( !matchAny && filterParameters[ keys[ key ] ] !== value[ keys[ key ] ][ j ] ) {
-                                //All must match but this one doesn't so return false
+                                // All must match but this one doesn't so return false
                                 paramResult = false;
                                 break;
                             }
@@ -491,9 +491,9 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
 
         return match;
     });
-    //Added in 1.3.0  Will Be Removed in 1.4.0
+    // Added in 1.3.0  Will Be Removed in 1.4.0
     return async ? deferred.resolve( filtered, "success", options ? options.success : undefined ) : filtered;
-    //return deferred.resolve( filtered, "success", options ? options.success : undefined );
+    // return deferred.resolve( filtered, "success", options ? options.success : undefined );
 };
 
 /**

@@ -1,5 +1,5 @@
 ( function( $ ) {
-    //The non hacky way
+    // The non hacky way
 
     module( "DataManager Creation with fallbacks - Feature Detection", {
         setup: function() {

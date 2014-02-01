@@ -11,7 +11,7 @@ function doAlways() {
         ok( window.indexedDB );
     });
 
-    //This can test a Delete method?
+    // This can test a Delete method?
     asyncTest( "clean up", function() {
         expect( 0 );
         var deleteRequest,

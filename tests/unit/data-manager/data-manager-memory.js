@@ -391,7 +391,7 @@
         ok( filtered[ 0 ].id != 12350 && filtered[ 1 ].id != 12350 && filtered[ 2 ].id != 12350 && filtered[ 3 ].id != 12350 && filtered[ 4 ].id != 12350, "Correct items returned" );
     });
 
-    //create a default(memory) dataManager to store data for some tests
+    // create a default(memory) dataManager to store data for some tests
     var tasksStore = AeroGear.DataManager( "tasks" ).stores.tasks;
 
     module( "Filter - Advanced", {
