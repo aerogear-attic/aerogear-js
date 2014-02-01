@@ -29,10 +29,10 @@
     @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
     @returns {Object} The created store
     @example
-//Create an empty DataManager
+// Create an empty DataManager
 var dm = AeroGear.DataManager();
 
-//Add a custom SessionLocal store using local storage as its storage type
+// Add a custom SessionLocal store using local storage as its storage type
 dm.add( "newStore", {
     recordId: "customID",
     storageType: "localStorage"
@@ -112,7 +112,7 @@ dm.save({
     ...
 });
 
-//Store an array of new Tasks
+// Store an array of new Tasks
 dm.save([
     {
         title: "Task2",

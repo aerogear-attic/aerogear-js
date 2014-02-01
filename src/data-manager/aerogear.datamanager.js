@@ -36,14 +36,14 @@ var dm2 = AeroGear.DataManager( "tasks" );
 // Create multiple stores using the default adapter
 var dm3 = AeroGear.DataManager( [ "tasks", "projects" ] );
 
-//Create a custom store
+// Create a custom store
 var dm3 = AeroGear.DataManager({
     name: "mySessionStorage",
     type: "SessionLocal",
     id: "customID"
 });
 
-//Create multiple custom stores
+// Create multiple custom stores
 var dm4 = AeroGear.DataManager([
     {
         name: "mySessionStorage",
@@ -88,7 +88,7 @@ AeroGear.DataManager = function( config ) {
                     if( !( type in AeroGear.DataManager.validAdapters ) ) {
                         for( i = 0; i < preferred.length; i++ ) {
                             if( preferred[ i ] in AeroGear.DataManager.validAdapters ) {
-                                //For Deprecation purposes in 1.3.0  will be removed in 1.4.0
+                                // For Deprecation purposes in 1.3.0  will be removed in 1.4.0
                                 if( type === "IndexedDB" || type === "WebSQL" ) {
                                     value.settings = AeroGear.extend( value.settings || {}, { async: true } );
                                 }
@@ -105,11 +105,11 @@ AeroGear.DataManager = function( config ) {
         AeroGear.Core.call( this );
         this.add( config );
 
-        //Put back DataManager.add
+        // Put back DataManager.add
         this.add = this._add;
     };
 
-    //Save a reference to DataManager.add to put back later
+    // Save a reference to DataManager.add to put back later
     this._add = this.add;
 
     /**
@@ -123,11 +123,11 @@ AeroGear.DataManager = function( config ) {
         AeroGear.Core.call( this );
         this.remove( config );
 
-        //Put back DataManager.remove
+        // Put back DataManager.remove
         this.remove = this._remove;
     };
 
-    //Save a reference to DataManager.remove to put back later
+    // Save a reference to DataManager.remove to put back later
     this._remove = this.remove;
 
     this.lib = "DataManager";

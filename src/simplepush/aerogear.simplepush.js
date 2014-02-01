@@ -25,7 +25,7 @@
         @param {Function} options.onClose - a callback to fire when a connection to the SimplePush server is closed or lost.
         @returns {Object} The created unified push server client
         @example
-        //Create the SimplePushClient object:
+        // Create the SimplePushClient object:
         var client = AeroGear.SimplePushClient({
             simplePushServerURL: "https://localhost:7777/simplepush",
             onConnect: myConnectCallback,

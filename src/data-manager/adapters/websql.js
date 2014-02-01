@@ -27,10 +27,10 @@
     @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
     @returns {Object} The created store
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an WebSQL store
+    // Add an WebSQL store
     dm.add({
         name: "newStore",
         storageType: "WebSQL"
@@ -109,7 +109,7 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
 
         if( !database ) {
             if( !auto ) {
-                //hasn't been opened yet
+                // hasn't been opened yet
                 throw "Database not opened";
             } else {
                 this.open().always( function( value, status ) {
@@ -141,10 +141,10 @@ AeroGear.DataManager.adapters.WebSQL.isValid = function() {
     @param {AeroGear~errorCallbackWEBSQL} [settings.error] - a callback to be called when there is an error opening a WebSQL DB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an WebSQL store
+    // Add an WebSQL store
     dm.add({
         name: "newStore",
         storageType: "WebSQL"
@@ -166,7 +166,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
         storeName = this.getStoreName(),
         deferred = jQuery.Deferred();
 
-    //Do some creation and such
+    // Do some creation and such
     database = window.openDatabase( storeName, version, "AeroGear WebSQL Store", databaseSize );
 
     error = function( transaction, error ) {
@@ -194,10 +194,10 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
     @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when there is an error reading a WebSQL DB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an WebSQL store
+    // Add an WebSQL store
     dm.add({
         name: "newStore",
         storageType: "WebSQL"
@@ -213,7 +213,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
         error: function( error ) { ... }
     });
 
-    //read a record with a particular id
+    // read a record with a particular id
     dm.stores.test1.read( 5, {
         success: function( data ) { ... },
         error: function( error ) { ... }
@@ -270,10 +270,10 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when there is an error saving records to a WebSQL DB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an WebSQL store
+    // Add an WebSQL store
     dm.add({
         name: "newStore",
         storageType: "WebSQL"
@@ -289,7 +289,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
         error: function( error ) { ... }
     });
 
-    //Save multiple Records
+    // Save multiple Records
     dm.stores.newStore.save(
         [
             { "id": 3, "name": "Grace", "type": "Little Person" },
@@ -354,10 +354,10 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
     @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be called when there is an error removing a record from a WebSQL DB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "WebSQL"
@@ -374,7 +374,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
         error: function( error ) { ... }
     });
 
-    //Remove all data
+    // Remove all data
     dm.stores.newStore.remove( undefined, {
         success: function( data ) { ... },
         error: function( error ) { ... }
@@ -409,7 +409,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
         sql = "DELETE FROM " + storeName;
 
         if( !toRemove ) {
-            //remove all
+            // remove all
             database.transaction( function( transaction ) {
                 transaction.executeSql( sql, [], success, error );
             });
@@ -443,10 +443,10 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
     @param {AeroGear~errorCallbackWEBSQL} [options.error] - a callback to be calledd after an error filtering a WebSQL DB
     @return {Object} A jQuery.Deferred promise
     @example
-    //Create an empty DataManager
+    // Create an empty DataManager
     var dm = AeroGear.DataManager();
 
-    //Add an IndexedDB store
+    // Add an IndexedDB store
     dm.add({
         name: "newStore",
         storageType: "WebSQL"

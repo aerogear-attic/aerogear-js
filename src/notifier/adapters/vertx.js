@@ -190,7 +190,7 @@ AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
     }
 };
 
-//Public Methods
+// Public Methods
 /**
     Connect the client to the messaging service
     @param {Object} [options={}] - Options to pass to the connect method
@@ -333,10 +333,10 @@ AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
         }
     });
 
-    //Subscribe to a channel
+    // Subscribe to a channel
     notifierVertx.clients.client1.subscribe( channelObject );
 
-    //Subscribe to multiple channels at once
+    // Subscribe to multiple channels at once
     notifierVertx.clients.client1.subscribe([
         {
             address: "newChannel",
@@ -348,7 +348,7 @@ AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
         }
     ]);
 
-    //Subscribe to a channel, but first unsubscribe from all currently subscribed channels by adding the reset parameter
+    // Subscribe to a channel, but first unsubscribe from all currently subscribed channels by adding the reset parameter
     notifierVertx.clients.client1.subscribe({
             address: "newChannel",
             callback: function(){ ... }

@@ -35,17 +35,17 @@
     @param {Object} [settings.xhrFields] - specify extra xhr options, like the withCredentials flag
     @returns {Object} The created pipe
     @example
-    //Create an empty pipeline
+    // Create an empty pipeline
     var pipeline = AeroGear.Pipeline();
 
-    //Add a new Pipe with a custom baseURL, custom endpoint and default paging turned on
+    // Add a new Pipe with a custom baseURL, custom endpoint and default paging turned on
     pipeline.add( "customPipe", {
         baseURL: "http://customURL.com",
         endpoint: "customendpoint",
         pageConfig: true
     });
 
-    //Add a new Pipe with a custom paging options
+    // Add a new Pipe with a custom paging options
     pipeline.add( "customPipe", {
         pageConfig: {
             metadataLocation: "header",
@@ -274,7 +274,7 @@ var filteredData = myPipe.read({
 });
 
     @example
-//JSONP - Default JSONP call to a JSONP server
+// JSONP - Default JSONP call to a JSONP server
 myPipe.read({
     jsonp: true,
     success: function( data ){
@@ -282,7 +282,7 @@ myPipe.read({
     }
 });
 
-//JSONP - JSONP call with a changed callback parameter
+// JSONP - JSONP call with a changed callback parameter
 myPipe.read({
     jsonp: {
         callback: "jsonp"
@@ -293,7 +293,7 @@ myPipe.read({
 });
 
     @example
-//Paging - using the default weblinking protocal
+// Paging - using the default weblinking protocal
 var defaultPagingPipe = AeroGear.Pipeline([{
     name: "webLinking",
     settings: {
@@ -302,9 +302,9 @@ var defaultPagingPipe = AeroGear.Pipeline([{
     }
 }]).pipes[0];
 
-//Get a limit of 2 pieces of data from the server, starting from the first page
-//Calling the "next" function will get the next 2 pieces of data, if available.
-//Similarily, calling the "previous" function will get the previous 2 pieces of data, if available
+// Get a limit of 2 pieces of data from the server, starting from the first page
+// Calling the "next" function will get the next 2 pieces of data, if available.
+// Similarily, calling the "previous" function will get the previous 2 pieces of data, if available
 defaultPagingPipe.read({
     offsetValue: 1,
     limitValue: 2,
@@ -320,7 +320,7 @@ defaultPagingPipe.read({
     }
 });
 
-//Create a new Pipe with a custom paging options
+// Create a new Pipe with a custom paging options
 var customPagingPipe = AeroGear.Pipeline([{
     name: "customPipe",
     settings: {
@@ -332,7 +332,7 @@ var customPagingPipe = AeroGear.Pipeline([{
     }
 }]).pipes[0];
 
-//Even with custom options, you use "next" and "previous" the same way
+// Even with custom options, you use "next" and "previous" the same way
 customPagingPipe.read({
     offsetValue: 1,
     limitValue: 2,
@@ -534,7 +534,7 @@ AeroGear.Pipeline.adapters.Rest.prototype.save = function( data, options ) {
             formData.append( key, data[ key ] );
 
             if( data[ key ] instanceof File || data[ key ] instanceof Blob ) {
-                //Options to tell jQuery not to process data or worry about content-type.
+                // Options to tell jQuery not to process data or worry about content-type.
                 extraOptions.contentType = false;
                 extraOptions.processData = false;
             }

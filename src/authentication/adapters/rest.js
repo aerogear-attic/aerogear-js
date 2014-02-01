@@ -24,10 +24,10 @@
     @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
     @returns {Object} The created auth module
     @example
-//Create an empty Authenticator
+// Create an empty Authenticator
 var auth = AeroGear.Auth();
 
-//Add a custom REST module to it
+// Add a custom REST module to it
 auth.add( {
     name: "module1",
     settings: {
@@ -35,7 +35,7 @@ auth.add( {
     }
 });
 
-//Add a custom REST module to it with custom security endpoints
+// Add a custom REST module to it with custom security endpoints
 auth.add( {
     name: "module2",
     settings: {
@@ -128,7 +128,7 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
      };
 };
 
-//Public Methods
+// Public Methods
 /**
     Enroll a new user in the authentication system
     @param {Object} data - User profile to enroll
@@ -148,7 +148,7 @@ var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
 // Enroll a new user
 auth.enroll( data );
 
-//Add a custom REST module to it with custom security endpoints
+// Add a custom REST module to it with custom security endpoints
 var custom = AeroGear.Auth({
     name: "customModule",
     settings: {
@@ -215,7 +215,7 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
 
 /**
     Authenticate a user
-    @param {Object} data - A set of key value pairs representing the user's credentials
+    @param {Object} data - A set of key/value pairs representing the user's credentials
     @param {Object} [options={}] - An object containing key/value pairs representing options
     @param {String} [options.baseURL] - defines the base URL to use for an endpoint
     @param {String} [options.contentType] - set the content type for the AJAX request
@@ -231,7 +231,7 @@ var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
 // Enroll a new user
 auth.login( data );
 
-//Add a custom REST module to it with custom security endpoints
+// Add a custom REST module to it with custom security endpoints
 var custom = AeroGear.Auth({
     name: "customModule",
     settings: {
@@ -310,7 +310,7 @@ var auth = AeroGear.Auth( "userAuth" ).modules.userAuth;
 // Enroll a new user
 auth.logout();
 
-    //Add a custom REST module to it with custom security endpoints
+    // Add a custom REST module to it with custom security endpoints
 var custom = AeroGear.Auth({
     name: "customModule",
     settings: {

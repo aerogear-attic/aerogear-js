@@ -1,9 +1,9 @@
 ( function( $ ) {
 
-    //A Little Bit of setup
-    //Remove the indexedDB and webSQL adapters from our list of valid adapters
+    // A Little Bit of setup
+    // Remove the indexedDB and webSQL adapters from our list of valid adapters
     // so we can show the fallback to sessionLocal.
-    //but first lets save a reference
+    // but first lets save a reference
     var validAdapters = AeroGear.DataManager.validAdapters;
 
     module( "DataManager Creation with fallbacks", {
