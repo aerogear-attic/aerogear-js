@@ -226,6 +226,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     var success, error, sql, _read,
         that = this,
         data = [],
+        params = [],
         storeName = this.getStoreName(),
         database = this.getDatabase(),
         deferred = jQuery.Deferred(),
@@ -247,11 +248,12 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
         sql = "SELECT * FROM " + storeName;
 
         if( id ) {
-            sql += " WHERE ID = '" + id + "'";
+            sql += " WHERE ID = ?";
+            params = [ id ];
         }
 
         database.transaction( function( transaction ) {
-            transaction.executeSql( sql, [], success, error );
+            transaction.executeSql( sql, params, success, error );
         });
     };
 
