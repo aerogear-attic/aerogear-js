@@ -151,7 +151,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
             // Trigger registration success callback
             jQuery( navigator.push ).trigger( jQuery.Event( message.channelID + "-success", {
                 target: {
-                    result: channel
+                    result: channel.pushEndpoint
                 }
             }));
         } else if ( message.messageType === "register" ) {
