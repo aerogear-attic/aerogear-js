@@ -85,7 +85,11 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
     Determine if this adapter is supported in the current environment
 */
 AeroGear.DataManager.adapters.SessionLocal.isValid = function() {
-    return !!(window.localStorage && window.sessionStorage);
+    try {
+        return !!(window.localStorage && window.sessionStorage);
+    } catch( error ){
+        return false;
+    }
 };
 
 // Inherit from the Memory adapter
