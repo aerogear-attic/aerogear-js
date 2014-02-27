@@ -179,7 +179,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
     };
 
     database.transaction( function( transaction ) {
-        transaction.executeSql( "CREATE TABLE IF NOT EXISTS " + storeName + " ( " + recordId + " REAL UNIQUE, json)", [], success, error );
+        transaction.executeSql( "CREATE TABLE IF NOT EXISTS '" + storeName + "' ( " + recordId + " REAL UNIQUE, json)", [], success, error );
     });
 
     deferred.always( this.always );
@@ -245,7 +245,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
             deferred.resolve( that.decrypt( data ), "success", options.success );
         };
 
-        sql = "SELECT * FROM " + storeName;
+        sql = "SELECT * FROM '" + storeName + "'";
 
         if( id ) {
             sql += " WHERE ID = ?";
@@ -334,11 +334,11 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
         database.transaction( function( transaction ) {
             if( options.reset ) {
                 transaction.executeSql( "DROP TABLE " + storeName );
-                transaction.executeSql( "CREATE TABLE IF NOT EXISTS " + storeName + " ( " + recordId + " REAL UNIQUE, json)" );
+                transaction.executeSql( "CREATE TABLE IF NOT EXISTS '" + storeName + "' ( " + recordId + " REAL UNIQUE, json)" );
             }
             data.forEach( function( value ) {
                 value = that.encrypt( value );
-                transaction.executeSql( "INSERT OR REPLACE INTO " + storeName + " ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
+                transaction.executeSql( "INSERT OR REPLACE INTO '" + storeName + "' ( id, json ) VALUES ( ?, ? ) ", [ value[ recordId ], JSON.stringify( value ) ] );
             });
         }, error, success );
     };
@@ -408,7 +408,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
             });
         };
 
-        sql = "DELETE FROM " + storeName;
+        sql = "DELETE FROM '" + storeName + "'";
 
         if( !toRemove ) {
             // remove all
