@@ -316,11 +316,11 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
 
     _save = function( database ) {
         error = function( transaction, error ) {
-        deferred.reject( error, "error", options.error );
-    };
+            deferred.reject( error, "error", options.error );
+        };
 
-    success = function( transaction, result ) {
-        that.read().done( function( result, status ) {
+        success = function( transaction, result ) {
+            that.read().done( function( result, status ) {
                 if( status === "success" ) {
                     deferred.resolve( result, status, options.success );
                 } else {
