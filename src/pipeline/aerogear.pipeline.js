@@ -21,7 +21,6 @@
     @param {String|Array|Object} [config] - A configuration for the pipe(s) being created along with the Pipeline. If an object or array containing objects is used, the objects can have the following properties:
     @param {String} config.name - the name that the pipe will later be referenced by
     @param {String} [config.type="Rest"] - the type of pipe as determined by the adapter used
-    @param {String} [config.recordId="id"] - @deprecated the identifier used to denote the unique id for each record in the data associated with this pipe
     @param {Object} [config.authenticator=null] - the AeroGear.auth object used to pass credentials to a secure endpoint
     @param {Object} [settings.authorizer=null] - the AeroGear.authz object used to pass credentials to a secure endpoint
     @param {Object} [config.settings={}] - the settings to be passed to the adapter. For specific settings, see the documentation for the adapter you are using.
