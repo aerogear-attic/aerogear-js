@@ -61,11 +61,6 @@ AeroGear.Core = function() {
                         // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
                         current.settings = AeroGear.extend( current.settings || {}, this.config );
 
-                        // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
-                        // Added in 1.3 to remove in 1.4
-                        current.settings.recordId = current.settings.recordId || current.recordId;
-                        // End compat fix
-
                         collection[ current.name ] = AeroGear[ this.lib ].adapters[ current.type || this.type ]( current.name, current.settings );
                     }
                 }
@@ -78,11 +73,6 @@ AeroGear.Core = function() {
             // Merge the Module( pipeline, datamanger, ... )config with the adapters settings
             // config is an object so use that signature
             config.settings = AeroGear.extend( config.settings || {}, this.config );
-
-            // Compatibility fix for deprecation of recordId in Pipeline and DataManager constructors
-            // Added in 1.3 to remove in 1.4
-            config.settings.recordId = config.settings.recordId || config.recordId;
-            // End compat fix
 
             collection[ config.name ] = AeroGear[ this.lib ].adapters[ config.type || this.type ]( config.name, config.settings );
         }

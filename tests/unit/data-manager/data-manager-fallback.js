@@ -21,17 +21,16 @@
     });
 
     test( "create IndexedDB - Fallsback to SessionLocal - name string", function() {
-        expect( 4 );
+        expect( 3 );
 
         var dm = AeroGear.DataManager( { name: "createTest1", type: "IndexedDB" } ).stores;
         equal( Object.keys( dm ).length, 1, "Single Store created" );
         equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
         equal( dm.createTest1 instanceof AeroGear.DataManager.adapters.SessionLocal, true, "Fellback to SessionLocal" );
-        equal( dm.createTest1.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
     });
 
     test( "create IndexedDB and WebSQL - Fallsback to SessionLocal - name array", function() {
-        expect( 10 );
+        expect( 7 );
 
         var dm = AeroGear.DataManager([
             {
@@ -51,14 +50,11 @@
         equal( Object.keys( dm )[ 2 ], "createTest23", "Store Name createTest23" );
         equal( dm.createTest21 instanceof AeroGear.DataManager.adapters.SessionLocal, true, "Fellback to SessionLocal" );
         equal( dm.createTest22 instanceof AeroGear.DataManager.adapters.SessionLocal, true, "Fellback to SessionLocal" );
-        equal( dm.createTest21.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
-        equal( dm.createTest22.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
         equal( dm.createTest23 instanceof AeroGear.DataManager.adapters.Memory, true, "No Fallback should happen" );
-        equal( dm.createTest23.getAsync(), false, "Memory should be in sync mode" );
     });
 
     test( "create - object", function() {
-        expect( 7 );
+        expect( 5 );
 
         var dm = AeroGear.DataManager([
             {
@@ -74,9 +70,7 @@
         equal( Object.keys( dm )[ 0 ], "createTest31", "Store Name createTest31" );
         equal( Object.keys( dm )[ 1 ], "createTest32", "Store Name createTest32" );
         equal( dm.createTest31 instanceof AeroGear.DataManager.adapters.Memory, true, "No Fallback should happen" );
-        equal( dm.createTest31.getAsync(), false, "Memory should be in sync mode" );
         equal( dm.createTest32 instanceof AeroGear.DataManager.adapters.SessionLocal, true, "Fellback to SessionLocal" );
-        equal( dm.createTest32.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
     });
 
     module( "DataManager Creation with fallbacks off", {
@@ -103,7 +97,7 @@
     });
 
     test( "create WebSQL - No Fallback - name array", function() {
-        expect( 6 );
+        expect( 5 );
 
         var dm = AeroGear.DataManager([
             {
@@ -121,11 +115,10 @@
         equal( Object.keys( dm )[ 1 ], "createTest23", "Store Name createTest23" );
         equal( dm.createTest21 instanceof AeroGear.DataManager.adapters.WebSQL, true, "Didn't Fallback" );
         equal( dm.createTest23 instanceof AeroGear.DataManager.adapters.Memory, true, "No Fallback should happen" );
-        equal( dm.createTest23.getAsync(), false, "Memory should be in sync mode" );
     });
 
     test( "create - object", function() {
-        expect( 6 );
+        expect( 5 );
 
         var dm = AeroGear.DataManager([
             {
@@ -144,7 +137,6 @@
         equal( Object.keys( dm )[ 0 ], "createTest31", "Store Name createTest31" );
         equal( Object.keys( dm )[ 1 ], "createTest32", "Store Name createTest32" );
         equal( dm.createTest31 instanceof AeroGear.DataManager.adapters.Memory, true, "No Fallback should happen" );
-        equal( dm.createTest31.getAsync(), false, "Memory should be in sync mode" );
         equal( dm.createTest32 instanceof AeroGear.DataManager.adapters.WebSQL, true, "Didn't Fallback" );
     });
 
@@ -163,17 +155,16 @@
     });
 
     test( "create IndexedDB - Fallsback to Memory - name string", function() {
-        expect( 4 );
+        expect( 3 );
 
         var dm = AeroGear.DataManager( { name: "createTest1", type: "IndexedDB", settings: { preferred: [ "Memory" ] } } ).stores;
         equal( Object.keys( dm ).length, 1, "Single Store created" );
         equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
         equal( dm.createTest1 instanceof AeroGear.DataManager.adapters.Memory, true, "Fellback to Memory" );
-        equal( dm.createTest1.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
     });
 
     test( "create IndexedDB and WebSQL - Fallsback to Memory - name array", function() {
-        expect( 10 );
+        expect( 7 );
 
         var dm = AeroGear.DataManager([
             {
@@ -194,9 +185,6 @@
         equal( Object.keys( dm )[ 2 ], "createTest23", "Store Name createTest23" );
         equal( dm.createTest21 instanceof AeroGear.DataManager.adapters.Memory, true, "Fellback to Memory" );
         equal( dm.createTest22 instanceof AeroGear.DataManager.adapters.SessionLocal, true, "Fellback to SessionLocal" );
-        equal( dm.createTest21.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
-        equal( dm.createTest22.getAsync(), true, "SessionLocal should be in async mode since it fellback" );
         equal( dm.createTest23 instanceof AeroGear.DataManager.adapters.Memory, true, "No Fallback should happen" );
-        equal( dm.createTest23.getAsync(), false, "Memory should be in sync mode" );
     });
 })( jQuery );

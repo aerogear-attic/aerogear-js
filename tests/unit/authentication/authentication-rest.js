@@ -8,7 +8,7 @@
         var auth1 = AeroGear.Auth();
 
         auth1.add( {
-            name: "module1", 
+            name: "module1",
             settings: {
                 baseURL: "http://customURL.com",
                 endpoints: {
@@ -64,8 +64,7 @@
         {
             name: "secured",
             settings: {
-                baseURL: "auth/",
-                authenticator: restAuth
+                baseURL: "auth/"
             }
         }
     ]).pipes.secured;
@@ -244,12 +243,12 @@
             $.when( logout ).done( function ( s2 ) {
                 start();
             });
-        }); 
+        });
     });
 
     asyncTest( "Login & Access With Valid Session & Logout", function() {
         expect( 4 );
-        
+
         var values = {
             username: "john",
             password: "123"
@@ -271,24 +270,24 @@
                     ok( true, "Successful Access" );
                 }
             });
-            
+
             $.when( read ).done( function ( s2 ) {
-                
+
                 var logout = restAuth.logout( {
                     success: function() {
                         ok( true, "Logout Successful");
                     }
                 });
-                
+
                 $.when( logout ).done( function ( s3 ) {
                     start();
                 });
-                
+
             });
         });
 
     });
-    
+
     asyncTest( "Accessing With Invalid Session then after auth and logout", function() {
         expect( 6 );
 
@@ -307,7 +306,7 @@
                 password: "123"
             };
 
-            var login = securePipe.getAuthenticator().login( values, {
+            var login = restAuth.login( values, {
                     contentType: "application/json",
                     dataType: "json",
                     success: function( data ) {
@@ -317,16 +316,16 @@
             });
 
             $.when( login ).done( function ( s2 ) {
-                
+
                 var read = securePipe.read({
                     success: function( data ) {
                         ok( true, "Successful Access" );
                     }
                 });
-                
+
                 $.when( read ).done( function ( s3 ) {
 
-                    var logout = securePipe.getAuthenticator().logout( {
+                    var logout = restAuth.logout( {
                         success: function() {
                             ok( true, "Logout Successful");
                         }

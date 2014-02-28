@@ -20,7 +20,6 @@
     @constructs AeroGear.DataManager.adapters.Memory
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
-    @param {Boolean} [settings.async=false] -  If true, all operations will be simulated as asynchronous and return a promise. This is a compatibility option for the Memory and SessionLocal adapters only for 1.3.0 and will be removed in the 1.4.0 release
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
     @returns {Object} The created store
     @example
@@ -87,17 +86,6 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     };
 
     /**
-        Returns the value of the async setting
-        @private
-        @augments Memory
-        Compatibility fix
-        Added in 1.3 to remove in 1.4
-    */
-    this.getAsync = function() {
-        return settings && settings.async ? true : false;
-    };
-
-    /**
         Returns a synchronous jQuery.Deferred for api symmetry
         @private
         @augments base
@@ -157,39 +145,35 @@ AeroGear.DataManager.adapters.Memory.isValid = function() {
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully reading a Memory Store -  this read is synchronous but the callback is provided for API symmetry.
     @returns {Object} A jQuery.Deferred promise
-    @returns {Array} @deprecated Returns data from the store, optionally filtered by an id
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
 // Get an array of all data in the store
-var allData = dm.read();
+dm.read()
+    .then( function( data ) {
+        console.log( data );
+    });
 
 // Read a specific piece of data based on an id
-var justOne = dm.read( 12345 );
+dm.read( 12345 )
+    .then( function( data ) {
+        console.log( data );
+    });
  */
 AeroGear.DataManager.adapters.Memory.prototype.read = function( id, options ) {
     var filter = {},
         data,
-        deferred = jQuery.Deferred(),
-        async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0;
+        deferred = jQuery.Deferred();
 
     filter[ this.getRecordId() ] = id;
     if( id ) {
-        if( async ) {
-            this.filter( filter ).then( function( filtered ) { data = filtered; } );
-        } else {
-            data = this.filter( filter );
-        }
+        this.filter( filter ).then( function( filtered ) { data = filtered; } );
     } else {
         data = this.getData();
     }
-    // data = id ? this.filter( filter ).then( function( data ) {  } ) : this.getData();
-    if( async ) {
-        deferred.always( this.always );
-        return deferred.resolve( data, "success", options ? options.success : undefined );
-    } else {
-        return data;
-    }
+
+    deferred.always( this.always );
+    return deferred.resolve( data, "success", options ? options.success : undefined );
 };
 
 /**
@@ -199,7 +183,6 @@ AeroGear.DataManager.adapters.Memory.prototype.read = function( id, options ) {
     @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully saving data from a Memory Store -  this save is synchronous but the callback is provided for API symmetry.
     @returns {Object} A jQuery.Deferred promise
-    @returns {Array} @deprecated Returns the updated data from the store
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
@@ -230,8 +213,7 @@ dm.save( toUpdate );
  */
 AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) {
     var itemFound = false,
-        deferred = jQuery.Deferred(),
-        async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0
+        deferred = jQuery.Deferred();
 
     data = AeroGear.isArray( data ) ? data : [ data ];
 
@@ -257,12 +239,8 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
             this.setData( data );
         }
     }
-    if( async ) {
-        deferred.always( this.always );
-        return deferred.resolve( this.getData(), "success", options ? options.success : undefined );
-    } else {
-        return this.getData();
-    }
+    deferred.always( this.always );
+    return deferred.resolve( this.getData(), "success", options ? options.success : undefined );
 };
 
 /**
@@ -271,7 +249,6 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully removing data from a  Memory Store -  this remove is synchronous but the callback is provided for API symmetry.
     @returns {Object} A jQuery.Deferred promise
-    @returns {Array} @deprecated Returns the updated data from the store
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
@@ -290,28 +267,31 @@ dm.save({
     title: "And Another Created Task"
 });
 
-// Remove a particular item from the store by its id
-var toRemove = dm.read()[ 0 ];
-dm.remove( toRemove.id );
+// Delete a record
+dm.remove( 1, {
+    success: function( data ) { ... },
+    error: function( error ) { ... }
+});
 
-// Remove an item from the store using the data object
-toRemove = dm.read()[ 0 ];
-dm.remove( toRemove );
+// Remove all data
+dm.remove( undefined, {
+    success: function( data ) { ... },
+    error: function( error ) { ... }
+});
 
 // Delete all remaining data from the store
 dm.remove();
  */
 AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove, options ) {
     var delId, data, item,
-        deferred = jQuery.Deferred(),
-        async = this.getAsync(); //added in 1.3.0,  will be removed in 1.4.0
+        deferred = jQuery.Deferred();
 
     deferred.always( this.always );
 
     if ( !toRemove ) {
         // empty data array and return
         this.emptyData();
-        return async ? deferred.resolve( this.getData(), "success", options ? options.success : undefined ) : this.getData();
+        return deferred.resolve( this.getData(), "success", options ? options.success : undefined );
     } else {
         toRemove = AeroGear.isArray( toRemove ) ? toRemove : [ toRemove ];
     }
@@ -334,7 +314,7 @@ AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove, opti
         }
     }
 
-    return async ? deferred.resolve( this.getData(), "success", options ? options.success : undefined ) : this.getData();
+    return deferred.resolve( this.getData(), "success", options ? options.success : undefined );
 };
 
 /**
@@ -344,37 +324,44 @@ AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove, opti
     @param {Object} [options={}] - options
     @param {AeroGear~successCallbackMEMORY} [options.success] - a callback to be called after successfully filter data from a Memory Store -  this filter is synchronous but the callback is provided for API symmetry.
     @return {Object} A jQuery.Deferred promise
-    @returns {Array} @deprecated Returns a filtered array of data objects based on the contents of the store's data object and the filter parameters. This method only returns a copy of the data and leaves the original data object intact.
     @example
 var dm = AeroGear.DataManager( "tasks" ).stores[ 0 ];
 
 // An object can be passed to filter the data
 // This would return all records with a user named 'admin' **AND** a date of '2012-08-01'
-var filteredData = dm.filter({
-    date: "2012-08-01",
-    user: "admin"
-});
+dm.stores.tasks.filter({
+        date: "2012-08-01",
+        user: "admin"
+    },
+    {
+        success: function( data ) { ... },
+        error: function( error ) { ... }
+    }
+);
 
 // The matchAny parameter changes the search to an OR operation
 // This would return all records with a user named 'admin' **OR** a date of '2012-08-01'
-var filteredData = dm.filter({
-    date: "2012-08-01",
-    user: "admin"
-}, true);
+dm.stores.tasks.filter({
+        date: "2012-08-01",
+        user: "admin"
+    },
+    true,
+    {
+        success: function( data ) { ... },
+        error: function( error ) { ... }
+    }
+);
  */
 AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny, options ) {
     var filtered, key, j, k, l, nestedKey, nestedFilter, nestedValue,
         that = this,
-        deferred = jQuery.Deferred(),
-        async = this.getAsync(); // Added in 1.3.0  Will Be Removed in 1.4.0
+        deferred = jQuery.Deferred();
 
     deferred.always( this.always );
 
     if ( !filterParameters ) {
         filtered = this.getData() || [];
-        // Added in 1.3.0  Will Be Removed in 1.4.0
-        return async ? deferred.resolve( filtered, "success", options ? options.success : undefined ) : filtered;
-        // return deferred.resolve( filtered, "success", options ? options.success : undefined );
+        return deferred.resolve( filtered, "success", options ? options.success : undefined );
     }
 
     filtered = this.getData().filter( function( value, index, array) {
@@ -491,9 +478,7 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
 
         return match;
     });
-    // Added in 1.3.0  Will Be Removed in 1.4.0
-    return async ? deferred.resolve( filtered, "success", options ? options.success : undefined ) : filtered;
-    // return deferred.resolve( filtered, "success", options ? options.success : undefined );
+    return deferred.resolve( filtered, "success", options ? options.success : undefined );
 };
 
 /**
