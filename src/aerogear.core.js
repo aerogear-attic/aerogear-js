@@ -48,7 +48,7 @@ AeroGear.Core = function() {
         } else if ( typeof config === "string" ) {
             // config is a string so use default adapter type
             collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config, this.config );
-        } else if ( AeroGear.isArray( config ) ) {
+        } else if ( Array.isArray( config ) ) {
             // config is an array so loop through each item in the array
             for ( i = 0; i < config.length; i++ ) {
                 current = config[ i ];
@@ -97,7 +97,7 @@ AeroGear.Core = function() {
         if ( typeof config === "string" ) {
             // config is a string so delete that item by name
             delete collection[ config ];
-        } else if ( AeroGear.isArray( config ) ) {
+        } else if ( Array.isArray( config ) ) {
             // config is an array so loop through each item in the array
             for ( i = 0; i < config.length; i++ ) {
                 current = config[ i ];
@@ -124,10 +124,11 @@ AeroGear.Core = function() {
     Utility function to test if an object is an Array
     @private
     @method
+    @deprecated
     @param {Object} obj - This can be any object to test
 */
 AeroGear.isArray = function( obj ) {
-    return ({}).toString.call( obj ) === "[object Array]";
+    return Array.isArray( obj );
 };
 
 /**

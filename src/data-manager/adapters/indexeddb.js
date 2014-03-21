@@ -332,7 +332,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
             objectStore.clear();
         }
 
-        if( AeroGear.isArray( data ) ) {
+        if( Array.isArray( data ) ) {
             for( i; i < data.length; i++ ) {
                 objectStore.put( this.encrypt( data[ i ] ) );
             }
@@ -412,7 +412,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
         if( !toRemove ) {
             objectStore.clear();
         } else  {
-            toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
+            toRemove = Array.isArray( toRemove ) ? toRemove: [ toRemove ];
 
             for( i; i < toRemove.length; i++ ) {
                 if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {

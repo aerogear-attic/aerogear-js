@@ -76,7 +76,7 @@ AeroGear.DataManager = function( config ) {
 
         var i, type, fallback, preferred, settings;
 
-        config = AeroGear.isArray( config ) ? config : [ config ];
+        config = Array.isArray( config ) ? config : [ config ];
 
         config = config.map( function( value, index, array ) {
             settings = value.settings || {};

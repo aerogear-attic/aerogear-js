@@ -215,7 +215,7 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
     var itemFound = false,
         deferred = jQuery.Deferred();
 
-    data = AeroGear.isArray( data ) ? data : [ data ];
+    data = Array.isArray( data ) ? data : [ data ];
 
     if ( options && options.reset ) {
         this.setData( data );
@@ -293,7 +293,7 @@ AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove, opti
         this.emptyData();
         return deferred.resolve( this.getData(), "success", options ? options.success : undefined );
     } else {
-        toRemove = AeroGear.isArray( toRemove ) ? toRemove : [ toRemove ];
+        toRemove = Array.isArray( toRemove ) ? toRemove : [ toRemove ];
     }
 
     for ( var i = 0; i < toRemove.length; i++ ) {
@@ -376,7 +376,7 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
                 paramResult = filterObj.matchAny ? false : true;
 
                 for ( j = 0; j < filterObj.data.length; j++ ) {
-                    if( AeroGear.isArray( value[ keys[ key ] ] ) ) {
+                    if( Array.isArray( value[ keys[ key ] ] ) ) {
                         if( value[ keys [ key ] ].length ) {
                             if( jQuery( value[ keys ] ).not( filterObj.data ).length === 0 && jQuery( filterObj.data ).not( value[ keys ] ).length === 0 ) {
                                 paramResult = true;
@@ -436,7 +436,7 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
                 }
             } else {
                 // Filter on parameter value
-                if( AeroGear.isArray( value[ keys[ key ] ] ) ) {
+                if( Array.isArray( value[ keys[ key ] ] ) ) {
                     paramResult = matchAny ? false: true;
 
                     if( value[ keys[ key ] ].length ) {
