@@ -361,7 +361,7 @@ AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset
         this.unsubscribe( this.getChannels() );
     }
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         this.addChannel( channels[ i ] );
         bus.registerHandler( channels[ i ].address, channels[ i ].callback );
@@ -398,7 +398,7 @@ AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
     var bus = this.getBus(),
         thisChannels = this.getChannels();
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         bus.unregisterHandler( channels[ i ].address, channels[ i ].callback || thisChannels[ this.getChannelIndex( channels[ i ].address ) ].callback );
         this.removeChannel( channels[ i ] );

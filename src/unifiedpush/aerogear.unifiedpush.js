@@ -87,7 +87,7 @@
             }
 
             // Make sure that settings.metadata.categories is an Array
-            metadata.categories = AeroGear.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
+            metadata.categories = Array.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
 
             return $.ajax({
                 contentType: "application/json",

@@ -329,7 +329,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
             });
         };
 
-        data = AeroGear.isArray( data ) ? data : [ data ];
+        data = Array.isArray( data ) ? data : [ data ];
 
         database.transaction( function( transaction ) {
             if( options.reset ) {
@@ -416,7 +416,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
                 transaction.executeSql( sql, [], success, error );
             });
         } else {
-            toRemove = AeroGear.isArray( toRemove ) ? toRemove: [ toRemove ];
+            toRemove = Array.isArray( toRemove ) ? toRemove: [ toRemove ];
             database.transaction( function( transaction ) {
                 for( i; i < toRemove.length; i++ ) {
                     if ( typeof toRemove[ i ] === "string" || typeof toRemove[ i ] === "number" ) {

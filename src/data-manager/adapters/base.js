@@ -102,7 +102,7 @@ AeroGear.DataManager.adapters.base = function( storeName, settings ) {
         if( crypto.agcrypto ) {
             IV = JSON.parse( window.localStorage.getItem( "ag-" + storeName + "-IV" ) ) || {};
             cryptoOptions.IV = IV.id;
-            data = AeroGear.isArray( data ) ? data : [ data ];
+            data = Array.isArray( data ) ? data : [ data ];
             content = data.map( function( value ) {
                 cryptoOptions.data = value.data;
                 return JSON.parse( sjcl.codec.utf8String.fromBits( crypto.agcrypto.decrypt( cryptoOptions ) ) );

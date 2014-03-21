@@ -378,7 +378,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
         this.unsubscribe( this.getChannels() );
     }
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     pushStore.channels = pushStore.channels || [];
     channelLength = pushStore.channels.length;
 
@@ -440,7 +440,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
 AeroGear.Notifier.adapters.SimplePush.prototype.unsubscribe = function( channels ) {
     var client = this.getClient();
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         client.send( '{"messageType": "unregister", "channelID": "' + channels[ i ].channelID + '"}');
     }

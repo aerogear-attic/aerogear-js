@@ -359,7 +359,7 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
         this.unsubscribe( this.getChannels() );
     }
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         channels[ i ].id = client.subscribe( channels[ i ].address, channels[ i ].callback );
         this.addChannel( channels[ i ] );
@@ -416,7 +416,7 @@ AeroGear.Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) 
     var client = this.getClient(),
         thisChannels = this.getChannels();
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         client.unsubscribe( channels[ i ].id || thisChannels[ this.getChannelIndex( channels[ i ].address ) ].id );
         this.removeChannel( channels[ i ] );
