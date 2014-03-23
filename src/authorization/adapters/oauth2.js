@@ -247,7 +247,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     }
 
     if( this.getValidationEndpoint() ) {
-        jQuery.ajax({
+        return jQuery.ajax({
             url: this.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token,
             success: function( response ) {
               // Must Check the audience field that is returned.  This should be the same as the registered clientID
