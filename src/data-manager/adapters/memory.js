@@ -75,17 +75,6 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
     };
 
     /**
-        A Function for a jQuery.Deferred to always call
-        @private
-        @augments Memory
-     */
-    this.always = function( value, status, callback ) {
-        if( callback ) {
-            callback.call( this, value, status );
-        }
-    };
-
-    /**
         Returns a synchronous jQuery.Deferred for api symmetry
         @private
         @augments base
