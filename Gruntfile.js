@@ -61,7 +61,7 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             unifiedPush: {
-                src: ['src/aerogear.core.js', 'external/base64/base64.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
+                src: ['src/aerogear.core.js', 'src/aerogear.ajax.js', 'external/base64/base64.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             push: {

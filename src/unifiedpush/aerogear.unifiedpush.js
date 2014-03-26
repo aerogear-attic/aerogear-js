@@ -89,7 +89,7 @@
             // Make sure that settings.metadata.categories is an Array
             metadata.categories = Array.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
 
-            return $.ajax({
+            return AeroGear.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
@@ -115,7 +115,7 @@
          */
         this.unregisterWithPushServer = function( deviceToken, settings ) {
             settings = settings || {};
-            return $.ajax({
+            return AeroGear.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
