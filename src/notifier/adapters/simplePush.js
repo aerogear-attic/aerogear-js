@@ -253,6 +253,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
     Connect the client to the messaging service
     @param {Object} [options] - Options to pass to the connect method
     @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created.
+    @param {Array} [options.protocols_whitelist] -  A list protocols that may be used by SockJS. By default all available protocols will be used, which is equivalent to supplying: "['websocket', 'xdr-streaming', 'xhr-streaming', 'iframe-eventsource', 'iframe-htmlfile', 'xdr-polling', 'xhr-polling', 'iframe-xhr-polling', 'jsonp-polling']"
     @param {Function} [options.onConnect] - callback to be executed when a connection is established and hello message has been acknowledged
     @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
     @param {Function} [options.onClose] - callback to be executed when a connection to the server is closed
@@ -279,7 +280,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
     options = options || {};
 
     var that = this,
-        client = this.getUseNative() ? new WebSocket( options.url || this.getConnectURL() ) : new SockJS( options.url || this.getConnectURL() );
+        client = this.getUseNative() ? new WebSocket( options.url || this.getConnectURL() ) : new SockJS( options.url || this.getConnectURL(), undefined, options );
 
     client.onopen = function() {
         // Immediately send hello message
