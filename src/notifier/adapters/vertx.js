@@ -195,6 +195,7 @@ AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
     Connect the client to the messaging service
     @param {Object} [options={}] - Options to pass to the connect method
     @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created.
+    @param {Array} [options.protocols_whitelist] -  A list protocols that may be used by SockJS. By default all available protocols will be used, which is equivalent to supplying: "['websocket', 'xdr-streaming', 'xhr-streaming', 'iframe-eventsource', 'iframe-htmlfile', 'xdr-polling', 'xhr-polling', 'iframe-xhr-polling', 'jsonp-polling']"
     @param {Function} [options.onConnect] - callback to be executed when a connection is established
     @param {Function} [options.onDisconnect] - callback to be executed when a connection is terminated
     @param {Function} [options.onConnectError] - callback to be executed when connecting to a service is unsuccessful
@@ -226,7 +227,7 @@ AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
 AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
     options = options || {};
     var that = this,
-        bus = new vertx.EventBus( options.url || this.getConnectURL() );
+        bus = new vertx.EventBus( options.url || this.getConnectURL(), options );
 
     bus.onopen = function() {
         // Make a Copy of the channel array instead of a reference.
