@@ -444,7 +444,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.subscribe = function( channels, rese
         this.unsubscribe( this.getChannels() );
     }
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         this.addChannel( channels[ i ] );
         client.subscribe( channels[ i ].address, channels[ i ].subscribeOptions || {} );
@@ -485,7 +485,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.subscribe = function( channels, rese
 AeroGear.Notifier.adapters.mqttws.prototype.unsubscribe = function( channels ) {
     var client = this.getClient();
 
-    channels = AeroGear.isArray( channels ) ? channels : [ channels ];
+    channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
         client.unsubscribe( channels[ i ].address, channels[ i ].unsubscribeOptions || {} );
         this.removeChannel( channels[ i ] );
