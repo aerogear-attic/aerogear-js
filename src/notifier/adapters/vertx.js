@@ -67,127 +67,10 @@ AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
 
     settings = settings || {};
 
+    AeroGear.Notifier.adapters.base.apply( this, arguments );
+
     // Private Instance vars
-    var type = "vertx",
-        name = clientName,
-        channels = settings.channels || [],
-        autoConnect = !!settings.autoConnect || channels.length,
-        connectURL = settings.connectURL || "",
-        state = AeroGear.Notifier.CONNECTING,
-        bus = null;
-
-    // Privileged methods
-    /**
-        Returns the value of the private connectURL var
-        @private
-        @augments vertx
-     */
-    this.getConnectURL = function() {
-        return connectURL;
-    };
-
-    /**
-        Set the value of the private connectURL var
-        @private
-        @augments vertx
-        @param {String} url - New connectURL for this client
-     */
-    this.setConnectURL = function( url ) {
-        connectURL = url;
-    };
-
-    /**
-        Returns the value of the private channels var
-        @private
-        @augments vertx
-     */
-    this.getChannels = function() {
-        return channels;
-    };
-
-    /**
-        Adds a channel to the set
-        @param {Object} channel - The channel object to add to the set
-        @private
-        @augments vertx
-     */
-    this.addChannel = function( channel ) {
-        channels.push( channel );
-    };
-
-    /**
-        Check if subscribed to a channel
-        @param {String} address - The address of the channel object to search for in the set
-        @private
-        @augments vertx
-     */
-    this.getChannelIndex = function( address ) {
-        for ( var i = 0; i < channels.length; i++ ) {
-            if ( channels[ i ].address === address ) {
-                return i;
-            }
-        }
-        return -1;
-    };
-
-    /**
-        Removes a channel from the set
-        @param {Object} channel - The channel object to remove from the set
-        @private
-        @augments vertx
-     */
-    this.removeChannel = function( channel ) {
-        var index = this.getChannelIndex( channel.address );
-        if ( index >= 0 ) {
-            channels.splice( index, 1 );
-        }
-    };
-
-    /**
-        Returns the value of the private state var
-        @private
-        @augments vertx
-     */
-    this.getState = function() {
-        return state;
-    };
-
-    /**
-        Sets the value of the private state var
-        @private
-        @augments vertx
-     */
-    this.setState = function( newState ) {
-        state = newState;
-    };
-
-    /**
-        Returns the value of the private bus var
-        @private
-        @augments vertx
-     */
-    this.getBus = function() {
-        return bus;
-    };
-
-    /**
-        Sets the value of the private bus var
-        @private
-        @augments vertx
-     */
-    this.setBus = function( newBus ) {
-        bus = newBus;
-    };
-
-    // Handle auto-connect
-    if ( autoConnect || channels.length ) {
-        this.connect({
-            url: connectURL,
-            onConnect: settings.onConnect,
-            onDisconnect: settings.onDisconnect,
-            onConnectError: settings.onConnectError
-        });
-    }
+    var type = "vertx";
 };
 
 // Public Methods
@@ -257,7 +140,7 @@ AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
         }
     };
 
-    this.setBus( bus );
+    this.setClient( bus );
 };
 
 /**
@@ -291,7 +174,7 @@ AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
 
  */
 AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
-    var bus = this.getBus();
+    var bus = this.getClient();
     if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
         this.setState( AeroGear.Notifier.DISCONNECTING );
         bus.close();
@@ -356,7 +239,7 @@ AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
         }, true );
  */
 AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
-    var bus = this.getBus();
+    var bus = this.getClient();
 
     if ( reset ) {
         this.unsubscribe( this.getChannels() );
@@ -396,7 +279,7 @@ AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset
 
  */
 AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
-    var bus = this.getBus(),
+    var bus = this.getClient(),
         thisChannels = this.getChannels();
 
     channels = Array.isArray( channels ) ? channels : [ channels ];
@@ -427,7 +310,7 @@ AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
 
  */
 AeroGear.Notifier.adapters.vertx.prototype.send = function( channel, message, publish ) {
-    var bus = this.getBus();
+    var bus = this.getClient();
 
     if ( typeof message === Boolean && !publish ) {
         publish = message;

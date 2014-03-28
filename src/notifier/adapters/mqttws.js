@@ -62,36 +62,13 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
 
     settings = settings || {};
 
+    AeroGear.Notifier.adapters.base.apply( this, arguments );
+
     // Private Instance vars
     var type = "mqttws",
-        name = clientName,
-        channels = settings.channels || [],
-        autoConnect = !!settings.autoConnect || channels.length,
-        connectURL = settings.connectURL || "",
-        clientId = settings.clientId || "",
-        state = AeroGear.Notifier.CONNECTING,
-        client = null;
+        clientId = settings.clientId || "";
 
     // Privileged methods
-    /**
-        Returns the value of the private connectURL var
-        @private
-        @augments mqttws
-     */
-    this.getConnectURL = function() {
-        return connectURL;
-    };
-
-    /**
-        Set the value of the private connectURL var
-        @private
-        @augments mqttws
-        @param {String} url - New connectURL for this client
-     */
-    this.setConnectURL = function( url ) {
-        connectURL = url;
-    };
-
     /**
         Returns the value of the private clientId var
         @private
@@ -109,90 +86,6 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
      */
     this.setClientId = function( id ) {
         clientId = id;
-    };
-
-    /**
-        Returns the value of the private channels var
-        @private
-        @augments mqttws
-     */
-    this.getChannels = function() {
-        return channels;
-    };
-
-    /**
-        Adds a channel to the set
-        @param {Object} channel - The channel object to add to the set
-        @private
-        @augments mqttws
-     */
-    this.addChannel = function( channel ) {
-        channels.push( channel );
-    };
-
-    /**
-        Check if subscribed to a channel
-        @param {String} address - The address of the channel object to search for in the set
-        @private
-        @augments mqttws
-     */
-    this.getChannelIndex = function( address ) {
-        for ( var i = 0; i < channels.length; i++ ) {
-            if ( channels[ i ].address === address ) {
-                return i;
-            }
-        }
-        return -1;
-    };
-
-    /**
-        Removes a channel from the set
-        @param {Object} channel - The channel object to remove from the set
-        @private
-        @augments mqttws
-     */
-    this.removeChannel = function( channel ) {
-        var index = this.getChannelIndex( channel.address );
-        if ( index >= 0 ) {
-            channels.splice( index, 1 );
-        }
-    };
-
-    /**
-        Returns the value of the private state var
-        @private
-        @augments mqttws
-     */
-    this.getState = function() {
-        return state;
-    };
-
-    /**
-        Sets the value of the private state var
-        @param {Object} new State - The client's new state
-        @private
-        @augments mqttws
-     */
-    this.setState = function( newState ) {
-        state = newState;
-    };
-
-    /**
-        Returns the value of the private client var
-        @private
-        @augments mqttws
-     */
-    this.getClient = function() {
-        return client;
-    };
-
-    /**
-        Sets the value of the private bus var
-        @private
-        @augments mqttws
-     */
-    this.setClient = function( newClient ) {
-        client = newClient;
     };
 
     /**
@@ -220,7 +113,7 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
         if ( connectOptions.url ) {
             delete connectOptions.url;
         }
- 
+
         if ( connectOptions.clientId ) {
             delete connectOptions.clientId;
         }
@@ -246,16 +139,6 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
 
         return processedURL;
     };
-
-    // Handle auto-connect
-    if ( autoConnect || channels.length ) {
-        this.connect({
-            url: connectURL,
-            onConnect: settings.onConnect,
-            onConnectError: settings.onConnectError,
-            onMessage: settings.onMessage
-        });
-    }
 };
 
 //Public Methods
