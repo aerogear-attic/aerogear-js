@@ -61,7 +61,7 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             unifiedPush: {
-                src: ['src/aerogear.core.js', 'external/base64/base64.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
+                src: ['src/aerogear.core.js', 'src/external/es6-promise/promise-0.1.1.js', 'external/base64/base64.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             push: {
@@ -78,7 +78,7 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/unit/aerogear-ajax/**/*.html', 'tests/unit/authentication/**/*.html', 'tests/unit/authorization/**/*.html', 'tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html']
+            files: ['tests/unit/aerogear-ajax/**/*.html', 'tests/unit/authentication/**/*.html', 'tests/unit/authorization/**/*.html', 'tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html', 'tests/unit/unifiedpush/**/*.html']
         },
         jshint: {
             all: {

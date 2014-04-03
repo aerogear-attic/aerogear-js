@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, $, undefined ) {
+(function( AeroGear, undefined ) {
     /**
         The UnifiedPushClient object is used to perfom register and unregister operations against the AeroGear UnifiedPush server.
         @status Experimental
@@ -89,7 +89,7 @@
             // Make sure that settings.metadata.categories is an Array
             metadata.categories = Array.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
 
-            return $.ajax({
+            return AeroGear.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
@@ -115,7 +115,7 @@
          */
         this.unregisterWithPushServer = function( deviceToken, settings ) {
             settings = settings || {};
-            return $.ajax({
+            return AeroGear.ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
@@ -130,4 +130,4 @@
         };
     };
 
-})( AeroGear, jQuery );
+})( AeroGear );
