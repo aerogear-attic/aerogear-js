@@ -20,14 +20,14 @@
         @constructs AeroGear.UnifiedPushClient
         @param {String} variantID - the id representing the mobile application variant
         @param {String} variantSecret - the secret for the mobile application variant
-        @param {String} pushServerURL - the location of the UnifiedPush server
+        @param {String} pushServerURL - the location of the UnifiedPush server e.g. http(s)//host:port/context
         @returns {Object} The created unified push server client
         @example
         // Create the UnifiedPush client object:
         var client = AeroGear.UnifiedPushClient(
             "myVariantID",
             "myVariantSecret",
-            "http://SERVER:PORT/CONTEXT/rest/registry/device"
+            "http://SERVER:PORT/CONTEXT"
         );
 
         // assemble the metadata for the registration:
@@ -93,7 +93,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
-                url: pushServerURL,
+                url: pushServerURL + "/rest/registry/device",
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
@@ -119,7 +119,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
-                url: pushServerURL + "/" + deviceToken,
+                url: pushServerURL + "/rest/registry/device/" + deviceToken,
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
