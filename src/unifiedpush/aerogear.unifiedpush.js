@@ -75,7 +75,7 @@
             @param {AeroGear~completeCallbackREST} [settings.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
             @param {AeroGear~errorCallbackREST} [settings.error] - callback to be executed if the AJAX request results in an error
             @param {AeroGear~successCallbackREST} [settings.success] - callback to be executed if the AJAX request results in success
-            @returns {Object} The jqXHR created by jQuery.ajax
+            @returns {Object} An Promise created by AeroGear.ajax
          */
         this.registerWithPushServer = function( settings ) {
             settings = settings || {};
@@ -111,7 +111,7 @@
             @param {AeroGear~completeCallbackREST} [settings.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
             @param {AeroGear~errorCallbackREST} [settings.error] - callback to be executed if the AJAX request results in an error
             @param {AeroGear~successCallbackREST} [settings.success] - callback to be executed if the AJAX request results in success
-            @returns {Object} The jqXHR created by jQuery.ajax
+            @returns {Object} An Promise created by AeroGear.ajax
          */
         this.unregisterWithPushServer = function( deviceToken, settings ) {
             settings = settings || {};
