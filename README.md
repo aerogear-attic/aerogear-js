@@ -118,7 +118,7 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 * [SockJS](http://cdn.sockjs.org/)
 
 ### UnifiedPush
-* [jQuery](http://jquery.com/download/)
+* [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise) - Bundled w/ AeroGear.js
 
 ## Building
 - - -
