@@ -87,7 +87,7 @@
         var request = this.requests[0];
 
         equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-        equal( request.url, "/api/pushserver", "request.url should be the push server url" );
+        equal( request.url, "/api/pushserver" + "/rest/registry/device", "request.url should be the concatenation of push server url and device registry url" );
         equal( request.method, "POST", "request.method should a POST request" );
         equal( JSON.parse( request.requestBody ).deviceToken, "12345", "request body should have a request token param" );
 
@@ -107,7 +107,7 @@
         var request = this.requests[0];
 
         equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-        equal( request.url, "/api/pushserver/" + deviceToken, "request.url should be the push server url with deviceToken" );
+        equal( request.url, "/api/pushserver" + "/rest/registry/device/" + deviceToken, "request.url should be the concatenation of push server url, device registry url and device token" );
         equal( request.method, "DELETE", "request.method should a DELETE request" );
 
     });
@@ -119,7 +119,7 @@
                 "deviceToken": "12345"
             }
             this.server = sinon.fakeServer.create();
-            this.server.respondWith( "POST", "/api/pushserver", [ 200, { "Content-Type": "application/json" }, JSON.stringify(testData)]);
+            this.server.respondWith( "POST", "/api/pushserver/rest/registry/device", [ 200, { "Content-Type": "application/json" }, JSON.stringify(testData)]);
         },
         teardown: function () {
             this.server.restore();
@@ -259,7 +259,7 @@
      module( "UnifiedPush Client - Register fake server", {
        setup: function () {
             this.server = sinon.fakeServer.create();
-            this.server.respondWith( "DELETE", "/api/pushserver/12345", [ 204, { "Content-Type": "application/json" }, JSON.stringify({})]);
+            this.server.respondWith( "DELETE", "/api/pushserver/rest/registry/device/12345", [ 204, { "Content-Type": "application/json" }, JSON.stringify({})]);
         },
         teardown: function () {
             this.server.restore();
