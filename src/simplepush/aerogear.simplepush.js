@@ -92,13 +92,7 @@
                                 }
 
                                 spClient.simpleNotifier.subscribe({
-                                    requestObject: request,
-                                    callback: function( message ) {
-                                        $( navigator.push ).trigger({
-                                            type: "push",
-                                            message: message
-                                        });
-                                    }
+                                    requestObject: request
                                 });
 
                                 return request;

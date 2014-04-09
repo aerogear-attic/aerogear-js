@@ -351,7 +351,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.disconnect = function( onDisconn
 
 /**
     Subscribe this client to a new channel
-    @param {Object|Array} channels - a channel object or array of channel objects to which this client can subscribe. At a minimum, each channel should contain a requestObject which will eventually contain the subscription success callback and a callback, which is fired when notifications are received. Reused channels may also contain channelID and other metadata.
+    @param {Object|Array} channels - a channel object or array of channel objects to which this client can subscribe. At a minimum, each channel should contain a requestObject which will eventually contain the subscription success callback. Reused channels may also contain channelID and other metadata.
     @param {Boolean} [reset] - if true, remove all channels from the set and replace with the supplied channel(s)
     @example
     var SPNotifier = AeroGear.Notifier({
