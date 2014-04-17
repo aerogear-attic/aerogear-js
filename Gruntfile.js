@@ -1,3 +1,4 @@
+var _ = require('lodash');
 /*global module:false*/
 module.exports = function(grunt) {
     'use strict';
@@ -233,4 +234,34 @@ module.exports = function(grunt) {
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
     grunt.registerTask('docs',['shell:docs']);
+
+    grunt.registerTask('custom', function( opts ) {
+        var options = opts.split( ',' ),
+            concatTasks = grunt.config.get( "concat" ),
+            tasks = [],
+            src;
+
+        if( options.length === 1 ) {
+            grunt.task.run( ['concat:' + options, 'iife:custom', 'uglify:custom'] );
+            return ;
+        }
+
+        for( var i = 0; i < options.length; i++ ) {
+            tasks.push( concatTasks[ options[ i ] ].src );
+        }
+        src = _.uniq( _.flatten( tasks ) );
+
+        grunt.config.set( 'concat', {
+            options: {
+                stripBanners: true,
+                banner: '<%= meta.banner %>'
+            },
+            custom: {
+                src: src,
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            }
+        });
+
+        grunt.task.run(['concat:custom', 'iife:custom', 'uglify:custom']);
+    });
 };
