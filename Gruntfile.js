@@ -202,7 +202,7 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('data-manager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
+    grunt.registerTask('dataManager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('auth', ['jshint', 'qunit', 'concat:auth', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('notifierVertx', ['jshint', 'qunit', 'concat:notifierVertx', 'uglify:custom']);
     grunt.registerTask('notifierStompWS', ['jshint', 'qunit', 'concat:notifierStompWS', 'uglify:custom']);
