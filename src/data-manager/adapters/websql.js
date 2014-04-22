@@ -33,7 +33,7 @@
     // Add an WebSQL store
     dm.add({
         name: "newStore",
-        storageType: "WebSQL"
+        type: "WebSQL"
     });
 
  */
@@ -147,7 +147,7 @@ AeroGear.DataManager.adapters.WebSQL.isValid = function() {
     // Add an WebSQL store
     dm.add({
         name: "newStore",
-        storageType: "WebSQL"
+        type: "WebSQL"
     });
 
     dm.stores.newStore.open({
@@ -200,7 +200,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function( options ) {
     // Add an WebSQL store
     dm.add({
         name: "newStore",
-        storageType: "WebSQL"
+        type: "WebSQL"
     });
 
     dm.stores.newStore.open({
@@ -278,7 +278,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id, options ) {
     // Add an WebSQL store
     dm.add({
         name: "newStore",
-        storageType: "WebSQL"
+        type: "WebSQL"
     });
 
     dm.stores.newStore.open({
@@ -362,7 +362,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "WebSQL"
+        type: "WebSQL"
     });
 
     dm.stores.newStore.open({
@@ -451,7 +451,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove, opti
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "WebSQL"
+        type: "WebSQL"
     });
 
     dm.stores.newStore.open({

@@ -33,7 +33,7 @@
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
  */
@@ -147,7 +147,7 @@ AeroGear.DataManager.adapters.IndexedDB.isValid = function() {
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
     dm.stores.newStore.open({
@@ -202,7 +202,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function( options ) {
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
     dm.stores.newStore.open({
@@ -289,7 +289,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id, options )
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
     dm.stores.newStore.open({
@@ -375,7 +375,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
     dm.stores.newStore.open({
@@ -461,7 +461,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove, o
     // Add an IndexedDB store
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
     dm.stores.newStore.open({
@@ -511,7 +511,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
     // Add an IndexedDB store and then delete a record
     dm.add({
         name: "newStore",
-        storageType: "IndexedDB"
+        type: "IndexedDB"
     });
 
     dm.stores.newStore.close();

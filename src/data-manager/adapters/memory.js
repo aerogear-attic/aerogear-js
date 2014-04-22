@@ -27,8 +27,11 @@
 var dm = AeroGear.DataManager();
 
 // Add a custom memory store
-dm.add( "newStore", {
-    recordId: "customID"
+dm.add({
+    name: "newStore",
+    settings: {
+        recordId: "customID"
+    }
 });
  */
 AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {

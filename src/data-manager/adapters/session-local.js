@@ -32,9 +32,13 @@
 var dm = AeroGear.DataManager();
 
 // Add a custom SessionLocal store using local storage as its storage type
-dm.add( "newStore", {
-    recordId: "customID",
-    storageType: "localStorage"
+dm.add({
+    name: "newStore",
+    type: "SessionLocal"
+    settings: {
+        recordId: "customID",
+        storageType: "localStorage"
+    }
 });
  */
 AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
