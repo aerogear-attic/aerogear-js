@@ -155,7 +155,9 @@ For example, if you wanted a build with Pipeline and the SimplePushClient, you w
 
 The produced JavaScript will be in the __dist__ directory as __aerogear.custom.js__.
 
-_look in the `concat` section of Gruntfile.js for available "modules"_
+For usage and a list of available "modules" run,
+
+    $ grunt custom:help
 
 ### Generating the documentation
 To generate the API docs, run the following command:
