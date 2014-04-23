@@ -94,7 +94,7 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/unit/aerogear-ajax/**/*.html', 'tests/unit/authentication/**/*.html', 'tests/unit/authorization/**/*.html', 'tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html', 'tests/unit/unifiedpush/**/*.html']
+            files: ['tests/unit/aerogear-ajax/**/*.html', 'tests/unit/authentication/**/*.html', 'tests/unit/authorization/**/*.html', 'tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html', 'tests/unit/unifiedpush/**/*.html', 'tests/unit/simplepush/**/*.html']
         },
         jshint: {
             all: {
