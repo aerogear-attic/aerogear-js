@@ -143,6 +143,22 @@ building the first time, or if the dependencies in package.json have been update
 
 The produced JavaScript will be in the __dist__ directory.
 
+### Custom Build
+
+There is a special grunt task called, `custom` to help create custom builds of the library.
+
+The custom task takes a comma delimited list of "modules".
+
+For example, if you wanted a build with Pipeline and the SimplePushClient, you would do
+
+    $ grunt custom:pipeline,simplePush
+
+The produced JavaScript will be in the __dist__ directory as __aerogear.custom.js__.
+
+For usage and a list of available "modules" run,
+
+    $ grunt custom:help
+
 ### Generating the documentation
 To generate the API docs, run the following command:
 

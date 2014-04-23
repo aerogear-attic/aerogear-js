@@ -51,7 +51,7 @@
     },
     {
       "name": "Yavuz Yilmaz",
-        "url": "https://github.com/yavuzsel"
+      "url": "https://github.com/yavuzsel"
     }
   ],
   "repository": {
@@ -79,7 +79,8 @@
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.13",
     "request": "~2.27.0",
-    "jsdoc-aerogear": "~3.2.0-dev"
+    "jsdoc-aerogear": "~3.2.0-dev",
+    "lodash": "~2.4.1"
   },
   "scripts": {
     "test": "grunt travis --verbose"

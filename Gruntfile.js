@@ -1,3 +1,4 @@
+var _ = require('lodash');
 /*global module:false*/
 module.exports = function(grunt) {
     'use strict';
@@ -34,62 +35,77 @@ module.exports = function(grunt) {
             },
             pipeline: {
                 src: ['src/aerogear.core.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js'],
+                description: 'Pipeline full build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
                 src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js'],
+                description: 'DataManager full build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerIndexedDB: {
                 src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/indexeddb.js'],
+                description: 'DataManager IndexedDB adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerWebSQL: {
                 src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/websql.js'],
+                description: 'DataManager WebSQL adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerSessionLocal: {
                 src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
+                description: 'DataManager SessionLocal adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerMemory: {
                 src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js'],
+                description: 'DataManager Memory adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             auth: {
                 src: ['src/aerogear.core.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                description: 'Auth full build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             notifierVertx: {
                 src: ['src/aerogear.core.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/vertx.js'],
+                description: 'Notifier Vert.x adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             notifierStompWS: {
                 src: ['src/aerogear.core.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/stompws.js'],
+                description: 'Notifier StompWS adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             notifierMqttWS: {
                 src: ['src/aerogear.core.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/mqttws.js'],
+                description: 'Notifier MqttWS adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             simplePush: {
                 src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simplepush/aerogear.simplepush.js'],
+                description: 'SimplePush Client build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             unifiedPush: {
                 src: ['src/aerogear.core.js', 'src/external/es6-promise/promise-0.1.1.js', 'external/base64/base64.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
+                description: 'UnifiedPush Client build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             push: {
                 src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/external/es6-promise/promise-0.1.1.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simplepush/aerogear.simplepush.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
+                description: 'Build of both SimplePush and UnifiedPush Clients',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             crypto: {
                 src: ['src/aerogear.core.js', 'external/crypto/sjcl.js', 'src/crypto/aerogear.crypto.js'],
+                description: 'Crypto build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             oauth2: {
                 src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/authorization/aerogear.authz.js', 'src/authorization/adapters/oauth2.js'],
+                description: 'Authz OAuth2 adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
@@ -233,4 +249,45 @@ module.exports = function(grunt) {
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
     grunt.registerTask('docs',['shell:docs']);
+
+    // A task to create custom builds of the library based on the 'concat' task
+    grunt.registerTask('custom', function( opts ) {
+        var options = opts.split( ',' ),
+            concatTasks = grunt.config.get( "concat" ),
+            tasks = [],
+            src;
+
+        if( options.filter( function( item ) { return item === 'help'; } ) ) {
+            grunt.log.writeln( grunt.file.read( 'custom_build_help.txt' ) );
+            for( var task in concatTasks ) {
+                if( task !== 'options' && task !== 'dist' ) {
+                    grunt.log.writeln( task + ' - ' + concatTasks[ task ].description  );
+                }
+            }
+            return;
+        }
+
+        if( options.length === 1 ) {
+            grunt.task.run( ['concat:' + options, 'iife:custom', 'uglify:custom'] );
+            return ;
+        }
+
+        for( var i = 0; i < options.length; i++ ) {
+            tasks.push( concatTasks[ options[ i ] ].src );
+        }
+        src = _.uniq( _.flatten( tasks ) );
+
+        grunt.config.set( 'concat', {
+            options: {
+                stripBanners: true,
+                banner: '<%= meta.banner %>'
+            },
+            custom: {
+                src: src,
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            }
+        });
+
+        grunt.task.run(['concat:custom', 'iife:custom', 'uglify:custom']);
+    });
 };
