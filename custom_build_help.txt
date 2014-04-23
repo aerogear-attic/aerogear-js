@@ -1,0 +1,15 @@
+A task to create custom builds of the library based on the 'concat' task
+
+Usage:
+    grunt custom:[ task[,task...] ] - create a custom build
+
+    grunt custom:help - Show this help
+
+
+Example: A custom build containing Pipeline and the IndexedDB Adapter
+
+    grunt custom:pipeline,dataManagerIndexedDB
+
+----------------------------------------------------------------------------
+
+Below is a listing of the available modules:
