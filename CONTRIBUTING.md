@@ -45,6 +45,8 @@ Our grunt build will run JSHint to let you know if most things are in line.
 
 Most editors will have support for the provided `.jshintrc` file.  This will help during development.
 
+In addition, we have added a grunt watch task which executes the corresponding unit tests whenever a file is added, changed or deleted.
+
 ### Follow AeroGear's github workflow*
 
 Follow our document that will walk you through how to work with GitHub, and the AeroGear repositories: [AeroGear GitHub Workflow &amp; Instructions](http://aerogear.org/docs/guides/GitHubWorkflow).
