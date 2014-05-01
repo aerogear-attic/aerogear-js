@@ -51,16 +51,16 @@
         equal( ret instanceof Promise, true, "AeroGear.ajax should return a promise" );
     });
 
-    test( "UPDATE Request", function() {
+    test( "PUT Request", function() {
         expect(2)
         var settings = {};
 
-        settings.type = "UPDATE";
+        settings.type = "PUT";
 
         var ret = AeroGear.ajax( settings );
         var request = this.requests[0];
 
-        equal( request.method, "UPDATE", "should be a UPDATE request" );
+        equal( request.method, "PUT", "should be a PUT request" );
         equal( ret instanceof Promise, true, "AeroGear.ajax should return a promise" );
     });
 
@@ -126,10 +126,10 @@
         this.server.respond();
     });
 
-    asyncTest( "UPDATE - with success callback", function() {
-        this.server.respondWith( "UPDATE", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+    asyncTest( "PUT - with success callback", function() {
+        this.server.respondWith( "PUT", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
-        this.settings.type = "UPDATE";
+        this.settings.type = "PUT";
 
         AeroGear.ajax( this.settings );
         this.server.respond();
@@ -176,10 +176,10 @@
         this.server.respond();
     });
 
-    asyncTest( "UPDATE - with success promise", function() {
-        this.server.respondWith( "UPDATE", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+    asyncTest( "PUT - with success promise", function() {
+        this.server.respondWith( "PUT", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
-        this.settings.type = "UPDATE";
+        this.settings.type = "PUT";
 
         AeroGear.ajax( this.settings ).then( this.resolver );
         this.server.respond();
@@ -226,10 +226,10 @@
         this.server.respond();
     });
 
-    asyncTest( "UPDATE - with error callback", function() {
-        this.server.respondWith( "UPDATE", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+    asyncTest( "PUT - with error callback", function() {
+        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
-        this.settings.type = "UPDATE";
+        this.settings.type = "PUT";
 
         AeroGear.ajax( this.settings );
         this.server.respond();
@@ -276,10 +276,10 @@
         this.server.respond();
     });
 
-    asyncTest( "UPDATE - with error promise", function() {
-        this.server.respondWith( "UPDATE", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+    asyncTest( "PUT - with error promise", function() {
+        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
-        this.settings.type = "UPDATE";
+        this.settings.type = "PUT";
 
         AeroGear.ajax( this.settings ).catch( this.rejector );
         this.server.respond();
@@ -310,10 +310,10 @@
         this.server.respond();
     });
 
-    asyncTest( "UPDATE - with error promise - not using catch", function() {
-        this.server.respondWith( "UPDATE", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+    asyncTest( "PUT - with error promise - not using catch", function() {
+        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
-        this.settings.type = "UPDATE";
+        this.settings.type = "PUT";
 
         AeroGear.ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
