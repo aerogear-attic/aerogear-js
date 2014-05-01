@@ -37,23 +37,26 @@ AeroGear.ajax = function( settings ) {
 
         // Success and 400's
         request.onload = function() {
-            that._oncomplete.call( this, request, (request.status < 400) ? "success" : "error" );
+            var status =( request.status < 400 ) ? "success" : "error";
+
+            if( status === "success" ) {
+                resolve( request );
+            } else {
+                reject( request );
+            }
+
+            that._oncomplete( request, status );
         };
 
         // Network errors
         request.onerror = function() {
-            that._oncomplete.call( this, request, "error" );
+            reject( request );
+            that._oncomplete( request, "error" );
         };
 
         this._oncomplete = function( request, status ) {
             if( settings[ status ] ) {
                 settings[ status ].apply( this, arguments );
-            }
-
-            if( status === "success" ) {
-                resolve( this );
-            } else {
-                reject( this );
             }
 
             if( settings.complete ) {
