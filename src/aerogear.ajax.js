@@ -61,6 +61,6 @@ AeroGear.ajax = function( settings ) {
             }
         };
 
-        request.send( settings.data || {} );
+        request.send( settings.data );
     });
 };
