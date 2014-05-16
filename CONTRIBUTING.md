@@ -37,12 +37,13 @@ This is pretty standard stuff for open source. Just use your JBoss user, and pic
 
 [https://cla.jboss.org](https://cla.jboss.org)
 
-### Follow AeroGear's coding conventions and style
+### Follow AeroGear.js's coding conventions and style
 
-This link has the IDE settings, and conventions that should be followed for all AeroGear source code. Be sure to use the **aerogear** branch as it contains the correct [license and copyright information](http://aerogear.org/docs/guides/license). The aerogear branch should be the default branch.
+Our coding style comes from jQuery's style.  Here is a link to their [style guide](http://contribute.jquery.org/style-guide/js/)
 
-[https://github.com/aerogear/ide-config](https://github.com/aerogear/ide-config)
+Our grunt build will run JSHint to let you know if most things are in line.
 
+Most editors will have support for the provided `.jshintrc` file.  This will help during development.
 
 ### Follow AeroGear's github workflow*
 
