@@ -110,7 +110,15 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/unit/aerogear-ajax/**/*.html', 'tests/unit/authentication/**/*.html', 'tests/unit/authorization/**/*.html', 'tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html', 'tests/unit/notifier/**/*.html', 'tests/unit/pipeline/**/*.html', 'tests/unit/crypto/**/*.html', 'tests/unit/unifiedpush/**/*.html', 'tests/unit/simplepush/**/*.html']
+            authentication: 'tests/unit/authentication/**/*.html',
+            authorization: 'tests/unit/authorization/**/*.html',
+            dataManager: ['tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html'],
+            notifier: 'tests/unit/notifier/**/*.html',
+            pipeline: 'tests/unit/pipeline/**/*.html',
+            crypto: 'tests/unit/crypto/**/*.html',
+            unifiedpush: 'tests/unit/unifiedpush/**/*.html',
+            simplepush: 'tests/unit/simplepush/**/*.html',
+            aerogearAjax: 'tests/unit/aerogear-ajax/**/*.html'
         },
         jshint: {
             all: {
@@ -210,6 +218,48 @@ module.exports = function(grunt) {
                     stdout: true
                 }
             }
+        },
+        watch: {
+            authentication: {
+                files: 'src/authentication/**/*.js',
+                tasks: 'qunit:authentication'
+            },
+            authorization: {
+                files: 'src/authorization/**/*.js',
+                tasks: 'qunit:authorization'
+            },
+            crypto: {
+                files: 'src/crypto/**/*.js',
+                tasks: 'qunit:crypto'
+            },
+            dataManager: {
+                files: 'src/data-manager/**/*.js',
+                tasks: 'qunit:dataManager'
+            },
+            notifier: {
+                files: 'src/notifier/**/*.js',
+                tasks: 'qunit:notifier'
+            },
+            pipeline: {
+                files: 'src/pipeline/**/*.js',
+                tasks: 'qunit:pipeline'
+            },
+            simplepush: {
+                files: 'src/simplepush/**/*.js',
+                tasks: 'qunit:simplepush'
+            },
+            unifiedpush: {
+                files: 'src/unifiedpush/**/*.js',
+                tasks: 'qunit:unifiedpush'
+            },
+            aerogearAjax: {
+                files: 'src/aerogear.ajax.js',
+                tasks: ['qunit:aerogearAjax', 'qunit:unifiedpush']
+            },
+            core: {
+                files: 'src/aerogear.core.js',
+                tasks: 'qunit'
+            }
         }
     });
 
@@ -228,6 +278,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-shell');
 
     // Default task
