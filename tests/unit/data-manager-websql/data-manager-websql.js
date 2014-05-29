@@ -238,7 +238,8 @@ function doAlways() {
 })( jQuery );
 
 (function( $ ) {
-    var dm = AeroGear.DataManager(),
+    var hasopened,
+        dm = AeroGear.DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Save using 'Auto Connect' param", {
@@ -710,7 +711,8 @@ function doAlways() {
 })( jQuery );
 
 ( function( $ ) {
-    var dm = AeroGear.DataManager();
+    var hasopened,
+        dm = AeroGear.DataManager();
     dm.add({
         name: "test1",
         type: "WebSQL"

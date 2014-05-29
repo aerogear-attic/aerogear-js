@@ -9,14 +9,14 @@ $.mockjax({
     type: "POST",
     response: function( event ) {
         var data = JSON.parse( event.data );
-        if( data.username != "" && data.password != "" ) {
+        if( data.username !== "" && data.password !=="" ) {
             this.responseText = {
                 username: data.username,
                 logged: true
             };
         } else {
-            this.status = 400,
-            this.statusText = "Bad Request",
+            this.status = 400;
+            this.statusText = "Bad Request";
             this.responseText = {
                 message : 'User enrollment failed'
             };
@@ -29,14 +29,14 @@ $.mockjax({
     type: "POST",
     response: function( event ) {
         var data = JSON.parse( event.data );
-        if( data.username != "" && data.password != "" ) {
+        if( data.username !== "" && data.password !== "" ) {
             this.responseText = {
                 username: data.username,
                 logged: true
             };
         } else {
-            this.status = 400,
-            this.statusText = "Bad Request",
+            this.status = 400;
+            this.statusText = "Bad Request";
             this.responseText = {
                 message : 'User enrollment failed'
             };
@@ -49,15 +49,15 @@ $.mockjax({
     type: "POST",
     response: function( event ) {
         var data = JSON.parse( event.data );
-        if( data.username == "john" && data.password == "123" ) {
+        if( data.username === "john" && data.password === "123" ) {
             this.responseText = {
                 username: "john",
                 logged: true
             };
             sessionActive = true;
         } else {
-            this.status = 401,
-            this.statusText = "UnAuthorized",
+            this.status = 401;
+            this.statusText = "UnAuthorized";
             this.responseText = {
                 message : "User authentication failed"
             };
@@ -72,7 +72,7 @@ $.mockjax({
     type: "POST",
     response: function( event ) {
         var data = JSON.parse( event.data );
-        if( data.username == "john" && data.password == "123" ) {
+        if( data.username === "john" && data.password === "123" ) {
             this.responseText = {
                 username: "john",
                 logged: true
@@ -80,8 +80,8 @@ $.mockjax({
             sessionActive = true;
         } else {
             sessionActive = false;
-            this.status = 401,
-            this.statusText = "UnAuthorized",
+            this.status = 401;
+            this.statusText = "UnAuthorized";
             this.responseText = {
                 message : "User authentication failed"
             };
@@ -100,7 +100,7 @@ $.mockjax({
                 value2: "value2"
             };
         } else {
-            this.status = 401,
+            this.status = 401;
             this.statusText = "UnAuthorized";
         }
     }
@@ -114,10 +114,10 @@ $.mockjax({
             sessionActive = false;
             var data = event.data;
 
-            this.status = "204",
+            this.status = "204";
             this.statusText = "No Content";
         } else {
-            this.status = 410,
+            this.status = 410;
             this.statusText = "Gone";
         }
     },
@@ -132,10 +132,10 @@ $.mockjax({
             sessionActive = false;
             var data = event.data;
 
-            this.status = "204",
+            this.status = "204";
             this.statusText = "No Content";
         } else {
-            this.status = 410,
+            this.status = 410;
             this.statusText = "Gone";
         }
     },

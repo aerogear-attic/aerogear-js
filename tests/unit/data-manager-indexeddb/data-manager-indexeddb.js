@@ -277,7 +277,8 @@ function doAlways() {
 })( jQuery );
 
 (function( $ ) {
-    var dm = AeroGear.DataManager(),
+    var hasopened,
+        dm = AeroGear.DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Save using 'Auto Connect param'", {
@@ -488,7 +489,8 @@ function doAlways() {
 })( jQuery );
 
 (function( $ ) {
-    var dm = AeroGear.DataManager(),
+    var hasopened,
+        dm = AeroGear.DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Read using 'Auto Connect param'", {

@@ -117,7 +117,7 @@
             var testData = {
                 "id": "402880e43fa95bb3013fa960f9ee0002",
                 "deviceToken": "12345"
-            }
+            };
             this.server = sinon.fakeServer.create();
             this.server.respondWith( "POST", "/api/pushserver/rest/registry/device", [ 200, { "Content-Type": "application/json" }, JSON.stringify(testData)]);
         },

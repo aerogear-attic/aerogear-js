@@ -15,7 +15,7 @@
     });
 
     test( "Default Request", function() {
-        expect(2)
+        expect(2);
         var settings = {};
 
         var ret = AeroGear.ajax( settings );
@@ -26,7 +26,7 @@
     });
 
     test( "GET Request", function() {
-        expect(2)
+        expect(2);
         var settings = {};
 
         settings.type = "GET";
@@ -39,7 +39,7 @@
     });
 
     test( "POST Request", function() {
-        expect(2)
+        expect(2);
         var settings = {};
 
         settings.type = "POST";
@@ -52,7 +52,7 @@
     });
 
     test( "PUT Request", function() {
-        expect(2)
+        expect(2);
         var settings = {};
 
         settings.type = "PUT";
@@ -65,7 +65,7 @@
     });
 
     test( "DELETE Request", function() {
-        expect(2)
+        expect(2);
         var settings = {};
 
         settings.type = "DELETE";
@@ -78,7 +78,7 @@
     });
 
     test( "Headers in Request", function() {
-        expect(3)
+        expect(3);
         var settings = {};
 
         settings.headers = {
@@ -89,8 +89,8 @@
         var ret = AeroGear.ajax( settings );
         var request = this.requests[0];
 
-        equal( request.requestHeaders[ "HEADER_KEY" ], "HEADER_VALUE", "HEADER_VALUE should be in he HEADER" );
-        equal( request.requestHeaders[ "COOL_HEADER" ], "COOL_HEADER_VALUE", "COOL_HEADER_VALUE should be in he HEADER" );
+        equal( request.requestHeaders.HEADER_KEY, "HEADER_VALUE", "HEADER_VALUE should be in he HEADER" );
+        equal( request.requestHeaders.COOL_HEADER, "COOL_HEADER_VALUE", "COOL_HEADER_VALUE should be in he HEADER" );
         equal( ret instanceof Promise, true, "AeroGear.ajax should return a promise" );
     });
 

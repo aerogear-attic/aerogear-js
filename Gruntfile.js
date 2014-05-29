@@ -126,6 +126,12 @@ module.exports = function(grunt) {
                 options: {
                     jshintrc: '.jshintrc'
                 }
+            },
+            tests: {
+                src: [ 'tests/unit/**/*.js' ],
+                options: {
+                    jshintrc: 'tests/.jshintrc'
+                }
             }
         },
         uglify: {

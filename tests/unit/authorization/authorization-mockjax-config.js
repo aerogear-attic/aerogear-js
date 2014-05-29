@@ -1,7 +1,7 @@
 (function( $ ) {
 
     $.mockjaxClear();
-    
+
     $.mockjax({
         url: /drive\/v2\/messages\?access_token=([a-zA-Z0-9]+)/,
         urlParams: ['accessToken'],
@@ -12,10 +12,10 @@
         response: function( settings ) {
             var accessToken = settings.urlParams.accessToken;
             if ( accessToken && accessToken !== suiteData.wrongAccessToken ) {
-                this.status = 200,
+                this.status = 200;
                 this.statusText = "OK";
-            } else { 
-                this.status = 401,
+            } else {
+                this.status = 401;
                 this.statusText = "Unauthorized Request";
             }
         }
@@ -31,17 +31,17 @@
         response: function( settings ) {
             var accessToken = settings.urlParams.accessToken;
             if ( accessToken && accessToken !== suiteData.wrongAccessToken && accessToken !== suiteData.accessTokenWrongAudience ) {
-                this.status = 200,
-                this.statusText = "OK",
+                this.status = 200;
+                this.statusText = "OK";
                 this.responseText = JSON.stringify({
                     audience: suiteData.clientId
                 });
             } else if ( accessToken && accessToken === suiteData.accessTokenWrongAudience ) {
-                this.status = 200,
-                this.statusText = "OK",
+                this.status = 200;
+                this.statusText = "OK";
                 this.responseText = JSON.stringify({});
-            } else { 
-                this.status = 401,
+            } else {
+                this.status = 401;
                 this.statusText = "Unauthorized Request";
             }
         }

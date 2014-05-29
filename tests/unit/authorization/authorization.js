@@ -1,9 +1,9 @@
 (function( $ ) {
 
     module( "authorization" );
-   
+
     var authz = AeroGear.Authorization();
-        
+
     authz.add({
         name: "drive",
         settings: {
@@ -14,7 +14,7 @@
             scopes: "user"
         }
     });
-    
+
     var pipeline = AeroGear.Pipeline( { authorizer: authz.services.drive } );
     pipeline.add([
         {
@@ -32,7 +32,7 @@
         ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getState(), "State exists" );
         ok( authz.services[ Object.keys( authz.services )[ 0 ] ].getLocalStorageName(), "Local Storage Name exists" );
     });
- 
+
     asyncTest( "Validate Response - Success case - OAuth2 Implicit Grant flow", function() {
         expect( 4 );
 
@@ -135,7 +135,7 @@
 
     asyncTest( "Accessing Resources - Error case - OAuth2 Implicit Grant flow", function() {
         expect( 2 );
-        
+
         var state = authz.services[ Object.keys( authz.services )[ 0 ] ].getState(),
             accessTokenResponseURI = ["http://example.com/cb#access_token=",
                                 suiteData.accessToken,
