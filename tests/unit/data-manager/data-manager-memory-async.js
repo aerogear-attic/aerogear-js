@@ -50,7 +50,7 @@
         expect( 5 );
 
         var dm = AeroGear.DataManager();
-        dm.add( "addTest1" ),
+        dm.add( "addTest1" );
         dm.add( "addTest2" );
 
         equal( Object.keys( dm.stores ).length, 2, "2 Stores added" );

@@ -49,7 +49,7 @@
         dm.add({
             name: "addTest1",
             type: "SessionLocal"
-        }),
+        });
         dm.add({
             name: "addTest2",
             type: "SessionLocal"
