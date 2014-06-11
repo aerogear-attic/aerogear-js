@@ -60,17 +60,6 @@ AeroGear.DataManager.adapters.base = function( storeName, settings ) {
     };
 
     /**
-        A Function for a jQuery.Deferred to always call
-        @private
-        @augments base
-     */
-    this.always = function( value, status, callback ) {
-        if( callback ) {
-            callback.call( this, value, status );
-        }
-    };
-
-    /**
         Encrypt data being saved or updated if applicable
         @private
         @augments base

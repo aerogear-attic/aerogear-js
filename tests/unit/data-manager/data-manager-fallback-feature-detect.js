@@ -1,4 +1,4 @@
-( function( $ ) {
+( function() {
     // The non hacky way
 
     module( "DataManager Creation with fallbacks - Feature Detection", {
@@ -56,4 +56,4 @@
         equal( dm.createTest1 instanceof adapter, true, type + " Created " );
         equal( dm.createTest1.getAsync(), true, "Adapter should be in async mode since it fellback" );
     });
-})( jQuery );
+})();

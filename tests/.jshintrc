@@ -15,6 +15,7 @@
         "throws": true,
         "raises": true,
         "start": true,
+        "stop": true,
         "console": true,
         "equal": true,
         "strictEqual": true,

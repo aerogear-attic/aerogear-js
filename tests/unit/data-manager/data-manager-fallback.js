@@ -1,4 +1,4 @@
-( function( $ ) {
+( function() {
 
     // A Little Bit of setup
     // Remove the indexedDB and webSQL adapters from our list of valid adapters
@@ -187,4 +187,4 @@
         equal( dm.createTest22 instanceof AeroGear.DataManager.adapters.SessionLocal, true, "Fellback to SessionLocal" );
         equal( dm.createTest23 instanceof AeroGear.DataManager.adapters.Memory, true, "No Fallback should happen" );
     });
-})( jQuery );
+})( );

@@ -39,27 +39,27 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
-                src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js'],
                 description: 'DataManager full build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerIndexedDB: {
-                src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/indexeddb.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/indexeddb.js'],
                 description: 'DataManager IndexedDB adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerWebSQL: {
-                src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/websql.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/websql.js'],
                 description: 'DataManager WebSQL adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerSessionLocal: {
-                src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js'],
                 description: 'DataManager SessionLocal adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManagerMemory: {
-                src: ['src/aerogear.core.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js'],
                 description: 'DataManager Memory adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
