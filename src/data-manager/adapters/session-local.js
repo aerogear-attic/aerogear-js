@@ -105,73 +105,67 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
         @param {Object|Array} data - An object or array of objects representing the data to be saved to the server. When doing an update, one of the key/value pairs in the object to update must be the `recordId` you set during creation of the store representing the unique identifier for a "record" in the data set.
         @param {Object} [options] - The options to be passed to the save method
         @param {Boolean} [options.reset] - If true, this will empty the current data and set it to the data being saved
-        @param {AeroGear~errorCallbackStorage} [options.error] - A callback to be executed when an error is thrown trying to save data to the store. The most likely error is when the localStorage is full. The callback is passed the error object and the data that was attempted to be saved as arguments.
-        @param {AeroGear~success} [options.success] - A callback to be called if the save was successful. This probably isn't necessary since the save is synchronous but is provided for API symmetry.
-        @returns {Object} A jQuery.Deferred promise
+        @returns {Object} A Promise
         @example
-var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
+        var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
 
-// Store a new task
-dm.save({
-    title: "Created Task",
-    date: "2012-07-13",
-    ...
-});
+        dm.open()
+            .then( function() {
 
-// Store an array of new Tasks
-dm.save([
-    {
-        title: "Task2",
-        date: "2012-07-13"
-    },
-    {
-        title: "Task3",
-        date: "2012-07-13"
-        ...
-    }
-]);
+                // save one record
+                dm.save({
+                        title: "Created Task",
+                        date: "2012-07-13",
+                        ...
+                    })
+                    .then( function( newData ) { ... } )
+                    .catch( function( error ) { ... } );
 
-// Update an existing piece of data
-var toUpdate = dm.read()[ 0 ];
-toUpdate.data.title = "Updated Task";
-dm.save( toUpdate );
+                // save multiple records
+                dm.save([
+                        {
+                            title: "Task2",
+                            date: "2012-07-13"
+                        },
+                        {
+                            title: "Task3",
+                            date: "2012-07-13"
+                            ...
+                        }
+                    ])
+                    .then( function( newData ) { ... } )
+                    .catch( function( error ) { ... } );
+
+                // Update an existing piece of data
+                var toUpdate = dm.read()[ 0 ];
+                toUpdate.data.title = "Updated Task";
+                dm.save( toUpdate )
+                    .then( function( newData ) { ... } )
+                    .catch( function( error ) { ... } );
+            });
      */
     save: {
         value: function( data, options ) {
             // Call the super method
-            var newData,
-                deferred = jQuery.Deferred(),
+            var that = this,
                 reset = options && options.reset ? options.reset : false,
                 oldData = window[ this.getStoreType() ].getItem( this.getStoreKey() );
 
-            AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], { reset: reset } ] ).then( function( data ) {
-                newData = data;
-            });
+            return AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], { reset: reset } ] )
+                .then( function( newData ) {
+                    // Sync changes to persistent store
+                    try {
+                        window[ that.getStoreType() ].setItem( that.getStoreKey(), JSON.stringify( that.encrypt( newData ) ) );
+                    } catch( error ) {
+                        oldData = oldData ? JSON.parse( oldData ) : [];
 
-            deferred.always( this.always );
-
-            // Sync changes to persistent store
-            try {
-                window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.encrypt( newData ) ) );
-                if ( options && options.success ) {
-                    options.storageSuccess( newData );
-                }
-            } catch( error ) {
-                oldData = oldData ? JSON.parse( oldData ) : [];
-
-                AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ oldData, { reset: reset } ] ).then( function( data ) {
-                    newData = data;
+                        return AeroGear.DataManager.adapters.Memory.prototype.save.apply( that, [ oldData, { reset: reset } ] )
+                            .then( function() {
+                                return Promise.reject();
+                            });
+                    }
+                    return newData;
                 });
-
-                if ( options && options.error ) {
-                    return deferred.reject( data, "error", options ? options.error : undefined );
-                } else {
-                    deferred.reject();
-                    throw error;
-                }
-            }
-
-            return deferred.resolve( newData, "success", options ? options.success : undefined );
         }, enumerable: true, configurable: true, writable: true
     },
     /**
@@ -179,57 +173,38 @@ dm.save( toUpdate );
         @method
         @memberof AeroGear.DataManager.adapters.SessionLocal
         @param {String|Object|Array} toRemove - A variety of objects can be passed to remove to specify the item or if nothing is provided, all data is removed
-        @param {Object} [options] - The options to be passed to the save method
-        @param {AeroGear~successrCallbackStorage} [options.success] - A callback to be called if the remove was successful. This probably isn't necessary since the remove is synchronous but is provided for API symmetry.
-        @returns {Object} A jQuery.Deferred promise
+        @returns {Object} A Promise
         @example
-var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
+        var dm = AeroGear.DataManager([{ name: "tasks", type: "SessionLocal" }]).stores[ 0 ];
 
-// Store a new task
-dm.save({
-    title: "Created Task"
-});
+        dm.open()
+            .then( function() {
 
-// Store another new task
-dm.save({
-    title: "Another Created Task"
-});
+                // Delete a record
+                dm.remove( 1, )
+                    .then( function( newData ) { ... } )
+                    .catch( function( error ) { ... } );
 
-// Store one more new task
-dm.save({
-    title: "And Another Created Task"
-});
+                // Remove all data
+                dm.remove( undefined )
+                    .then( function( newData ) { ... } )
+                    .catch( function( error ) { ... } );
 
-// Delete a record
-dm.remove( 1, {
-    success: function( data ) { ... },
-    error: function( error ) { ... }
-});
-
-// Remove all data
-dm.remove( undefined, {
-    success: function( data ) { ... },
-    error: function( error ) { ... }
-});
-
-// Delete all remaining data from the store
-dm.remove();
+                // Delete all remaining data from the store
+                dm.remove()
+                    .then( function( newData ) { ... } )
+                    .catch( function( error ) { ... } );
+            });
      */
     remove: {
-        value: function( toRemove, options ) {
-            // Call the super method
-            var newData,
-                deferred = jQuery.Deferred();
+        value: function( toRemove ) {
+            var that = this;
 
-            AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments ).then( function( data ) {
-                newData = data;
-            });
-
-            // Sync changes to persistent store
-            window[ this.getStoreType() ].setItem( this.getStoreKey(), JSON.stringify( this.encrypt( newData ) ) );
-
-            deferred.always( this.always );
-            return deferred.resolve( newData, status, options ? options.success : undefined );
+            return AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments )
+                .then( function( newData ) {
+                    // Sync changes to persistent store
+                    window[ that.getStoreType() ].setItem( that.getStoreKey(), JSON.stringify( that.encrypt( newData ) ) );
+                });
         }, enumerable: true, configurable: true, writable: true
     }
 });

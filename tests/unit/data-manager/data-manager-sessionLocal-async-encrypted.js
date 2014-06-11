@@ -1,12 +1,17 @@
-(function( $ ) {
+(function() {
 
-    // Empty stores before starting tests
-    for ( var sessionItem in window.sessionStorage ) {
-        sessionStorage.removeItem( sessionItem );
+    function emptyStores() {
+        // Empty stores before starting tests
+        for ( var sessionItem in window.sessionStorage ) {
+            sessionStorage.removeItem( sessionItem );
+        }
+        for ( var localItem in window.localStorage ) {
+            localStorage.removeItem( localItem );
+        }
     }
-    for ( var localItem in window.localStorage ) {
-        localStorage.removeItem( localItem );
-    }
+
+    emptyStores();
+
 
     module( "DataManager: SessionLocal" );
 
@@ -49,7 +54,7 @@
         dm.add({
             name: "addTest1",
             type: "SessionLocal"
-        }),
+        });
         dm.add({
             name: "addTest2",
             type: "SessionLocal"
@@ -123,66 +128,75 @@
     });
 
     // Create a default (memory) dataManager to store data for some tests
-    var agcrypto = AeroGear.Crypto(),
-        userStore = AeroGear.DataManager({
-            name: "users",
-            type: "SessionLocal",
-            settings: {
-                async: true,
-                crypto: {
-                    agcrypto: agcrypto,
-                    options: {
-                        key: "password"
-                    }
-                }
-            }
-        }).stores.users,
+    var agcrypto,
+        userStore,
         userStoreReload;
 
     module( "DataManager: Memory - Data Manipulation",{
         setup: function() {
-            userStore.save([
-                {
-                    id: 12345,
-                    fname: "John",
-                    lname: "Smith",
-                    dept: "Accounting"
-                },
-                {
-                    id: 12346,
-                    fname: "Jane",
-                    lname: "Smith",
-                    dept: "IT"
-                },
-                {
-                    id: 12347,
-                    fname: "John",
-                    lname: "Doe",
-                    dept: "Marketing"
-                },
-                {
-                    id: 12348,
-                    fname: "Jane",
-                    lname: "Doe",
-                    dept: "Accounting"
-                },
-                {
-                    id: 12349,
-                    fname: "Any",
-                    lname: "Name",
-                    dept: "IT"
-                },
-                {
-                    id: 12350,
-                    fname: "Another",
-                    lname: "Person",
-                    dept: "Marketing"
+            stop();
+
+            emptyStores();
+
+            agcrypto = AeroGear.Crypto();
+
+            userStore = AeroGear.DataManager({
+                name: "users",
+                type: "SessionLocal",
+                settings: {
+                    async: true,
+                    crypto: {
+                        agcrypto: agcrypto,
+                        options: {
+                            key: "password"
+                        }
+                    }
                 }
-            ], { reset: true } );
+            }).stores.users;
+
+            userStore.save([
+                    {
+                        id: 12345,
+                        fname: "John",
+                        lname: "Smith",
+                        dept: "Accounting"
+                    },
+                    {
+                        id: 12346,
+                        fname: "Jane",
+                        lname: "Smith",
+                        dept: "IT"
+                    },
+                    {
+                        id: 12347,
+                        fname: "John",
+                        lname: "Doe",
+                        dept: "Marketing"
+                    },
+                    {
+                        id: 12348,
+                        fname: "Jane",
+                        lname: "Doe",
+                        dept: "Accounting"
+                    },
+                    {
+                        id: 12349,
+                        fname: "Any",
+                        lname: "Name",
+                        dept: "IT"
+                    },
+                    {
+                        id: 12350,
+                        fname: "Another",
+                        lname: "Person",
+                        dept: "Marketing"
+                    }
+                ], { reset: true } )
+                .then( start );
         }
     });
 
-    test( "load session stored data", function() {
+    asyncTest( "load session stored data", function() {
         userStoreReload = AeroGear.DataManager({
             name: "users",
             type: "SessionLocal",
@@ -197,29 +211,36 @@
             }
         }).stores.users;
 
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Read all data" );
-        });
+        Promise.all([
+                userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Read all data" );
+                }),
 
-        userStoreReload.read().then( function( data ) {
-            equal( data.length, 6, "Previously stored data added to store" );
-        });
+                userStoreReload.read().then( function( data ) {
+                    equal( data.length, 6, "Previously stored data added to store" );
+                })
+            ])
+            .then( start );
     });
 
 
     // Read data
-    test( "read", function() {
+    asyncTest( "read", function() {
         expect( 2 );
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Read all data" );
-        });
-        userStore.read( 12345 ).then( function( data ) {
-            equal( data.length, 1, "Read single item by id" );
-        });
+
+        Promise.all([
+                userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Read all data" );
+                }),
+                userStore.read( 12345 ).then( function( data ) {
+                    equal( data.length, 1, "Read single item by id" );
+                })
+            ])
+            .then( start );
     });
 
     // Save data
-    test( "save single", function() {
+    asyncTest( "save single", function() {
         expect( 2 );
 
         userStore.save({
@@ -227,317 +248,345 @@
             fname: "New",
             lname: "Person",
             dept: "New"
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 7, "Read all data including new item" );
-        });
-
-        userStore.read( 12351 ).then( function( data ) {
-            equal( data.length, 1, "Read new item by id" );
-        });
+        })
+            .then( function() {
+                return Promise.all([
+                    userStore.read().then( function( data ) {
+                        equal( data.length, 7, "Read all data including new item" );
+                    }),
+                    userStore.read( 12351 ).then( function( data ) {
+                        equal( data.length, 1, "Read new item by id" );
+                    })
+                ]);
+            })
+            .then( start );
     });
-    test( "save multiple", function() {
+    asyncTest( "save multiple", function() {
         expect( 2 );
 
         userStore.save([
-            {
-                id: 12352,
-                fname: "New",
-                lname: "Person2",
-                dept: "New"
-            },
-            {
-                id: 12353,
-                fname: "New",
-                lname: "Person3",
-                dept: "New"
-            }
-        ]);
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 8, "Read all data including new item" );
-        });
-
-        userStore.read( 12353 ).then( function( data ) {
-            equal( data.length, 1, "Read new item by id" );
-        });
+                {
+                    id: 12352,
+                    fname: "New",
+                    lname: "Person2",
+                    dept: "New"
+                },
+                {
+                    id: 12353,
+                    fname: "New",
+                    lname: "Person3",
+                    dept: "New"
+                }
+            ])
+            .then( function() {
+                return Promise.all([
+                    userStore.read().then( function( data ) {
+                        equal( data.length, 8, "Read all data including new item" );
+                    }),
+                    userStore.read( 12353 ).then( function( data ) {
+                        equal( data.length, 1, "Read new item by id" );
+                    })
+                ]);
+            })
+            .then( start );
     });
-    test( "update single", function() {
+    asyncTest( "update single", function() {
         expect( 3 );
 
         userStore.save({
-            id: 12351,
-            fname: "New",
-            lname: "Person",
-            dept: "New"
-        });
-        userStore.read( 12351 ).then( function( data ) {
-            equal( data.length, 1, "Read new item by id" );
-        });
-
-        // Now Update
-        userStore.save({
-            id: 12351,
-            fname: "Updated",
-            lname: "Person",
-            dept: "New"
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 7, "Data length unchanged" );
-        });
-
-        userStore.read( 12351 ).then( function( data ) {
-            equal( data[ 0 ].fname, "Updated", "Check item is updated" );
-        });
+                id: 12351,
+                fname: "New",
+                lname: "Person",
+                dept: "New"
+            })
+            .then(function() {
+                return userStore.read( 12351 ).then( function( data ) {
+                    equal( data.length, 1, "Read new item by id" );
+                });
+            })
+            .then(function() {
+                // Now Update
+                return userStore.save({
+                    id: 12351,
+                    fname: "Updated",
+                    lname: "Person",
+                    dept: "New"
+                });
+            })
+            .then(function() {
+                return Promise.all([
+                    userStore.read().then( function( data ) {
+                        equal( data.length, 7, "Data length unchanged" );
+                    }),
+                    userStore.read( 12351 ).then( function( data ) {
+                        equal( data[ 0 ].fname, "Updated", "Check item is updated" );
+                    })
+                ]);
+            })
+            .then( start );
     });
-    test( "update multiple", function() {
+    asyncTest( "update multiple", function() {
         expect( 2 );
 
         // Save New ones first
         userStore.save([
-            {
-                id: 12352,
-                fname: "New",
-                lname: "Person2",
-                dept: "New"
-            },
-            {
-                id: 12353,
-                fname: "New",
-                lname: "Person3",
-                dept: "New"
-            }
-        ]);
+                {
+                    id: 12352,
+                    fname: "New",
+                    lname: "Person2",
+                    dept: "New"
+                },
+                {
+                    id: 12353,
+                    fname: "New",
+                    lname: "Person3",
+                    dept: "New"
+                }
+            ])
+            .then( function() {
+                // Now Update
+                return userStore.save([
+                    {
+                        id: 12352,
+                        fname: "Updated",
+                        lname: "Person2",
+                        dept: "New"
+                    },
+                    {
+                        id: 12353,
+                        fname: "Updated",
+                        lname: "Person3",
+                        dept: "New"
+                    }
+                ]);
+            })
+            .then( function() {
+                userStore.read().then( function( data ) {
+                    equal( data.length, 8, "Data length unchanged" );
+                });
 
-        // Now Update
-        userStore.save([
-            {
-                id: 12352,
-                fname: "Updated",
-                lname: "Person2",
-                dept: "New"
-            },
-            {
-                id: 12353,
-                fname: "Updated",
-                lname: "Person3",
-                dept: "New"
-            }
-        ]);
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 8, "Data length unchanged" );
-        });
-
-        userStore.read( 12353 ).then( function( data ) {
-            equal( data[ 0 ].fname, "Updated", "Check item is updated" );
-        });
+                userStore.read( 12353 ).then( function( data ) {
+                    equal( data[ 0 ].fname, "Updated", "Check item is updated" );
+                });
+            })
+            .then( start );
     });
-    test( "update and add", function() {
+    asyncTest( "update and add", function() {
         expect( 3 );
 
         userStore.save([
-            {
-                id: 12349,
-                fname: "UpdatedAgain",
-                lname: "Person2",
-                dept: "New"
-            },
-            {
-                id: 12354,
-                fname: "New",
-                lname: "Person4",
-                dept: "New"
-            }
-        ]);
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 7, "One new item added" );
-        });
-
-        userStore.read( 12349 ).then( function( data ) {
-            equal( data[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
-        });
-
-        userStore.read( 12354 ).then( function( data ) {
-            equal( data.length, 1, "Read new item by id" );
-        });
+                {
+                    id: 12349,
+                    fname: "UpdatedAgain",
+                    lname: "Person2",
+                    dept: "New"
+                },
+                {
+                    id: 12354,
+                    fname: "New",
+                    lname: "Person4",
+                    dept: "New"
+                }
+            ])
+            .then( function() {
+                return Promise.all([
+                    userStore.read().then( function( data ) {
+                        equal( data.length, 7, "One new item added" );
+                    }),
+                    userStore.read( 12349 ).then( function( data ) {
+                        equal( data[ 0 ].fname, "UpdatedAgain", "Check item is updated" );
+                    }),
+                    userStore.read( 12354 ).then( function( data ) {
+                        equal( data.length, 1, "Read new item by id" );
+                    })
+                ]);
+            })
+            .then( start );
     });
 
     // Remove data
-    test( "remove single", function() {
+    asyncTest( "remove single", function() {
         expect( 2 );
 
-        userStore.remove( 12345 );
-        userStore.read().then( function( data ) {
-            equal( data.length, 5, "Read all data without removed item" );
-        });
-        userStore.read( 12345 ).then( function( data ) {
-            equal( data.length, 0, "Removed item doesn't exist" );
-        });
+        userStore.remove( 12345 )
+            .then( function() {
+                return Promise.all([
+                    userStore.read().then( function( data ) {
+                        equal( data.length, 5, "Read all data without removed item" );
+                    }),
+                    userStore.read( 12345 ).then( function( data ) {
+                        equal( data.length, 0, "Removed item doesn't exist" );
+                    })
+                ]);
+            })
+            .then( start );
+
     });
-    test( "remove multiple - different formats", function() {
+    asyncTest( "remove multiple - different formats", function() {
         expect( 3 );
-        var otherData;
-        userStore.read( 12345 ).then( function( data ) {
-            otherData = data;
-        });
-
-        userStore.remove([
-            12346,
-            otherData[ 0 ]
-        ]);
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 4, "Read all data without removed item" );
-        });
-        userStore.read( 12345 ).then( function( data ) {
-            equal( data.length, 0, "Removed item doesn't exist" );
-        });
-        userStore.read( 12346 ).then( function( data ) {
-            equal( data.length, 0, "Removed item doesn't exist" );
-        });
+        userStore.read( 12345 )
+            .then( function( data ) {
+                return userStore.remove([
+                    12346,
+                    data[ 0 ]
+                ]);
+            })
+            .then( function() {
+                return Promise.all([
+                    userStore.read().then( function( data ) {
+                        equal( data.length, 4, "Read all data without removed item" );
+                    }),
+                    userStore.read( 12345 ).then( function( data ) {
+                        equal( data.length, 0, "Removed item doesn't exist" );
+                    }),
+                    userStore.read( 12346 ).then( function( data ) {
+                        equal( data.length, 0, "Removed item doesn't exist" );
+                    })
+                ]);
+            })
+            .then( start );
     });
 
     // Filter Data
-    test( "filter single field", function() {
+    asyncTest( "filter single field", function() {
         expect( 3 );
 
-        var filtered;
-
         userStore.filter({
-            fname: "John"
-        }).then( function( data ){
-            filtered = data;
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-
-        equal( filtered.length, 2, "2 Items Matched Query" );
-        ok( filtered[ 0 ].fname === "John" && filtered[ 1 ].fname === "John", "Correct items returned" );
+                fname: "John"
+            })
+            .then( function( filtered ){
+                equal( filtered.length, 2, "2 Items Matched Query" );
+                ok( filtered[ 0 ].fname === "John" && filtered[ 1 ].fname === "John", "Correct items returned" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
-    test( "filter multiple fields, single value - AND", function() {
+    asyncTest( "filter multiple fields, single value - AND", function() {
         expect( 3 );
 
-        var filtered;
-
         userStore.filter({
-            fname: "John",
-            dept: "Marketing"
-        }).then( function( data ){
-            filtered = data;
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 1, "1 Item Matched Query" );
-        ok( filtered[ 0 ].fname === "John" && filtered[ 0 ].dept === "Marketing", "Correct item returned" );
+                fname: "John",
+                dept: "Marketing"
+            })
+            .then( function( filtered ){
+                equal( filtered.length, 1, "1 Item Matched Query" );
+                ok( filtered[ 0 ].fname === "John" && filtered[ 0 ].dept === "Marketing", "Correct item returned" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
-    test( "filter multiple fields, single value - OR", function() {
+    asyncTest( "filter multiple fields, single value - OR", function() {
         expect( 3 );
 
-        var filtered;
-
         userStore.filter({
-            fname: "John",
-            dept: "Marketing"
-        }, true ).then( function( data ){
-            filtered = data;
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 3, "3 Items Matched Query" );
-        ok( filtered[ 0 ].fname === "John" && filtered[ 1 ].fname === "John" && filtered[ 1 ].dept === "Marketing" && filtered[ 2 ].dept === "Marketing", "Correct items returned" );
+                fname: "John",
+                dept: "Marketing"
+            }, true )
+            .then( function( filtered ){
+                equal( filtered.length, 3, "3 Items Matched Query" );
+                ok( filtered[ 0 ].fname === "John" && filtered[ 1 ].fname === "John" && filtered[ 1 ].dept === "Marketing" && filtered[ 2 ].dept === "Marketing", "Correct items returned" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
-    test( "filter single field, multiple values - AND (probably never used, consider removing)", function() {
+    asyncTest( "filter single field, multiple values - AND (probably never used, consider removing)", function() {
         expect( 2 );
 
-        var filtered;
-
         userStore.filter({
-            fname: {
-                data: [ "John", "Jane" ]
-            }
-        }).then( function( data ) {
-            filtered = data;
-        });
+                fname: {
+                    data: [ "John", "Jane" ]
+                }
+            })
+            .then( function( filtered ) {
+                equal( filtered.length, 0, "0 Items Matched Query" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
 
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 0, "0 Items Matched Query" );
+
     });
-    test( "filter single field, multiple values - OR", function() {
+    asyncTest( "filter single field, multiple values - OR", function() {
         expect( 3 );
 
-        var filtered;
-
         userStore.filter({
-            fname: {
-                data: [ "John", "Jane" ],
-                matchAny: true
-            }
-        }).then( function( data ) {
-            filtered = data;
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 4, "4 Items Matched Query" );
-        ok( filtered[ 0 ].fname === "John" && filtered[ 1 ].fname === "Jane" && filtered[ 2 ].fname === "John" && filtered[ 3 ].fname === "Jane", "Correct items returned" );
+                fname: {
+                    data: [ "John", "Jane" ],
+                    matchAny: true
+                }
+            })
+            .then( function( filtered ) {
+                equal( filtered.length, 4, "4 Items Matched Query" );
+                ok( filtered[ 0 ].fname === "John" && filtered[ 1 ].fname === "Jane" && filtered[ 2 ].fname === "John" && filtered[ 3 ].fname === "Jane", "Correct items returned" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
-    test( "filter multiple fields - AND, multiple values - OR", function() {
+    asyncTest( "filter multiple fields - AND, multiple values - OR", function() {
         expect( 3 );
 
-        var filtered;
-
         userStore.filter({
-            fname: {
-                data: [ "John", "Jane" ],
-                matchAny: true
-            },
-            dept: "Accounting"
-        }).then( function( data ) {
-            filtered = data;
-        });
-
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 2, "2 Items Matched Query" );
-        ok( filtered[ 0 ].fname === "John" && filtered[ 0 ].dept === "Accounting" && filtered[ 1 ].fname === "Jane" && filtered[ 1 ].dept === "Accounting", "Correct items returned" );
+                fname: {
+                    data: [ "John", "Jane" ],
+                    matchAny: true
+                },
+                dept: "Accounting"
+            })
+            .then( function( filtered ) {
+                equal( filtered.length, 2, "2 Items Matched Query" );
+                ok( filtered[ 0 ].fname === "John" && filtered[ 0 ].dept === "Accounting" && filtered[ 1 ].fname === "Jane" && filtered[ 1 ].dept === "Accounting", "Correct items returned" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
-    test( "filter multiple fields - OR, multiple values - OR", function() {
+    asyncTest( "filter multiple fields - OR, multiple values - OR", function() {
         expect( 3 );
 
-        var filtered;
-
         userStore.filter({
-            fname: {
-                data: [ "John", "Jane" ],
-                matchAny: true
-            },
-            dept: {
-                data: [ "Accounting", "IT" ],
-                matchAny: true
-            }
-        }, true ).then( function( data ) {
-            filtered = data;
-        });
+                fname: {
+                    data: [ "John", "Jane" ],
+                    matchAny: true
+                },
+                dept: {
+                    data: [ "Accounting", "IT" ],
+                    matchAny: true
+                }
+            }, true )
+            .then( function( filtered ) {
+                equal( filtered.length, 5, "5 Items Matched Query" );
+                ok( filtered[ 0 ].id !== 12350 && filtered[ 1 ].id !== 12350 && filtered[ 2 ].id !== 12350 && filtered[ 3 ].id !== 12350 && filtered[ 4 ].id !== 12350, "Correct items returned" );
+            })
+            .then( function() {
+                return userStore.read().then( function( data ) {
+                    equal( data.length, 6, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
 
-        userStore.read().then( function( data ) {
-            equal( data.length, 6, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 5, "5 Items Matched Query" );
-        ok( filtered[ 0 ].id !== 12350 && filtered[ 1 ].id !== 12350 && filtered[ 2 ].id !== 12350 && filtered[ 3 ].id !== 12350 && filtered[ 4 ].id !== 12350, "Correct items returned" );
+
     });
 
     // create a default(memory) dataManager to store data for some tests
@@ -551,342 +600,394 @@
 
     module( "Filter - Advanced", {
         setup: function() {
-            tasksStore.save([
-                {
-                    id: 123,
-                    date: "2012-10-03",
-                    title: "Task 0-1",
-                    description: "Task 0-1 description Text",
-                    project: 99,
-                    tags: [ ]
-                },
-                {
-                    id: 12345,
-                    date: "2012-07-30",
-                    title: "Task 1-1",
-                    description: "Task 1-1 description text",
-                    project: 11,
-                    tags: [ 111 ]
-                },
-                {
-                    id: 67890,
-                    date: "2012-07-30",
-                    title: "Task 2-1",
-                    description: "Task 2-1 description text",
-                    project: 22,
-                    tags: [ 111, 222 ]
-                },
-                {
-                    id: 54321,
-                    date: "2012-07-30",
-                    title: "Task 3-1",
-                    description: "Task 3-1 description text",
-                    project: 33,
-                    tags: [ 222 ]
+            stop();
+
+            emptyStores();
+
+            tasksStore = AeroGear.DataManager({
+                name: "tasks",
+                type: "SessionLocal",
+                settings: {
+                    async: true
                 }
-            ], { reset: true } );
+            }).stores.tasks;
+
+            tasksStore.save([
+                    {
+                        id: 123,
+                        date: "2012-10-03",
+                        title: "Task 0-1",
+                        description: "Task 0-1 description Text",
+                        project: 99,
+                        tags: [ ]
+                    },
+                    {
+                        id: 12345,
+                        date: "2012-07-30",
+                        title: "Task 1-1",
+                        description: "Task 1-1 description text",
+                        project: 11,
+                        tags: [ 111 ]
+                    },
+                    {
+                        id: 67890,
+                        date: "2012-07-30",
+                        title: "Task 2-1",
+                        description: "Task 2-1 description text",
+                        project: 22,
+                        tags: [ 111, 222 ]
+                    },
+                    {
+                        id: 54321,
+                        date: "2012-07-30",
+                        title: "Task 3-1",
+                        description: "Task 3-1 description text",
+                        project: 33,
+                        tags: [ 222 ]
+                    }
+                ], { reset: true } )
+                .then( start );
         }
     });
 
-    test( "filter single field , Array in Data, AND", function() {
+    asyncTest( "filter single field , Array in Data, AND", function() {
         expect( 2 );
 
-        var filtered;
-
-        tasksStore.filter( { tags: 111 } ).then( function( data ) { filtered = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 4, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 1, "1 Item Matched" );
+        tasksStore.filter( { tags: 111 } )
+            .then( function( filtered ) {
+                equal( filtered.length, 1, "1 Item Matched" );
+            })
+            .then( function() {
+                return tasksStore.read().then( function( data ) {
+                    equal( data.length, 4, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
 
-    test( "filter single field , Array in Data, OR", function() {
+    asyncTest( "filter single field , Array in Data, OR", function() {
         expect( 2 );
 
-        var filtered;
-
-        tasksStore.filter( { tags: 111 }, true ).then( function( data ) { filtered = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 4, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 2, "2 Items Matched" );
+        tasksStore.filter( { tags: 111 }, true )
+            .then( function( filtered ) {
+                equal( filtered.length, 2, "2 Items Matched" );
+            })
+            .then( function() {
+                return tasksStore.read().then( function( data ) {
+                    equal( data.length, 4, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
 
-    test( "filter multiple fields , Array in Data, AND ", function() {
+    asyncTest( "filter multiple fields , Array in Data, AND ", function() {
         expect( 2 );
-
-        var filtered;
 
         tasksStore.filter({
-            tags: 111,
-            project: 11
-        }, false ).then( function( data ) { filtered = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 4, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 1, "1 Item Matched" );
+                tags: 111,
+                project: 11
+            }, false )
+            .then( function( filtered ) {
+                equal( filtered.length, 1, "1 Item Matched" );
+            })
+            .then( function() {
+                return tasksStore.read().then( function( data ) {
+                    equal( data.length, 4, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
 
-    test( "filter multiple fields , Array in Data, OR ", function() {
+    asyncTest( "filter multiple fields , Array in Data, OR ", function() {
         expect( 2 );
 
-        var filtered;
-
         tasksStore.filter({
-            tags: 111,
-            project: 11
-        }, true ).then( function( data ) { filtered = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 4, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 2, "2 Item Matched" );
+                tags: 111,
+                project: 11
+            }, true )
+            .then( function( filtered ) {
+                equal( filtered.length, 2, "2 Item Matched" );
+            })
+            .then( function() {
+                return tasksStore.read().then( function( data ) {
+                    equal( data.length, 4, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
 
-    test( "filter single field Multiple Values, Array in Data, AND", function() {
+    asyncTest( "filter single field Multiple Values, Array in Data, AND", function() {
         expect(2);
 
-        var filtered;
-
         tasksStore.filter({
-            tags: {
-                data: [ 111, 222 ],
-                matchAny: false
-            }
-        }).then( function( data ) { filtered = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 4, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 1, "1 Item Matched" );
+                tags: {
+                    data: [ 111, 222 ],
+                    matchAny: false
+                }
+            })
+            .then( function( filtered ) {
+                equal( filtered.length, 1, "1 Item Matched" );
+            })
+            .then( function() {
+                return tasksStore.read().then( function( data ) {
+                    equal( data.length, 4, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
 
-    test( "filter single field Multiple Values, Array in Data, OR", function() {
+    asyncTest( "filter single field Multiple Values, Array in Data, OR", function() {
         expect(2);
 
-        var filtered;
-
         tasksStore.filter({
-            tags: {
-                data: [ 111, 222 ],
-                matchAny: true
-            }
-        }).then( function( data ) { filtered = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 4, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 3, "3 Items Matched" );
+                tags: {
+                    data: [ 111, 222 ],
+                    matchAny: true
+                }
+            })
+            .then( function( filtered ) {
+                equal( filtered.length, 3, "3 Items Matched" );
+            })
+            .then( function() {
+                return tasksStore.read().then( function( data ) {
+                    equal( data.length, 4, "Original Data Unchanged" );
+                });
+            })
+            .then( start );
     });
 
     module( "Filter Data with Nested Objects",{
         setup: function() {
+            stop();
+
+            emptyStores();
+
+            tasksStore = AeroGear.DataManager({
+                name: "tasks",
+                type: "SessionLocal",
+                settings: {
+                    async: true
+                }
+            }).stores.tasks;
+
             tasksStore.save([
-                {
-                    id: 123,
-                    date: "2012-10-03",
-                    title: "Task 0-1",
-                    description: "Task 0-1 description Text",
-                    project: 99,
-                    tags: [ ]
-                },
-                {
-                    id: 12345,
-                    date: "2012-07-30",
-                    title: "Task 1-1",
-                    description: "Task 1-1 description text",
-                    project: 11,
-                    tags: [ 111 ]
-                },
-                {
-                    id: 67890,
-                    date: "2012-07-30",
-                    title: "Task 2-1",
-                    description: "Task 2-1 description text",
-                    project: 22,
-                    tags: [ 111, 222 ]
-                },
-                {
-                    id: 54321,
-                    date: "2012-07-30",
-                    title: "Task 3-1",
-                    description: "Task 3-1 description text",
-                    project: 33,
-                    tags: [ 222 ]
-                },
-                {
-                    id: 999999,
-                    date: "2012-07-30",
-                    title: "Task",
-                    description: "Task description text",
-                    nested: {
-                        anotherNest: {
-                            "crazy.key": {
-                                val: 12345
-                            }
-                        }
-                    }
-                },
-                {
-                    id: 999998,
-                    date: "2012-07-30",
-                    title: "Task",
-                    description: "Task description text",
-                    nested: {
-                        someOtherNest: {
-                            "crazy.key": {
-                                val: 67890
-                            }
-                        }
-                    }
-                },
-                {
-                    id: 999997,
-                    date: "2012-07-30",
-                    title: "Task",
-                    description: "Task description text",
-                    nested: {
-                        someOtherNest: {
-                            "crazy.key": {
-                                val: 67890
+                    {
+                        id: 123,
+                        date: "2012-10-03",
+                        title: "Task 0-1",
+                        description: "Task 0-1 description Text",
+                        project: 99,
+                        tags: [ ]
+                    },
+                    {
+                        id: 12345,
+                        date: "2012-07-30",
+                        title: "Task 1-1",
+                        description: "Task 1-1 description text",
+                        project: 11,
+                        tags: [ 111 ]
+                    },
+                    {
+                        id: 67890,
+                        date: "2012-07-30",
+                        title: "Task 2-1",
+                        description: "Task 2-1 description text",
+                        project: 22,
+                        tags: [ 111, 222 ]
+                    },
+                    {
+                        id: 54321,
+                        date: "2012-07-30",
+                        title: "Task 3-1",
+                        description: "Task 3-1 description text",
+                        project: 33,
+                        tags: [ 222 ]
+                    },
+                    {
+                        id: 999999,
+                        date: "2012-07-30",
+                        title: "Task",
+                        description: "Task description text",
+                        nested: {
+                            anotherNest: {
+                                "crazy.key": {
+                                    val: 12345
+                                }
                             }
                         }
                     },
-                    moreNesting: {
-                        hi: "there"
+                    {
+                        id: 999998,
+                        date: "2012-07-30",
+                        title: "Task",
+                        description: "Task description text",
+                        nested: {
+                            someOtherNest: {
+                                "crazy.key": {
+                                    val: 67890
+                                }
+                            }
+                        }
+                    },
+                    {
+                        id: 999997,
+                        date: "2012-07-30",
+                        title: "Task",
+                        description: "Task description text",
+                        nested: {
+                            someOtherNest: {
+                                "crazy.key": {
+                                    val: 67890
+                                }
+                            }
+                        },
+                        moreNesting: {
+                            hi: "there"
+                        }
+                    }
+                ])
+                .then( start );
+        }
+    });
+
+    asyncTest( "filter data with nested objects", function() {
+        expect(6);
+
+        Promise.all([
+            tasksStore.filter({
+                    nested: { anotherNest: { "crazy.key": { val: 12345 } } }
+                })
+                .then( function( filtered ) {
+                    equal( filtered.length, 1, "Value only" );
+                }),
+
+            tasksStore.filter({
+                    nested: {
+                        data: [ { anotherNest: { "crazy.key": { val: 12345 } } } ]
+                    }
+                })
+                .then( function( filtered ) {
+                    equal( filtered.length, 1, "Value in array" );
+                }),
+
+            tasksStore.filter({
+                    nested: {
+                        data: [ { anotherNest: { "crazy.key": { val: 12345 } } }, { someOtherNest: { "crazy.key": { val: 67890 } } } ],
+                        matchAny: true
+                    }
+                })
+                .then( function( filtered ) {
+                    equal( filtered.length, 3, "Single field - Multiple values" );
+                }),
+
+            tasksStore.filter({
+                    nested: { someOtherNest: { "crazy.key": { val: 67890 } } },
+                    moreNesting: { hi: "there" }
+                })
+                .then( function( filtered ) {
+                    equal( filtered.length, 1, "Multiple fields - Single value - AND" );
+                }),
+
+            tasksStore.filter({
+                    nested: { someOtherNest: { "crazy.key": { val: 67890 } } },
+                    moreNesting: { hi: "there" }
+                }, true)
+                .then( function( filtered ) {
+                    equal( filtered.length, 2, "Multiple fields - Single value - OR" );
+                }),
+
+            tasksStore.read()
+                .then( function( data ) {
+                    equal( data.length, 7, "Original Data Unchanged" );
+                })
+            ])
+            .then( start );
+
+
+
+
+    });
+
+    module( "DataManager: SessionLocal - Size Limits", {
+        setup: function() {
+            emptyStores();
+
+            sizeStores = AeroGear.DataManager([
+                {
+                    name: "size1",
+                    type: "SessionLocal",
+                    settings: {
+                        async: true
+                    }
+                },
+                {
+                    name: "size2",
+                    type: "SessionLocal",
+                    settings: {
+                        storageType: "localStorage",
+                        async: true
                     }
                 }
             ]);
         }
     });
 
-    test( "filter data with nested objects", function() {
-        expect(6);
-
-        var filtered, filtered2, filtered3, filtered4, filtered5;
-
-        tasksStore.filter({
-                nested: { anotherNest: { "crazy.key": { val: 12345 } } }
-        }).then( function( data ) { filtered = data; } );
-
-        tasksStore.filter({
-            nested: {
-                data: [ { anotherNest: { "crazy.key": { val: 12345 } } } ]
-            }
-        }).then( function( data ) { filtered2 = data; } );
-
-        tasksStore.filter({
-            nested: {
-                data: [ { anotherNest: { "crazy.key": { val: 12345 } } }, { someOtherNest: { "crazy.key": { val: 67890 } } } ],
-                matchAny: true
-            }
-        }).then( function( data ) { filtered3 = data; } );
-
-        tasksStore.filter({
-            nested: { someOtherNest: { "crazy.key": { val: 67890 } } },
-            moreNesting: { hi: "there" }
-        }).then( function( data ) { filtered4 = data; } );
-
-        tasksStore.filter({
-            nested: { someOtherNest: { "crazy.key": { val: 67890 } } },
-            moreNesting: { hi: "there" }
-        }, true).then( function( data ) { filtered5 = data; } );
-
-        tasksStore.read().then( function( data ) {
-            equal( data.length, 7, "Original Data Unchanged" );
-        });
-        equal( filtered.length, 1, "Value only" );
-        equal( filtered2.length, 1, "Value in array" );
-        equal( filtered3.length, 3, "Single field - Multiple values" );
-        equal( filtered4.length, 1, "Multiple fields - Single value - AND" );
-        equal( filtered5.length, 2, "Multiple fields - Single value - OR" );
-    });
-
-    module( "DataManager: SessionLocal - Size Limits" );
-
-    // Empty stores before size tests
-    for ( sessionItem in window.sessionStorage ) {
-        sessionStorage.removeItem( sessionItem );
-    }
-    for ( localItem in window.localStorage ) {
-        localStorage.removeItem( localItem );
-    }
-
     // Create a session and a local store for testing data size limits
-    var sizeErrorHandler = function( error, data ) {
+    var sizeErrorHandler = function() {
             ok( true, "Error properly handled" );
         },
-        sizeSuccessHandler = function( data ) {
+        sizeSuccessHandler = function() {
             ok( true, "Data Saved Successfully" );
         },
-        sizeStores = AeroGear.DataManager([
-        {
-            name: "size1",
-            type: "SessionLocal",
-            settings: {
-                async: true
-            }
-        },
-        {
-            name: "size2",
-            type: "SessionLocal",
-            settings: {
-                storageType: "localStorage",
-                async: true
-            }
-        }
-    ]);
+        sizeStores;
 
-    test( "size limit - sessionStorage", function() {
+    asyncTest( "size limit - sessionStorage", function() {
         expect( 2 );
 
         var store = sizeStores.stores.size1,
             data1 = new Array( 1048576 ).join( "x" ),
-            data2 = new Array( 1048576 * 6 ).join( "x" ),
-            max = 12;
+            data2 = new Array( 1048576 * 6 ).join( "x" );
 
-        store.save({
-            id: "test",
-            val: data1
-        }, {
-            success: sizeSuccessHandler,
-            error: sizeErrorHandler
-        });
+        Promise.all([
+                store.save({
+                        id: "test",
+                        val: data1
+                    })
+                    .then( sizeSuccessHandler )
+                    .catch( sizeErrorHandler ),
 
-        store.save({
-            id: "test",
-            val: data2
-        }, {
-            success: sizeSuccessHandler,
-            error: sizeErrorHandler
-        });
+                store.save({
+                        id: "test",
+                        val: data2
+                    })
+                    .then( sizeSuccessHandler )
+                    .catch( sizeErrorHandler )
+            ])
+            .then( start );
     });
 
-    test( "size limit - localStorage", function() {
+    asyncTest( "size limit - localStorage", function() {
         expect( 2 );
 
         var store = sizeStores.stores.size2,
             data1 = new Array( 1048576 ).join( "x" ),
-            data2 = new Array( 1048576 * 6 ).join( "x" ),
-            max = 12;
+            data2 = new Array( 1048576 * 6 ).join( "x" );
 
-        store.save({
-            id: "test",
-            val: data1
-        }, {
-            success: sizeSuccessHandler,
-            error: sizeErrorHandler
-        });
+        Promise.all([
+                store.save({
+                    id: "test",
+                    val: data1
+                })
+                    .then( sizeSuccessHandler )
+                    .catch( sizeErrorHandler ),
 
-        store.save({
-            id: "test",
-            val: data2
-        }, {
-            success: sizeSuccessHandler,
-            error: sizeErrorHandler
-        });
+                store.save({
+                    id: "test",
+                    val: data2
+                })
+                    .then( sizeSuccessHandler )
+                    .catch( sizeErrorHandler )
+            ])
+            .then( start );
     });
-})( jQuery );
+})();
