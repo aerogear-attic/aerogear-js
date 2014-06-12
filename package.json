@@ -2,7 +2,7 @@
   "name": "aerogear",
   "title": "AeroGear JavaScript Library",
   "description": "Provides a lightweight set of utilities for communication, security, storage and more.",
-  "version": "1.6.0-dev",
+  "version": "2.0.0-dev",
   "homepage": "https://github.com/aerogear/aerogear-js",
   "author": {
     "name": "Red Hat, Inc.",
