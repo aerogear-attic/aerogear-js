@@ -14,6 +14,28 @@
 * limitations under the License.
 */
 
+/**
+    The AeroGear.ajax is used to perform Ajax requests.
+    @status Experimental
+    @param {Object} [settings={}] - the settings to configure the request
+    @param {String} [settings.url] - the url to send the request to
+    @param {String} [settings.type="GET"] - the type of the request
+    @param {String} [settings.dataType="json"] - the data type of the recipient's response
+    @param {String} [settings.accept="application/json"] - the media types which are acceptable for the recipient's response
+    @param {String} [settings.contentType="application/json"] - the media type of the entity-body sent to the recipient
+    @param {Object} [settings.params] - contains query parameters to be added in URL in case of GET request or in request body in case of POST and application/x-www-form-urlencoded content type
+    @param {Object} [settings.data] - the data to be sent to the recipient
+    @returns {Object} An ES6 Promise
+    @example
+
+        var es6promise = AeroGear.ajax({
+            type: "GET",
+            params: {
+                param1: "val1"
+            },
+            url: "http://SERVER:PORT/CONTEXT"
+        });
+*/
 AeroGear.ajax = function( settings ) {
     return new Promise( function( resolve, reject ) {
         settings = settings || {};
