@@ -132,18 +132,20 @@ AeroGear.isArray = function( obj ) {
 };
 
 /**
-    Utility function to merge 2 Objects together.
+    Utility function to merge many Objects in one target Object which is the first object in arguments list.
     @private
     @method
-    @param {Object} obj1 - An Object to be merged.
-    @param {Object} obj2 - An Object to be merged.  This Objects Value takes precendence.
 */
-AeroGear.extend = function( obj1, obj2 ) {
-    var name;
-    for( name in obj2 ) {
-        obj1[ name ] = obj2[ name ];
+AeroGear.extend = function() {
+    var name, i, source,
+        target = arguments[ 0 ];
+    for( i=1; i<arguments.length; i++ ) {
+        source = arguments[ i ];
+        for( name in source ) {
+            target[ name ] = source[ name ];
+        }
     }
-    return obj1;
+    return target;
 };
 
 /**
