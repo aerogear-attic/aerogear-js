@@ -202,10 +202,6 @@
             this.settings = {
                 url: "/api"
             };
-            this.resolver = function() {
-                ok( true, "resolved promise" );
-                start();
-            };
         },
         teardown: function () {
             this.server.restore();
@@ -213,34 +209,76 @@
     });
 
     asyncTest( "GET - with success promise", function() {
+        expect(5);
+        
         this.server.respondWith( "GET", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+
+        this.resolver = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "OK", "statusText is OK in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
     asyncTest( "POST - with success promise", function() {
-        this.server.respondWith( "POST", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        expect(5);
+
+        this.server.respondWith( "POST", "/api", [ 201, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "POST";
+
+        this.resolver = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Created", "statusText is Created in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
     asyncTest( "PUT - with success promise", function() {
+        expect(5);
         this.server.respondWith( "PUT", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "PUT";
+
+        this.resolver = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "OK", "statusText is OK in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
     asyncTest( "DELETE - with success promise", function() {
+        expect(5);
         this.server.respondWith( "DELETE", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "DELETE";
+
+        this.resolver = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "OK", "statusText is OK in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( this.resolver );
         this.server.respond();
@@ -302,10 +340,6 @@
             this.settings = {
                 url: "/api"
             };
-            this.rejector = function() {
-                ok( true, "rejected promise" );
-                start();
-            };
         },
         teardown: function () {
             this.server.restore();
@@ -313,68 +347,149 @@
     });
 
     asyncTest( "GET - with error promise", function() {
-        this.server.respondWith( "GET", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        expect(5);
+        this.server.respondWith( "GET", "/api", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Unauthorized", "statusText is Unauthorized in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
     asyncTest( "POST - with error promise", function() {
+        expect(5);
         this.server.respondWith( "POST", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "POST";
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Bad Request", "statusText is Bad Request in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
     asyncTest( "PUT - with error promise", function() {
+        expect(5);
         this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "PUT";
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Bad Request", "statusText is Bad Request in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
     asyncTest( "DELETE - with error promise", function() {
-        this.server.respondWith( "DELETE", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        expect(5);
+        this.server.respondWith( "DELETE", "/api", [ 500, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "DELETE";
+        
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Internal Server Error", "statusText is Internal Server Error in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
     asyncTest( "GET - with error promise - not using catch", function() {
+        expect(5);
+        
         this.server.respondWith( "GET", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Bad Request", "statusText is Bad Request in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
     asyncTest( "POST - with error promise - not using catch", function() {
-        this.server.respondWith( "POST", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        expect(5);
+        this.server.respondWith( "POST", "/api", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "POST";
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Unauthorized", "statusText is Unauthorized in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
     asyncTest( "PUT - with error promise - not using catch", function() {
+        expect(5);
         this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "PUT";
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Bad Request", "statusText is Bad Request in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
     asyncTest( "DELETE - with error promise - not using catch", function() {
-        this.server.respondWith( "DELETE", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        expect(5);
+        this.server.respondWith( "DELETE", "/api", [ 500, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "DELETE";
+
+        this.rejector = function( promiseValue ) {
+            ok( true, "resolved promise" );
+            ok( promiseValue, "promise value exists" );
+            equal( promiseValue.data.key, "value", "data exists in promise value" );
+            equal( promiseValue.statusText, "Internal Server Error", "statusText is Internal Server Error in promise value" );
+            ok( promiseValue.agXHR instanceof XMLHttpRequest, "agXHR exists in promise value and is instance of XMLHttpRequest" );
+            start();
+        };
 
         AeroGear.ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
@@ -410,7 +525,6 @@
     });
 
     asyncTest( "POST - application/json with queryString parameters", function() {
-        // the queryString params should not be considered from aerogear.ajax since the request type is not GET
         this.server.respondWith( "POST", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "POST";
@@ -420,7 +534,6 @@
     });
 
     asyncTest( "PUT - application/json with queryString parameters", function() {
-        // the queryString params should not be considered from aerogear.ajax since the request type is not GET
         this.server.respondWith( "PUT", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
 
         this.settings.type = "PUT";
@@ -430,7 +543,6 @@
     });
 
     asyncTest( "DELETE - application/json with queryString parameters", function() {
-        // the queryString params should not be considered from aerogear.ajax since the request type is not GET
         this.server.respondWith( "DELETE", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({})]);
 
         this.settings.type = "DELETE";
@@ -453,4 +565,93 @@
         this.server.respond();
     });
 
+    module("AeroGear.ajax - Callbacks", {
+        setup: function () {
+            this.server = sinon.fakeServer.create();
+        },
+        teardown: function () {
+            this.server.restore();
+        }
+    });
+
+    asyncTest("AeroGear.ajax - Callbacks - Success", function () {
+        expect(4);
+
+        this.server.respondWith( "POST", "auth/login", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ username: "bob", logged: true })]);
+
+        var values = {
+            username: "bob",
+            password: "123"
+        };
+
+        AeroGear.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            url: 'auth/login',
+            type: 'POST',
+            success: function (data, statusText, agXHR) {
+                equal(statusText, "OK", "OK Code");
+                equal(data.username, "bob", "Login username is bob");
+                equal(data.logged, true, "Login logged is true");
+                ok(agXHR instanceof XMLHttpRequest, "agXHR is XMLHttpRequest instance");
+                start();
+            },
+            data: values
+        });
+
+        this.server.respond();
+    });
+
+    asyncTest("AeroGear.ajax - Callbacks - Failure", function () {
+        expect(3);
+
+        this.server.respondWith( "POST", "auth/login", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ message: "User authentication failed" })]);
+
+        var values = {
+            username: "bob",
+            password: "123"
+        };
+
+        AeroGear.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            url: 'auth/login',
+            type: 'POST',
+            error: function (data, statusText, agXHR) {
+                equal(statusText, "Unauthorized", "Unauthorized Code");
+                equal(data.message, "User authentication failed", "Login Failure Message");
+                ok(agXHR instanceof XMLHttpRequest, "agXHR is XMLHttpRequest instance");
+                start();
+            },
+            data: values
+        });
+
+        this.server.respond();
+    });
+
+    asyncTest("AeroGear.ajax - Callbacks - Complete", function () {
+        expect(2);
+
+        this.server.respondWith( "POST", "auth/login", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ message: "User authentication failed" })]);
+
+        var values = {
+            username: "bob",
+            password: "123"
+        };
+
+        AeroGear.ajax({
+            contentType: "application/json",
+            dataType: "json",
+            url: 'auth/login',
+            type: 'POST',
+            complete: function (statusText, agXHR) {
+                equal(statusText, "complete", "statusText complete");
+                ok(agXHR instanceof XMLHttpRequest, "agXHR is XMLHttpRequest instance");
+                start();
+            },
+            data: values
+        });
+
+        this.server.respond();
+    });
 })( jQuery );
