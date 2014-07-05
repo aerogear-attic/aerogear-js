@@ -64,7 +64,7 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             auth: {
-                src: ['src/aerogear.core.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/aerogear.ajax.js', 'src/authentication/aerogear.auth.js', 'src/authentication/adapters/rest.js'],
                 description: 'Auth full build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
@@ -260,7 +260,7 @@ module.exports = function(grunt) {
             },
             aerogearAjax: {
                 files: 'src/aerogear.ajax.js',
-                tasks: ['qunit:aerogearAjax', 'qunit:unifiedpush']
+                tasks: ['qunit:aerogearAjax', 'qunit:unifiedpush', 'qunit:authentication']
             },
             core: {
                 files: 'src/aerogear.core.js',
