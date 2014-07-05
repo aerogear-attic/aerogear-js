@@ -71,7 +71,6 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
         return settings;
     };
 
-
     /**
         Returns the value of the private settings var
         @private
@@ -120,10 +119,14 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
             processedOptions.url = baseURL;
         }
 
-        if( options.xhrFields ) {
-            processedOptions.xhrFields = options.xhrFields;
+        if( options.headers ) {
+            processedOptions.headers = options.headers;
         }
 
+        if( options.accept ) {
+            processedOptions.accept = options.accept;
+        }
+        
         return processedOptions;
      };
 };
@@ -136,12 +139,13 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     @param {String} [options.baseURL] - defines the base URL to use for an endpoint
     @param {String} [options.contentType] - set the content type for the AJAX request
     @param {String} [options.dataType] - specify the data expected to be returned by the server
-    @param {Object} [options.xhrFields] - specify extra xhr options, like the withCredentials flag
+    @param {Object} [options.headers] - specify HTTP headers to be added to the request
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
-    @returns {Object} The jqXHR created by jQuery.ajax
+    @returns {Object} An ES6 Promise created by AeroGear.ajax
     @example
+    
         var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
             data = { userName: "user", password: "abc123", name: "John" };
 
@@ -173,26 +177,17 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     var that = this,
         name = this.getName(),
         endpoints = this.getEndpoints(),
-        success = function( data, textStatus, jqXHR ) {
+        success = function( data, textStatus, agXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         },
-        error = function( jqXHR, textStatus, errorThrown ) {
-            var args;
-
-            try {
-                jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
-                args = [ jqXHR, textStatus, errorThrown ];
-            } catch( error ) {
-                args = arguments;
-            }
-
+        error = function( errorThrown, textStatus, agXHR ) {
             if ( options.error ) {
-                options.error.apply( this, args );
+                options.error.apply( this, arguments );
             }
         },
-        extraOptions = jQuery.extend( {}, this.processOptions( options ), {
+        extraOptions = AeroGear.extend( {}, this.processOptions( options ), {
             complete: options.complete,
             success: success,
             error: error,
@@ -205,12 +200,7 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
         extraOptions.url += "auth/enroll";
     }
 
-    // Stringify data if we actually want to POST JSON data
-    if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
-        extraOptions.data = JSON.stringify( extraOptions.data );
-    }
-
-    return jQuery.ajax( jQuery.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
+    return AeroGear.ajax( AeroGear.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
 };
 
 /**
@@ -223,8 +213,9 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
-    @returns {Object} The jqXHR created by jQuery.ajax
+    @returns {Object} An ES6 Promise created by AeroGear.ajax
     @example
+
         var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
             data = { userName: "user", password: "abc123" };
 
@@ -256,26 +247,17 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     var that = this,
         name = this.getName(),
         endpoints = this.getEndpoints(),
-        success = function( data, textStatus, jqXHR ) {
+        success = function( data, textStatus, agXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         },
-        error = function( jqXHR, textStatus, errorThrown ) {
-            var args;
-
-            try {
-                jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
-                args = [ jqXHR, textStatus, errorThrown ];
-            } catch( error ) {
-                args = arguments;
-            }
-
+        error = function( errorThrown, textStatus, agXHR ) {
             if ( options.error ) {
-                options.error.apply( this, args );
+                options.error.apply( this, arguments );
             }
         },
-        extraOptions = jQuery.extend( {}, this.processOptions( options ), {
+        extraOptions = AeroGear.extend( {}, this.processOptions( options ), {
             complete: options.complete,
             success: success,
             error: error,
@@ -288,12 +270,7 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
         extraOptions.url += "auth/login";
     }
 
-    // Stringify data if we actually want to POST/PUT JSON data
-    if ( extraOptions.contentType === "application/json" && extraOptions.data && typeof extraOptions.data !== "string" ) {
-        extraOptions.data = JSON.stringify( extraOptions.data );
-    }
-
-    return jQuery.ajax( jQuery.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
+    return AeroGear.ajax( AeroGear.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
 };
 
 /**
@@ -303,8 +280,9 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     @param {AeroGear~completeCallbackREST} [options.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
-    @returns {Object} The jqXHR created by jQuery.ajax
+    @returns {Object} An ES6 Promise created by AeroGear.ajax
     @example
+
         var auth = AeroGear.Auth( "userAuth" ).modules.userAuth;
 
         // Enroll a new user
@@ -335,26 +313,17 @@ AeroGear.Auth.adapters.Rest.prototype.logout = function( options ) {
     var that = this,
         name = this.getName(),
         endpoints = this.getEndpoints(),
-        success = function( data, textStatus, jqXHR ) {
+        success = function( data, textStatus, agXHR ) {
             if ( options.success ) {
                 options.success.apply( this, arguments );
             }
         },
-        error = function( jqXHR, textStatus, errorThrown ) {
-            var args;
-
-            try {
-                jqXHR.responseJSON = JSON.parse( jqXHR.responseText );
-                args = [ jqXHR, textStatus, errorThrown ];
-            } catch( error ) {
-                args = arguments;
-            }
-
+        error = function( errorThrown, textStatus, agXHR ) {
             if ( options.error ) {
-                options.error.apply( this, args );
+                options.error.apply( this, arguments );
             }
         },
-        extraOptions = jQuery.extend( {}, this.processOptions( options ), {
+        extraOptions = AeroGear.extend( {}, this.processOptions( options ), {
             complete: options.complete,
             success: success,
             error: error
@@ -366,5 +335,5 @@ AeroGear.Auth.adapters.Rest.prototype.logout = function( options ) {
         extraOptions.url += "auth/logout";
     }
 
-    return jQuery.ajax( jQuery.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
+    return AeroGear.ajax( AeroGear.extend( {}, this.getSettings(), { type: "POST" }, extraOptions ) );
 };
