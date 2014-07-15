@@ -396,7 +396,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
                     return function() {
                         jQuery( navigator.push ).trigger( jQuery.Event( channel.channelID + "-success", {
                             target: {
-                                result: channel
+                                result: channel.pushEndpoint
                             }
                         }));
                     };
