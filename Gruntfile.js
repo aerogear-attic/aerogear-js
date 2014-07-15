@@ -89,12 +89,12 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             unifiedPush: {
-                src: ['src/aerogear.core.js', 'src/external/es6-promise/promise-0.1.1.js', 'external/base64/base64.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'external/base64/base64.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
                 description: 'UnifiedPush Client build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             push: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'src/external/es6-promise/promise-0.1.1.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simplepush/aerogear.simplepush.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'external/es6-promise/promise-0.1.1.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/simplePush.js', 'src/simplepush/aerogear.simplepush.js', 'src/aerogear.ajax.js', 'src/unifiedpush/aerogear.unifiedpush.js'],
                 description: 'Build of both SimplePush and UnifiedPush Clients',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
