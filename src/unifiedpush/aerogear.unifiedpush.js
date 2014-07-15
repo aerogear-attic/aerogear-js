@@ -32,10 +32,9 @@
 
         // assemble the metadata for the registration:
         var metadata = {
-            deviceToken: "theDeviceToken",
+            deviceToken: "http://server.com/simplePushEndpoint",
             alias: "some_username",
-            categories: [ "email" ],
-            simplePushEndpoint: "http://server.com/simplePushEndpoint"
+            categories: [ "email" ]
         };
 
         var settings = {
@@ -118,7 +117,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
-                url: pushServerURL + "/rest/registry/device/" + deviceToken,
+                url: pushServerURL + "/rest/registry/device/" + encodeURIComponent(encodeURIComponent(deviceToken)),
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
