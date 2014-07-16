@@ -24,28 +24,28 @@
     @param {Object} [settings.endpoints={}] - a set of REST endpoints that correspond to the different public methods including enroll, login and logout
     @returns {Object} The created auth module
     @example
-// Create an empty Authenticator
-var auth = AeroGear.Auth();
+        // Create an empty Authenticator
+        var auth = AeroGear.Auth();
 
-// Add a custom REST module to it
-auth.add( {
-    name: "module1",
-    settings: {
-        baseURL: "http://customURL.com"
-    }
-});
+        // Add a custom REST module to it
+        auth.add( {
+            name: "module1",
+            settings: {
+                baseURL: "http://customURL.com"
+            }
+        });
 
-// Add a custom REST module to it with custom security endpoints
-auth.add( {
-    name: "module2",
-    settings: {
-        endpoints: {
-            enroll: "register",
-            login: "go",
-            logout: "leave"
-        }
-    }
-});
+        // Add a custom REST module to it with custom security endpoints
+        auth.add( {
+            name: "module2",
+            settings: {
+                endpoints: {
+                    enroll: "register",
+                    login: "go",
+                    logout: "leave"
+                }
+            }
+        });
  */
 AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     // Allow instantiation without using new
@@ -142,30 +142,30 @@ AeroGear.Auth.adapters.Rest = function( moduleName, settings ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
-    data = { userName: "user", password: "abc123", name: "John" };
+        var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
+            data = { userName: "user", password: "abc123", name: "John" };
 
-// Enroll a new user
-auth.enroll( data );
+        // Enroll a new user
+        auth.enroll( data );
 
-// Add a custom REST module to it with custom security endpoints
-var custom = AeroGear.Auth({
-    name: "customModule",
-    settings: {
-        endpoints: {
-            enroll: "register",
-            login: "go",
-            logout: "leave"
-        }
-    }
-}).modules.customModule,
-data = { userName: "user", password: "abc123", name: "John" };
+        // Add a custom REST module to it with custom security endpoints
+        var custom = AeroGear.Auth({
+            name: "customModule",
+            settings: {
+                endpoints: {
+                    enroll: "register",
+                    login: "go",
+                    logout: "leave"
+                }
+            }
+        }).modules.customModule,
+        data = { userName: "user", password: "abc123", name: "John" };
 
-custom.enroll( data, {
-    baseURL: "http://customurl/",
-    success: function( data ) { ... },
-    error: function( error ) { ... }
-});
+        custom.enroll( data, {
+            baseURL: "http://customurl/",
+            success: function( data ) { ... },
+            error: function( error ) { ... }
+        });
  */
 AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     options = options || {};
@@ -225,30 +225,30 @@ AeroGear.Auth.adapters.Rest.prototype.enroll = function( data, options ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
-    data = { userName: "user", password: "abc123" };
+        var auth = AeroGear.Auth( "userAuth" ).modules.userAuth,
+            data = { userName: "user", password: "abc123" };
 
-// Enroll a new user
-auth.login( data );
+        // Enroll a new user
+        auth.login( data );
 
-// Add a custom REST module to it with custom security endpoints
-var custom = AeroGear.Auth({
-    name: "customModule",
-    settings: {
-        endpoints: {
-            enroll: "register",
-            login: "go",
-            logout: "leave"
-        }
-    }
-}).modules.customModule,
-data = { userName: "user", password: "abc123", name: "John" };
+        // Add a custom REST module to it with custom security endpoints
+        var custom = AeroGear.Auth({
+            name: "customModule",
+            settings: {
+                endpoints: {
+                    enroll: "register",
+                    login: "go",
+                    logout: "leave"
+                }
+            }
+        }).modules.customModule,
+        data = { userName: "user", password: "abc123", name: "John" };
 
-custom.login( data, {
-    baseURL: "http://customurl/",
-    success: function( data ) { ... },
-    error: function( error ) { ... }
-});
+        custom.login( data, {
+            baseURL: "http://customurl/",
+            success: function( data ) { ... },
+            error: function( error ) { ... }
+        });
  */
 AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     options = options || {};
@@ -305,29 +305,29 @@ AeroGear.Auth.adapters.Rest.prototype.login = function( data, options ) {
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
-var auth = AeroGear.Auth( "userAuth" ).modules.userAuth;
+        var auth = AeroGear.Auth( "userAuth" ).modules.userAuth;
 
-// Enroll a new user
-auth.logout();
+        // Enroll a new user
+        auth.logout();
 
-    // Add a custom REST module to it with custom security endpoints
-var custom = AeroGear.Auth({
-    name: "customModule",
-    settings: {
-        endpoints: {
-            enroll: "register",
-            login: "go",
-            logout: "leave"
-        }
-    }
-}).modules.customModule,
-data = { userName: "user", password: "abc123", name: "John" };
+        // Add a custom REST module to it with custom security endpoints
+        var custom = AeroGear.Auth({
+            name: "customModule",
+            settings: {
+                endpoints: {
+                    enroll: "register",
+                    login: "go",
+                    logout: "leave"
+                }
+            }
+        }).modules.customModule,
+        data = { userName: "user", password: "abc123", name: "John" };
 
-custom.logout({
-    baseURL: "http://customurl/",
-    success: function( data ) { ... },
-    error: function( error ) { ... }
-});
+        custom.logout({
+            baseURL: "http://customurl/",
+            success: function( data ) { ... },
+            error: function( error ) { ... }
+        });
  */
 AeroGear.Auth.adapters.Rest.prototype.logout = function( options ) {
     options = options || {};
