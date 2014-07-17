@@ -3,6 +3,13 @@ var _ = require('lodash');
 module.exports = function(grunt) {
     'use strict';
 
+    this.shellCallback = function(err, stdout, stderr, cb) {
+        if(err && err.message !== "Command failed: ") {
+            grunt.warn(err);
+        }
+        cb();
+    };
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -172,10 +179,7 @@ module.exports = function(grunt) {
                     'cd aerogear-js-integration',
                     'cp ../dist/aerogear.js .',
                     'cp -rf ../node_modules node_modules'
-                ].join('&&'),
-                options: {
-                    stdout: true
-                }
+                ].join('&&')
             },
             integrationVertxRunner: {
                 command: [
@@ -184,7 +188,7 @@ module.exports = function(grunt) {
                     './servers/vertxbustest/server.sh stop'
                 ].join('&&'),
                 options: {
-                    stdout: true,
+                    callback: this.shellCallback,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }
@@ -197,7 +201,7 @@ module.exports = function(grunt) {
                     './servers/activemqtest/server.sh stop'
                 ].join(' && '),
                 options: {
-                    stdout: true,
+                    callback: this.shellCallback,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }
@@ -210,7 +214,7 @@ module.exports = function(grunt) {
                     './servers/simplepush/server.sh stop'
                 ].join(' && '),
                 options: {
-                    stdout: true,
+                    callback: this.shellCallback,
                     execOptions: {
                         cwd: 'aerogear-js-integration'
                     }

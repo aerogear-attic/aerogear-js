@@ -8,7 +8,6 @@
     "noempty": true,
     "undef": true,
     "trailing": true,
-    "es5": true,
     "globals": {
         "jQuery": true,
         "AeroGear": true,
