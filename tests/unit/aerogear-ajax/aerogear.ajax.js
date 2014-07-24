@@ -93,7 +93,7 @@
         equal( request.requestHeaders.COOL_HEADER, "COOL_HEADER_VALUE", "COOL_HEADER_VALUE should be in he HEADER" );
         equal( ret instanceof Promise, true, "AeroGear.ajax should return a promise" );
     });
-    
+
     test( "POST - application/x-www-form-urlencoded with query params and data", function() {
         expect(5);
         var settings = {};
@@ -113,7 +113,7 @@
         var ret = AeroGear.ajax( settings ),
             request = this.requests[0],
             requestBodyParamPairs = request.requestBody.split('&');
-        
+
         equal( requestBodyParamPairs.length, 3, '3 parameters should have been sent' );
         ok( requestBodyParamPairs.indexOf( 'param1=val1' ) !== -1, 'param1 should have been sent' );
         ok( requestBodyParamPairs.indexOf( 'param%202=val%202' ) !== -1, 'param2 should have been sent' );
@@ -156,6 +156,10 @@
                     start();
                 }
             };
+            this.serverResponse = function( request ) {
+                request.response = { key: "value" };
+                request.respond();
+            };
         },
         teardown: function () {
             this.server.restore();
@@ -163,7 +167,7 @@
     });
 
     asyncTest( "GET - with success callback", function() {
-        this.server.respondWith( "GET", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "GET", "/api", this.serverResponse);
 
         AeroGear.ajax( this.settings );
         this.server.respond();
@@ -202,6 +206,15 @@
             this.settings = {
                 url: "/api"
             };
+
+            this.serverResponse = function( request ) {
+                request.response = { key: "value" };
+                if( request.method === "POST" ) {
+                    request.respond(201);
+                } else {
+                    request.respond();
+                }
+            };
         },
         teardown: function () {
             this.server.restore();
@@ -210,8 +223,8 @@
 
     asyncTest( "GET - with success promise", function() {
         expect(5);
-        
-        this.server.respondWith( "GET", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+
+        this.server.respondWith( "GET", "/api", this.serverResponse);
 
         this.resolver = function( promiseValue ) {
             ok( true, "resolved promise" );
@@ -229,7 +242,7 @@
     asyncTest( "POST - with success promise", function() {
         expect(5);
 
-        this.server.respondWith( "POST", "/api", [ 201, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "POST", "/api", this.serverResponse);
 
         this.settings.type = "POST";
 
@@ -248,7 +261,7 @@
 
     asyncTest( "PUT - with success promise", function() {
         expect(5);
-        this.server.respondWith( "PUT", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "PUT", "/api", this.serverResponse);
 
         this.settings.type = "PUT";
 
@@ -267,7 +280,7 @@
 
     asyncTest( "DELETE - with success promise", function() {
         expect(5);
-        this.server.respondWith( "DELETE", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "DELETE", "/api", this.serverResponse);
 
         this.settings.type = "DELETE";
 
@@ -301,14 +314,14 @@
     });
 
     asyncTest( "GET - with error callback", function() {
-        this.server.respondWith( "GET", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "GET", "/api", [ 400, { "Content-Type": "text" }, "ERROR"]);
 
         AeroGear.ajax( this.settings );
         this.server.respond();
     });
 
     asyncTest( "POST - with error callback", function() {
-        this.server.respondWith( "POST", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "POST", "/api", [ 400, { "Content-Type": "text" }, "ERROR"]);
 
         this.settings.type = "POST";
 
@@ -317,7 +330,7 @@
     });
 
     asyncTest( "PUT - with error callback", function() {
-        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "text" }, "ERROR"]);
 
         this.settings.type = "PUT";
 
@@ -326,7 +339,7 @@
     });
 
     asyncTest( "DELETE - with error callback", function() {
-        this.server.respondWith( "DELETE", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "DELETE", "/api", [ 400, { "Content-Type": "text" }, "ERROR"]);
 
         this.settings.type = "DELETE";
 
@@ -340,6 +353,20 @@
             this.settings = {
                 url: "/api"
             };
+            this.serverResponse401 = function( request ) {
+                request.response = { key: "value" };
+                request.respond(401);
+            };
+
+            this.serverResponse400 = function( request ) {
+                request.response = { key: "value" };
+                request.respond(400);
+            };
+
+            this.serverResponse500 = function( request ) {
+                request.response = { key: "value" };
+                request.respond(500);
+            };
         },
         teardown: function () {
             this.server.restore();
@@ -348,7 +375,7 @@
 
     asyncTest( "GET - with error promise", function() {
         expect(5);
-        this.server.respondWith( "GET", "/api", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "GET", "/api", this.serverResponse401);
 
         this.rejector = function( promiseValue ) {
             ok( true, "resolved promise" );
@@ -365,7 +392,7 @@
 
     asyncTest( "POST - with error promise", function() {
         expect(5);
-        this.server.respondWith( "POST", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "POST", "/api", this.serverResponse400);
 
         this.settings.type = "POST";
 
@@ -384,7 +411,7 @@
 
     asyncTest( "PUT - with error promise", function() {
         expect(5);
-        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "PUT", "/api", this.serverResponse400);
 
         this.settings.type = "PUT";
 
@@ -403,10 +430,10 @@
 
     asyncTest( "DELETE - with error promise", function() {
         expect(5);
-        this.server.respondWith( "DELETE", "/api", [ 500, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "DELETE", "/api", this.serverResponse500 );
 
         this.settings.type = "DELETE";
-        
+
         this.rejector = function( promiseValue ) {
             ok( true, "resolved promise" );
             ok( promiseValue, "promise value exists" );
@@ -422,8 +449,8 @@
 
     asyncTest( "GET - with error promise - not using catch", function() {
         expect(5);
-        
-        this.server.respondWith( "GET", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+
+        this.server.respondWith( "GET", "/api", this.serverResponse400);
 
         this.rejector = function( promiseValue ) {
             ok( true, "resolved promise" );
@@ -440,7 +467,7 @@
 
     asyncTest( "POST - with error promise - not using catch", function() {
         expect(5);
-        this.server.respondWith( "POST", "/api", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "POST", "/api", this.serverResponse401 );
 
         this.settings.type = "POST";
 
@@ -459,7 +486,7 @@
 
     asyncTest( "PUT - with error promise - not using catch", function() {
         expect(5);
-        this.server.respondWith( "PUT", "/api", [ 400, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "PUT", "/api", this.serverResponse400);
 
         this.settings.type = "PUT";
 
@@ -478,7 +505,7 @@
 
     asyncTest( "DELETE - with error promise - not using catch", function() {
         expect(5);
-        this.server.respondWith( "DELETE", "/api", [ 500, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "DELETE", "/api", this.serverResponse500 );
 
         this.settings.type = "DELETE";
 
@@ -511,6 +538,10 @@
                     start();
                 }
             };
+            this.serverResponse = function( request ) {
+                request.response = { key: "value" };
+                request.respond();
+            };
         },
         teardown: function () {
             this.server.restore();
@@ -518,14 +549,14 @@
     });
 
     asyncTest( "GET - application/json with queryString parameters", function() {
-        this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", this.serverResponse);
 
         AeroGear.ajax( this.settings );
         this.server.respond();
     });
 
     asyncTest( "POST - application/json with queryString parameters", function() {
-        this.server.respondWith( "POST", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "POST", "/api", this.serverResponse);
 
         this.settings.type = "POST";
 
@@ -534,7 +565,7 @@
     });
 
     asyncTest( "PUT - application/json with queryString parameters", function() {
-        this.server.respondWith( "PUT", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "PUT", "/api", this.serverResponse);
 
         this.settings.type = "PUT";
 
@@ -543,7 +574,7 @@
     });
 
     asyncTest( "DELETE - application/json with queryString parameters", function() {
-        this.server.respondWith( "DELETE", "/api", [ 200, { "Content-Type": "application/json" }, JSON.stringify({})]);
+        this.server.respondWith( "DELETE", "/api", this.serverResponse);
 
         this.settings.type = "DELETE";
 
@@ -552,14 +583,14 @@
     });
 
     asyncTest( "GET - text/plain with queryString parameters", function() {
-        this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", [ 200, { "Content-Type": "text/plain" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", this.serverResponse);
 
         AeroGear.ajax( this.settings );
         this.server.respond();
     });
 
     asyncTest( "GET - application/x-www-form-urlencoded with queryString parameters", function() {
-        this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", [ 200, { "Content-Type": "application/x-www-form-urlencoded" }, JSON.stringify({ key: "value" })]);
+        this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", this.serverResponse);
 
         AeroGear.ajax( this.settings );
         this.server.respond();
@@ -576,8 +607,15 @@
 
     asyncTest("AeroGear.ajax - Callbacks - Success", function () {
         expect(4);
+        this.server.respondWith( "POST", "auth/login", function( request ) {
+            request.status = 200;
+            request.response = {
+                username: "bob",
+                logged: true
+            };
 
-        this.server.respondWith( "POST", "auth/login", [ 200, { "Content-Type": "application/json" }, JSON.stringify({ username: "bob", logged: true })]);
+            request.respond();
+        });
 
         var values = {
             username: "bob",
@@ -605,7 +643,11 @@
     asyncTest("AeroGear.ajax - Callbacks - Failure", function () {
         expect(3);
 
-        this.server.respondWith( "POST", "auth/login", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ message: "User authentication failed" })]);
+        this.server.respondWith( "POST", "auth/login", function( request ) {
+            request.response = { message: "User authentication failed" };
+
+            request.respond(401);
+        });
 
         var values = {
             username: "bob",
@@ -632,7 +674,11 @@
     asyncTest("AeroGear.ajax - Callbacks - Complete", function () {
         expect(2);
 
-        this.server.respondWith( "POST", "auth/login", [ 401, { "Content-Type": "application/json" }, JSON.stringify({ message: "User authentication failed" })]);
+        this.server.respondWith( "POST", "auth/login", function( request ) {
+            request.response = { message: "User authentication failed" };
+
+            request.respond(401);
+        });
 
         var values = {
             username: "bob",
