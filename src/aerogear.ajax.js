@@ -120,22 +120,15 @@ AeroGear.ajax = function( settings ) {
             reject( that._createPromiseValue.apply( this, callbackArgs ) );
             that._oncomplete( request, status, callbackArgs );
         };
-        
+
         // create callback arguments
         this._createCallbackArgs = function( request, status ) {
             var statusText = request.statusText || status,
-                dataOrError = request.responseText;
+                dataOrError = ( responseType === 'text' || responseType === '') ? request.responseText : request.response;
 
-            if ( responseType === 'json' ) {
-                try {
-                    dataOrError = JSON.parse( dataOrError );
-                } catch ( error ) {
-                    dataOrError = request.responseText;
-                }
-            }
             return [ dataOrError, statusText, request ];
         };
-        
+
         // create promise value
         this._createPromiseValue = function( dataOrError, statusText, request ) {
             return {
