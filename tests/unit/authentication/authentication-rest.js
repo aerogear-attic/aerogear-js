@@ -38,6 +38,22 @@ test("Authentication init", function () {
 module("authentication - agXHR requests", {
     setup: function () {
         this.server = sinon.fakeServer.create();
+
+        Object.defineProperty(this.server.xhr.prototype, "response", {
+            get: function() {
+                switch ( this.responseType ) {
+                    case "json":
+                        return JSON.parse( this.responseText );
+                    case "arraybuffer":
+                        //TODO
+                        return undefined;
+                    case "blob":
+                        //TODO
+                        return undefined;
+                }
+            },
+            configurable: true
+        });
     },
     teardown: function () {
         this.server.restore();
