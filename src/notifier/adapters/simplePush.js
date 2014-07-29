@@ -135,12 +135,13 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
         @augments AeroGear.Notifier.adapters.SimplePush
      */
     this.processMessage = function( message ) {
-        var channel, updates;
+        var channel, updates, storage;
         if ( message.messageType === "register" && message.status === 200 ) {
             channel = {
                 channelID: message.channelID,
                 version: message.version,
-                state: "used"
+                state: "used",
+                pushEndpoint: message.pushEndpoint
             };
             pushStore.channels = this.updateChannel( pushStore.channels, channel );
             this.setPushStore( pushStore );
@@ -163,10 +164,16 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
             throw "SimplePushUnregistrationError";
         } else if ( message.messageType === "notification" ) {
             updates = message.updates;
+            storage = JSON.parse( localStorage.getItem( "ag-push-store" ) );
 
             // Notifications could come in a batch so process all
             for ( var i = 0, updateLength = updates.length; i < updateLength; i++ ) {
+                // Find the pushEndpoint for this updates channelID
+                var chnl = storage.channels.filter( function( chanl ) {
+                    return chanl.channelID === updates[ i ].channelID;
+                });
 
+                updates[ i ].pushEndpoint = chnl ? chnl[ 0 ].pushEndpoint : "";
                 // Trigger the push event which apps will create their listeners to respond to when receiving messages
                 jQuery( navigator.push ).trigger( jQuery.Event( "push", {
                     message: updates[ i ]
@@ -228,6 +235,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
             if ( channels[ i ].channelID === channel.channelID ) {
                 channels[ i ].version = channel.version;
                 channels[ i ].state = channel.state;
+                channels[ i ].pushEndpoint = channel.pushEndpoint;
                 break;
             }
         }
@@ -391,6 +399,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
                 this.bindSubscribeSuccess( pushStore.channels[ index ].channelID, channels[ i ].requestObject );
                 channels[ i ].channelID = pushStore.channels[ index ].channelID;
                 channels[ i ].state = "used";
+                channels[ i ].pushEndpoint = pushStore.channels[ index ].pushEndpoint;
 
                 // Trigger the registration event since there will be no register message
                 setTimeout((function(channel) {
@@ -439,10 +448,13 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
     SPNotifier.unsubscribe( channelObject );
  */
 AeroGear.Notifier.adapters.SimplePush.prototype.unsubscribe = function( channels ) {
-    var client = this.getClient();
+    var chan,
+        client = this.getClient(),
+        storage = JSON.parse( localStorage.getItem( "ag-push-store" ) );
 
     channels = Array.isArray( channels ) ? channels : [ channels ];
     for ( var i = 0; i < channels.length; i++ ) {
-        client.send( '{"messageType": "unregister", "channelID": "' + channels[ i ].channelID + '"}');
+        chan = storage.channels.filter( function( item ){ return item.pushEndpoint === channels[ i ]; });
+        client.send( '{"messageType": "unregister", "channelID": "' + chan[ 0 ].channelID + '"}');
     }
 };
