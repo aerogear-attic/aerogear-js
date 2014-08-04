@@ -131,9 +131,9 @@
                     })();
 
                     /**
-                        Add the setMessageHandler/setMozMessageHandler function to the global navigator object
+                        Add the setMessageHandler/mozSetMessageHandler function to the global navigator object
                         @status Experimental
-                        @constructs navigator.setMessageHandler/navigator.setMozMessageHandler
+                        @constructs navigator.setMessageHandler/navigator.mozSetMessageHandler
                         @param {String} messageType - a name or category to give the messages being received and in this implementation, likely 'push'
                         @param {Function} callback - the function to be called when a message of this type is received
                         @example
@@ -144,14 +144,14 @@
                         });
 
                         or
-                        // Mozilla's spec currently has the 'Moz' prefix
-                        navigator.setMozMessageHandler( "push", function( message ) {
+                        // Mozilla's spec currently has the 'moz' prefix
+                        navigator.mozSetMessageHandler( "push", function( message ) {
                             if ( message.channelID === mailEndpoint.channelID ) {
                                 console.log("Mail Message Received");
                             }
                         });
                      */
-                    navigator.setMessageHandler = navigator.setMozMessageHandler = function( messageType, callback ) {
+                    navigator.setMessageHandler = navigator.mozSetMessageHandler = function( messageType, callback ) {
                         $( navigator.push ).on( messageType, function( event ) {
                             var message = event.message;
                             callback.call( this, message );
