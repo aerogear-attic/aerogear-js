@@ -43,6 +43,9 @@
         // Check for native push support
         if ( !!navigator.push && this.options.useNative ) {
             // Browser supports push so let it handle it
+            if ( options.onConnect ) {
+                options.onConnect();
+            }
             return;
         }
 
