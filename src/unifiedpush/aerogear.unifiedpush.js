@@ -61,6 +61,7 @@
             return new AeroGear.UnifiedPushClient( variantID, variantSecret, pushServerURL );
         }
 
+        pushServerURL = pushServerURL.substr(-1) === '/' ? pushServerURL : pushServerURL + '/';
         /**
             Performs a register request against the UnifiedPush Server using the given metadata which represents a client that wants to register with the server.
             @param {Object} settings The settings to pass in
@@ -92,7 +93,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
-                url: pushServerURL + "/rest/registry/device",
+                url: pushServerURL + "rest/registry/device",
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
@@ -118,7 +119,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
-                url: pushServerURL + "/rest/registry/device/" + deviceToken,
+                url: pushServerURL + "rest/registry/device/" + deviceToken,
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },

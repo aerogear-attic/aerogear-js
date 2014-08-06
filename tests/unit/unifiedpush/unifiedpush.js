@@ -93,6 +93,29 @@
 
     });
 
+    test( "call register with proper settings with a trailing slash", function() {
+        expect(4);
+
+        var client, settings, ret;
+
+        settings = {};
+
+        settings.metadata = {
+            deviceToken: "12345"
+        };
+
+        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver/" );
+
+        ret = client.registerWithPushServer( settings );
+        var request = this.requests[0];
+
+        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
+        equal( request.url, "/api/pushserver" + "/rest/registry/device", "request.url should be the concatenation of push server url and device registry url" );
+        equal( request.method, "POST", "request.method should a POST request" );
+        equal( JSON.parse( request.requestBody ).deviceToken, "12345", "request body should have a request token param" );
+
+    });
+
     test( "call unregister", function() {
         expect(3);
 
