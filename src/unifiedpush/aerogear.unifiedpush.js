@@ -117,7 +117,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
-                url: pushServerURL + "/rest/registry/device/" + encodeURIComponent(encodeURIComponent(deviceToken)),
+                url: pushServerURL + "/rest/registry/device/" + deviceToken,
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
