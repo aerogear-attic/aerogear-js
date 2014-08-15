@@ -45,7 +45,7 @@
         name: "client1",
         settings: {
             autoConnect: true,
-            connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+            connectURL: window.location.protocol + '//' + window.location.host + "/eventbus",
             onConnect: function() {
                 console.log( "connected" );
             },
@@ -90,7 +90,7 @@ AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
     notifier.add({
         name: "client1",
         settings: {
-            connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+            connectURL: window.location.protocol + '//' + window.location.host + "/eventbus",
             onConnect: function() {
                 console.log( "connected" );
             },
@@ -153,7 +153,7 @@ AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
     notifier.add({
         name: "client1",
         settings: {
-            connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+            connectURL: window.location.protocol + '//' + window.location.host + "/eventbus",
             onConnect: function() {
                 console.log( "connected" );
             },
@@ -204,7 +204,7 @@ AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
         name: "client1",
         settings: {
             autoConnect: true,
-            connectURL: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + "/eventbus",
+            connectURL: window.location.protocol + '//' + window.location.host + "/eventbus",
             onConnect: function() {
                 console.log( "connected" );
             },
