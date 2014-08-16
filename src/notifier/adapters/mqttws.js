@@ -66,7 +66,7 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
 
     // Private Instance vars
     var type = "mqttws",
-        clientId = settings.clientId || "";
+        clientId = settings.clientId || "agClientId";
 
     // Privileged methods
     /**
@@ -132,10 +132,15 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
      */
     this.processURL = function ( url ) {
         var processedURL = {},
-            domainParts = url.split( '/' )[ 2 ].split( ':' );
+            urlParts =  url.split( '/' ),
+            protocol = urlParts[ 0 ].split( ':' )[ 0 ],
+            domainParts = urlParts[ 2 ].split( ':' ),
+            // default path is /mqtt
+            path = "/" + ( urlParts[ 3 ] || "mqtt" );
 
         processedURL.hostname = domainParts[ 0 ];
-        processedURL.port = Number( domainParts[ 1 ] );
+        processedURL.port = Number( domainParts[ 1 ] ) || ( protocol === 'wss' ? 443 : 80 );
+        processedURL.path = path;
 
         return processedURL;
     };
@@ -146,6 +151,7 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
     Connect the client to the messaging service
     @param {Object} [options={}] - Options to pass to the connect method
     @param {String} [options.url] - The URL for the messaging service. This url will override and reset any connectURL specified when the client was created
+    @param {Number} [options.mqttVersion] - The MQTT protocol version. Should be 3 or 4.
     @param {Number} [options.timeout] - If the connect has not succeeded within this number of seconds, it is deemed to have failed
     @param {String} [options.login] - Authentication login name for this connection
     @param {String} [options.password] - Authentication password for this connection
@@ -190,7 +196,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.connect = function( options ) {
 
     processedURL = this.processURL( options.url || this.getConnectURL() );
 
-    client = new Messaging.Client( processedURL.hostname, processedURL.port, options.clientId || this.getClientId() );
+    client = new Paho.MQTT.Client( processedURL.hostname, processedURL.port, processedURL.path, options.clientId || this.getClientId() );
 
     if ( options.onMessage ) {
         client.onMessageArrived = options.onMessage;
@@ -389,7 +395,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.unsubscribe = function( channels ) {
  */
 AeroGear.Notifier.adapters.mqttws.prototype.send = function( channel, message, sendOptions ) {
     var client = this.getClient();
-    message = new Messaging.Message( message || "" );
+    message = new Paho.MQTT.Message( message || "" );
     message.destinationName = channel;
 
     if ( sendOptions ) {
