@@ -45,11 +45,9 @@ module("authentication - agXHR requests", {
                     case "json":
                         return JSON.parse( this.responseText );
                     case "arraybuffer":
-                        //TODO
-                        return undefined;
+                        throw new Error("unsupported");
                     case "blob":
-                        //TODO
-                        return undefined;
+                        throw new Error("unsupported");
                 }
             },
             configurable: true
