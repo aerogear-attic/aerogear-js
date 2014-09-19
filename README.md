@@ -12,9 +12,7 @@ See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/Aero
 ## Auth
 - - -
 
-The AeroGear.Auth namespace provides an authentication and enrollment API. Through the use of adapters, this library provides common methods like enroll, login and logout that will just work.
-
-See the [Auth API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Auth.html) for more info.
+_This api has been deprecated.  To use it you will need the latest 1.x release, which can be [found here])_
 
 ## Crypto
 - - -
@@ -75,11 +73,6 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 ### Authorization
 
 * **OAuth2**
-    * [jQuery](http://jquery.com/download/)
-
-### Auth
-
-* **REST**
     * [jQuery](http://jquery.com/download/)
 
 ### Crypto
