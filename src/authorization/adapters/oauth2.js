@@ -15,7 +15,6 @@
 */
 /**
     The OAuth2 adapter is the default type used when creating a new authorization module. It uses jQuery.ajax to communicate with the server.
-    While this library can be used "standalone", we recommend using it with Pipeline to get the most benefit
     This constructor is instantiated when the "Authorizer.add()" method is called
     @status Experimental
     @constructs AeroGear.Authorization.adapters.OAuth2
@@ -116,6 +115,15 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     };
 
     /**
+        Returns the value of the private settings var
+        @private
+        @augments OAuth2
+     */
+    this.getAuthEndpoint = function() {
+        return settings.authEndpoint;
+    };
+
+    /**
         Returns the value of a custom error message
         @private
         @augments OAuth2
@@ -166,22 +174,8 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         }
     });
 
-    // Create a new Pipeline with an authorizer
-    pipe = AeroGear.Pipeline( { authorizer: authz.services.coolThing } );
-
-    // Add a pipe
-    pipe.add([
-    {
-        name: "cal",
-        settings: {
-            baseURL: "http://localhost:3000/",
-            endpoint: "v1/userinfo"
-        }
-    }
-    ]);
-
     // Make the call. OAuth2.read() will be called by Pipe.Read
-    pipe.pipes.cal.read({
+    authz.services.coolThing.execute({
         success:function( response ) {
             ....
         },
@@ -201,7 +195,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     });
 
     // Make pipe.read calls
-    pipe.pipes.cal.read({
+    authz.services.coolThing.execute({
         success:function( response ) {
             // Should be success calls
         },
@@ -268,9 +262,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
 };
 
 /**
-    Read a secure endpoint - To be used with the Pipe.read() method
-    @param {Object} options={} - Options to pass to the enroll method
-    @param {String} options.url - the endpoint to access
+    @param {Object} options={} - Options to pass to the execute method
     @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
     @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
     @returns {Object} The jqXHR created by jQuery.ajax - IF an error is returned,  the authentication URL will be appended to the response object
@@ -289,22 +281,9 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     }
     });
 
-    // Create a new Pipeline with an authorizer
-    pipe = AeroGear.Pipeline( { authorizer: authz.services.coolThing } );
 
-    // Add a pipe
-    pipe.add([
-    {
-        name: "cal",
-        settings: {
-            baseURL: "http://localhost:3000/",
-            endpoint: "v1/userinfo"
-        }
-    }
-    ]);
-
-    // Make the call. OAuth2.read() will be called by Pipe.Read
-    pipe.pipes.cal.read({
+    // Make the call.
+    authz.services.coolThing.execute({
         success:function( response ) {
             ....
         },
@@ -316,7 +295,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
 AeroGear.Authorization.adapters.OAuth2.prototype.execute = function( options ) {
     options = options || {};
     var that = this,
-        url = options.url + "?access_token=" + this.getAccessToken(),
+        url = this.getAuthEndpoint() + "?access_token=" + this.getAccessToken(),
         contentType = "application/x-www-form-urlencoded",
         success,
         error;

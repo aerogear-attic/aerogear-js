@@ -9,21 +9,11 @@
         settings: {
             clientId: suiteData.clientId,
             redirectURL: "http://localhost:8080/redirect",
-            authEndpoint: "https://example.com/o/oauth2/auth",
+            authEndpoint: "https://example.com/drive/v2/messages",
             validationEndpoint: "https://example.com/oauth2/token",
             scopes: "user"
         }
     });
-
-    var pipeline = AeroGear.Pipeline( { authorizer: authz.services.drive } );
-    pipeline.add([
-        {
-            name: "messages",
-            settings: {
-                baseURL: "https://example.com/drive/v2/"
-            }
-        }
-    ]);
 
     test ( "Configuration Setup", function() {
         expect( 4 );
@@ -124,7 +114,7 @@
         var validate = authz.services[ Object.keys( authz.services )[ 0 ] ].validate( accessTokenResponseURI, { success: success, error: error } );
 
         $.when( validate ).done( function ( s1)  {
-            pipeline.pipes.messages.read({
+            authz.services[ Object.keys( authz.services )[ 0 ] ].execute({
                 success: function( data ) {
                     ok( true, "Success callback" );
                     start();
@@ -157,7 +147,7 @@
             var wrongTokenJSON = { accessToken: suiteData.wrongAccessToken};
             localStorage.setItem( authz.services[ Object.keys( authz.services )[ 0 ] ].getLocalStorageName(), JSON.stringify( wrongTokenJSON ) );
             // access resources using wrong access token
-            pipeline.pipes.messages.read({
+            authz.services[ Object.keys( authz.services )[ 0 ] ].execute({
                 error: function( data ) {
                     ok( true, "Error callback" );
                     start();
