@@ -30,13 +30,8 @@ module.exports = function(grunt) {
                 banner: '<%= meta.banner %>'
             },
             dist: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'external/crypto/sjcl.js', 'external/es6-promise/promise-0.1.1.js', 'src/aerogear.ajax.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js', 'src/authorization/aerogear.authz.js', 'src/authorization/adapters/oauth2.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/notifier/adapters/mqttws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js', 'src/crypto/aerogear.crypto.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/base64/base64.js', 'external/crypto/sjcl.js', 'external/es6-promise/promise-0.1.1.js', 'src/aerogear.ajax.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js', 'src/authorization/aerogear.authz.js', 'src/authorization/adapters/oauth2.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/notifier/adapters/mqttws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js', 'src/crypto/aerogear.crypto.js'],
                 dest: 'dist/<%= pkg.name %>.js'
-            },
-            pipeline: {
-                src: ['src/aerogear.core.js', 'src/pipeline/aerogear.pipeline.js', 'src/pipeline/adapters/rest.js'],
-                description: 'Pipeline full build',
-                dest: 'dist/<%= pkg.name %>.custom.js'
             },
             dataManager: {
                 src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js'],
@@ -108,7 +103,6 @@ module.exports = function(grunt) {
             authorization: 'tests/unit/authorization/**/*.html',
             dataManager: ['tests/unit/data-manager/**/*.html', 'tests/unit/data-manager-websql/**/*.html'],
             notifier: 'tests/unit/notifier/**/*.html',
-            pipeline: 'tests/unit/pipeline/**/*.html',
             crypto: 'tests/unit/crypto/**/*.html',
             unifiedpush: 'tests/unit/unifiedpush/**/*.html',
             simplepush: 'tests/unit/simplepush/**/*.html',
@@ -236,10 +230,6 @@ module.exports = function(grunt) {
                 files: 'src/notifier/**/*.js',
                 tasks: 'qunit:notifier'
             },
-            pipeline: {
-                files: 'src/pipeline/**/*.js',
-                tasks: 'qunit:pipeline'
-            },
             simplepush: {
                 files: 'src/simplepush/**/*.js',
                 tasks: 'qunit:simplepush'
@@ -280,7 +270,6 @@ module.exports = function(grunt) {
     // Default task
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
-    grunt.registerTask('pipeline', ['jshint', 'qunit', 'concat:pipeline', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('dataManager', ['jshint', 'qunit', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('dataManagerIndexedDB', ['jshint', 'qunit', 'concat:dataManagerIndexedDB', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('dataManagerWebSQL', ['jshint', 'qunit', 'concat:dataManagerWebSQL', 'iife:custom', 'uglify:custom']);
