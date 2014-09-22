@@ -121,17 +121,6 @@ AeroGear.Core = function() {
 };
 
 /**
-    Utility function to test if an object is an Array
-    @private
-    @method
-    @deprecated
-    @param {Object} obj - This can be any object to test
-*/
-AeroGear.isArray = function( obj ) {
-    return Array.isArray( obj );
-};
-
-/**
     Utility function to merge many Objects in one target Object which is the first object in arguments list.
     @private
     @method
