@@ -24,8 +24,6 @@
     @param {String} [settings.accept="application/json"] - the media types which are acceptable for the recipient's response
     @param {String} [settings.contentType="application/json"] - the media type of the entity-body sent to the recipient
     @param {Object} [settings.headers] - the HTTP request headers
-    @param {AeroGear~successCallback} [options.success] - callback to be executed if the AJAX request results in success
-    @param {AeroGear~errorCallback} [options.error] - callback to be executed if the AJAX request results in error
     @param {Object} [settings.params] - contains query parameters to be added in URL in case of GET request or in request body in case of POST and application/x-www-form-urlencoded content type
     @param {Object} [settings.data] - the data to be sent to the recipient
     @returns {Object} An ES6 Promise
@@ -100,52 +98,32 @@ AeroGear.ajax = function( settings ) {
         // Success and 400's
         request.onload = function() {
             var status = ( request.status < 400 ) ? "success" : "error",
-                callbackArgs = that._createCallbackArgs( request, status ),
-                promiseValue = that._createPromiseValue.apply( this, callbackArgs );
+                promiseValue = that._createPromiseValue( request, status );
 
             if( status === "success" ) {
-                resolve( promiseValue );
-            } else {
-                reject( promiseValue );
+                return resolve( promiseValue );
             }
 
-            that._oncomplete( request, status, callbackArgs );
+            return reject( promiseValue );
         };
 
         // Network errors
         request.onerror = function() {
-            var status = "error",
-                callbackArgs = that._createCallbackArgs( request, status );
+            var status = "error";
 
-            reject( that._createPromiseValue.apply( this, callbackArgs ) );
-            that._oncomplete( request, status, callbackArgs );
+            reject( that._createPromiseValue( request, status ) );
         };
 
-        // create callback arguments
-        this._createCallbackArgs = function( request, status ) {
+        // create promise arguments
+        this._createPromiseValue = function( request, status ) {
             var statusText = request.statusText || status,
                 dataOrError = ( responseType === 'text' || responseType === '') ? request.responseText : request.response;
 
-            return [ dataOrError, statusText, request ];
-        };
-
-        // create promise value
-        this._createPromiseValue = function( dataOrError, statusText, request ) {
             return {
                 data: dataOrError,
                 statusText: statusText,
                 agXHR: request
             };
-        };
-
-        this._oncomplete = function( request, status, callbackArgs ) {
-            if( settings[ status ] ) {
-                settings[ status ].apply( this, callbackArgs || that._createCallbackArgs( request, status ) );
-            }
-
-            if( settings.complete ) {
-                settings.complete.call( this, "complete", request );
-            }
         };
 
         request.send( data );

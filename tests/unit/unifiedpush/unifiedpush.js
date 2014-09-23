@@ -203,83 +203,7 @@
 
     });
 
-    asyncTest( "register successfully with a callback", function() {
-        expect(2);
-
-        var client, settings, ret;
-
-        settings = {
-            success: function( data, statusText, request ) {
-                equal( request.status, 200, "should be a 200" );
-                start();
-            }
-        };
-
-        settings.metadata = {
-            deviceToken: "12345"
-        };
-
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
-
-        ret = client.registerWithPushServer( settings );
-        this.server.respond();
-
-
-        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-
-    });
-
-    asyncTest( "register unsuccessfully with a callback", function() {
-        expect(2);
-
-        var client, settings, ret;
-
-        settings = {
-            error: function( error, statusText, request ) {
-                equal( request.status, 404, "should be a 404" );
-                start();
-            }
-        };
-
-        settings.metadata = {
-            deviceToken: "12345"
-        };
-
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserv" );
-
-        ret = client.registerWithPushServer( settings );
-        this.server.respond();
-        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-
-    });
-
-    asyncTest( "register with complete callback", function() {
-        expect(2);
-
-        var client, settings, ret;
-
-        settings = {
-            complete: function( status, request ) {
-                ok( true, "complete should be called" );
-                start();
-            }
-        };
-
-        settings.metadata = {
-            deviceToken: "12345"
-        };
-
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
-
-        ret = client.registerWithPushServer( settings );
-        this.server.respond();
-
-
-        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-
-    });
-
-     module( "UnifiedPush Client - Register fake server", {
+     module( "UnifiedPush Client - unRegister fake server", {
        setup: function () {
             this.server = sinon.fakeServer.create();
             this.server.respondWith( "DELETE", "/api/pushserver/rest/registry/device/12345", [ 204, { "Content-Type": "application/json" }, JSON.stringify({})]);
@@ -312,7 +236,7 @@
         equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
     });
 
-    asyncTest( "register unsuccessfully with a promise", function() {
+    asyncTest( "unregister unsuccessfully with a promise", function() {
         expect(2);
 
         var client, settings, ret;
@@ -334,69 +258,4 @@
         equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
 
     });
-
-    asyncTest( "unregister successfully with a callback", function() {
-        expect(2);
-
-        var client, settings, ret,
-            deviceToken = "12345";
-
-        settings = {
-            success: function( data, statusText, request ) {
-                equal( request.status, 204, "should be a 204" );
-                start();
-            }
-        };
-
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
-
-        ret = client.unregisterWithPushServer( deviceToken, settings );
-        this.server.respond();
-
-
-        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-    });
-
-    asyncTest( "unregister unsuccessfully with a callback", function() {
-        expect(2);
-
-        var client, settings, ret;
-
-        settings = {
-            error: function( error, statusText, request ) {
-                equal( request.status, 404, "should be a 404" );
-                start();
-            }
-        };
-
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserv" );
-
-        ret = client.unregisterWithPushServer( "123", settings );
-        this.server.respond();
-        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-
-    });
-
-    asyncTest( "register with complete callback", function() {
-        expect(2);
-
-        var client, settings, ret,
-            deviceToken = "12345";
-
-        settings = {
-            complete: function( status, request ) {
-                ok( true, "complete should be called" );
-                start();
-            }
-        };
-
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
-
-        ret = client.unregisterWithPushServer( deviceToken, settings );
-        this.server.respond();
-
-
-        equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
-    });
-
 })( jQuery );
