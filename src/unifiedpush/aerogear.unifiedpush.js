@@ -37,10 +37,7 @@
             categories: [ "email" ]
         };
 
-        var settings = {
-            success: function(){ ... },
-            error: function() { ... }
-        };
+        var settings = {};
 
         settings.metadata = metadata;
 
@@ -71,10 +68,7 @@
             @param {String} [settings.metadata.operatingSystem] - Useful on Hybrid platforms like Apache Cordova to specifiy the underlying operating system.
             @param {String} [settings.metadata.osVersion] - Useful on Hybrid platforms like Apache Cordova to specify the version of the underlying operating system.
             @param {String} [settings.metadata.deviceType] - Useful on Hybrid platforms like Apache Cordova to specify the type of the used device, like iPad or Android-Phone.
-            @param {AeroGear~completeCallbackREST} [settings.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-            @param {AeroGear~errorCallbackREST} [settings.error] - callback to be executed if the AJAX request results in an error
-            @param {AeroGear~successCallbackREST} [settings.success] - callback to be executed if the AJAX request results in success
-            @returns {Object} An Promise created by AeroGear.ajax
+            @returns {Object} An ES6 Promise created by AeroGear.ajax
          */
         this.registerWithPushServer = function( settings ) {
             settings = settings || {};
@@ -96,24 +90,16 @@
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
                 },
-                data: JSON.stringify( metadata ),
-                success: settings.success,
-                error: settings.error,
-                complete: settings.complete
+                data: JSON.stringify( metadata )
             });
         };
 
         /**
             Performs an unregister request against the UnifiedPush Server for the given deviceToken. The deviceToken identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the URL of the given SimplePush server/network.
             @param {String} deviceToken - unique String which identifies the client that is being unregistered.
-            @param {Object} [settings = {}] The options to pass in
-            @param {AeroGear~completeCallbackREST} [settings.complete] - a callback to be called when the result of the request to the server is complete, regardless of success
-            @param {AeroGear~errorCallbackREST} [settings.error] - callback to be executed if the AJAX request results in an error
-            @param {AeroGear~successCallbackREST} [settings.success] - callback to be executed if the AJAX request results in success
-            @returns {Object} An Promise created by AeroGear.ajax
+            @returns {Object} An ES6 Promise created by AeroGear.ajax
          */
-        this.unregisterWithPushServer = function( deviceToken, settings ) {
-            settings = settings || {};
+        this.unregisterWithPushServer = function( deviceToken ) {
             return AeroGear.ajax({
                 contentType: "application/json",
                 dataType: "json",
@@ -121,10 +107,7 @@
                 url: pushServerURL + "rest/registry/device/" + deviceToken,
                 headers: {
                     "Authorization": "Basic " + window.btoa(variantID + ":" + variantSecret)
-                },
-                success: settings.success,
-                error: settings.error,
-                complete: settings.complete
+                }
             });
         };
     };
