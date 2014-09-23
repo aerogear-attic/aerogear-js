@@ -161,8 +161,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     @returns {Object} The jqXHR created by jQuery.ajax
     @example
     // Create the Authorizer
-    var authz = AeroGear.Authorization(),
-        pipe;
+    var authz = AeroGear.Authorization();
 
     authz.add({
         name: "coolThing",
@@ -174,7 +173,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         }
     });
 
-    // Make the call. OAuth2.read() will be called by Pipe.Read
+    // Make the call.
     authz.services.coolThing.execute({
         success:function( response ) {
             ....
@@ -191,16 +190,6 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         },
         error: function( error ) {
             ...
-        }
-    });
-
-    // Make pipe.read calls
-    authz.services.coolThing.execute({
-        success:function( response ) {
-            // Should be success calls
-        },
-        error: function( error ) {
-            ....
         }
     });
 
@@ -268,8 +257,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     @returns {Object} The jqXHR created by jQuery.ajax - IF an error is returned,  the authentication URL will be appended to the response object
     @example
     // Create the Authorizer
-    var authz = AeroGear.Authorization(),
-    pipe;
+    var authz = AeroGear.Authorization();
 
     authz.add({
     name: "coolThing",
@@ -282,7 +270,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     });
 
 
-    // Make the call.
+    // Make the authorization call.
     authz.services.coolThing.execute({
         success:function( response ) {
             ....
