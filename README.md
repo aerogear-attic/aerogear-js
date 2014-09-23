@@ -5,7 +5,7 @@ JavaScript client library implementation for AeroGear. Eventually, this will inc
 ## Authorization
 - - -
 
-The AeroGear.Authorization namespace provides an authorization API. Through the use of adapters as well as coupled with Pipeline, this library will help provide access to services that need authorization.
+The AeroGear.Authorization namespace provides an authorization API. It will help provide access to services that need authorization.
 
 See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Authorization.html) for more info.
 
@@ -34,13 +34,6 @@ See the [DataManager API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGe
 Notifier is a collection of adapters which provide a unified or similar API for interacting with different messaging services and protocols.
 
 See the [Notifier API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Notifier.html) for more info.
-
-## Pipeline
-- - -
-
-Pipeline is a JavaScript library that provides a persistence API that is protocol agnostic and does not depend on any certain data model. Through the use of adapters, both provided and custom, user supplied, this library provides common methods like read, save and delete that will just work.
-
-See the [Pipeline API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Pipeline.html) for more info.
 
 ## SimplePushClient
 - - -
@@ -101,11 +94,6 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 * **SimplePush**
     * See SimplePush Plugin
 
-### Pipeline
-
-* **REST**
-    * [jQuery](http://jquery.com/download/)
-
 ### SimplePush
 * [jQuery](http://jquery.com/download/)
 * [SockJS](http://cdn.sockjs.org/)
@@ -142,9 +130,9 @@ There is a special grunt task called, `custom` to help create custom builds of t
 
 The custom task takes a comma delimited list of "modules".
 
-For example, if you wanted a build with Pipeline and the SimplePushClient, you would do
+For example, if you wanted a build with Authorization/OAuth2 and the SimplePushClient, you would do
 
-    $ grunt custom:pipeline,simplePush
+    $ grunt custom:oauth2,simplePush
 
 The produced JavaScript will be in the __dist__ directory as __aerogear.custom.js__.
 
