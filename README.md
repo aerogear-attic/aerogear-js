@@ -12,7 +12,7 @@ See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/Aero
 ## Auth
 - - -
 
-_This api has been deprecated.  To use it you will need the latest 1.x release, which can be [found here])_
+_This api has been deprecated.  To use it you will need the latest 1.x release, which can be [found here](https://github.com/aerogear/aerogear-js/tree/1.x))_
 
 ## Crypto
 - - -
@@ -34,6 +34,11 @@ See the [DataManager API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGe
 Notifier is a collection of adapters which provide a unified or similar API for interacting with different messaging services and protocols.
 
 See the [Notifier API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Notifier.html) for more info.
+
+## Pipeline
+- - -
+
+_This api has been deprecated.  To use it you will need the latest 1.x release, which can be [found here](https://github.com/aerogear/aerogear-js/tree/1.x))_
 
 ## SimplePushClient
 - - -
