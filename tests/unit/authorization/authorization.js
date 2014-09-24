@@ -18,9 +18,8 @@
             this.server.respondWith( 'GET', /oauth2\/token\?access_token=([^&]+)/,
                 function( xhr, accessToken ) {
                     if ( accessToken && accessToken !== suiteData.wrongAccessToken && accessToken !== suiteData.accessTokenWrongAudience ) {
-                        xhr.respond( 200, {"Content-Type": "application/json"}, JSON.stringify({
-                            audience: suiteData.clientId
-                        }));
+                        xhr.response = { "audience": suiteData.clientId };
+                        xhr.respond( 200, {"Content-Type": "application/json"}, JSON.stringify({}));
                     } else if ( accessToken && accessToken === suiteData.accessTokenWrongAudience ) {
                         xhr.respond( 200, {"Content-Type": "application/json"}, JSON.stringify({}));
                     } else {
@@ -156,7 +155,7 @@
                 ok( authz.services[ DRIVE ].getAccessToken(), "AccessToken exists" );
                 strictEqual( authz.services[ DRIVE ].getAccessToken(), suiteData.accessToken, "Access Token is the expected");
 
-                return authz.services[ DRIVE ].execute()
+                return authz.services[ DRIVE ].execute( { url: "https://example.com/drive/v2/messages", type: "GET" } )
                     .then( function( data ) {
                         ok( true, "Success callback" );
                         start();
