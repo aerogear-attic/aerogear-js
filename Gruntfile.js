@@ -94,7 +94,7 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.custom.js'
             },
             oauth2: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'src/authorization/aerogear.authz.js', 'src/authorization/adapters/oauth2.js'],
+                src: ['src/aerogear.core.js', 'external/es6-promise/promise-0.1.1.js', 'src/aerogear.ajax.js', 'external/uuid/uuid.js', 'src/authorization/aerogear.authz.js', 'src/authorization/adapters/oauth2.js'],
                 description: 'Authz OAuth2 adapter build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
             }

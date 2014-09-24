@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 /**
-    The OAuth2 adapter is the default type used when creating a new authorization module. It uses jQuery.ajax to communicate with the server.
+    The OAuth2 adapter is the default type used when creating a new authorization module. It uses AeroGear.ajax to communicate with the server.
     This constructor is instantiated when the "Authorizer.add()" method is called
     @status Experimental
     @constructs AeroGear.Authorization.adapters.OAuth2
@@ -49,8 +49,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     settings = settings || {};
 
     // Private Instance vars
-    var type = "OAuth2",
-        state = uuid(), //Recommended in the spec,
+    var state = uuid(), //Recommended in the spec,
         clientId = settings.clientId, //Required by the spec
         redirectURL = settings.redirectURL, //optional in the spec, but doesn't make sense without it,
         validationEndpoint = settings.validationEndpoint, //optional,  not in the spec, but recommend to use with Google's API's
@@ -124,13 +123,13 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     };
 
     /**
-        Returns the value of a custom error message
+        Enrich the error response with authentication endpoint URL and re-throw the error
         @private
         @augments OAuth2
      */
-    this.createError = function( options ) {
-        options = options || {};
-        return AeroGear.extend( options, { authURL: authEndpoint } );
+    this.enrichErrorAndRethrow = function( err ) {
+        err = err || {};
+        throw AeroGear.extend( err, { authURL: authEndpoint } );
     };
 
     /**
@@ -155,10 +154,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
 /**
     Validate the Authorization endpoints - Takes the querystring that is returned after the "dance" unparsed.
     @param {String} queryString - The returned query string to be parsed
-    @param {Object} [options={}] - Options to pass to the enroll method
-    @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
-    @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
-    @returns {Object} The jqXHR created by jQuery.ajax
+    @returns {Object} The ES6 promise (exposes AeroGear.ajax response as a response parameter; if an error is returned, the authentication URL will be appended to the response object)
     @example
     // Create the Authorizer
     var authz = AeroGear.Authorization();
@@ -174,136 +170,107 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     });
 
     // Make the call.
-    authz.services.coolThing.execute({
-        success:function( response ) {
-            ....
-        },
-        error: function( error ) {
+    authz.services.coolThing.execute()
+        .then( function( response ){
+            ...
+        })
+        .catch( function( error ) {
             // an error happened, so take the authURL and do the "OAuth2 Dance",
-        }
+        });
     });
 
     // After a successful response from the "OAuth2 Dance", validate that the query string is valid, If all is well, the access_token will be stored.
-    authz.services.coolThing.validate( responseFromAuthEndpoint, {
-        success: function( response ){
+    authz.services.coolThing.validate( responseFromAuthEndpoint )
+        .then( function( response ){
             ...
-        },
-        error: function( error ) {
+        })
+        .catch( function( error ) {
             ...
-        }
-    });
+        });
 
  */
-AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryString, options ) {
-    options = options || {};
+AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryString ) {
 
     var that = this,
         parsedQuery = this.parseQueryString( queryString ),
         state = this.getState(),
-        error,
-        success;
+        promise,
+        responseData;
 
-    success = function( response ) {
-        // Perhaps we can use crypt here to be more secure
-        localStorage.setItem( that.getLocalStorageName(), JSON.stringify( { "accessToken": parsedQuery.access_token } ) );
-        if( options.success ) {
-            options.success.apply( this, arguments );
+    promise = new Promise( function( resolve, reject ) {
+
+        // Make sure that the "state" value returned is the same one we sent
+        if( parsedQuery.state !== state ) {
+            // No Good
+            reject( { error: "invalid_request", state: state, error_description: "state's do not match"  } );
+            return;
         }
-    };
 
-    error = function( response ) {
-        if( options.error ) {
-            options.error.call( this, that.createError( response ) );
+        if( that.getValidationEndpoint() ) {
+            AeroGear.ajax({ url: that.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token })
+                .then( function( response ) {
+                    responseData = JSON.parse( response.agXHR.responseText );
+                    // Must Check the audience field that is returned.  This should be the same as the registered clientID
+                    if( that.getClientId() !== responseData.audience ) {
+                        // TODO are we not hiding the real cause (err) here?
+                        reject( { "error": "invalid_token" } );
+                        return;
+                    }
+                    // Perhaps we can use crypt here to be more secure
+                    localStorage.setItem( that.getLocalStorageName(), JSON.stringify( { "accessToken": parsedQuery.access_token } ) );
+                    resolve( parsedQuery );
+                })
+                .catch( function( err ) {
+                    // TODO are we not hiding the real cause (err) here?
+                    reject( { "error": "invalid_token" } );
+                });
+        } else {
+            // The Spec does not specify that you need to validate the token
+            reject( parsedQuery );
         }
-    };
+    });
 
-    if( parsedQuery.error ) {
-        error.call( this, parsedQuery  );
-        return;
-    }
-
-    // Make sure that the "state" value returned is the same one we sent
-    if( parsedQuery.state !== state ) {
-        // No Good
-        error.call( this, { error: "invalid_request", state: state, error_description: "state's do not match"  } );
-        return;
-    }
-
-    if( this.getValidationEndpoint() ) {
-        return jQuery.ajax({
-            url: this.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token,
-            success: function( response ) {
-              // Must Check the audience field that is returned.  This should be the same as the registered clientID
-                if( that.getClientId() !== response.audience ) {
-                    error.call( this, { "error": "invalid_token" } );
-                    return ;
-                }
-                success.call( this, parsedQuery );
-            },
-            error: function( err ) {
-                error.call( this, { "error": "invalid_token" } );
-            }
-        });
-    } else {
-        // The Spec does not specify that you need to validate the token
-        success.call( this, parsedQuery );
-    }
+    return promise
+        .catch( this.enrichErrorAndRethrow );
 };
 
 /**
     @param {Object} options={} - Options to pass to the execute method
-    @param {AeroGear~errorCallbackREST} [options.error] - callback to be executed if the AJAX request results in an error
-    @param {AeroGear~successCallbackREST} [options.success] - callback to be executed if the AJAX request results in success
+    @param {String} [options.type="GET"] - the type of the request
     @returns {Object} The jqXHR created by jQuery.ajax - IF an error is returned,  the authentication URL will be appended to the response object
     @example
     // Create the Authorizer
     var authz = AeroGear.Authorization();
 
     authz.add({
-    name: "coolThing",
-    settings: {
-        clientId: "12345",
-        redirectURL: "http://localhost:3000/redirector.html",
-        authEndpoint: "http://localhost:3000/v1/authz",
-        scopes: "userinfo coolstuff"
-    }
+        name: "coolThing",
+        settings: {
+            clientId: "12345",
+            redirectURL: "http://localhost:3000/redirector.html",
+            authEndpoint: "http://localhost:3000/v1/authz",
+            scopes: "userinfo coolstuff"
+        }
     });
 
 
     // Make the authorization call.
-    authz.services.coolThing.execute({
-        success:function( response ) {
-            ....
-        },
-        error: function( error ) {
-            ....
-        }
-    });
+    authz.services.coolThing.execute()
+        .then( function( response ){
+            ...
+        })
+        .catch( function( error ) {
+            ...
+        });
  */
 AeroGear.Authorization.adapters.OAuth2.prototype.execute = function( options ) {
     options = options || {};
-    var that = this,
-        url = this.getAuthEndpoint() + "?access_token=" + this.getAccessToken(),
-        contentType = "application/x-www-form-urlencoded",
-        success,
-        error;
+    var url = this.getAuthEndpoint() + "?access_token=" + this.getAccessToken(),
+        contentType = "application/x-www-form-urlencoded";
 
-    success = function( response ) {
-        if( options.success ) {
-            options.success.apply( this, arguments );
-        }
-    };
-    error = function( response ) {
-        if( options.error ) {
-            options.error.call( this, that.createError( response ) );
-        }
-    };
-
-    return jQuery.ajax({
-        url: url,
-        type: options.type,
-        contentType: contentType,
-        success: success,
-        error: error
-    });
+    return AeroGear.ajax({
+            url: url,
+            type: options.type,
+            contentType: contentType
+        })
+        .catch( this.enrichErrorAndRethrow );
 };
