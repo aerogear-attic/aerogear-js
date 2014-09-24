@@ -114,15 +114,6 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     };
 
     /**
-        Returns the value of the private settings var
-        @private
-        @augments OAuth2
-     */
-    this.getAuthEndpoint = function() {
-        return settings.authEndpoint;
-    };
-
-    /**
         Enrich the error response with authentication endpoint URL and re-throw the error
         @private
         @augments OAuth2
@@ -170,7 +161,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
     });
 
     // Make the call.
-    authz.services.coolThing.execute()
+    authz.services.coolThing.execute({url: "http://localhost:3000/v1/authz/endpoint", type: "GET"})
         .then( function( response ){
             ...
         })
@@ -194,8 +185,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
     var that = this,
         parsedQuery = this.parseQueryString( queryString ),
         state = this.getState(),
-        promise,
-        responseData;
+        promise;
 
     promise = new Promise( function( resolve, reject ) {
 
@@ -209,10 +199,9 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
         if( that.getValidationEndpoint() ) {
             AeroGear.ajax({ url: that.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token })
                 .then( function( response ) {
-                    responseData = JSON.parse( response.agXHR.responseText );
                     // Must Check the audience field that is returned.  This should be the same as the registered clientID
-                    if( that.getClientId() !== responseData.audience ) {
-                        // TODO are we not hiding the real cause (err) here?
+                    // This value is a JSON object that is in xhr.response
+                    if( that.getClientId() !== response.agXHR.response.audience ) {
                         reject( { "error": "invalid_token" } );
                         return;
                     }
@@ -221,7 +210,6 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
                     resolve( parsedQuery );
                 })
                 .catch( function( err ) {
-                    // TODO are we not hiding the real cause (err) here?
                     reject( { "error": "invalid_token" } );
                 });
         } else {
@@ -237,7 +225,8 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
 /**
     @param {Object} options={} - Options to pass to the execute method
     @param {String} [options.type="GET"] - the type of the request
-    @returns {Object} The jqXHR created by jQuery.ajax - IF an error is returned,  the authentication URL will be appended to the response object
+    @param {String} [options.url] - the url of the secured endpoint you want to access
+    @returns {Object} The ES6 promise (exposes AeroGear.ajax response as a response parameter; if an error is returned, the authentication URL will be appended to the response object)
     @example
     // Create the Authorizer
     var authz = AeroGear.Authorization();
@@ -264,7 +253,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
  */
 AeroGear.Authorization.adapters.OAuth2.prototype.execute = function( options ) {
     options = options || {};
-    var url = this.getAuthEndpoint() + "?access_token=" + this.getAccessToken(),
+    var url = options.url + "?access_token=" + this.getAccessToken(),
         contentType = "application/x-www-form-urlencoded";
 
     return AeroGear.ajax({
