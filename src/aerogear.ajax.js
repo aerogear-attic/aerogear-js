@@ -48,7 +48,6 @@ AeroGear.ajax = function( settings ) {
             accept = ( settings.accept || "application/json" ).toLowerCase(),
             // TODO: compare contentType by checking if it starts with some value since it might contains the charset as well
             contentType = ( settings.contentType || "application/json" ).toLowerCase(),
-            _oncomplete,
             header,
             name,
             urlEncodedData = [],

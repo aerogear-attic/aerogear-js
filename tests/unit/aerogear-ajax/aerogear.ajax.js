@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
     module( "AeroGear.ajax - fake xhr", {
         setup: function() {
@@ -490,4 +490,4 @@
         AeroGear.ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
-})( jQuery );
+})();
