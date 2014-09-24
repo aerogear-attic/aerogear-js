@@ -26,7 +26,14 @@
     @param {Object} [settings.headers] - the HTTP request headers
     @param {Object} [settings.params] - contains query parameters to be added in URL in case of GET request or in request body in case of POST and application/x-www-form-urlencoded content type
     @param {Object} [settings.data] - the data to be sent to the recipient
-    @returns {Object} An ES6 Promise
+    @returns {Object} An ES6 Promise - the object returned will look like:
+
+    {
+        data: dataOrError, - the data or an error
+        statusText: statusText, - the status of the response
+        agXHR: request - the xhr request object
+    };
+
     @example
 
         var es6promise = AeroGear.ajax({
