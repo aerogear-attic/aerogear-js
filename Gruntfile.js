@@ -246,6 +246,10 @@ module.exports = function(grunt) {
                 files: 'src/aerogear.core.js',
                 tasks: 'qunit'
             }
+        },
+        ci: {
+            vertx: {},
+            activemq: {}
         }
     });
 
@@ -284,6 +288,20 @@ module.exports = function(grunt) {
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
     grunt.registerTask('docs',['shell:docs']);
+
+    grunt.registerMultiTask('ci', function () {
+        var done = this.async();
+        grunt.util.spawn({
+            grunt: true,
+            args: ['ci-' + this.target],
+            opts: {
+                cwd: 'aerogear-js-integration',
+                stdio: 'inherit'
+            }
+        }, function (err, result, code) {
+            done();
+        });
+    });
 
     // A task to create custom builds of the library based on the 'concat' task
     grunt.registerTask('custom', function( opts ) {
