@@ -295,7 +295,7 @@ module.exports = function(grunt) {
             grunt: true,
             args: ['ci-' + this.target],
             opts: {
-                cwd: 'aerogear-js-integration',
+                cwd: './aerogear-js-integration',
                 stdio: 'inherit'
             }
         }, function (err, result, code) {
