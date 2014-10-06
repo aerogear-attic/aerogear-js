@@ -31,6 +31,7 @@
                 name: "test1",
                 type: "WebSQL",
                 settings: {
+                    auto: false,
                     crypto: {
                         agcrypto: AeroGear.Crypto(),
                         options: {
@@ -102,6 +103,7 @@
                 name: "test1",
                 type: "WebSQL",
                 settings: {
+                    auto: false,
                     crypto: {
                         agcrypto: AeroGear.Crypto(),
                         options: {

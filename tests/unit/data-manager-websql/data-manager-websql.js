@@ -21,7 +21,10 @@
         setup: function() {
             dm.add({
                 name: "test1",
-                type: "WebSQL"
+                type: "WebSQL",
+                settings: {
+                    auto: false
+                }
             });
         },
         teardown: function() {
@@ -84,7 +87,10 @@
         setup: function() {
             dm.add({
                 name: "test1",
-                type: "WebSQL"
+                type: "WebSQL",
+                settings: {
+                    auto: false
+                }
             });
         },
         teardown: function() {
@@ -292,10 +298,7 @@
         setup: function() {
             dm.add({
                 name: "test1",
-                type: "WebSQL",
-                settings: {
-                    auto: true
-                }
+                type: "WebSQL"
             });
 
             data = [

@@ -21,7 +21,7 @@
     @param {String} storeName - the name used to reference this particular store
     @param {Object} [settings={}] - the settings to be passed to the adapter
     @param {String} [settings.recordId="id"] - the name of the field used to uniquely identify a "record" in the data
-    @param {Boolean} [settings.auto=false] - set to 'true' to enable 'auto-connect' for read/remove/save/filter
+    @param {Boolean} [settings.auto=true] - set to 'false' to disable 'auto-connect' for read/remove/save/filter
     @param {Object} [settings.crypto] - the crypto settings to be passed to the adapter
     @param {Object} [settings.crypto.agcrypto] - the AeroGear.Crypto object to be used
     @param {Object} [settings.crypto.options] - the specific options for the AeroGear.Crypto encrypt/decrypt methods
@@ -54,7 +54,7 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
 
     // Private Instance vars
     var database,
-        auto = settings.auto;
+        auto = ( settings.auto === undefined || settings.auto ) ? true : false;
 
     // Privileged Methods
     /**

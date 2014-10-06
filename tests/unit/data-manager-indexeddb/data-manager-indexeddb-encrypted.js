@@ -32,7 +32,8 @@
                 name: "test1",
                 type: "IndexedDB",
                 settings: {
-                    agcrypto: AeroGear.Crypto()
+                    agcrypto: AeroGear.Crypto(),
+                    auto: false
                 }
             });
         },
@@ -98,6 +99,7 @@
                 name: "test1",
                 type: "IndexedDB",
                 settings: {
+                    auto: false,
                     agcrypto: AeroGear.Crypto()
                 }
             });
