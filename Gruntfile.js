@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var sh = require('shelljs');
+var path = require('path');
 /*global module:false*/
 module.exports = function(grunt) {
     'use strict';
@@ -152,67 +154,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        shell: {
-            integrationSetup: {
-                command: [
-                    'test -d aerogear-js-integration && rm -r aerogear-js-integration || true',
-                    'git clone https://github.com/aerogear/aerogear-js-integration.git',
-                    'cd aerogear-js-integration',
-                    'cp ../dist/aerogear.js .',
-                    'cp -rf ../node_modules node_modules'
-                ].join('&&'),
-                options: {
-                    stdout: true
-                }
-            },
-            integrationVertxRunner: {
-                command: [
-                    './servers/vertxbustest/server.sh',
-                    'grunt integration-vertx -v',
-                    './servers/vertxbustest/server.sh stop'
-                ].join('&&'),
-                options: {
-                    stdout: true,
-                    execOptions: {
-                        cwd: 'aerogear-js-integration'
-                    }
-                }
-            },
-            integrationActiveMQRunner: {
-                command: [
-                    './servers/activemqtest/server.sh',
-                    'grunt integration-activemq -v',
-                    './servers/activemqtest/server.sh stop'
-                ].join(' && '),
-                options: {
-                    stdout: true,
-                    execOptions: {
-                        cwd: 'aerogear-js-integration'
-                    }
-                }
-            },
-            integrationSimplePushRunner: {
-                command: [
-                    './servers/simplepush/server.sh',
-                    'grunt integration-simplepush -v',
-                    './servers/simplepush/server.sh stop'
-                ].join(' && '),
-                options: {
-                    stdout: true,
-                    execOptions: {
-                        cwd: 'aerogear-js-integration'
-                    }
-                }
-            },
-            docs: {
-                command: [
-                    'jsdoc-aerogear src/ -r -d docs README.md'
-                ].join(' && '),
-                options: {
-                    stdout: true
-                }
-            }
-        },
         watch: {
             authorization: {
                 files: 'src/authorization/**/*.js',
@@ -249,7 +190,8 @@ module.exports = function(grunt) {
         },
         ci: {
             vertx: {},
-            activemq: {}
+            activemq: {},
+            simplepush: {}
         }
     });
 
@@ -286,7 +228,7 @@ module.exports = function(grunt) {
     grunt.registerTask('push', ['concat:push']);
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
-    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'shell:integrationSetup', 'shell:integrationVertxRunner', 'shell:integrationActiveMQRunner', 'shell:integrationSimplePushRunner']);
+    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
     grunt.registerTask('docs',['shell:docs']);
 
     grunt.registerMultiTask('ci', function () {
@@ -301,6 +243,34 @@ module.exports = function(grunt) {
         }, function (err, result, code) {
             done();
         });
+    });
+
+    grunt.registerTask('setupCi', function() {
+        sh.config.silent = !grunt.option('verbose');
+        sh.config.fatal = true;
+        var integrationDir = './aerogear-js-integration/';
+        if (sh.test( '-d', integrationDir )) {
+            grunt.log.debug( 'The ./aerogear-js-integration seems to be cloned already, exiting' );
+        } else {
+            if (!sh.which( 'git' )) {
+                grunt.fail.fatal( 'The task "prepareCi" requires "git" to work properly' );
+                return;
+            }
+            grunt.log.ok('Cloning project to ' + integrationDir + '...');
+            sh.exec( 'git clone https://github.com/aerogear/aerogear-js-integration.git ' + integrationDir );
+        }
+        if (!sh.test( '-d', path.resolve( integrationDir, './node_modules' ))) {
+            if (!sh.which( 'npm' )) {
+                grunt.fail.fatal('The task "prepareCi" requires "npm" to work properly');
+                return;
+            }
+            grunt.log.ok('Installing dependencies...');
+            sh.pushd( integrationDir );
+            sh.exec( 'npm install' );
+            sh.popd();
+        }
+        grunt.log.ok('Copying ./dist/aerogear.js to ' + integrationDir + '...');
+        sh.cp('-f', './dist/aerogear.js', path.resolve( integrationDir, './aerogear.js' ));
     });
 
     // A task to create custom builds of the library based on the 'concat' task
