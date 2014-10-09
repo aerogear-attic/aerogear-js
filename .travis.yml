@@ -2,7 +2,11 @@ language: node_js
 node_js:
   - '0.10'
 before_script:
+  - git clone https://github.com/aerogear/aerogear-js-integration.git
   - npm install -g grunt-cli
+  - pushd aerogear-js-integration; npm install; popd
+script:
+  - grunt travis --verbose
 notifications:
   irc: "irc.freenode.org#aerogear"
 branches:
