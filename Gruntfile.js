@@ -189,9 +189,15 @@ module.exports = function(grunt) {
             }
         },
         ci: {
+            options: {
+                force: true
+            },
             vertx: {},
             activemq: {},
-            simplepush: {}
+            simplepush: {},
+            report: {
+                options: { force: false }
+            }
         }
     });
 
@@ -233,6 +239,9 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('ci', function () {
         var done = this.async();
+        var options = this.options({
+            force: !!grunt.option('force')
+        });
         grunt.util.spawn({
             grunt: true,
             args: ['ci-' + this.target],
@@ -241,6 +250,13 @@ module.exports = function(grunt) {
                 stdio: 'inherit'
             }
         }, function (err, result, code) {
+            if (err) {
+                if (options.force) {
+                    grunt.log.ok('Integration tests unstable, continuing...');
+                } else {
+                    grunt.fail.fatal('Integration tests failed');
+                }
+            }
             done();
         });
     });
