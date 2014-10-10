@@ -77,19 +77,17 @@
   ],
   "keywords": [],
   "devDependencies": {
-    "express": "~3.3.5",
-    "grunt-contrib-concat": "~0.1.2",
-    "grunt-contrib-connect": "0.3.0",
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-uglify": "~0.1.2",
-    "grunt-contrib-qunit": "~0.1.1",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-shell": "0.3.1",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.13",
-    "request": "~2.27.0",
+    "grunt-contrib-concat": "~0.1.2",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-qunit": "~0.5.2",
+    "grunt-contrib-uglify": "~0.6.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-shell": "0.3.1",
     "jsdoc-aerogear": "~3.2.0-dev",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "request": "~2.45.0"
   },
   "scripts": {
     "test": "grunt travis --verbose"
