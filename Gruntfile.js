@@ -217,7 +217,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-shell');
 
     // Default task
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
@@ -235,7 +234,10 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('docs',['shell:docs']);
+
+    grunt.registerTask('docs', function() {
+        sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
+    });
 
     grunt.registerMultiTask('ci', function () {
         var done = this.async();
