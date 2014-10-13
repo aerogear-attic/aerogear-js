@@ -232,18 +232,13 @@
   uuid.nodeRNG = nodeRNG;
   uuid.whatwgRNG = whatwgRNG;
 
-  if (typeof(module) != 'undefined') {
-    // Play nice with node.js
-    module.exports = uuid;
-  } else {
-    // Play nice with browsers
-    var _previousRoot = _global.uuid;
+  // Play nice with browsers
+  var _previousRoot = _global.uuid;
 
-    // **`noConflict()` - (browser only) to reset global 'uuid' var**
-    uuid.noConflict = function() {
-      _global.uuid = _previousRoot;
-      return uuid;
-    }
-    _global.uuid = uuid;
+  // **`noConflict()` - (browser only) to reset global 'uuid' var**
+  uuid.noConflict = function() {
+    _global.uuid = _previousRoot;
+    return uuid;
   }
+  _global.uuid = uuid;
 }());
