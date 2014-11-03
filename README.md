@@ -71,7 +71,7 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 ### Authorization
 
 * **OAuth2**
-    * [jQuery](http://jquery.com/download/)
+    * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 
 ### Crypto
 * [SJCL](https://github.com/bitwiseshiftleft/sjcl) - bundled w/ AeroGear.js
@@ -79,13 +79,13 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 ### DataManager
 
 * **Memory**
-    * [jQuery](http://jquery.com/download/)
+    * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 * **SessionLocal**
-    * [jQuery](http://jquery.com/download/)
+    * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 * **IndexedDB**
-    * [jQuery](http://jquery.com/download/)
+    * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 * **WebSQL**
-    * [jQuery](http://jquery.com/download/)
+    * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 
 ### Notifier
 
@@ -104,7 +104,7 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 * [SockJS](http://cdn.sockjs.org/)
 
 ### UnifiedPush
-* [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise) - Bundled w/ AeroGear.js
+* [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 
 ## Building
 - - -
