@@ -152,6 +152,20 @@ module.exports = function(grunt) {
                         ascii_only: true
                     }
                 }
+            },
+            es6: {
+                options: {
+                    mangle: false,
+                    compress: false,
+                    beautify: true,
+                    preserveComments: true,
+                    sourceMap: true,
+                    banner: grunt.file.read('node_modules/grunt-microlib/assets/loader.js') + '\n(function(globals) {\n',
+                    footer: '\n' + grunt.file.read('src/globals.js') + '\n})(window);'
+                },
+                files: {
+                    'dist/aerogear.core.es5.js': ['dist/aerogear.core.amd.js']
+                }
             }
         },
         watch: {
@@ -234,10 +248,13 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
+    grunt.registerTask('es5', ['transpile', 'uglify:es6', 'multi-stage-sourcemap']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
     });
+
+    grunt.loadTasks('tasks');
 
     grunt.registerMultiTask('ci', function () {
         var done = this.async();
