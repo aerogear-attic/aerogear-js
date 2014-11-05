@@ -25,7 +25,7 @@
  */
 function Core() {
   // Prevent instantiation of this base class
-  if ( this instanceof AeroGear.Core ) {
+  if ( this instanceof Core ) {
     throw "Invalid instantiation of base class AeroGear.Core";
   }
 
