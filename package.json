@@ -81,6 +81,7 @@
     "es6-module-transpiler-amd-formatter": "^0.2.3",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.13",
+    "grunt-concat-sourcemap": "^0.4.3",
     "grunt-contrib-concat": "~0.1.2",
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-qunit": "~0.5.2",

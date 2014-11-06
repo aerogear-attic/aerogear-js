@@ -6,3 +6,6 @@ globals.AeroGear = {
   Authorization: Authorization,
   extend: Core.extend
 };
+
+})(window);
+

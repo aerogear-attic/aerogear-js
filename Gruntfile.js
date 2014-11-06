@@ -152,22 +152,17 @@ module.exports = function(grunt) {
                         ascii_only: true
                     }
                 }
-            },
-            es6: {
-                options: {
-                    mangle: false,
-                    compress: false,
-                    beautify: true,
-                    preserveComments: true,
-                    sourceMap: true,
-                    banner: grunt.file.read('node_modules/grunt-microlib/assets/loader.js') + '\n(function(globals) {\n',
-                    footer: '\n' + grunt.file.read('src/globals.js') + '\n})(window);'
-                },
+            }
+        },
+        concat_sourcemap: {
+            main: {
                 files: {
                     'dist/aerogear.js': [
+                        'src/microlib/banner.js',
                         'dist/aerogear.core.js',
                         'dist/aerogear.authz.js',
-                        'dist/oauth2.js'
+                        'dist/oauth2.js',
+                        'src/microlib/footer.js'
                     ]
                 }
             }
@@ -235,6 +230,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-concat-sourcemap');
 
     // Default task
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
