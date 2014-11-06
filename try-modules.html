@@ -1,6 +1,6 @@
 <html>
 <head>
-    <script type="application/javascript" src="dist/aerogear.core.es5.js"></script>
+    <script type="application/javascript" src="dist/aerogear.js"></script>
 </head>
 <body>
 
@@ -11,6 +11,8 @@
     var button = document.getElementsByTagName('button')[0];
     button.onclick = function() {
         AeroGear.extend({}, {});
+
+        console.log(AeroGear.Authorization());
     }
 </script>
 </body>

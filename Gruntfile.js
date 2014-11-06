@@ -164,7 +164,11 @@ module.exports = function(grunt) {
                     footer: '\n' + grunt.file.read('src/globals.js') + '\n})(window);'
                 },
                 files: {
-                    'dist/aerogear.core.es5.js': ['dist/aerogear.core.amd.js']
+                    'dist/aerogear.js': [
+                        'dist/aerogear.core.js',
+                        'dist/aerogear.authz.js',
+                        'dist/oauth2.js'
+                    ]
                 }
             }
         },

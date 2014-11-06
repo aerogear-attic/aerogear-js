@@ -7,11 +7,13 @@ module.exports = function ( grunt ) {
 
   grunt.registerTask('transpile', function() {
     var container = new Container({
-      resolvers: [new FileResolver(['src'])],
+      resolvers: [new FileResolver(['src', 'src/authorization', 'src/authorization/adapters'])],
       formatter: new AMDFormatter()
     });
 
-    container.getModule('aerogear.core');
-    container.write('dist/aerogear.core.amd.js');
+    container.getModule('aerogear.core.js');
+    container.getModule('aerogear.authz.js');
+    container.getModule('oauth2.js');
+    container.write('dist/');
   });
 }

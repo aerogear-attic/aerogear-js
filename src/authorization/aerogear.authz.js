@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import Core from 'aerogear.core';
+
 /**
     The AeroGear.Authorization namespace provides an authentication API.
     @status Experimental
@@ -26,14 +29,14 @@
     // Create an empty authorizer
     var authz = AeroGear.Authorization();
  */
-AeroGear.Authorization = function( config ) {
+function Authorization ( config ) {
     // Allow instantiation without using new
     if ( !( this instanceof AeroGear.Authorization ) ) {
         return new AeroGear.Authorization( config );
     }
 
     // Super constructor
-    AeroGear.Core.call( this );
+    Core.call( this );
 
     this.lib = "Authorization";
     this.type = config ? config.type || "OAuth2" : "OAuth2";
@@ -49,11 +52,13 @@ AeroGear.Authorization = function( config ) {
     this.add( config );
 };
 
-AeroGear.Authorization.prototype = AeroGear.Core;
-AeroGear.Authorization.constructor = AeroGear.Authorization;
+Authorization.prototype = Core;
+Authorization.constructor = Core.Authorization;
 
 /**
     The adapters object is provided so that adapters can be added to the AeroGear.Authorization namespace dynamically and still be accessible to the add method
     @augments AeroGear.Authorization
  */
-AeroGear.Authorization.adapters = {};
+Authorization.adapters = {};
+
+export default Authorization;

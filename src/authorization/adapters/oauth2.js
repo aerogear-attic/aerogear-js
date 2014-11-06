@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import { Authorization } from 'aerogear.authz';
+
 /**
     The OAuth2 adapter is the default type used when creating a new authorization module. It uses AeroGear.ajax to communicate with the server.
     This constructor is instantiated when the "Authorizer.add()" method is called
@@ -40,7 +43,7 @@
         }
     });
  */
-AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
+Authorization.adapters.OAuth2 = function( name, settings ) {
     // Allow instantiation without using new
     if ( !( this instanceof AeroGear.Authorization.adapters.OAuth2 ) ) {
         return new AeroGear.Authorization.adapters.OAuth2( name, settings );
@@ -180,7 +183,7 @@ AeroGear.Authorization.adapters.OAuth2 = function( name, settings ) {
         });
 
  */
-AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryString ) {
+Authorization.adapters.OAuth2.prototype.validate = function( queryString ) {
 
     var that = this,
         parsedQuery = this.parseQueryString( queryString ),
@@ -251,7 +254,7 @@ AeroGear.Authorization.adapters.OAuth2.prototype.validate = function( queryStrin
             ...
         });
  */
-AeroGear.Authorization.adapters.OAuth2.prototype.execute = function( options ) {
+Authorization.adapters.OAuth2.prototype.execute = function( options ) {
     options = options || {};
     var url = options.url + "?access_token=" + this.getAccessToken(),
         contentType = "application/x-www-form-urlencoded";
@@ -263,3 +266,5 @@ AeroGear.Authorization.adapters.OAuth2.prototype.execute = function( options ) {
         })
         .catch( this.enrichErrorAndRethrow );
 };
+
+export default Authorization.adapters.OAuth2;
