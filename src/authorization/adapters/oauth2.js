@@ -14,7 +14,10 @@
 * limitations under the License.
 */
 
+import { extend } from 'aerogear.core';
+import ajax from 'aerogear.ajax';
 import { Authorization } from 'aerogear.authz';
+
 
 /**
     The OAuth2 adapter is the default type used when creating a new authorization module. It uses AeroGear.ajax to communicate with the server.
@@ -45,8 +48,8 @@ import { Authorization } from 'aerogear.authz';
  */
 Authorization.adapters.OAuth2 = function( name, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Authorization.adapters.OAuth2 ) ) {
-        return new AeroGear.Authorization.adapters.OAuth2( name, settings );
+    if ( !( this instanceof Authorization.adapters.OAuth2 ) ) {
+        return new Authorization.adapters.OAuth2( name, settings );
     }
 
     settings = settings || {};
@@ -123,7 +126,7 @@ Authorization.adapters.OAuth2 = function( name, settings ) {
      */
     this.enrichErrorAndRethrow = function( err ) {
         err = err || {};
-        throw AeroGear.extend( err, { authURL: authEndpoint } );
+        throw extend( err, { authURL: authEndpoint } );
     };
 
     /**
@@ -200,7 +203,7 @@ Authorization.adapters.OAuth2.prototype.validate = function( queryString ) {
         }
 
         if( that.getValidationEndpoint() ) {
-            AeroGear.ajax({ url: that.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token })
+            ajax({ url: that.getValidationEndpoint() + "?access_token=" + parsedQuery.access_token })
                 .then( function( response ) {
                     // Must Check the audience field that is returned.  This should be the same as the registered clientID
                     // This value is a JSON object that is in xhr.response
@@ -259,7 +262,7 @@ Authorization.adapters.OAuth2.prototype.execute = function( options ) {
     var url = options.url + "?access_token=" + this.getAccessToken(),
         contentType = "application/x-www-form-urlencoded";
 
-    return AeroGear.ajax({
+    return ajax({
             url: url,
             type: options.type,
             contentType: contentType

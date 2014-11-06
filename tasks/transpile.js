@@ -12,6 +12,7 @@ module.exports = function ( grunt ) {
     });
 
     container.getModule('aerogear.core.js');
+    container.getModule('aerogear.ajax.js');
     container.getModule('aerogear.authz.js');
     container.getModule('oauth2.js');
     container.write('dist/');

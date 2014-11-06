@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-import Core from 'aerogear.core';
+import { AeroGear, Core } from 'aerogear.core';
 
 /**
     The AeroGear.Authorization namespace provides an authentication API.
@@ -31,8 +31,8 @@ import Core from 'aerogear.core';
  */
 function Authorization ( config ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Authorization ) ) {
-        return new AeroGear.Authorization( config );
+    if ( !( this instanceof Authorization ) ) {
+        return new Authorization( config );
     }
 
     // Super constructor
@@ -61,4 +61,6 @@ Authorization.constructor = Core.Authorization;
  */
 Authorization.adapters = {};
 
-export default Authorization;
+AeroGear.Authorization = Authorization;
+
+export { Authorization };

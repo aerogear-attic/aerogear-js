@@ -46,14 +46,14 @@ function Core() {
       return this;
     } else if ( typeof config === "string" ) {
       // config is a string so use default adapter type
-      collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config, this.config );
+      collection[ config ] = Core[ this.lib ].adapters[ this.type ]( config, this.config );
     } else if ( Array.isArray( config ) ) {
       // config is an array so loop through each item in the array
       for ( i = 0; i < config.length; i++ ) {
         current = config[ i ];
 
         if ( typeof current === "string" ) {
-          collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current, this.config );
+          collection[ current ] = Core[ this.lib ].adapters[ this.type ]( current, this.config );
         } else {
           if( current.name ) {
 
@@ -124,7 +124,7 @@ function Core() {
  @private
  @method
  */
-Core.extend = function() {
+var extend = function() {
   var name, i, source,
     target = arguments[ 0 ];
   for( i=1; i<arguments.length; i++ ) {
@@ -136,4 +136,9 @@ Core.extend = function() {
   return target;
 };
 
-export default Core;
+var AeroGear = {
+  Core: Core,
+  extend: extend
+}
+
+export { Core, AeroGear, extend }

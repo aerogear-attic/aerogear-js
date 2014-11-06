@@ -160,6 +160,7 @@ module.exports = function(grunt) {
                     'dist/aerogear.js': [
                         'src/microlib/banner.js',
                         'dist/aerogear.core.js',
+                        'dist/aerogear.ajax.js',
                         'dist/aerogear.authz.js',
                         'dist/oauth2.js',
                         'src/microlib/footer.js'
@@ -248,7 +249,7 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['transpile', 'uglify:es6', 'multi-stage-sourcemap']);
+    grunt.registerTask('es5', ['transpile', 'concat_sourcemap']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
