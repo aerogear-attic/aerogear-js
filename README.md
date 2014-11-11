@@ -108,6 +108,13 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 ### UnifiedPush
 * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 
+### Diff Sync
+* **Diff Match Patch**
+    * [Google Diff Match Patch](https://code.google.com/p/google-diff-match-patch/)
+
+* **JSON Patch**
+    * [JSON Patch](https://github.com/Starcounter-Jack/JSON-Patch)
+
 ## Building
 - - -
 
