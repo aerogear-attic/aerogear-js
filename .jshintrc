@@ -20,6 +20,7 @@
         "Paho": true,
         "File": true,
         "sjcl": true,
-        "crypto": true
+        "crypto": true,
+        "diff_match_patch": true
     }
 }
