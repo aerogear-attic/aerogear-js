@@ -77,8 +77,6 @@
   ],
   "keywords": [],
   "devDependencies": {
-    "es6-module-transpiler": "^0.9.3",
-    "es6-module-transpiler-amd-formatter": "^0.2.3",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.13",
     "grunt-concat-sourcemap": "^0.4.3",
@@ -87,11 +85,11 @@
     "grunt-contrib-qunit": "~0.5.2",
     "grunt-contrib-uglify": "https://github.com/lfryc/grunt-contrib-uglify/tarball/source-map-with-footer",
     "grunt-contrib-watch": "~0.6.1",
+    "grunt-es6-module-transpiler": "https://github.com/lfryc/grunt-es6-module-transpiler/tarball/amd-formatter",
     "grunt-microlib": "^0.1.1",
     "grunt-shell": "0.3.1",
     "jsdoc-aerogear": "~3.2.0-dev",
     "lodash": "~2.4.1",
-    "multi-stage-sourcemap": "https://github.com/lfryc/multi-stage-sourcemap/tarball/source-content",
     "request": "~2.27.0",
     "shelljs": "^0.3.0"
   },

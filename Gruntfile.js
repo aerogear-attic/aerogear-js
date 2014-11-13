@@ -154,6 +154,19 @@ module.exports = function(grunt) {
                 }
             }
         },
+        transpile: {
+            all: {
+                formatter: 'amd',
+                searchPath: ['src', 'src/authorization', 'src/authorization/adapters'],
+                modules: [
+                    'aerogear.core.js',
+                    'aerogear.ajax.js',
+                    'aerogear.authz.js',
+                    'oauth2.js'
+                ],
+                destination: 'dist/'
+            }
+        },
         concat_sourcemap: {
             main: {
                 files: {
@@ -231,6 +244,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-es6-module-transpiler');
     grunt.loadNpmTasks('grunt-concat-sourcemap');
 
     // Default task
@@ -249,7 +263,7 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['transpile', 'concat_sourcemap']);
+    grunt.registerTask('es5', ['transpile:all', 'concat_sourcemap']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
