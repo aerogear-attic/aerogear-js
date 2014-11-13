@@ -88,6 +88,7 @@
     "grunt-es6-module-transpiler": "https://github.com/lfryc/grunt-es6-module-transpiler/tarball/amd-formatter",
     "grunt-microlib": "^0.1.1",
     "grunt-shell": "0.3.1",
+    "grunt-template": "^0.2.3",
     "jsdoc-aerogear": "~3.2.0-dev",
     "lodash": "~2.4.1",
     "request": "~2.27.0",

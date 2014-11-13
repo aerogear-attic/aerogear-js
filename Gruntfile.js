@@ -157,18 +157,37 @@ module.exports = function(grunt) {
         transpile: {
             all: {
                 formatter: 'amd',
-                searchPath: ['src', 'src/authorization', 'src/authorization/adapters'],
+                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto'],
                 modules: [
                     'aerogear.core.js',
                     'aerogear.ajax.js',
                     'aerogear.authz.js',
-                    'oauth2.js'
+                    'oauth2.js',
+                    'aerogear.crypto.js'
                 ],
                 destination: 'dist/'
             }
         },
+        template: {
+            all: {
+                options: {
+                    data: {
+                        modules: joinModules([
+                            'aerogear.core',
+                            'aerogear.ajax',
+                            'aerogear.authz',
+                            'oauth2',
+                            'aerogear.crypto'
+                        ])
+                    }
+                },
+                files: {
+                    '.tmp/microlib/footer.js': ['src/microlib/footer.js']
+                }
+            }
+        },
         concat_sourcemap: {
-            main: {
+            all: {
                 files: {
                     'dist/aerogear.js': [
                         'src/microlib/banner.js',
@@ -176,7 +195,8 @@ module.exports = function(grunt) {
                         'dist/aerogear.ajax.js',
                         'dist/aerogear.authz.js',
                         'dist/oauth2.js',
-                        'src/microlib/footer.js'
+                        'dist/aerogear.crypto.js',
+                        '.tmp/microlib/footer.js'
                     ]
                 }
             }
@@ -228,6 +248,10 @@ module.exports = function(grunt) {
         }
     });
 
+    function joinModules(modules) {
+        return "['" + modules.join("', '") + "']";
+    }
+
     // IIFE wrapper task
     grunt.registerTask('iife', function( custom ) {
         var fs = require('fs'),
@@ -245,6 +269,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-es6-module-transpiler');
+    grunt.loadNpmTasks('grunt-template');
     grunt.loadNpmTasks('grunt-concat-sourcemap');
 
     // Default task
@@ -263,7 +288,7 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['transpile:all', 'concat_sourcemap']);
+    grunt.registerTask('es5', ['transpile:all', 'template:all', 'concat_sourcemap:all']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');

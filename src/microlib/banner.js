@@ -1,4 +1,4 @@
-var define, requireModule;
+var define, requireModule, requireModules;
 
 (function() {
   var registry = {}, seen = {};
@@ -31,6 +31,13 @@ var define, requireModule;
 
     var value = callback.apply(this, reified);
     return seen[name] = exports || value;
+  };
+
+  requireModules = function(names) {
+    names = names || [];
+    names.forEach(function(name) {
+      requireModule(name);
+    });
   };
 })();
 

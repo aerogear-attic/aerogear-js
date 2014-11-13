@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
 /**
  * SHA256 test vectors
@@ -365,4 +365,4 @@ test( "Decrypt with the wrong key", function() {
     }, "Should throw an exception for decryption with the wrong key");
 });
 
-})( jQuery );
+})();
