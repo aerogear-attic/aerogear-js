@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         },
         compile: {
             options: {
-                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters' ]
+                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters', 'src/simplepush' ]
             },
             all: {
                 modules: [
@@ -50,7 +50,8 @@ module.exports = function(grunt) {
                     'mqttws',
                     'simplePush',
                     'stompws',
-                    'vertx'
+                    'vertx',
+                    'aerogear.simplepush'
                 ],
                 destination: [
                     'dist/aerogear.js'

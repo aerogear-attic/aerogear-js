@@ -1,4 +1,4 @@
-(function ($) {
+(function () {
 
     module("SimplePush Client - Configuration");
 
@@ -34,4 +34,4 @@
         equal(client.simpleNotifier instanceof AeroGear.Notifier.adapters.SimplePush, true, "SimplePush Notifier is created");
     });
 
-})(jQuery);
+})();

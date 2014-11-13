@@ -13,7 +13,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, $, undefined ) {
+
+import { AeroGear } from 'aerogear.core';
+import Notifier from 'aerogear.notifier';
+import 'simplePush';
+
     /**
         The SimplePushClient object is used as a sort of polyfill/implementation of the SimplePush spec implemented in Firefox OS and the Firefox browser and provides a mechanism for subscribing to and acting on push notifications in a web application. See https://wiki.mozilla.org/WebAPI/SimplePush
         @status Experimental
@@ -32,10 +36,10 @@
             onClose: myCloseCallback
         });
      */
-    AeroGear.SimplePushClient = function( options ) {
+    function SimplePushClient( options ) {
         // Allow instantiation without using new
-        if ( !( this instanceof AeroGear.SimplePushClient ) ) {
-            return new AeroGear.SimplePushClient( options );
+        if ( !( this instanceof SimplePushClient ) ) {
+            return new SimplePushClient( options );
         }
 
         this.options = options || {};
@@ -155,10 +159,10 @@
                         });
                      */
                     navigator.setMessageHandler = navigator.mozSetMessageHandler = function( messageType, callback ) {
-                        $( navigator.push ).on( messageType, function( event ) {
+                        navigator.push['on' + messageType] = function( event ) {
                             var message = event.message;
                             callback.call( this, message );
-                        });
+                        };
                     };
 
                     if ( spClient.options.onConnect ) {
@@ -171,7 +175,7 @@
             };
 
         // Create a Notifier connection to the Push Network
-        spClient.simpleNotifier = AeroGear.Notifier({
+        spClient.simpleNotifier = Notifier({
             name: "agPushNetwork",
             type: "SimplePush",
             settings: {
@@ -182,4 +186,5 @@
 
         spClient.simpleNotifier.connect( connectOptions );
     };
-})( AeroGear, jQuery );
+
+AeroGear.SimplePushClient = SimplePushClient;
