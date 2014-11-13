@@ -46,14 +46,14 @@ function Core() {
       return this;
     } else if ( typeof config === "string" ) {
       // config is a string so use default adapter type
-      collection[ config ] = Core[ this.lib ].adapters[ this.type ]( config, this.config );
+      collection[ config ] = AeroGear[ this.lib ].adapters[ this.type ]( config, this.config );
     } else if ( Array.isArray( config ) ) {
       // config is an array so loop through each item in the array
       for ( i = 0; i < config.length; i++ ) {
         current = config[ i ];
 
         if ( typeof current === "string" ) {
-          collection[ current ] = Core[ this.lib ].adapters[ this.type ]( current, this.config );
+          collection[ current ] = AeroGear[ this.lib ].adapters[ this.type ]( current, this.config );
         } else {
           if( current.name ) {
 

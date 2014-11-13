@@ -16,7 +16,7 @@
 
 import { extend } from 'aerogear.core';
 import ajax from 'aerogear.ajax';
-import { Authorization } from 'aerogear.authz';
+import Authorization from 'aerogear.authz';
 
 
 /**

@@ -63,4 +63,4 @@ Authorization.adapters = {};
 
 AeroGear.Authorization = Authorization;
 
-export { Authorization };
+export default Authorization;
