@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         },
         compile: {
             options: {
-                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters']
+                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters' ]
             },
             all: {
                 modules: [
@@ -39,12 +39,18 @@ module.exports = function(grunt) {
                     'aerogear.crypto',
                     'aerogear.unifiedpush',
                     'aerogear.datamanager',
-                    'base',
+                    'aerogear.datamanager.base',
                     'memory',
                     'session-local',
                     'indexeddb',
                     'websql',
-                    'indexeddb'
+                    'indexeddb',
+                    'aerogear.notifier',
+                    'aerogear.notifier.base',
+                    'mqttws',
+                    'simplePush',
+                    'stompws',
+                    'vertx'
                 ],
                 destination: [
                     'dist/aerogear.js'

@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
 module( "Notifier: SimplePush" );
 
@@ -59,4 +59,4 @@ test( "remove method", function() {
     equal( sp.clients.removeTest, undefined, "Removed client is really gone" );
 });
 
-})( jQuery );
+})();

@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
 module( "Notifier: STOMP Websocket" );
 
@@ -59,4 +59,4 @@ test( "remove method", function() {
     equal( stomp.clients.removeTest, undefined, "Removed client is really gone" );
 });
 
-})( jQuery );
+})();

@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
 module( "Notifier: MQTT Websocket" );
 
@@ -60,4 +60,4 @@ test( "remove method", function() {
     equal( mqtt.clients.removeTest, undefined, "Removed client is really gone" );
 });
 
-})( jQuery );
+})();

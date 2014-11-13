@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
 module( "Notifier: Vert.x" );
 
@@ -70,4 +70,4 @@ test( "remove method", function() {
     equal( vertx.clients.removeTest, undefined, "Removed client is really gone" );
 });
 
-})( jQuery );
+})();

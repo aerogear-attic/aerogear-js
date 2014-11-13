@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import { AeroGear, Core } from 'aerogear.core';
+
 /**
     The AeroGear.Notifier namespace provides a messaging API. Through the use of adapters, this library provides common methods like connect, disconnect, subscribe, unsubscribe and publish.
     @status Stable
@@ -61,13 +64,13 @@
         }
     ]);
  */
-AeroGear.Notifier = function( config ) {
+function Notifier( config ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Notifier ) ) {
-        return new AeroGear.Notifier( config );
+    if ( !( this instanceof Notifier ) ) {
+        return new Notifier( config );
     }
     // Super Constructor
-    AeroGear.Core.call( this );
+    Core.call( this );
 
     this.lib = "Notifier";
     this.type = config ? config.type || "vertx" : "vertx";
@@ -83,19 +86,23 @@ AeroGear.Notifier = function( config ) {
     this.add( config );
 };
 
-AeroGear.Notifier.prototype = AeroGear.Core;
-AeroGear.Notifier.constructor = AeroGear.Notifier;
+Notifier.prototype = Core;
+Notifier.constructor = Notifier;
 
 /**
     The adapters object is provided so that adapters can be added to the AeroGear.Notifier namespace dynamically and still be accessible to the add method
     @augments AeroGear.Notifier
  */
-AeroGear.Notifier.adapters = {};
+Notifier.adapters = {};
 
 /**
     A set of constants used to track the state of a client connection.
  */
-AeroGear.Notifier.CONNECTING = 0;
-AeroGear.Notifier.CONNECTED = 1;
-AeroGear.Notifier.DISCONNECTING = 2;
-AeroGear.Notifier.DISCONNECTED = 3;
+Notifier.CONNECTING = 0;
+Notifier.CONNECTED = 1;
+Notifier.DISCONNECTING = 2;
+Notifier.DISCONNECTED = 3;
+
+AeroGear.Notifier = Notifier;
+
+export default Notifier;
