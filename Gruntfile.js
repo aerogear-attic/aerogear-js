@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         },
         compile: {
             options: {
-                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto']
+                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush']
             },
             all: {
                 modules: [
@@ -36,7 +36,8 @@ module.exports = function(grunt) {
                     'aerogear.ajax',
                     'aerogear.authz',
                     'oauth2',
-                    'aerogear.crypto'
+                    'aerogear.crypto',
+                    'aerogear.unifiedpush'
                 ],
                 destination: [
                     'dist/aerogear.js'

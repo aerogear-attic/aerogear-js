@@ -1,4 +1,4 @@
-(function( $ ) {
+(function() {
 
     module( "UnifiedPush Client - General" );
 
@@ -258,4 +258,4 @@
         equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
 
     });
-})( jQuery );
+})();

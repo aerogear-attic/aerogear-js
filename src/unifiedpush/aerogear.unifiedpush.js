@@ -13,7 +13,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-(function( AeroGear, undefined ) {
+
+import { AeroGear } from 'aerogear.core';
+import ajax from 'aerogear.ajax';
+
     /**
         The UnifiedPushClient object is used to perfom register and unregister operations against the AeroGear UnifiedPush server.
         @status Experimental
@@ -45,7 +48,7 @@
         client.registerWithPushServer( settings );
 
      */
-    AeroGear.UnifiedPushClient = function( variantID, variantSecret, pushServerURL ) {
+    function UnifiedPushClient( variantID, variantSecret, pushServerURL ) {
 
         // we require all arguments to be present, otherwise it does not work
         if ( !variantID || !variantSecret || !pushServerURL ) {
@@ -53,8 +56,8 @@
         }
 
         // Allow instantiation without using new
-        if ( !( this instanceof AeroGear.UnifiedPushClient ) ) {
-            return new AeroGear.UnifiedPushClient( variantID, variantSecret, pushServerURL );
+        if ( !( this instanceof UnifiedPushClient ) ) {
+            return new UnifiedPushClient( variantID, variantSecret, pushServerURL );
         }
 
         pushServerURL = pushServerURL.substr(-1) === '/' ? pushServerURL : pushServerURL + '/';
@@ -82,7 +85,7 @@
             // Make sure that settings.metadata.categories is an Array
             metadata.categories = Array.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
 
-            return AeroGear.ajax({
+            return ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
@@ -100,7 +103,7 @@
             @returns {Object} An ES6 Promise created by AeroGear.ajax
          */
         this.unregisterWithPushServer = function( deviceToken ) {
-            return AeroGear.ajax({
+            return ajax({
                 contentType: "application/json",
                 dataType: "json",
                 type: "DELETE",
@@ -112,4 +115,6 @@
         };
     };
 
-})( AeroGear );
+AeroGear.UnifiedPushClient = UnifiedPushClient;
+
+export { UnifiedPushClient };
