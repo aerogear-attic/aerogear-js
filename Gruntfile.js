@@ -26,6 +26,23 @@ module.exports = function(grunt) {
                 '* limitations under the License.<%= "\\n" %>' +
                 '*/<%= "\\n" %>'
         },
+        compile: {
+            options: {
+                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto']
+            },
+            all: {
+                modules: [
+                    'aerogear.core',
+                    'aerogear.ajax',
+                    'aerogear.authz',
+                    'oauth2',
+                    'aerogear.crypto'
+                ],
+                destination: [
+                    'dist/aerogear.js'
+                ]
+            }
+        },
         concat: {
             options: {
                 stripBanners: true,
@@ -154,53 +171,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        transpile: {
-            all: {
-                formatter: 'amd',
-                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto'],
-                modules: [
-                    'aerogear.core.js',
-                    'aerogear.ajax.js',
-                    'aerogear.authz.js',
-                    'oauth2.js',
-                    'aerogear.crypto.js'
-                ],
-                destination: 'dist/'
-            }
-        },
-        template: {
-            all: {
-                options: {
-                    data: {
-                        modules: joinModules([
-                            'aerogear.core',
-                            'aerogear.ajax',
-                            'aerogear.authz',
-                            'oauth2',
-                            'aerogear.crypto'
-                        ])
-                    }
-                },
-                files: {
-                    '.tmp/microlib/footer.js': ['src/microlib/footer.js']
-                }
-            }
-        },
-        concat_sourcemap: {
-            all: {
-                files: {
-                    'dist/aerogear.js': [
-                        'src/microlib/banner.js',
-                        'dist/aerogear.core.js',
-                        'dist/aerogear.ajax.js',
-                        'dist/aerogear.authz.js',
-                        'dist/oauth2.js',
-                        'dist/aerogear.crypto.js',
-                        '.tmp/microlib/footer.js'
-                    ]
-                }
-            }
-        },
         watch: {
             authorization: {
                 files: 'src/authorization/**/*.js',
@@ -248,10 +218,6 @@ module.exports = function(grunt) {
         }
     });
 
-    function joinModules(modules) {
-        return "['" + modules.join("', '") + "']";
-    }
-
     // IIFE wrapper task
     grunt.registerTask('iife', function( custom ) {
         var fs = require('fs'),
@@ -288,13 +254,55 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['transpile:all', 'template:all', 'concat_sourcemap:all']);
+    grunt.registerTask('es5', ['compile:all']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
     });
 
-    grunt.loadTasks('tasks');
+    grunt.registerMultiTask('compile', 'Generated configuration for transpile, template and concat_sourcemap tasks and then run them', function() {
+        var
+          target = this.target,
+          options = this.options(),
+          modules = this.data.modules,
+          searchPath = options.searchPath,
+          destination = this.data.destination,
+          filesToLoad, filesToConcat, modulesToLoad;
+
+        filesToLoad = modules.map( function( module ) {
+            return module + '.js';
+        });
+        modulesToLoad = "['" + modules.join("', '") + "']";
+        filesToConcat = modules.map( function( module ) {
+            return 'dist/' + module + '.js';
+        });
+        filesToConcat = ['src/microlib/banner.js'].concat(filesToConcat, ['.tmp/microlib/footer.js']);
+
+        var config = {
+            transpile: {},
+            template: {},
+            concat_sourcemap: {}
+        };
+        config.transpile[target] = {
+            formatter: 'amd',
+            searchPath: searchPath,
+            modules: filesToLoad,
+            destination: 'dist/'
+        };
+        config.template[target] = {
+            files: { '.tmp/microlib/footer.js': ['src/microlib/footer.js'] },
+            options: {
+                data: {
+                    modules: modulesToLoad
+                }
+            }
+        };
+        config.concat_sourcemap[target] = { files: {} };
+        config.concat_sourcemap[target].files[destination] = filesToConcat;
+
+        grunt.config.merge( config );
+        grunt.task.run(['transpile:' + target, 'template:' + target, 'concat_sourcemap:' + target]);
+    });
 
     grunt.registerMultiTask('ci', function () {
         var done = this.async();
