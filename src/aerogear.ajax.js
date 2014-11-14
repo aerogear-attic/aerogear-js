@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-import { extend } from 'aerogear.core';
+import { AeroGear, extend } from 'aerogear.core';
 
 /**
     The AeroGear.ajax is used to perform Ajax requests.
@@ -137,5 +137,7 @@ var ajax = function( settings ) {
         request.send( data );
     });
 };
+
+AeroGear.ajax = ajax;
 
 export default ajax;

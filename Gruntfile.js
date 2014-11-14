@@ -30,7 +30,7 @@ module.exports = function(grunt) {
             options: {
                 searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters', 'src/simplepush' ]
             },
-            all: {
+            dist: {
                 modules: [
                     'aerogear.core',
                     'aerogear.ajax',
@@ -55,6 +55,11 @@ module.exports = function(grunt) {
                 ],
                 destination: [
                     'dist/aerogear.js'
+                ],
+                externalSources: [
+                    'external/uuid/uuid.js',
+                    'external/base64/base64.js',
+                    'external/crypto/sjcl.js'
                 ]
             }
         },
@@ -268,8 +273,8 @@ module.exports = function(grunt) {
     grunt.registerTask('push', ['concat:push']);
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
-    grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['compile:all']);
+    grunt.registerTask('travis', ['jshint', 'qun:-*it', 'concat:dist', 'setupCi', 'ci']);
+    grunt.registerTask('es5', ['compile:dist']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
@@ -282,6 +287,7 @@ module.exports = function(grunt) {
           modules = this.data.modules,
           searchPath = options.searchPath,
           destination = this.data.destination,
+          externalSources = this.data.externalSources,
           filesToLoad, filesToConcat, modulesToLoad;
 
         filesToLoad = modules.map( function( module ) {
@@ -291,7 +297,7 @@ module.exports = function(grunt) {
         filesToConcat = modules.map( function( module ) {
             return 'dist/' + module + '.js';
         });
-        filesToConcat = ['src/microlib/banner.js'].concat(filesToConcat, ['.tmp/microlib/footer.js']);
+        filesToConcat = externalSources.concat(['src/microlib/banner.js'], filesToConcat, ['.tmp/microlib/footer.js']);
 
         var config = {
             transpile: {},
