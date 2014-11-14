@@ -1,3 +1,5 @@
+import Crypto from 'aerogear.crypto';
+
 (function() {
 
 /**
@@ -44,8 +46,8 @@ module( "PBKDF2 - Password-based key derivation" );
 test( "Password validation with random salt provided", function() {
 
     var hex = sjcl.codec.hex,
-        rawPassword = AeroGear.Crypto().deriveKey( PASSWORD ),
-        newRawPassword = AeroGear.Crypto().deriveKey( PASSWORD );
+        rawPassword = Crypto().deriveKey( PASSWORD ),
+        newRawPassword = Crypto().deriveKey( PASSWORD );
 
     notEqual( hex.fromBits( rawPassword ), hex.fromBits( newRawPassword ), "Password is the same" );
 
@@ -55,7 +57,7 @@ module( "Password based encrytion with GCM" );
 
 test( "Encrypt/Decrypt raw bytes providing password", function() {
 
-    var rawPassword = AeroGear.Crypto().deriveKey( PASSWORD ),
+    var rawPassword = Crypto().deriveKey( PASSWORD ),
         utf8String = sjcl.codec.utf8String,
         hex = sjcl.codec.hex,
         cipherText, plainText,
@@ -65,15 +67,15 @@ test( "Encrypt/Decrypt raw bytes providing password", function() {
             key: rawPassword,
             data: utf8String.toBits( PLAIN_TEXT )
     };
-    cipherText = AeroGear.Crypto().encrypt( options );
+    cipherText = Crypto().encrypt( options );
     options.data = cipherText;
-    plainText = AeroGear.Crypto().decrypt ( options );
+    plainText = Crypto().decrypt ( options );
     equal( utf8String.fromBits( plainText ), PLAIN_TEXT, "Encryption has failed" );
 });
 
 test( "Encrypt/Decrypt raw bytes providing password and salt", function() {
 
-    var agCrypto = new AeroGear.Crypto(),
+    var agCrypto = new Crypto(),
         rawPassword = agCrypto.deriveKey( PASSWORD ),
         utf8String = sjcl.codec.utf8String,
         hex = sjcl.codec.hex,
@@ -94,7 +96,7 @@ test( "Encrypt/Decrypt raw bytes providing password and salt", function() {
 
 test( "Encrypt/Decrypt raw bytes providing password with implicit IV", function() {
 
-    var agCrypto = new AeroGear.Crypto(),
+    var agCrypto = new Crypto(),
         rawPassword = agCrypto.deriveKey( PASSWORD ),
         utf8String = sjcl.codec.utf8String,
         hex = sjcl.codec.hex,
@@ -112,7 +114,7 @@ test( "Encrypt/Decrypt raw bytes providing password with implicit IV", function(
 
 test( "Encrypt/Decrypt raw bytes providing password with IV being provided", function() {
 
-    var agCrypto = new AeroGear.Crypto(),
+    var agCrypto = new Crypto(),
         rawPassword = agCrypto.deriveKey( PASSWORD ),
         utf8String = sjcl.codec.utf8String,
         hex = sjcl.codec.hex,
@@ -131,7 +133,7 @@ test( "Encrypt/Decrypt raw bytes providing password with IV being provided", fun
 
 test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
 
-    var rawPassword = AeroGear.Crypto().deriveKey( PASSWORD ),
+    var rawPassword = Crypto().deriveKey( PASSWORD ),
         utf8String = sjcl.codec.utf8String,
         hex = sjcl.codec.hex,
         cipherText,
@@ -141,12 +143,12 @@ test( "Encrypt/Decrypt raw bytes providing corrupted password", function() {
             key: rawPassword,
             data: utf8String.toBits( PLAIN_TEXT )
     };
-    cipherText = AeroGear.Crypto().encrypt( options );
+    cipherText = Crypto().encrypt( options );
     options.key[0] = ' ';
     options.data = cipherText;
 
     throws( function() {
-        AeroGear.Crypto().decrypt ( options );
+        Crypto().decrypt ( options );
     }, "Should throw an exception for corrupted password");
 
 });
@@ -162,7 +164,7 @@ test( "Encrypt raw bytes", function() {
             key: hex.toBits( BOB_SECRET_KEY ),
             data: hex.toBits( MESSAGE )
     };
-    cipherText = AeroGear.Crypto().encrypt( options );
+    cipherText = Crypto().encrypt( options );
     equal( hex.fromBits( cipherText ),  CIPHERTEXT, "Encryption has failed" );
 });
 
@@ -176,8 +178,8 @@ test( "Encrypt/Decrypt raw bytes", function() {
             key: hex.toBits( BOB_SECRET_KEY ),
             data: hex.toBits( MESSAGE )
         };
-    options.data = AeroGear.Crypto().encrypt( options );
-    plainText = AeroGear.Crypto().decrypt ( options );
+    options.data = Crypto().encrypt( options );
+    plainText = Crypto().decrypt ( options );
     equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
 });
 
@@ -189,11 +191,11 @@ test( "Decrypt corrupted ciphertext", function() {
             key: hex.toBits( BOB_SECRET_KEY ),
             data: hex.toBits( MESSAGE )
         };
-    options.data = AeroGear.Crypto().encrypt( options );
+    options.data = Crypto().encrypt( options );
     options.data[23] = ' ';
 
     throws( function() {
-        AeroGear.Crypto().decrypt ( options );
+        Crypto().decrypt ( options );
     }, "Should throw an exception for corrupted ciphertext");
 });
 
@@ -205,11 +207,11 @@ test( "Decrypt with corrupted IV", function() {
             key: hex.toBits( BOB_SECRET_KEY ),
             data: hex.toBits( MESSAGE )
         };
-    options.data = AeroGear.Crypto().encrypt( options );
+    options.data = Crypto().encrypt( options );
     options.IV[23] = ' ';
 
     throws(function(){
-        AeroGear.Crypto().decrypt ( options );
+        Crypto().decrypt ( options );
     }, "Should throw an exception for corrupted IVs");
 });
 
@@ -217,14 +219,14 @@ module( "Secure Hash Algorithm (SHA-256)" );
 
 test( "Should generated a valid SHA output", function() {
     var hex = sjcl.codec.hex,
-        digest = AeroGear.Crypto().hash(SHA256_MESSAGE);
+        digest = Crypto().hash(SHA256_MESSAGE);
     equal( hex.fromBits( digest ),  SHA256_DIGEST, "Hash is invalid" );
 });
 
 test( "Should generated a valid SHA output for empty strings", function() {
     var hex = sjcl.codec.hex,
         digest;
-        digest = AeroGear.Crypto().hash("");
+        digest = Crypto().hash("");
     equal( hex.fromBits( digest ),  SHA256_DIGEST_EMPTY_STRING, "Hash is invalid" );
 });
 
@@ -236,8 +238,8 @@ test( "Should generate a valid signature", function() {
             keys: sjcl.ecc.ecdsa.generateKeys(192),
             message: PLAIN_TEXT
         };
-    options.signature = AeroGear.Crypto().sign( options );
-    validation = AeroGear.Crypto().verify( options );
+    options.signature = Crypto().sign( options );
+    validation = Crypto().verify( options );
 
     ok( validation, "Signature should be valid" );
 
@@ -248,11 +250,11 @@ test( "Should raise an error with corrupted key", function() {
         keys: sjcl.ecc.ecdsa.generateKeys(192),
         message: PLAIN_TEXT
     };
-    options.signature = AeroGear.Crypto().sign( options );
+    options.signature = Crypto().sign( options );
     options.keys = sjcl.ecc.ecdsa.generateKeys(192,10);
 
     throws(function(){
-        AeroGear.Crypto().verify( options );
+        Crypto().verify( options );
     }, "Should throw an exception for corrupted or wrong keys");
 });
 
@@ -261,11 +263,11 @@ test( "Should raise an error with corrupted signature", function() {
         keys: sjcl.ecc.ecdsa.generateKeys(192),
         message: PLAIN_TEXT
     };
-    options.signature = AeroGear.Crypto().sign( options );
+    options.signature = Crypto().sign( options );
     options.signature[1] = ' ';
 
     throws(function(){
-        AeroGear.Crypto().verify( options );
+        Crypto().verify( options );
     }, "Should throw an exception for corrupted signatures");
 });
 
@@ -273,7 +275,7 @@ module( "Asymmetric encryption with ECC" );
 
 test( "Encrypt/Decrypt raw bytes", function() {
     var hex = sjcl.codec.hex,
-        keyPair = new AeroGear.Crypto().KeyPair(),
+        keyPair = new Crypto().KeyPair(),
         cipherText, plainText,
         options = {
             IV: hex.toBits( BOB_IV ),
@@ -281,10 +283,10 @@ test( "Encrypt/Decrypt raw bytes", function() {
             key: keyPair.getPublicKey(),
             data: hex.toBits( MESSAGE )
         };
-    cipherText = AeroGear.Crypto().encrypt( options );
+    cipherText = Crypto().encrypt( options );
     options.key = keyPair.getPrivateKey();
     options.data = cipherText;
-    plainText = AeroGear.Crypto().decrypt( options );
+    plainText = Crypto().decrypt( options );
     equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
 });
 
@@ -294,7 +296,7 @@ test( "Encrypt/Decrypt raw bytes - Provided keys", function() {
         pub = keys.pub.kem(),
         publicKey = pub.key,
         privateKey = keys.sec.unkem( pub.tag ),
-        keyPair = new AeroGear.Crypto().KeyPair( publicKey, privateKey ),
+        keyPair = new Crypto().KeyPair( publicKey, privateKey ),
         cipherText, plainText,
         options = {
             IV: hex.toBits( BOB_IV ),
@@ -302,16 +304,16 @@ test( "Encrypt/Decrypt raw bytes - Provided keys", function() {
             key: keyPair.getPublicKey(),
             data: hex.toBits( MESSAGE )
         };
-    cipherText = AeroGear.Crypto().encrypt( options );
+    cipherText = Crypto().encrypt( options );
     options.key = keyPair.getPrivateKey();
     options.data = cipherText;
-    plainText = AeroGear.Crypto().decrypt( options );
+    plainText = Crypto().decrypt( options );
     equal( hex.fromBits( plainText ),  MESSAGE, "Encryption has failed" );
 });
 
 test( "Decrypt corrupted ciphertext", function() {
     var hex = sjcl.codec.hex,
-        keyPair = new AeroGear.Crypto().KeyPair(),
+        keyPair = new Crypto().KeyPair(),
         cipherText, plainText,
         options = {
             IV: hex.toBits( BOB_IV ),
@@ -319,18 +321,18 @@ test( "Decrypt corrupted ciphertext", function() {
             key: keyPair.getPublicKey(),
             data: hex.toBits( MESSAGE )
         };
-    options.data = AeroGear.Crypto().encrypt( options );
+    options.data = Crypto().encrypt( options );
     options.data[23] = ' ';
     options.key = keyPair.getPrivateKey();
 
     throws( function() {
-        AeroGear.Crypto().decrypt ( options );
+        Crypto().decrypt ( options );
     }, "Should throw an exception for corrupted ciphertext");
 });
 
 test( "Decrypt with corrupted IV", function() {
     var hex = sjcl.codec.hex,
-        keyPair = new AeroGear.Crypto().KeyPair(),
+        keyPair = new Crypto().KeyPair(),
         cipherText, plainText,
         options = {
             IV: hex.toBits( BOB_IV ),
@@ -338,18 +340,18 @@ test( "Decrypt with corrupted IV", function() {
             key: keyPair.getPublicKey(),
             data: hex.toBits( MESSAGE )
         };
-    options.data = AeroGear.Crypto().encrypt( options );
+    options.data = Crypto().encrypt( options );
     options.IV[23] = ' ';
     options.key = keyPair.getPrivateKey();
 
     throws( function() {
-        AeroGear.Crypto().decrypt ( options );
+        Crypto().decrypt ( options );
     }, "Should throw an exception for corrupted IVs");
 });
 
 test( "Decrypt with the wrong key", function() {
     var hex = sjcl.codec.hex,
-        keyPair = new AeroGear.Crypto().KeyPair(),
+        keyPair = new Crypto().KeyPair(),
         cipherText, plainText,
         options = {
             IV: hex.toBits( BOB_IV ),
@@ -357,11 +359,11 @@ test( "Decrypt with the wrong key", function() {
             key: keyPair.getPublicKey(),
             data: hex.toBits( MESSAGE )
         };
-    options.data = AeroGear.Crypto().encrypt( options );
+    options.data = Crypto().encrypt( options );
     options.key = hex.toBits( BOB_PRIVATE_KEY );
 
     throws( function() {
-        AeroGear.Crypto().decrypt( options );
+        Crypto().decrypt( options );
     }, "Should throw an exception for decryption with the wrong key");
 });
 

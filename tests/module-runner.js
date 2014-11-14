@@ -18,7 +18,7 @@
 
   for (var file in window.__karma__.files) {
     if (window.__karma__.files.hasOwnProperty(file)) {
-      if (/Spec\.js$/.test(file)) {
+      if (/\.spec\.js$/.test(file)) {
         tests.push(moduleName(file));
         paths[moduleName(file)] = modulePath(file);
       }

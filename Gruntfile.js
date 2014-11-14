@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         },
         compile: {
             options: {
-                searchPath: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters', 'src/simplepush' ]
+                searchPath: [] // will be filled in initPaths task
             },
             dist: {
                 modules: [
@@ -244,11 +244,11 @@ module.exports = function(grunt) {
                 },
                 preprocessors: {
                     'src/**/*.js': 'es6-module-transpiler',
-                    'tests/**/*Spec.js': 'es6-module-transpiler'
+                    'tests/**/*.spec.js': 'es6-module-transpiler'
                 },
                 moduleTranspiler: {
                     options: {
-                        paths: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters', 'src/simplepush', 'tests/unit/authorization' ],
+                        paths: [], // will be filled in initPaths task
                         resolveModuleName: function(filepath) {
                             return path.basename(filepath).replace(/\.js$/, '');
                         }
@@ -259,10 +259,12 @@ module.exports = function(grunt) {
                 options: {
                     files: [
                         'external/uuid/uuid.js',
+                        'external/crypto/sjcl.js',
+                        'external/base64/base64.js',
                         'tests/vendor/promise-0.1.1.js',
                         {pattern: 'src/**/*.js', included: false},
                         'tests/vendor/sinon-1.9.0.js',
-                        {pattern: 'tests/unit/**/*Spec.js', included: false},
+                        {pattern: 'tests/unit/**/*.spec.js', included: false},
                         'tests/unit/authorization/test-data.js',
                         'tests/module-runner.js'
                     ]
@@ -319,10 +321,38 @@ module.exports = function(grunt) {
     grunt.registerTask('crypto', ['concat:crypto']);
     grunt.registerTask('oauth2', ['concat:oauth2']);
     grunt.registerTask('travis', ['jshint', 'qun:-*it', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['compile:dist']);
+    grunt.registerTask('es5', ['initPaths', 'compile:dist']);
+    grunt.registerTask('test', ['initPaths', 'karma:authorization']);
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');
+    });
+
+    grunt.registerTask('initPaths', function() {
+        var config = {},
+            srcDirs = {},
+            testDirs = {};
+        grunt.file.recurse('src/', function callback(abspath, rootdir, subdir, filename) {
+            srcDirs[path.dirname(abspath) + '/'] = true;
+        });
+        grunt.file.recurse('tests/unit/', function callback(abspath, rootdir, subdir, filename) {
+            testDirs[path.dirname(abspath) + '/'] = true;
+        });
+        config.compile = {
+            options: {
+              searchPath: Object.keys(srcDirs)
+            }
+        };
+        config.karma = {
+            options: {
+                moduleTranspiler: {
+                    options: {
+                        paths: Object.keys(srcDirs).concat(Object.keys(testDirs))
+                    }
+                }
+            }
+        }
+        grunt.config.merge( config );
     });
 
     grunt.registerMultiTask('compile', 'Generated configuration for transpile, template and concat_sourcemap tasks and then run them', function() {

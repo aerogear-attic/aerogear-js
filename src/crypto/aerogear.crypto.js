@@ -254,4 +254,4 @@ function Crypto() {
 
 AeroGear.Crypto = Crypto;
 
-export { Crypto };
+export default Crypto;
