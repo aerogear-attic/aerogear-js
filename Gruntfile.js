@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var sh = require('shelljs');
 var path = require('path');
+
 /*global module:false*/
 module.exports = function(grunt) {
     'use strict';
@@ -227,10 +228,10 @@ module.exports = function(grunt) {
         },
         karma: {
             options: {
-                frameworks: ['qunit'],
+                frameworks: ['requirejs', 'qunit'],
                 browsers: ['PhantomJS_noSecurity'],
-                singleRun: false,
-                //logLevel: 'DEBUG',
+                singleRun: true,
+                logLevel: 'INFO',
                 customLaunchers: {
                     'PhantomJS_noSecurity': {
                         base: 'PhantomJS',
@@ -240,16 +241,30 @@ module.exports = function(grunt) {
                             }
                         }
                     }
+                },
+                preprocessors: {
+                    'src/**/*.js': 'es6-module-transpiler',
+                    'tests/**/*Spec.js': 'es6-module-transpiler'
+                },
+                moduleTranspiler: {
+                    options: {
+                        paths: ['src', 'src/authorization', 'src/authorization/adapters', 'src/crypto', 'src/unifiedpush', 'src/data-manager', 'src/data-manager/adapters', 'src/notifier', 'src/notifier/adapters', 'src/simplepush', 'tests/unit/authorization' ],
+                        resolveModuleName: function(filepath) {
+                            return path.basename(filepath).replace(/\.js$/, '');
+                        }
+                    }
                 }
             },
             authorization: {
                 options: {
                     files: [
+                        'external/uuid/uuid.js',
                         'tests/vendor/promise-0.1.1.js',
-                        'dist/aerogear.js',
+                        {pattern: 'src/**/*.js', included: false},
                         'tests/vendor/sinon-1.9.0.js',
+                        {pattern: 'tests/unit/**/*Spec.js', included: false},
                         'tests/unit/authorization/test-data.js',
-                        'tests/unit/authorization/authorization.js'
+                        'tests/module-runner.js'
                     ]
                 }
             }
@@ -327,7 +342,7 @@ module.exports = function(grunt) {
         filesToConcat = modules.map( function( module ) {
             return 'dist/' + module + '.js';
         });
-        filesToConcat = externalSources.concat(['src/microlib/banner.js'], filesToConcat, ['.tmp/microlib/footer.js']);
+        filesToConcat = externalSources.concat(['microlib/banner.js'], filesToConcat, ['.tmp/microlib/footer.js']);
 
         var config = {
             transpile: {},
@@ -341,7 +356,7 @@ module.exports = function(grunt) {
             destination: 'dist/'
         };
         config.template[target] = {
-            files: { '.tmp/microlib/footer.js': ['src/microlib/footer.js'] },
+            files: { '.tmp/microlib/footer.js': ['microlib/footer.js'] },
             options: {
                 data: {
                     modules: modulesToLoad

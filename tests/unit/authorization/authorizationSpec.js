@@ -1,3 +1,6 @@
+import Authorization from 'aerogear.authz';
+import 'oauth2';
+
 (function() {
 
     module( "authorization", {
@@ -33,7 +36,7 @@
         }
     });
 
-    var authz = AeroGear.Authorization();
+    var authz = Authorization();
 
     var DRIVE = "drive";
 
