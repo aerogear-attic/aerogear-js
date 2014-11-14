@@ -225,6 +225,35 @@ module.exports = function(grunt) {
                 tasks: 'qunit'
             }
         },
+        karma: {
+            options: {
+                frameworks: ['qunit'],
+                browsers: ['PhantomJS_noSecurity'],
+                singleRun: false,
+                //logLevel: 'DEBUG',
+                customLaunchers: {
+                    'PhantomJS_noSecurity': {
+                        base: 'PhantomJS',
+                        options: {
+                            settings: {
+                                webSecurityEnabled: false
+                            }
+                        }
+                    }
+                }
+            },
+            authorization: {
+                options: {
+                    files: [
+                        'tests/vendor/promise-0.1.1.js',
+                        'dist/aerogear.js',
+                        'tests/vendor/sinon-1.9.0.js',
+                        'tests/unit/authorization/test-data.js',
+                        'tests/unit/authorization/authorization.js'
+                    ]
+                }
+            }
+        },
         ci: {
             options: {
                 force: true
@@ -257,6 +286,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-es6-module-transpiler');
     grunt.loadNpmTasks('grunt-template');
     grunt.loadNpmTasks('grunt-concat-sourcemap');
+    grunt.loadNpmTasks('grunt-karma');
 
     // Default task
     grunt.registerTask('default', ['jshint', 'qunit', 'concat:dist', 'iife', 'uglify:all']);
