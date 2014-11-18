@@ -1,3 +1,6 @@
+import Notifier from 'aerogear.notifier';
+import 'mqttws';
+
 (function() {
 
 module( "Notifier: MQTT Websocket" );
@@ -5,7 +8,7 @@ module( "Notifier: MQTT Websocket" );
 test( "create - object", function() {
     expect( 2 );
 
-    var mqtt = AeroGear.Notifier({
+    var mqtt = Notifier({
         name: "createTest",
         type: "mqttws"
     }).clients;
@@ -17,7 +20,7 @@ test( "create - object", function() {
 test( "create - array", function() {
     expect( 3 );
 
-    var mqtt = AeroGear.Notifier([
+    var mqtt = Notifier([
     {
         name: "createTest",
         type: "mqttws"
@@ -36,7 +39,7 @@ test( "create - array", function() {
 test( "add method", function() {
     expect( 2 );
 
-    var mqtt = AeroGear.Notifier().add({
+    var mqtt = Notifier().add({
         name: "addTest",
         type: "mqttws"
     }).clients;
@@ -49,7 +52,7 @@ test( "add method", function() {
 test( "remove method", function() {
     expect( 3 );
 
-    var mqtt = AeroGear.Notifier({
+    var mqtt = Notifier({
         name: "removeTest",
         type: "mqttws"
     });

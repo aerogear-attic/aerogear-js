@@ -117,4 +117,4 @@ function UnifiedPushClient( variantID, variantSecret, pushServerURL ) {
 
 AeroGear.UnifiedPushClient = UnifiedPushClient;
 
-export { UnifiedPushClient };
+export default UnifiedPushClient;

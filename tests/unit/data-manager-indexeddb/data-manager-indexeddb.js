@@ -1,4 +1,11 @@
+import DataManager from 'aerogear.datamanager';
+import 'indexeddb';
+
 ( function() {
+
+    if ( !window.indexedDB ) {
+        return;
+    }
 
     module( "DataManager: IndexedDB" );
 
@@ -24,7 +31,12 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager();
 
     module( "DataManager: IndexedDB - Create and Test open failure", {
         setup: function() {
@@ -45,7 +57,7 @@
         expect( 2 );
 
         equal( Object.keys( dm.stores ).length, 1, "1 store created" );
-        equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.IndexedDB, true, "new Indexed DB instance created" );
+        equal( dm.stores.test1 instanceof DataManager.adapters.IndexedDB, true, "new Indexed DB instance created" );
     });
 
     asyncTest( "Read - DB not open.  Should Fail", function() {
@@ -90,7 +102,12 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager();
 
     module( "DataManager: IndexedDB - Open", {
         setup: function() {
@@ -143,7 +160,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         store;
 
     module( "DataManager: IndexedDB - Promise API", {
@@ -222,7 +244,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Save", {
@@ -336,7 +363,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Save using 'Auto Connect param'", {
@@ -447,7 +479,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Read", {
@@ -532,7 +569,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Read using 'Auto Connect param'", {
@@ -597,7 +639,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Update", {
@@ -668,7 +715,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Remove", {
@@ -755,7 +807,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Filter", {
@@ -827,7 +884,12 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager();
     dm.add({
         name: "test1",
         type: "IndexedDB"

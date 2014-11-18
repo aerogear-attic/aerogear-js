@@ -188,3 +188,5 @@ import 'simplePush';
     };
 
 AeroGear.SimplePushClient = SimplePushClient;
+
+export default SimplePushClient;

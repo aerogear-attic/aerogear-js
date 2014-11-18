@@ -15,6 +15,8 @@
 */
 
 import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+import 'memory';
 
 /**
     The SessionLocal adapter extends the Memory adapter to store data in either session or local storage which makes it a little more persistent than memory

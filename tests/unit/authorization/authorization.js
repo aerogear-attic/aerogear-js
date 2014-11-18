@@ -3,6 +3,14 @@ import 'oauth2';
 
 (function() {
 
+    var suiteData = {
+        accessToken: "2YotnFZFEjr1zCsicMWpAA",
+        accessTokenWrongAudience: "wrongAudienceToken",
+        tokenExpireTime: 3600,
+        clientId: "s6BhdRkqt3",
+        wrongAccessToken: "wrongToken"
+    };
+
     module( "authorization", {
         setup: function() {
             this.server = sinon.fakeServer.create();

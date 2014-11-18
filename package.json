@@ -94,6 +94,7 @@
     "karma": "^0.12.24",
     "karma-chrome-launcher": "^0.1.5",
     "karma-es6-module-preprocessor": "https://github.com/lfryc/karma-es6-module-preprocessor/tarball/advanced-configurations",
+    "karma-firefox-launcher": "^0.1.3",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-qunit": "^0.1.4",
     "karma-requirejs": "^0.2.2",

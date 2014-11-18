@@ -1,3 +1,9 @@
+import DataManager from 'aerogear.datamanager';
+import 'indexeddb';
+import 'session-local';
+import 'websql';
+import 'memory';
+
 ( function() {
     // The non hacky way
 
@@ -13,19 +19,19 @@
 
         var adapter,
             type;
-        if( "IndexedDB" in AeroGear.DataManager.validAdapters ) {
-            adapter = AeroGear.DataManager.adapters.IndexedDB;
+        if( "IndexedDB" in DataManager.validAdapters ) {
+            adapter = DataManager.adapters.IndexedDB;
             type = "IndexedDB";
         } else {
-            for( var i = 0; i < AeroGear.DataManager.preferred.length; i++ ) {
-                if( AeroGear.DataManager.preferred[ i ] in AeroGear.DataManager.validAdapters ) {
-                    adapter = AeroGear.DataManager.adapters[ AeroGear.DataManager.preferred[ i ] ];
-                    type = AeroGear.DataManager.preferred[ i ];
+            for( var i = 0; i < DataManager.preferred.length; i++ ) {
+                if( DataManager.preferred[ i ] in DataManager.validAdapters ) {
+                    adapter = DataManager.adapters[ DataManager.preferred[ i ] ];
+                    type = DataManager.preferred[ i ];
                     break;
                 }
             }
         }
-        var dm = AeroGear.DataManager( { name: "createTest1", type: "IndexedDB" } ).stores;
+        var dm = DataManager( { name: "createTest1", type: "IndexedDB" } ).stores;
         equal( Object.keys( dm ).length, 1, "Single Store created" );
         equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
         equal( dm.createTest1 instanceof adapter, true, type + " Created " );
@@ -37,20 +43,20 @@
 
         var adapter,
             type;
-        if( "WebSQL" in AeroGear.DataManager.validAdapters ) {
-            adapter = AeroGear.DataManager.adapters.WebSQL;
+        if( "WebSQL" in DataManager.validAdapters ) {
+            adapter = DataManager.adapters.WebSQL;
             type = "WebSQL";
         } else {
-            for( var i = 0; i < AeroGear.DataManager.preferred.length; i++ ) {
-                if( AeroGear.DataManager.preferred[ i ] in AeroGear.DataManager.validAdapters ) {
-                    adapter = AeroGear.DataManager.adapters[ AeroGear.DataManager.preferred[ i ] ];
-                    type = AeroGear.DataManager.preferred[ i ];
+            for( var i = 0; i < DataManager.preferred.length; i++ ) {
+                if( DataManager.preferred[ i ] in DataManager.validAdapters ) {
+                    adapter = DataManager.adapters[ DataManager.preferred[ i ] ];
+                    type = DataManager.preferred[ i ];
                     break;
                 }
             }
         }
 
-        var dm = AeroGear.DataManager( { name: "createTest1", type: "WebSQL" } ).stores;
+        var dm = DataManager( { name: "createTest1", type: "WebSQL" } ).stores;
         equal( Object.keys( dm ).length, 1, "Single Store created" );
         equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
         equal( dm.createTest1 instanceof adapter, true, type + " Created " );

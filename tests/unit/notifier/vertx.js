@@ -1,3 +1,6 @@
+import Notifier from 'aerogear.notifier';
+import 'vertx';
+
 (function() {
 
 module( "Notifier: Vert.x" );
@@ -5,7 +8,7 @@ module( "Notifier: Vert.x" );
 test( "create - string (Vert.x is default adapter so a string name is also allowed)", function() {
     expect( 2 );
 
-    var vertx = AeroGear.Notifier("createTest").clients;
+    var vertx = Notifier("createTest").clients;
 
     equal( Object.keys( vertx ).length, 1, "1 Client created" );
     equal( Object.keys( vertx )[ 0 ], "createTest", "Client Name createTest" );
@@ -14,7 +17,7 @@ test( "create - string (Vert.x is default adapter so a string name is also allow
 test( "create - object", function() {
     expect( 2 );
 
-    var vertx = AeroGear.Notifier({
+    var vertx = Notifier({
         name: "createTest",
         type: "vertx"
     }).clients;
@@ -26,7 +29,7 @@ test( "create - object", function() {
 test( "create - array", function() {
     expect( 3 );
 
-    var vertx = AeroGear.Notifier([
+    var vertx = Notifier([
     "createTest",
     {
         name: "createTest2",
@@ -42,7 +45,7 @@ test( "create - array", function() {
 test( "add method - string", function() {
     expect( 2 );
 
-    var vertx = AeroGear.Notifier().add("addTest").clients;
+    var vertx = Notifier().add("addTest").clients;
     equal( Object.keys( vertx ).length, 1, "Single Client added" );
     equal( Object.keys( vertx )[ 0 ], "addTest", "Client Name addTest" );
 });
@@ -50,7 +53,7 @@ test( "add method - string", function() {
 test( "add method - object", function() {
     expect( 2 );
 
-    var vertx = AeroGear.Notifier().add({
+    var vertx = Notifier().add({
         name: "addTest",
         type: "vertx"
     }).clients;
@@ -62,7 +65,7 @@ test( "add method - object", function() {
 test( "remove method", function() {
     expect( 3 );
 
-    var vertx = AeroGear.Notifier("removeTest");
+    var vertx = Notifier("removeTest");
     equal( Object.keys( vertx.clients ).length, 1, "Single Client added" );
 
     vertx.remove("removeTest");

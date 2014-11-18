@@ -15,6 +15,7 @@
 */
 
 import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
 
 /**
     The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)

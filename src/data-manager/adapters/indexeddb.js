@@ -15,6 +15,8 @@
 */
 
 import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+import 'memory';
 
 /**
     The IndexedDB adapter stores data in an IndexedDB database for more persistent client side storage

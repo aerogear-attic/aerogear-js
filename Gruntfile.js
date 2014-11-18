@@ -231,7 +231,7 @@ module.exports = function(grunt) {
                 frameworks: ['requirejs', 'qunit'],
                 browsers: ['PhantomJS_noSecurity'],
                 singleRun: true,
-                logLevel: 'INFO',
+                logLevel: grunt.option('debug') ? 'DEBUG' : 'INFO',
                 customLaunchers: {
                     'PhantomJS_noSecurity': {
                         base: 'PhantomJS',
@@ -244,7 +244,7 @@ module.exports = function(grunt) {
                 },
                 preprocessors: {
                     'src/**/*.js': 'es6-module-transpiler',
-                    'tests/**/*.spec.js': 'es6-module-transpiler'
+                    'tests/unit/**/*.js': 'es6-module-transpiler'
                 },
                 moduleTranspiler: {
                     options: {
@@ -262,10 +262,10 @@ module.exports = function(grunt) {
                         'external/crypto/sjcl.js',
                         'external/base64/base64.js',
                         'tests/vendor/promise-0.1.1.js',
-                        {pattern: 'src/**/*.js', included: false},
+                        'tests/vendor/sockjs.js',
                         'tests/vendor/sinon-1.9.0.js',
-                        {pattern: 'tests/unit/**/*.spec.js', included: false},
-                        'tests/unit/authorization/test-data.js',
+                        {pattern: 'src/**/*.js', included: false},
+                        {pattern: 'tests/unit/**/*.js', included: false},
                         'tests/module-runner.js'
                     ]
                 }

@@ -15,6 +15,8 @@
 */
 
 import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+import 'memory';
 
 /**
     The WebSQL adapter stores data in a WebSQL database for more persistent client side storage
