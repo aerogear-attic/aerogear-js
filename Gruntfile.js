@@ -108,6 +108,13 @@ module.exports = function(grunt) {
                 }
             }
         },
+        'multi-stage-sourcemap': {
+            dist: {
+                from: 'dist/aerogear.min.js.map',
+                to: 'dist/aerogear.js.map',
+                output: 'dist/aerogear.min.js.map'
+            }
+        },
         karma: {
             options: {
                 frameworks: ['requirejs', 'qunit'],
@@ -185,7 +192,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'test', 'concat:dist', 'iife', 'uglify:all']);
+    grunt.registerTask('default', ['jshint', 'initPaths', 'test', 'compile:dist', 'uglify:all', 'multi-stage-sourcemap:dist']);
     grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
     grunt.registerTask('dataManager', ['jshint', 'test', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
     grunt.registerTask('dataManagerIndexedDB', ['jshint', 'test', 'concat:dataManagerIndexedDB', 'iife:custom', 'uglify:custom']);
@@ -202,6 +209,8 @@ module.exports = function(grunt) {
     grunt.registerTask('travis', ['jshint', 'qun:-*it', 'concat:dist', 'setupCi', 'ci']);
     grunt.registerTask('es5', ['initPaths', 'compile:dist']);
     grunt.registerTask('test', ['initPaths', 'karma:authorization']);
+
+    grunt.loadTasks('tasks');
 
     grunt.registerTask('docs', function() {
         sh.exec('jsdoc-aerogear src/ -r -d docs README.md');

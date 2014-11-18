@@ -96,6 +96,7 @@
     "karma-qunit": "^0.1.4",
     "karma-requirejs": "^0.2.2",
     "lodash": "~2.4.1",
+    "multi-stage-sourcemap": "https://github.com/lfryc/multi-stage-sourcemap/tarball/source-content",
     "qunitjs": "^1.15.0",
     "request": "~2.27.0",
     "requirejs": "^2.1.15",
