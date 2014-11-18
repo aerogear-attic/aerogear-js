@@ -146,7 +146,7 @@ function DataManager( config ) {
     this.collectionName = "stores";
 
     this.add( config );
-};
+}
 
 DataManager.prototype = Core;
 DataManager.constructor = DataManager;

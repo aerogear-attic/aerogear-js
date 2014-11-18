@@ -132,7 +132,7 @@ var ajax = function( settings ) {
                 statusText: statusText,
                 agXHR: request
             };
-        };
+        }
 
         request.send( data );
     });

@@ -113,7 +113,7 @@ function UnifiedPushClient( variantID, variantSecret, pushServerURL ) {
             }
         });
     };
-};
+}
 
 AeroGear.UnifiedPushClient = UnifiedPushClient;
 

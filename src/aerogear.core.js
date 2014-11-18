@@ -117,7 +117,7 @@ function Core() {
 
     return this;
   };
-};
+}
 
 /**
  Utility function to merge many Objects in one target Object which is the first object in arguments list.
@@ -139,6 +139,6 @@ var extend = function() {
 var AeroGear = {
   Core: Core,
   extend: extend
-}
+};
 
-export { Core, AeroGear, extend }
+export { Core, AeroGear, extend };

@@ -50,7 +50,7 @@ function Authorization ( config ) {
     this.collectionName = "services";
 
     this.add( config );
-};
+}
 
 Authorization.prototype = Core;
 Authorization.constructor = Core.Authorization;

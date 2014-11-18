@@ -250,7 +250,7 @@ function Crypto() {
 
         return this;
     };
-};
+}
 
 AeroGear.Crypto = Crypto;
 

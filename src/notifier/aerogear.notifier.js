@@ -84,7 +84,7 @@ function Notifier( config ) {
     this.collectionName = "clients";
 
     this.add( config );
-};
+}
 
 Notifier.prototype = Core;
 Notifier.constructor = Notifier;

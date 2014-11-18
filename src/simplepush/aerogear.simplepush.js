@@ -185,7 +185,7 @@ import 'simplePush';
         }).clients.agPushNetwork;
 
         spClient.simpleNotifier.connect( connectOptions );
-    };
+    }
 
 AeroGear.SimplePushClient = SimplePushClient;
 
