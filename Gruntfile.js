@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var sh = require('shelljs');
 var path = require('path');
+var ModuleResolver = require('./tasks/module-resolver');
+var Transpiler = require("es6-module-transpiler");
 
 /*global module:false*/
 module.exports = function(grunt) {
@@ -29,7 +31,8 @@ module.exports = function(grunt) {
         },
         compile: {
             options: {
-                searchPath: [] // will be filled in initPaths task
+                searchPath: [], // will be filled in initPaths task
+                transitiveResolution: true
             },
             dist: {
                 modules: [
@@ -62,6 +65,66 @@ module.exports = function(grunt) {
                     'external/base64/base64.js',
                     'external/crypto/sjcl.js'
                 ]
+            },
+            dataManager: {
+                modules: [ 'memory', 'session-local', 'indexeddb', 'websql' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            dataManagerIndexedDB: {
+                modules: [ 'indexeddb' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            dataManagerWebSQL: {
+                modules: [ 'websql' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            dataManagerSessionLocal: {
+                modules: [ 'session-local' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            dataManagerMemory: {
+                modules: [ 'memory' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            notifierVertx: {
+                modules: [ 'vertx' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            notifierStompWS: {
+                modules: [ 'stompws' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: []
+            },
+            simplePush: {
+                modules: [ 'aerogear.simplepush' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: [ 'external/uuid/uuid.js' ]
+            },
+            unifiedPush: {
+                modules: [ 'aerogear.unifiedpush' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: [ 'external/base64/base64.js' ]
+            },
+            push: {
+                modules: [ 'aerogear.simplepush', 'aerogear.unifiedpush' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: [ 'external/uuid/uuid.js', 'external/base64/base64.js' ]
+            },
+            crypto: {
+                modules: [ 'aerogear.crypto' ],
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: [ 'external/crypto/sjcl.js' ]
+            },
+            oauth2: {
+                modules: [ 'oauth2' ],
+                destination: [ 'dist/oauth2' ],
+                externalSources: [ 'external/uuid/uuid.js' ]
             }
         },
         jshint: {
@@ -79,18 +142,20 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
-            all: {
+            options: {
+                preserveComments: 'some',
+                sourceMapPrefix: 1,
+                beautify: {
+                    ascii_only: true
+                }
+            },
+            dist: {
                 files: {
                     'dist/<%= pkg.name %>.min.js': [ 'dist/<%= pkg.name %>.js' ]
                 },
                 options: {
-                    preserveComments: 'some',
                     sourceMap: 'dist/<%= pkg.name %>.js.map',
-                    sourceMappingURL: '<%= pkg.name %>.js.map',
-                    sourceMapPrefix: 1,
-                    beautify: {
-                        ascii_only: true
-                    }
+                    sourceMappingURL: '<%= pkg.name %>.js.map'
                 }
             },
             custom: {
@@ -98,13 +163,8 @@ module.exports = function(grunt) {
                     'dist/<%= pkg.name %>.custom.min.js': [ 'dist/<%= pkg.name %>.custom.js' ]
                 },
                 options: {
-                    preserveComments: 'some',
                     sourceMap: 'dist/<%= pkg.name %>.custom.js.map',
-                    sourceMappingURL: '<%= pkg.name %>.js.map',
-                    sourceMapPrefix: 1,
-                    beautify: {
-                        ascii_only: true
-                    }
+                    sourceMappingURL: '<%= pkg.name %>.custom.js.map'
                 }
             }
         },
@@ -113,6 +173,11 @@ module.exports = function(grunt) {
                 from: 'dist/aerogear.min.js.map',
                 to: 'dist/aerogear.js.map',
                 output: 'dist/aerogear.min.js.map'
+            },
+            custom: {
+                from: 'dist/aerogear.custom.min.js.map',
+                to: 'dist/aerogear.custom.js.map',
+                output: 'dist/aerogear.custom.min.js.map'
             }
         },
         karma: {
@@ -144,7 +209,7 @@ module.exports = function(grunt) {
                     }
                 }
             },
-            authorization: {
+            all: {
                 options: {
                     files: [
                         'external/uuid/uuid.js',
@@ -192,23 +257,22 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
 
     // Default task
-    grunt.registerTask('default', ['jshint', 'initPaths', 'test', 'compile:dist', 'uglify:all', 'multi-stage-sourcemap:dist']);
-    grunt.registerTask('dev', ['jshint', 'concat:dist', 'iife', 'uglify:all']);
-    grunt.registerTask('dataManager', ['jshint', 'test', 'concat:dataManager', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('dataManagerIndexedDB', ['jshint', 'test', 'concat:dataManagerIndexedDB', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('dataManagerWebSQL', ['jshint', 'test', 'concat:dataManagerWebSQL', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('dataManagerSessionLocal', ['jshint', 'test', 'concat:dataManagerSessionLocal', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('dataManagerMemory', ['jshint', 'test', 'concat:dataManagerMemory', 'iife:custom', 'uglify:custom']);
-    grunt.registerTask('notifierVertx', ['jshint', 'test', 'concat:notifierVertx', 'uglify:custom']);
-    grunt.registerTask('notifierStompWS', ['jshint', 'test', 'concat:notifierStompWS', 'uglify:custom']);
-    grunt.registerTask('simplePush', ['concat:simplePush']);
-    grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
-    grunt.registerTask('push', ['concat:push']);
-    grunt.registerTask('crypto', ['concat:crypto']);
-    grunt.registerTask('oauth2', ['concat:oauth2']);
-    grunt.registerTask('travis', ['jshint', 'qun:-*it', 'concat:dist', 'setupCi', 'ci']);
-    grunt.registerTask('es5', ['initPaths', 'compile:dist']);
-    grunt.registerTask('test', ['initPaths', 'karma:authorization']);
+    grunt.registerTask('default', ['initPaths', 'jshint', 'test', 'compile:dist', 'uglify:dist', 'multi-stage-sourcemap:dist']);
+    grunt.registerTask('dev', ['initPaths', 'jshint', 'initPaths', 'compile:dist', 'uglify:dist', 'multi-stage-sourcemap:dist']);
+    grunt.registerTask('test', ['initPaths', 'karma:all']);
+    grunt.registerTask('dataManager', ['initPaths', 'jshint', 'compile:dataManager', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('dataManagerIndexedDB', ['initPaths', 'jshint', 'compile:dataManagerIndexedDB', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('dataManagerWebSQL', ['initPaths', 'jshint', 'compile:dataManagerWebSQL', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('dataManagerSessionLocal', ['initPaths', 'jshint', 'compile:dataManagerSessionLocal', 'iife:custom', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('dataManagerMemory', ['initPaths', 'jshint', 'compile:dataManagerMemory', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('notifierVertx', ['initPaths', 'jshint', 'compile:notifierVertx', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('notifierStompWS', ['initPaths', 'jshint', 'compile:notifierStompWS', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('simplePush', ['initPaths', 'compile:simplePush', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('unifiedPush', ['initPaths', 'compile:unifiedPush', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('push', ['initPaths', 'compile:push', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('crypto', ['initPaths', 'compile:crypto', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('oauth2', ['initPaths', 'compile:oauth2', 'uglify:custom', 'multi-stage-sourcemap:custom']);
+    grunt.registerTask('travis', ['default', 'setupCi', 'ci']);
 
     grunt.loadTasks('tasks');
 
@@ -249,30 +313,53 @@ module.exports = function(grunt) {
           options = this.options(),
           modules = this.data.modules,
           searchPath = options.searchPath,
-          destination = this.data.destination,
-          externalSources = this.data.externalSources,
-          filesToLoad, filesToConcat, modulesToLoad;
+          filesToLoad, filesToConcat;
 
         filesToLoad = modules.map( function( module ) {
             return module + '.js';
         });
-        modulesToLoad = "['" + modules.join("', '") + "']";
-        filesToConcat = modules.map( function( module ) {
-            return 'dist/' + module + '.js';
-        });
-        filesToConcat = externalSources.concat(['microlib/banner.js'], filesToConcat, ['.tmp/microlib/footer.js']);
 
         var config = {
-            transpile: {},
+            transpile: {
+                options: {
+                    transitiveResolution: true,
+                    resolvers: [ new ModuleResolver(new Transpiler.FileResolver( searchPath )) ]
+                }
+            },
+            continueCompilation: {},
             template: {},
             concat_sourcemap: {}
         };
         config.transpile[target] = {
             formatter: 'amd',
-            searchPath: searchPath,
             modules: filesToLoad,
             destination: 'dist/'
         };
+        config.continueCompilation[target] = {};
+
+        grunt.config.merge( config );
+        grunt.task.run(['transpile:' + target, 'continueCompilation:' + target]);
+    });
+
+    grunt.registerMultiTask('continueCompilation', function() {
+        var target = this.target,
+            compileConfig = grunt.config('compile'),
+            transpileConfig = grunt.config('transpile'),
+            config = {
+                template: {},
+                concat_sourcemap: {}
+            },
+            compiledModules, modulesToLoad, filesToConcat, destination, externalSources;
+
+        destination = compileConfig[target].destination;
+        compiledModules = transpileConfig[target].compiledModules;
+        externalSources = compileConfig[target].externalSources;
+        modulesToLoad = "['" + Object.keys(compiledModules).join("', '") + "']";
+        filesToConcat = Object.keys(compiledModules).map(function (name) {
+            return compiledModules[name];
+        });
+        filesToConcat = externalSources.concat(['microlib/banner.js'], filesToConcat, ['.tmp/microlib/footer.js']);
+
         config.template[target] = {
             files: { '.tmp/microlib/footer.js': ['microlib/footer.js'] },
             options: {
@@ -285,7 +372,7 @@ module.exports = function(grunt) {
         config.concat_sourcemap[target].files[destination] = filesToConcat;
 
         grunt.config.merge( config );
-        grunt.task.run(['transpile:' + target, 'template:' + target, 'concat_sourcemap:' + target]);
+        grunt.task.run(['template:' + target, 'concat_sourcemap:' + target]);
     });
 
     grunt.registerMultiTask('ci', 'Runs tests in checked out aerogear-js-integration module', function () {
@@ -358,7 +445,7 @@ module.exports = function(grunt) {
         }
 
         if( options.length === 1 ) {
-            grunt.task.run( ['concat:' + options, 'iife:custom', 'uglify:custom'] );
+            grunt.task.run( ['compile:' + options, 'iife:custom', 'uglify:custom'] );
             return ;
         }
 
@@ -378,6 +465,6 @@ module.exports = function(grunt) {
             }
         });
 
-        grunt.task.run(['concat:custom', 'iife:custom', 'uglify:custom']);
+        grunt.task.run(['compile:custom', 'iife:custom', 'uglify:custom']);
     });
 };

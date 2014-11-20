@@ -77,6 +77,7 @@
   ],
   "keywords": [],
   "devDependencies": {
+    "es6-module-transpiler": "^0.9.3",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.13",
     "grunt-concat-sourcemap": "^0.4.3",
