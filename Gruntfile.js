@@ -238,16 +238,6 @@ module.exports = function(grunt) {
         }
     });
 
-    // IIFE wrapper task
-    grunt.registerTask('iife', function( custom ) {
-        var fs = require('fs'),
-            fileName = 'dist/' + grunt.config('pkg').name + (custom ? '.custom' : '') + '.js',
-            fileText = fs.readFileSync( fileName, 'utf-8' );
-
-        fileText = fileText.replace( /\*\//, '*/\n(function( window, undefined ) {\n' );
-        fs.writeFileSync( fileName, fileText + '})( this );\n', 'utf-8' );
-    });
-
     // grunt-contrib tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -457,9 +447,6 @@ module.exports = function(grunt) {
         }
         modules = _.uniq( _.flatten( moduleList ) );
         externalSources = _.uniq( _.flatten( externalSourceList ) );
-
-        console.log(modules);
-        console.log(externalSources);
 
         grunt.config.set( 'compile', {
             custom: {
