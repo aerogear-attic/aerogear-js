@@ -430,41 +430,45 @@ module.exports = function(grunt) {
     // A task to create custom builds of the library based on the 'concat' task
     grunt.registerTask('custom', function( opts ) {
         var options = opts.split( ',' ),
-            concatTasks = grunt.config.get( "concat" ),
-            tasks = [],
-            src;
+            compileTasks = grunt.config.get( "compile" ),
+            moduleList = [],
+            externalSourceList = [],
+            modules,
+            externalSources;
 
         if( options.filter( function( item ) { return item === 'help'; } ).length > 0 ) {
             grunt.log.writeln( grunt.file.read( 'custom_build_help.txt' ) );
-            for( var task in concatTasks ) {
+            for( var task in compileTasks ) {
                 if( task !== 'options' && task !== 'dist' ) {
-                    grunt.log.writeln( task + ' - ' + concatTasks[ task ].description  );
+                    grunt.log.writeln( task + ' - ' + compileTasks[ task ].description  );
                 }
             }
             return;
         }
 
         if( options.length === 1 ) {
-            grunt.task.run( ['compile:' + options, 'iife:custom', 'uglify:custom'] );
+            grunt.task.run( ['initPaths', 'compile:' + options, 'uglify:custom', 'multi-stage-sourcemap:custom'] );
             return ;
         }
 
         for( var i = 0; i < options.length; i++ ) {
-            tasks.push( concatTasks[ options[ i ] ].src );
+            moduleList.push( compileTasks[ options[ i ] ].modules );
+            externalSourceList.push( compileTasks[ options[ i ] ].externalSources );
         }
-        src = _.uniq( _.flatten( tasks ) );
+        modules = _.uniq( _.flatten( moduleList ) );
+        externalSources = _.uniq( _.flatten( externalSourceList ) );
 
-        grunt.config.set( 'concat', {
-            options: {
-                stripBanners: true,
-                banner: '<%= meta.banner %>'
-            },
+        console.log(modules);
+        console.log(externalSources);
+
+        grunt.config.set( 'compile', {
             custom: {
-                src: src,
-                dest: 'dist/<%= pkg.name %>.custom.js'
+                modules: modules,
+                destination: [ 'dist/aerogear.custom.js' ],
+                externalSources: externalSources
             }
         });
 
-        grunt.task.run(['compile:custom', 'iife:custom', 'uglify:custom']);
+        grunt.task.run(['initPaths', 'compile:custom', 'uglify:custom', 'multi-stage-sourcemap:custom']);
     });
 };
