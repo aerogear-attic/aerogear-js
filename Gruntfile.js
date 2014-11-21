@@ -303,7 +303,7 @@ module.exports = function(grunt) {
           options = this.options(),
           modules = this.data.modules,
           searchPath = options.searchPath,
-          filesToLoad, filesToConcat;
+          filesToLoad;
 
         filesToLoad = modules.map( function( module ) {
             return module + '.js';
@@ -346,7 +346,7 @@ module.exports = function(grunt) {
         externalSources = compileConfig[target].externalSources;
         modulesToLoad = "['" + Object.keys(compiledModules).join("', '") + "']";
         filesToConcat = Object.keys(compiledModules).map(function (name) {
-            return compiledModules[name];
+            return 'dist/' + compiledModules[name];
         });
         filesToConcat = externalSources.concat(['microlib/banner.js'], filesToConcat, ['.tmp/microlib/footer.js']);
 
