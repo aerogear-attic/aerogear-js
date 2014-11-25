@@ -105,8 +105,5 @@
   },
   "scripts": {
     "test": "grunt travis --verbose"
-  },
-  "dependencies": {
-    "karma": "^0.12.24"
   }
 }
