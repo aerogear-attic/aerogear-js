@@ -1,12 +1,14 @@
-(function( $ ) {
+import UnifiedPushClient from 'aerogear.unifiedpush';
+
+(function() {
 
     module( "UnifiedPush Client - General" );
 
     test( "create - New UnifiedPush Client with no arguments", function() {
         expect( 1 );
 
-        raises( function() {
-                AeroGear.UnifiedPushClient();
+        throws( function() {
+                UnifiedPushClient();
             },
             "UnifiedPushClientException",
             "throws UnifiedPushClientException"
@@ -16,8 +18,8 @@
     test( "create - New UnifiedPush Client with 1 argument", function() {
         expect( 1 );
 
-        raises( function() {
-                AeroGear.UnifiedPushClient( "Arg" );
+        throws( function() {
+                UnifiedPushClient( "Arg" );
             },
             "UnifiedPushClientException",
             "throws UnifiedPushClientException"
@@ -27,8 +29,8 @@
     test( "create - New UnifiedPush Client with 2 arguments", function() {
         expect( 1 );
 
-        raises( function() {
-                AeroGear.UnifiedPushClient( "Arg", "Secret" );
+        throws( function() {
+                UnifiedPushClient( "Arg", "Secret" );
             },
             "UnifiedPushClientException",
             "throws UnifiedPushClientException"
@@ -38,9 +40,9 @@
     test( "create - New UnifiedPush Client with arguments", function() {
         expect(3);
 
-        var client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "URL" );
+        var client = UnifiedPushClient( "VARIANT_ID", "SECRET", "URL" );
 
-        equal( client instanceof AeroGear.UnifiedPushClient, true, "client should be an instance of UPS Client" );
+        equal( client instanceof UnifiedPushClient, true, "client should be an instance of UPS Client" );
         equal( client.hasOwnProperty( "registerWithPushServer" ), true, "client should have a registerWithPushServer method" );
         equal( client.hasOwnProperty( "unregisterWithPushServer" ), true, "client should have a unregisterWithPushServer method" );
     });
@@ -62,8 +64,8 @@
     test( "call register with no device token", function() {
         expect(1);
 
-        raises( function() {
-                AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "URL" ).registerWithPushServer();
+        throws( function() {
+                UnifiedPushClient( "VARIANT_ID", "SECRET", "URL" ).registerWithPushServer();
             },
             "UnifiedPushRegistrationException",
             "throws UnifiedPushRegistrationException"
@@ -81,7 +83,7 @@
             deviceToken: "12345"
         };
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
 
         ret = client.registerWithPushServer( settings );
         var request = this.requests[0];
@@ -104,7 +106,7 @@
             deviceToken: "12345"
         };
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver/" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver/" );
 
         ret = client.registerWithPushServer( settings );
         var request = this.requests[0];
@@ -124,7 +126,7 @@
 
         settings = {};
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
 
         ret = client.unregisterWithPushServer( deviceToken, settings );
         var request = this.requests[0];
@@ -160,7 +162,7 @@
             deviceToken: "12345"
         };
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
 
         ret = client.registerWithPushServer( settings );
         this.server.respond();
@@ -187,7 +189,7 @@
             deviceToken: "12345"
         };
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserv" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserv" );
 
         ret = client.registerWithPushServer( settings );
         this.server.respond();
@@ -221,7 +223,7 @@
 
         settings = {};
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserver" );
 
         ret = client.unregisterWithPushServer( deviceToken, settings );
         this.server.respond();
@@ -243,7 +245,7 @@
 
         settings = {};
 
-        client = AeroGear.UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserv" );
+        client = UnifiedPushClient( "VARIANT_ID", "SECRET", "/api/pushserv" );
 
         ret = client.unregisterWithPushServer( settings );
         this.server.respond();
@@ -258,4 +260,4 @@
         equal( ret instanceof Promise, true, "the return value should be an es6 promise" );
 
     });
-})( jQuery );
+})();

@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import Notifier from 'aerogear.notifier';
+
 /**
     The vertx adapter is the default type used when creating a new notifier client. It uses the vert.x bus and underlying SockJS implementation for messaging.
     @status Stable
@@ -59,15 +62,15 @@
         }
     });
  */
-AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
+Notifier.adapters.vertx = function( clientName, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Notifier.adapters.vertx ) ) {
-        return new AeroGear.Notifier.adapters.vertx( clientName, settings );
+    if ( !( this instanceof Notifier.adapters.vertx ) ) {
+        return new Notifier.adapters.vertx( clientName, settings );
     }
 
     settings = settings || {};
 
-    AeroGear.Notifier.adapters.base.apply( this, arguments );
+    Notifier.adapters.base.apply( this, arguments );
 
     // Private Instance vars
     var type = "vertx";
@@ -107,7 +110,7 @@ AeroGear.Notifier.adapters.vertx = function( clientName, settings ) {
     notifierVertx.clients.client1.connect();
 
  */
-AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
+Notifier.adapters.vertx.prototype.connect = function( options ) {
     options = options || {};
     var that = this,
         bus = new vertx.EventBus( options.url || this.getConnectURL(), options );
@@ -116,7 +119,7 @@ AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
         // Make a Copy of the channel array instead of a reference.
         var channels = that.getChannels().slice( 0 );
 
-        that.setState( AeroGear.Notifier.CONNECTED );
+        that.setState( Notifier.CONNECTED );
 
         that.subscribe( channels, true );
 
@@ -126,9 +129,9 @@ AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
     };
 
     bus.onclose = function() {
-        if ( that.getState() === AeroGear.Notifier.DISCONNECTING ) {
+        if ( that.getState() === Notifier.DISCONNECTING ) {
             // Fire disconnect as usual
-            that.setState( AeroGear.Notifier.DISCONNECTED );
+            that.setState( Notifier.DISCONNECTED );
             if ( options.onDisconnect ) {
                 options.onDisconnect.apply( this, arguments );
             }
@@ -173,10 +176,10 @@ AeroGear.Notifier.adapters.vertx.prototype.connect = function( options ) {
     notifierVertx.clients.client1.disconnect();
 
  */
-AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
+Notifier.adapters.vertx.prototype.disconnect = function() {
     var bus = this.getClient();
-    if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
-        this.setState( AeroGear.Notifier.DISCONNECTING );
+    if ( this.getState() === Notifier.CONNECTED ) {
+        this.setState( Notifier.DISCONNECTING );
         bus.close();
     }
 };
@@ -238,7 +241,7 @@ AeroGear.Notifier.adapters.vertx.prototype.disconnect = function() {
             callback: function(){ ... }
         }, true );
  */
-AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
+Notifier.adapters.vertx.prototype.subscribe = function( channels, reset ) {
     var bus = this.getClient();
 
     if ( reset ) {
@@ -278,7 +281,7 @@ AeroGear.Notifier.adapters.vertx.prototype.subscribe = function( channels, reset
 
 
  */
-AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
+Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
     var bus = this.getClient(),
         thisChannels = this.getChannels();
 
@@ -309,7 +312,7 @@ AeroGear.Notifier.adapters.vertx.prototype.unsubscribe = function( channels ) {
 
 
  */
-AeroGear.Notifier.adapters.vertx.prototype.send = function( channel, message, publish ) {
+Notifier.adapters.vertx.prototype.send = function( channel, message, publish ) {
     var bus = this.getClient();
 
     if ( typeof message === Boolean && !publish ) {

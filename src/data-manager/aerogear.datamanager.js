@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import { AeroGear, Core, extend } from 'aerogear.core';
+
 /**
     A collection of data connections (stores) and their corresponding data models. This object provides a standard way to interact with client side data no matter the data format or storage mechanism used.
     @status Stable
@@ -58,10 +61,10 @@ var dm4 = AeroGear.DataManager([
     }
 ]);
  */
-AeroGear.DataManager = function( config ) {
+function DataManager( config ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.DataManager ) ) {
-        return new AeroGear.DataManager( config );
+    if ( !( this instanceof DataManager ) ) {
+        return new DataManager( config );
     }
 
     /**
@@ -82,15 +85,15 @@ AeroGear.DataManager = function( config ) {
             settings = value.settings || {};
             fallback = settings.fallback === false ? false : true;
             if( fallback ) {
-                preferred = settings.preferred ? settings.preferred : AeroGear.DataManager.preferred;
+                preferred = settings.preferred ? settings.preferred : DataManager.preferred;
                 if ( typeof value !== "string" ) {
                     type = value.type || "Memory";
-                    if( !( type in AeroGear.DataManager.validAdapters ) ) {
+                    if( !( type in DataManager.validAdapters ) ) {
                         for( i = 0; i < preferred.length; i++ ) {
-                            if( preferred[ i ] in AeroGear.DataManager.validAdapters ) {
+                            if( preferred[ i ] in DataManager.validAdapters ) {
                                 // For Deprecation purposes in 1.3.0  will be removed in 1.4.0
                                 if( type === "IndexedDB" || type === "WebSQL" ) {
-                                    value.settings = AeroGear.extend( value.settings || {}, { async: true } );
+                                    value.settings = extend( value.settings || {}, { async: true } );
                                 }
                                 value.type = preferred[ i ];
                                 return value;
@@ -102,7 +105,7 @@ AeroGear.DataManager = function( config ) {
             return value;
         }, this );
 
-        AeroGear.Core.call( this );
+        Core.call( this );
         this.add( config );
 
         // Put back DataManager.add
@@ -120,7 +123,7 @@ AeroGear.DataManager = function( config ) {
         @returns {Object} The object containing the collection that was updated
      */
     this.remove = function( config ){
-        AeroGear.Core.call( this );
+        Core.call( this );
         this.remove( config );
 
         // Put back DataManager.remove
@@ -143,27 +146,27 @@ AeroGear.DataManager = function( config ) {
     this.collectionName = "stores";
 
     this.add( config );
-};
+}
 
-AeroGear.DataManager.prototype = AeroGear.Core;
-AeroGear.DataManager.constructor = AeroGear.DataManager;
+DataManager.prototype = Core;
+DataManager.constructor = DataManager;
 
 /**
     Stores the valid adapters
 */
-AeroGear.DataManager.validAdapters = {};
+DataManager.validAdapters = {};
 
 /**
     preferred adapters for the fallback strategy
 */
-AeroGear.DataManager.preferred = [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ];
+DataManager.preferred = [ "IndexedDB", "WebSQL", "SessionLocal", "Memory" ];
 
 /**
     Method to determine and store what adapters are valid for this environment
 */
-AeroGear.DataManager.validateAdapter = function( id, obj ) {
+DataManager.validateAdapter = function( id, obj ) {
     if( obj.isValid() ) {
-        AeroGear.DataManager.validAdapters[ id ] = obj;
+        DataManager.validAdapters[ id ] = obj;
     }
 };
 
@@ -171,9 +174,13 @@ AeroGear.DataManager.validateAdapter = function( id, obj ) {
     The adapters object is provided so that adapters can be added to the AeroGear.DataManager namespace dynamically and still be accessible to the add method
     @augments AeroGear.DataManager
  */
-AeroGear.DataManager.adapters = {};
+DataManager.adapters = {};
 
 // Constants
-AeroGear.DataManager.STATUS_NEW = 1;
-AeroGear.DataManager.STATUS_MODIFIED = 2;
-AeroGear.DataManager.STATUS_REMOVED = 0;
+DataManager.STATUS_NEW = 1;
+DataManager.STATUS_MODIFIED = 2;
+DataManager.STATUS_REMOVED = 0;
+
+AeroGear.DataManager = DataManager;
+
+export default DataManager;

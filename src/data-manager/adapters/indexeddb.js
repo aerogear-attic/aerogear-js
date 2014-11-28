@@ -13,6 +13,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+import 'memory';
+
 /**
     The IndexedDB adapter stores data in an IndexedDB database for more persistent client side storage
     This constructor is instantiated when the "DataManager.add()" method is called
@@ -37,18 +42,18 @@
     });
 
  */
-AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
+DataManager.adapters.IndexedDB = function( storeName, settings ) {
 
     if ( !window.indexedDB ) {
         throw "Your browser doesn't support IndexedDB";
     }
 
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.DataManager.adapters.IndexedDB ) ) {
-        return new AeroGear.DataManager.adapters.IndexedDB( storeName, settings );
+    if ( !( this instanceof DataManager.adapters.IndexedDB ) ) {
+        return new DataManager.adapters.IndexedDB( storeName, settings );
     }
 
-    AeroGear.DataManager.adapters.base.apply( this, arguments );
+    DataManager.adapters.base.apply( this, arguments );
 
     settings = settings || {};
 
@@ -131,7 +136,7 @@ AeroGear.DataManager.adapters.IndexedDB = function( storeName, settings ) {
 /**
     Determine if this adapter is supported in the current environment
 */
-AeroGear.DataManager.adapters.IndexedDB.isValid = function() {
+DataManager.adapters.IndexedDB.isValid = function() {
     return !!window.indexedDB;
 };
 
@@ -152,7 +157,7 @@ AeroGear.DataManager.adapters.IndexedDB.isValid = function() {
         .then(function() { ... })
         .catch(function(error) { ... });
 */
-AeroGear.DataManager.adapters.IndexedDB.prototype.open = function() {
+DataManager.adapters.IndexedDB.prototype.open = function() {
 
     var request, database,
         that = this,
@@ -210,7 +215,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.open = function() {
                 .catch( function( error ) { ... } );
         });
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id ) {
+DataManager.adapters.IndexedDB.prototype.read = function( id ) {
 
     var transaction, objectStore, cursor, request,
         that = this,
@@ -289,7 +294,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.read = function( id ) {
                 .catch( function( error ) { ... } );
         });
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options ) {
+DataManager.adapters.IndexedDB.prototype.save = function( data, options ) {
     options = options || {};
 
     var transaction, objectStore,
@@ -359,7 +364,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.save = function( data, options
             .catch( function( error ) { ... } );
       });
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove ) {
+DataManager.adapters.IndexedDB.prototype.remove = function( toRemove ) {
 
     var objectStore, transaction,
         that = this,
@@ -429,7 +434,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.remove = function( toRemove ) 
     });
 
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny ) {
+DataManager.adapters.IndexedDB.prototype.filter = function( filterParameters, matchAny ) {
 
     var that = this;
 
@@ -437,8 +442,8 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
         that.run.call( that, function() {
             this.read()
                 .then( function( data ) {
-                    AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
-                    AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( filteredData ) {
+                    DataManager.adapters.Memory.prototype.save.call( that, data, true );
+                    DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( filteredData ) {
                         resolve( filteredData );
                     });
                 })
@@ -463,7 +468,7 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.filter = function( filterParam
 
     dm.stores.newStore.close();
  */
-AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
+DataManager.adapters.IndexedDB.prototype.close = function() {
     var database = this.getDatabase();
     if( database ) {
         database.close();
@@ -473,4 +478,4 @@ AeroGear.DataManager.adapters.IndexedDB.prototype.close = function() {
 /**
     Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
-AeroGear.DataManager.validateAdapter( "IndexedDB", AeroGear.DataManager.adapters.IndexedDB );
+DataManager.validateAdapter( "IndexedDB", DataManager.adapters.IndexedDB );

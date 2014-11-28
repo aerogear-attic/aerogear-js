@@ -13,6 +13,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+import 'memory';
+
 /**
     The WebSQL adapter stores data in a WebSQL database for more persistent client side storage
     This constructor is instantiated when the "DataManager.add()" method is called
@@ -37,18 +42,18 @@
     });
 
  */
-AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
+DataManager.adapters.WebSQL = function( storeName, settings ) {
 
     if ( !window.openDatabase ) {
         throw "Your browser doesn't support WebSQL";
     }
 
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.DataManager.adapters.WebSQL ) ) {
-        return new AeroGear.DataManager.adapters.WebSQL( storeName, settings );
+    if ( !( this instanceof DataManager.adapters.WebSQL ) ) {
+        return new DataManager.adapters.WebSQL( storeName, settings );
     }
 
-    AeroGear.DataManager.adapters.base.apply( this, arguments );
+    DataManager.adapters.base.apply( this, arguments );
 
     settings = settings || {};
 
@@ -130,7 +135,7 @@ AeroGear.DataManager.adapters.WebSQL = function( storeName, settings ) {
 /**
     Determine if this adapter is supported in the current environment
 */
-AeroGear.DataManager.adapters.WebSQL.isValid = function() {
+DataManager.adapters.WebSQL.isValid = function() {
     return !!window.openDatabase;
 };
 
@@ -151,7 +156,7 @@ AeroGear.DataManager.adapters.WebSQL.isValid = function() {
         .then(function() { ... })
         .catch(function(error) { ... });
 */
-AeroGear.DataManager.adapters.WebSQL.prototype.open = function() {
+DataManager.adapters.WebSQL.prototype.open = function() {
 
     var database,
         that = this,
@@ -185,7 +190,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.open = function() {
  @private
  @augments base
  */
-AeroGear.DataManager.adapters.WebSQL.prototype.close = function() {
+DataManager.adapters.WebSQL.prototype.close = function() {
 };
 
 /**
@@ -217,7 +222,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.close = function() {
     });
 
  */
-AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id ) {
+DataManager.adapters.WebSQL.prototype.read = function( id ) {
 
     var that = this,
         data = [],
@@ -289,7 +294,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.read = function( id ) {
             .catch( function( error ) { ... } );
     });
  */
-AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) {
+DataManager.adapters.WebSQL.prototype.save = function( data, options ) {
     options = options || {};
 
     var that = this,
@@ -359,7 +364,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.save = function( data, options ) 
         });
 
  */
-AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove ) {
+DataManager.adapters.WebSQL.prototype.remove = function( toRemove ) {
 
     var that = this,
         storeName = this.getStoreName(),
@@ -431,7 +436,7 @@ AeroGear.DataManager.adapters.WebSQL.prototype.remove = function( toRemove ) {
             .catch( function( error ) { ... } );
     });
  */
-AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParameters, matchAny ) {
+DataManager.adapters.WebSQL.prototype.filter = function( filterParameters, matchAny ) {
 
     var that = this;
 
@@ -439,8 +444,8 @@ AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParamete
         that.run.call( that, function() {
             this.read()
                 .then( function( data ) {
-                    AeroGear.DataManager.adapters.Memory.prototype.save.call( that, data, true );
-                    AeroGear.DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( filteredData ) {
+                    DataManager.adapters.Memory.prototype.save.call( that, data, true );
+                    DataManager.adapters.Memory.prototype.filter.call( that, filterParameters, matchAny ).then( function( filteredData ) {
                         resolve( filteredData );
                     });
                 })
@@ -454,4 +459,4 @@ AeroGear.DataManager.adapters.WebSQL.prototype.filter = function( filterParamete
 /**
     Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
-AeroGear.DataManager.validateAdapter( "WebSQL", AeroGear.DataManager.adapters.WebSQL );
+DataManager.validateAdapter( "WebSQL", DataManager.adapters.WebSQL );

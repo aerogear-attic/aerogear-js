@@ -3,3 +3,5 @@ dist/
 docs/
 node_modules/
 aerogear-js-integration/
+.tmp/
+

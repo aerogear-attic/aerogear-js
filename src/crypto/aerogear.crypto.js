@@ -24,15 +24,17 @@
 
     var agCrypto = AeroGear.Crypto();
  */
-AeroGear.Crypto = function() {
+import { AeroGear } from 'aerogear.core';
+
+function Crypto() {
 
     if( !window.crypto || !window.crypto.getRandomValues ) {
         throw "Your browser does not support the Web Crypto API";
     }
 
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Crypto ) ) {
-        return new AeroGear.Crypto();
+    if ( !( this instanceof Crypto ) ) {
+        return new Crypto();
     }
 
     // Local Variables
@@ -248,4 +250,8 @@ AeroGear.Crypto = function() {
 
         return this;
     };
-};
+}
+
+AeroGear.Crypto = Crypto;
+
+export default Crypto;

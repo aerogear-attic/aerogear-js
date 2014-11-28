@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+import { AeroGear, extend } from 'aerogear.core';
+
 /**
     The AeroGear.ajax is used to perform Ajax requests.
     @status Experimental
@@ -44,7 +46,7 @@
             url: "http://SERVER:PORT/CONTEXT"
         });
 */
-AeroGear.ajax = function( settings ) {
+var ajax = function( settings ) {
     return new Promise( function( resolve, reject ) {
         settings = settings || {};
 
@@ -71,7 +73,7 @@ AeroGear.ajax = function( settings ) {
             } else if ( contentType === "application/json" ) {
                 data = data || {};
                 data.params = data.params || {};
-                AeroGear.extend( data.params,  settings.params );
+                extend( data.params,  settings.params );
             }
         }
 
@@ -104,7 +106,7 @@ AeroGear.ajax = function( settings ) {
         // Success and 400's
         request.onload = function() {
             var status = ( request.status < 400 ) ? "success" : "error",
-                promiseValue = that._createPromiseValue( request, status );
+                promiseValue = _createPromiseValue( request, status );
 
             if( status === "success" ) {
                 return resolve( promiseValue );
@@ -117,11 +119,11 @@ AeroGear.ajax = function( settings ) {
         request.onerror = function() {
             var status = "error";
 
-            reject( that._createPromiseValue( request, status ) );
+            reject( _createPromiseValue( request, status ) );
         };
 
         // create promise arguments
-        this._createPromiseValue = function( request, status ) {
+        function _createPromiseValue( request, status ) {
             var statusText = request.statusText || status,
                 dataOrError = ( responseType === 'text' || responseType === '') ? request.responseText : request.response;
 
@@ -130,8 +132,12 @@ AeroGear.ajax = function( settings ) {
                 statusText: statusText,
                 agXHR: request
             };
-        };
+        }
 
         request.send( data );
     });
 };
+
+AeroGear.ajax = ajax;
+
+export default ajax;

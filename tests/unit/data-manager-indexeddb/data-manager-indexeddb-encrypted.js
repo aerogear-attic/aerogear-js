@@ -1,4 +1,12 @@
+import DataManager from 'aerogear.datamanager';
+import 'indexeddb';
+import Crypto from 'aerogear.crypto';
+
 ( function() {
+
+    if ( !window.indexedDB ) {
+        return;
+    }
 
     module( "DataManager: IndexedDB" );
 
@@ -24,7 +32,12 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager();
 
     module( "DataManager: IndexedDB - Create and Test open failure", {
         setup: function() {
@@ -32,7 +45,7 @@
                 name: "test1",
                 type: "IndexedDB",
                 settings: {
-                    agcrypto: AeroGear.Crypto(),
+                    agcrypto: Crypto(),
                     auto: false
                 }
             });
@@ -46,7 +59,7 @@
         expect( 2 );
 
         equal( Object.keys( dm.stores ).length, 1, "1 store created" );
-        equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.IndexedDB, true, "new Indexed DB instance created" );
+        equal( dm.stores.test1 instanceof DataManager.adapters.IndexedDB, true, "new Indexed DB instance created" );
     });
 
     asyncTest( "Read - DB not open.  Should Fail", function() {
@@ -91,7 +104,12 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager();
 
     module( "DataManager: IndexedDB - Open", {
         setup: function() {
@@ -100,7 +118,7 @@
                 type: "IndexedDB",
                 settings: {
                     auto: false,
-                    agcrypto: AeroGear.Crypto()
+                    agcrypto: Crypto()
                 }
             });
         },
@@ -146,7 +164,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Save", {
@@ -158,7 +181,7 @@
                 type: "IndexedDB",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -269,7 +292,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Read", {
@@ -281,7 +309,7 @@
                 type: "IndexedDB",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -365,7 +393,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Update", {
@@ -377,7 +410,7 @@
                 type: "IndexedDB",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -444,7 +477,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Remove", {
@@ -456,7 +494,7 @@
                 type: "IndexedDB",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -538,7 +576,12 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: IndexedDB - Filter", {
@@ -550,7 +593,7 @@
                 type: "IndexedDB",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -617,7 +660,12 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+
+    if ( !window.indexedDB ) {
+        return;
+    }
+
+    var dm = DataManager();
     dm.add({
         name: "test1",
         type: "IndexedDB"

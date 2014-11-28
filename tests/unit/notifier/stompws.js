@@ -1,11 +1,14 @@
-(function( $ ) {
+import Notifier from 'aerogear.notifier';
+import 'stompws';
+
+(function() {
 
 module( "Notifier: STOMP Websocket" );
 
 test( "create - object", function() {
     expect( 2 );
 
-    var stomp = AeroGear.Notifier({
+    var stomp = Notifier({
         name: "createTest",
         type: "stompws"
     }).clients;
@@ -17,7 +20,7 @@ test( "create - object", function() {
 test( "create - array", function() {
     expect( 3 );
 
-    var stomp = AeroGear.Notifier([
+    var stomp = Notifier([
     {
         name: "createTest",
         type: "stompws"
@@ -36,7 +39,7 @@ test( "create - array", function() {
 test( "add method", function() {
     expect( 2 );
 
-    var stomp = AeroGear.Notifier().add({
+    var stomp = Notifier().add({
         name: "addTest",
         type: "stompws"
     }).clients;
@@ -48,7 +51,7 @@ test( "add method", function() {
 test( "remove method", function() {
     expect( 3 );
 
-    var stomp = AeroGear.Notifier({
+    var stomp = Notifier({
         name: "removeTest",
         type: "stompws"
     });
@@ -59,4 +62,4 @@ test( "remove method", function() {
     equal( stomp.clients.removeTest, undefined, "Removed client is really gone" );
 });
 
-})( jQuery );
+})();

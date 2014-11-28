@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import Notifier from 'aerogear.notifier';
+
 /**
     The stomp adapter uses an underlying stomp.js implementation for messaging.
     @status Stable
@@ -56,15 +59,15 @@
         }
     });
  */
-AeroGear.Notifier.adapters.stompws = function( clientName, settings ) {
+Notifier.adapters.stompws = function( clientName, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Notifier.adapters.stompws ) ) {
-        return new AeroGear.Notifier.adapters.stompws( clientName, settings );
+    if ( !( this instanceof Notifier.adapters.stompws ) ) {
+        return new Notifier.adapters.stompws( clientName, settings );
     }
 
     settings = settings || {};
 
-    AeroGear.Notifier.adapters.base.apply( this, arguments );
+    Notifier.adapters.base.apply( this, arguments );
 
     // Private Instance vars
     var type = "stompws";
@@ -146,7 +149,7 @@ AeroGear.Notifier.adapters.stompws = function( clientName, settings ) {
         }
     });
  */
-AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
+Notifier.adapters.stompws.prototype.connect = function( options ) {
     options = options || {};
     var that = this,
         client = new Stomp.client( options.url || this.getConnectURL(), options.protocol || "v11.stomp" ),
@@ -154,7 +157,7 @@ AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
             // Make a copy of the channel array instead of a reference.
             var channels = that.getChannels().slice( 0 );
 
-            that.setState( AeroGear.Notifier.CONNECTED );
+            that.setState( Notifier.CONNECTED );
 
             that.subscribe( channels, true );
 
@@ -163,7 +166,7 @@ AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
             }
         },
         onConnectError = function() {
-            that.setState( AeroGear.Notifier.DISCONNECTED );
+            that.setState( Notifier.DISCONNECTED );
             if ( options.onConnectError ) {
                 options.onConnectError.apply( this, arguments );
             }
@@ -185,21 +188,21 @@ AeroGear.Notifier.adapters.stompws.prototype.connect = function( options ) {
     );
 
  */
-AeroGear.Notifier.adapters.stompws.prototype.disconnect = function( onDisconnect ) {
+Notifier.adapters.stompws.prototype.disconnect = function( onDisconnect ) {
     var that = this,
         client = this.getClient(),
         disconnected = function() {
-            if ( that.getState() === AeroGear.Notifier.DISCONNECTING ) {
+            if ( that.getState() === Notifier.DISCONNECTING ) {
                 // Fire disconnect as usual
-                that.setState( AeroGear.Notifier.DISCONNECTED );
+                that.setState( Notifier.DISCONNECTED );
                 if ( onDisconnect ) {
                     onDisconnect.apply( this, arguments );
                 }
             }
         };
 
-    if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
-        this.setState( AeroGear.Notifier.DISCONNECTING );
+    if ( this.getState() === Notifier.CONNECTED ) {
+        this.setState( Notifier.DISCONNECTING );
         client.disconnect( disconnected );
     }
 };
@@ -234,7 +237,7 @@ AeroGear.Notifier.adapters.stompws.prototype.disconnect = function( onDisconnect
     }, true );
 
  */
-AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, reset ) {
+Notifier.adapters.stompws.prototype.subscribe = function( channels, reset ) {
     var client = this.getClient();
 
     if ( reset ) {
@@ -259,7 +262,7 @@ AeroGear.Notifier.adapters.stompws.prototype.subscribe = function( channels, res
         }
     );
  */
-AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
+Notifier.adapters.stompws.prototype.debug = function( onData ) {
     var client = this.getClient(),
         debug = function() {
             if ( onData ) {
@@ -294,7 +297,7 @@ AeroGear.Notifier.adapters.stompws.prototype.debug = function( onData ) {
         },
     ]);
  */
-AeroGear.Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) {
+Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) {
     var client = this.getClient(),
         thisChannels = this.getChannels();
 
@@ -323,7 +326,7 @@ AeroGear.Notifier.adapters.stompws.prototype.unsubscribe = function( channels ) 
     notifier.clients.client2.send( "jms.topic.chat", { "headers": { priority: 9 }, "body": "Hello" } );
 
  */
-AeroGear.Notifier.adapters.stompws.prototype.send = function( channel, message ) {
+Notifier.adapters.stompws.prototype.send = function( channel, message ) {
     var headers = {},
         client = this.getClient();
 

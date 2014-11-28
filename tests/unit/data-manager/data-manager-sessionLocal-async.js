@@ -1,3 +1,6 @@
+import DataManager from 'aerogear.datamanager';
+import 'session-local';
+
 (function() {
 
     function emptyStores() {
@@ -17,7 +20,7 @@
     test( "create - name string", function() {
         expect( 2 );
 
-        var dm = AeroGear.DataManager({ name: "createTest1", type: "SessionLocal" }).stores;
+        var dm = DataManager({ name: "createTest1", type: "SessionLocal" }).stores;
         equal( Object.keys( dm ).length, 1, "Single Store created" );
         equal( Object.keys( dm )[ 0 ], "createTest1", "Store Name createTest1" );
     });
@@ -25,7 +28,7 @@
     test( "create - array", function() {
         expect( 4 );
 
-        var dm = AeroGear.DataManager([
+        var dm = DataManager([
             {
                 name: "createTest21",
                 type: "SessionLocal"
@@ -49,7 +52,7 @@
     test( "add and remove - string ", function() {
         expect( 5 );
 
-        var dm = AeroGear.DataManager();
+        var dm = DataManager();
         dm.add({
             name: "addTest1",
             type: "SessionLocal"
@@ -71,7 +74,7 @@
     test( "add and remove - array ", function() {
         expect( 7 );
 
-        var dm = AeroGear.DataManager();
+        var dm = DataManager();
         dm.add([
             {
                 name: "addTest3",
@@ -101,7 +104,7 @@
     test( "add and remove - object ", function() {
         expect( 7 );
 
-        var dm = AeroGear.DataManager();
+        var dm = DataManager();
         dm.add([
             {
                 name: "addTest6",
@@ -127,7 +130,7 @@
     });
 
     // Create a default (memory) dataManager to store data for some tests
-    var contactStore = AeroGear.DataManager( { name: "contacts", settings: { async: true } } ).stores.contacts;
+    var contactStore = DataManager( { name: "contacts", settings: { async: true } } ).stores.contacts;
 
     module( "DataManager: Memory - Promise API",{
         setup: function() {
@@ -136,7 +139,7 @@
 
             emptyStores();
 
-            contactStore = AeroGear.DataManager({
+            contactStore = DataManager({
                 name: "contacts",
                 type: "SessionLocal",
                 settings: {
@@ -239,7 +242,7 @@
 
             emptyStores();
 
-            userStore = AeroGear.DataManager({
+            userStore = DataManager({
                 name: "users",
                 type: "SessionLocal",
                 settings: {
@@ -290,7 +293,7 @@
     });
 
     asyncTest( "load session stored data", function() {
-        userStoreReload = AeroGear.DataManager({
+        userStoreReload = DataManager({
             name: "users",
             type: "SessionLocal",
             settings: {
@@ -684,7 +687,7 @@
 
             emptyStores();
 
-            tasksStore = AeroGear.DataManager({
+            tasksStore = DataManager({
                 name: "tasks",
                 type: "SessionLocal",
                 settings: {
@@ -843,7 +846,7 @@
 
             emptyStores();
 
-            tasksStore = AeroGear.DataManager({
+            tasksStore = DataManager({
                 name: "tasks",
                 type: "SessionLocal",
                 settings: {
@@ -988,7 +991,7 @@
 
             emptyStores();
 
-            sizeStores = AeroGear.DataManager([
+            sizeStores = DataManager([
                 {
                     name: "size1",
                     type: "SessionLocal",

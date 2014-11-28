@@ -1,3 +1,8 @@
+import DataManager from 'aerogear.datamanager';
+import 'websql';
+import Crypto from 'aerogear.crypto';
+
+
 ( function() {
 
     module( "DataManager: WebSQL" );
@@ -7,13 +12,13 @@
         ok( window.openDatabase );
     });
 
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
     dm.add({
         name: "test1q",
         type: "WebSQL",
         settings: {
             crypto: {
-                agcrypto: AeroGear.Crypto(),
+                agcrypto: Crypto(),
                 options: {
                     key: "password"
                 }
@@ -23,7 +28,7 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
 
     module( "DataManager: WebSQL - Create and Test open failure", {
         setup: function() {
@@ -33,7 +38,7 @@
                 settings: {
                     auto: false,
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -50,7 +55,7 @@
         expect( 2 );
 
         equal( Object.keys( dm.stores ).length, 1, "1 store created" );
-        equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.WebSQL, true, "new WebSQL DB instance created" );
+        equal( dm.stores.test1 instanceof DataManager.adapters.WebSQL, true, "new WebSQL DB instance created" );
     });
 
     asyncTest( "Read - DB not open.  Should Fail", function() {
@@ -95,7 +100,7 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
 
     module( "DataManager: WebSQL - Open", {
         setup: function() {
@@ -105,7 +110,7 @@
                 settings: {
                     auto: false,
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -141,7 +146,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Save", {
@@ -153,7 +158,7 @@
                 type: "WebSQL",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -252,7 +257,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Read", {
@@ -264,7 +269,7 @@
                 type: "WebSQL",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -335,7 +340,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Update", {
@@ -347,7 +352,7 @@
                 type: "WebSQL",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -403,7 +408,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Remove", {
@@ -415,7 +420,7 @@
                 type: "WebSQL",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -487,7 +492,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Filter", {
@@ -499,7 +504,7 @@
                 type: "WebSQL",
                 settings: {
                     crypto: {
-                        agcrypto: AeroGear.Crypto(),
+                        agcrypto: Crypto(),
                         options: {
                             key: "password"
                         }
@@ -556,13 +561,13 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
     dm.add({
         name: "test1",
         type: "WebSQL",
         settings: {
             crypto: {
-                agcrypto: AeroGear.Crypto(),
+                agcrypto: Crypto(),
                 options: {
                     key: "password"
                 }
