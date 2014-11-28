@@ -57,73 +57,76 @@ module.exports = function(grunt) {
                     'vertx',
                     'aerogear.simplepush'
                 ],
-                destination: [
-                    'dist/aerogear.js'
-                ],
+                destination: 'dist/aerogear.js',
                 externalSources: [
                     'external/uuid/uuid.js',
                     'external/base64/base64.js',
                     'external/crypto/sjcl.js'
                 ]
             },
+            core: {
+                modules: [ 'aerogear.core' ],
+                destination: 'dist/aerogear.custom.js',
+                externalSources: []
+            },
             dataManager: {
                 modules: [ 'memory', 'session-local', 'indexeddb', 'websql' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             dataManagerIndexedDB: {
                 modules: [ 'indexeddb' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             dataManagerWebSQL: {
                 modules: [ 'websql' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             dataManagerSessionLocal: {
                 modules: [ 'session-local' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             dataManagerMemory: {
                 modules: [ 'memory' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             notifierVertx: {
                 modules: [ 'vertx' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             notifierStompWS: {
                 modules: [ 'stompws' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: []
             },
             simplePush: {
                 modules: [ 'aerogear.simplepush' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: [ 'external/uuid/uuid.js' ]
             },
             unifiedPush: {
                 modules: [ 'aerogear.unifiedpush' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: [ 'external/base64/base64.js' ]
             },
             push: {
                 modules: [ 'aerogear.simplepush', 'aerogear.unifiedpush' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: [ 'external/uuid/uuid.js', 'external/base64/base64.js' ]
             },
             crypto: {
                 modules: [ 'aerogear.crypto' ],
-                destination: [ 'dist/aerogear.custom.js' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: [ 'external/crypto/sjcl.js' ]
             },
             oauth2: {
                 modules: [ 'oauth2' ],
-                destination: [ 'dist/oauth2' ],
+                destination: 'dist/aerogear.custom.js',
                 externalSources: [ 'external/uuid/uuid.js' ]
             }
         },
@@ -241,9 +244,9 @@ module.exports = function(grunt) {
     // grunt-contrib tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-es6-module-transpiler');
     grunt.loadNpmTasks('grunt-template');
-    grunt.loadNpmTasks('grunt-concat-sourcemap');
     grunt.loadNpmTasks('grunt-karma');
 
     // Default task
@@ -313,12 +316,11 @@ module.exports = function(grunt) {
             transpile: {
                 options: {
                     transitiveResolution: true,
+                    sourceRoot: '../',
                     resolvers: [ new ModuleResolver(new Transpiler.FileResolver( searchPath )) ]
                 }
             },
-            continueCompilation: {},
-            template: {},
-            concat_sourcemap: {}
+            continueCompilation: {}
         };
         config.transpile[target] = {
             formatter: 'amd',
@@ -337,7 +339,11 @@ module.exports = function(grunt) {
             transpileConfig = grunt.config('transpile'),
             config = {
                 template: {},
-                concat_sourcemap: {}
+                concat: {
+                    options: {
+                        sourceMap: true
+                    }
+                }
             },
             compiledModules, modulesToLoad, filesToConcat, destination, externalSources;
 
@@ -358,11 +364,11 @@ module.exports = function(grunt) {
                 }
             }
         };
-        config.concat_sourcemap[target] = { files: {} };
-        config.concat_sourcemap[target].files[destination] = filesToConcat;
+        config.concat[target] = { src: [], dest: destination };
+        config.concat[target].src = filesToConcat;
 
         grunt.config.merge( config );
-        grunt.task.run(['template:' + target, 'concat_sourcemap:' + target]);
+        grunt.task.run(['template:' + target, 'concat:' + target]);
     });
 
     grunt.registerMultiTask('ci', 'Runs tests in checked out aerogear-js-integration module', function () {
