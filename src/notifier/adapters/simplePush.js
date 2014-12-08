@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import Notifier from 'aerogear.notifier';
+
 /**
     This adapter allows communication with the AeroGear implementation of the SimplePush server protocol. Most of this functionality will be hidden behind the SimplePush client polyfill but is accessible if necessary.
     @status Experimental
@@ -23,10 +26,10 @@
     @param {Boolean} [settings.useNative=false] - Create a WebSocket connection to the Mozilla SimplePush server instead of a SockJS connection to a custom server
     @returns {Object} The created notifier client
  */
-AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
+Notifier.adapters.SimplePush = function( clientName, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Notifier.adapters.SimplePush ) ) {
-        return new AeroGear.Notifier.adapters.SimplePush( clientName, settings );
+    if ( !( this instanceof Notifier.adapters.SimplePush ) ) {
+        return new Notifier.adapters.SimplePush( clientName, settings );
     }
 
     settings = settings || {};
@@ -284,7 +287,7 @@ AeroGear.Notifier.adapters.SimplePush = function( clientName, settings ) {
         onClose: spClose
     });
  */
-AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
+Notifier.adapters.SimplePush.prototype.connect = function( options ) {
     options = options || {};
 
     var that = this,
@@ -348,7 +351,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.connect = function( options ) {
         console.log("Disconnected");
     });
  */
-AeroGear.Notifier.adapters.SimplePush.prototype.disconnect = function( onDisconnect ) {
+Notifier.adapters.SimplePush.prototype.disconnect = function( onDisconnect ) {
     var client = this.getClient();
 
     client.close();
@@ -377,7 +380,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.disconnect = function( onDisconn
         }
     });
  */
-AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, reset ) {
+Notifier.adapters.SimplePush.prototype.subscribe = function( channels, reset ) {
     var index, response, channelID, channelLength,
         processed = false,
         client = this.getClient(),
@@ -447,7 +450,7 @@ AeroGear.Notifier.adapters.SimplePush.prototype.subscribe = function( channels, 
 
     SPNotifier.unsubscribe( channelObject );
  */
-AeroGear.Notifier.adapters.SimplePush.prototype.unsubscribe = function( channels ) {
+Notifier.adapters.SimplePush.prototype.unsubscribe = function( channels ) {
     var chan,
         client = this.getClient(),
         storage = JSON.parse( localStorage.getItem( "ag-push-store" ) );

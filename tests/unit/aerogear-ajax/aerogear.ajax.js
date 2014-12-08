@@ -1,3 +1,5 @@
+import ajax from 'aerogear.ajax';
+
 (function() {
 
     module( "AeroGear.ajax - fake xhr", {
@@ -18,7 +20,7 @@
         expect(2);
         var settings = {};
 
-        var ret = AeroGear.ajax( settings );
+        var ret = ajax( settings );
         var request = this.requests[0];
         equal( request.method, "GET", "should be a GET request" );
         equal( ret instanceof Promise, true, "AeroGear.ajax should return a promise" );
@@ -30,7 +32,7 @@
 
         settings.type = "GET";
 
-        var ret = AeroGear.ajax( settings );
+        var ret = ajax( settings );
         var request = this.requests[0];
 
         equal( request.method, "GET", "should be a GET request" );
@@ -43,7 +45,7 @@
 
         settings.type = "POST";
 
-        var ret = AeroGear.ajax( settings );
+        var ret = ajax( settings );
         var request = this.requests[0];
 
         equal( request.method, "POST", "should be a POST request" );
@@ -56,7 +58,7 @@
 
         settings.type = "PUT";
 
-        var ret = AeroGear.ajax( settings );
+        var ret = ajax( settings );
         var request = this.requests[0];
 
         equal( request.method, "PUT", "should be a PUT request" );
@@ -69,7 +71,7 @@
 
         settings.type = "DELETE";
 
-        var ret = AeroGear.ajax( settings );
+        var ret = ajax( settings );
         var request = this.requests[0];
 
         equal( request.method, "DELETE", "should be a DELETE request" );
@@ -85,7 +87,7 @@
             "COOL_HEADER": "COOL_HEADER_VALUE"
         };
 
-        var ret = AeroGear.ajax( settings );
+        var ret = ajax( settings );
         var request = this.requests[0];
 
         equal( request.requestHeaders.HEADER_KEY, "HEADER_VALUE", "HEADER_VALUE should be in he HEADER" );
@@ -109,7 +111,7 @@
         };
         settings.url = '/api';
 
-        var ret = AeroGear.ajax( settings ),
+        var ret = ajax( settings ),
             request = this.requests[0],
             requestBodyParamPairs = request.requestBody.split('&');
 
@@ -136,7 +138,7 @@
         };
         settings.url = '/api';
 
-        var ret = AeroGear.ajax( settings ),
+        var ret = ajax( settings ),
             request = this.requests[0];
 
         equal( request.requestBody.param3 , 'val3', 'param3 should have been sent' );
@@ -180,7 +182,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( this.resolver );
+        ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
@@ -200,7 +202,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( this.resolver );
+        ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
@@ -219,7 +221,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( this.resolver );
+        ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
@@ -238,7 +240,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( this.resolver );
+        ajax( this.settings ).then( this.resolver );
         this.server.respond();
     });
 
@@ -281,7 +283,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).catch( this.rejector );
+        ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
@@ -300,7 +302,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).catch( this.rejector );
+        ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
@@ -319,7 +321,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).catch( this.rejector );
+        ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
@@ -338,7 +340,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).catch( this.rejector );
+        ajax( this.settings ).catch( this.rejector );
         this.server.respond();
     });
 
@@ -356,7 +358,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( null, this.rejector );
+        ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
@@ -375,7 +377,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( null, this.rejector );
+        ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
@@ -394,7 +396,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( null, this.rejector );
+        ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
@@ -413,7 +415,7 @@
             start();
         };
 
-        AeroGear.ajax( this.settings ).then( null, this.rejector );
+        ajax( this.settings ).then( null, this.rejector );
         this.server.respond();
     });
 
@@ -446,7 +448,7 @@
     asyncTest( "GET - application/json with queryString parameters", function() {
         this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", this.serverResponse);
 
-        AeroGear.ajax( this.settings ).then( this.settings.success );
+        ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
 
@@ -455,7 +457,7 @@
 
         this.settings.type = "POST";
 
-        AeroGear.ajax( this.settings ).then( this.settings.success );
+        ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
 
@@ -464,7 +466,7 @@
 
         this.settings.type = "PUT";
 
-        AeroGear.ajax( this.settings ).then( this.settings.success );
+        ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
 
@@ -473,21 +475,21 @@
 
         this.settings.type = "DELETE";
 
-        AeroGear.ajax( this.settings ).then( this.settings.success );
+        ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
 
     asyncTest( "GET - text/plain with queryString parameters", function() {
         this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", this.serverResponse);
 
-        AeroGear.ajax( this.settings ).then( this.settings.success );
+        ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
 
     asyncTest( "GET - application/x-www-form-urlencoded with queryString parameters", function() {
         this.server.respondWith( "GET", "/api?project=aerogear&library=aerogear-js&module%20%24=aerogear%20ajax", this.serverResponse);
 
-        AeroGear.ajax( this.settings ).then( this.settings.success );
+        ajax( this.settings ).then( this.settings.success );
         this.server.respond();
     });
 })();

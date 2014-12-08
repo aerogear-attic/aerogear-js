@@ -1,11 +1,14 @@
-(function( $ ) {
+import Notifier from 'aerogear.notifier';
+import 'simplePush';
+
+(function() {
 
 module( "Notifier: SimplePush" );
 
 test( "create - object", function() {
     expect( 2 );
 
-    var sp = AeroGear.Notifier({
+    var sp = Notifier({
         name: "createTest",
         type: "SimplePush"
     }).clients;
@@ -17,7 +20,7 @@ test( "create - object", function() {
 test( "create - array", function() {
     expect( 3 );
 
-    var sp = AeroGear.Notifier([
+    var sp = Notifier([
     {
         name: "createTest",
         type: "SimplePush"
@@ -36,7 +39,7 @@ test( "create - array", function() {
 test( "add method - object", function() {
     expect( 2 );
 
-    var sp = AeroGear.Notifier().add({
+    var sp = Notifier().add({
         name: "addTest",
         type: "SimplePush"
     }).clients;
@@ -48,7 +51,7 @@ test( "add method - object", function() {
 test( "remove method", function() {
     expect( 3 );
 
-    var sp = AeroGear.Notifier({
+    var sp = Notifier({
         name: "removeTest",
         type: "SimplePush"
     });
@@ -59,4 +62,4 @@ test( "remove method", function() {
     equal( sp.clients.removeTest, undefined, "Removed client is really gone" );
 });
 
-})( jQuery );
+})();

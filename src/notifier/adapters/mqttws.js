@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import Notifier from 'aerogear.notifier';
+
 /**
     The mqttws adapter uses MQTT over WebSockets for messaging.
     @status Experimental
@@ -54,15 +57,15 @@
         }
     });
  */
-AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
+Notifier.adapters.mqttws = function( clientName, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.Notifier.adapters.mqttws ) ) {
-        return new AeroGear.Notifier.adapters.mqttws( clientName, settings );
+    if ( !( this instanceof Notifier.adapters.mqttws ) ) {
+        return new Notifier.adapters.mqttws( clientName, settings );
     }
 
     settings = settings || {};
 
-    AeroGear.Notifier.adapters.base.apply( this, arguments );
+    Notifier.adapters.base.apply( this, arguments );
 
     // Private Instance vars
     var type = "mqttws",
@@ -187,7 +190,7 @@ AeroGear.Notifier.adapters.mqttws = function( clientName, settings ) {
     notifier.clients.client1.connect();
 
  */
-AeroGear.Notifier.adapters.mqttws.prototype.connect = function( options ) {
+Notifier.adapters.mqttws.prototype.connect = function( options ) {
     options = options || {};
     var that = this,
         onConnectCallback = options.onConnect,
@@ -206,7 +209,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.connect = function( options ) {
         // Make a Copy of the channel array instead of a reference.
         var channels = that.getChannels().slice( 0 );
 
-        that.setState( AeroGear.Notifier.CONNECTED );
+        that.setState( Notifier.CONNECTED );
 
         that.subscribe( channels, true );
 
@@ -216,7 +219,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.connect = function( options ) {
     };
 
     options.onConnectError = function() {
-        that.setState( AeroGear.Notifier.DISCONNECTED );
+        that.setState( Notifier.DISCONNECTED );
         if ( onConnectErrorCallback ) {
             onConnectErrorCallback.apply( this, arguments );
         }
@@ -256,10 +259,10 @@ AeroGear.Notifier.adapters.mqttws.prototype.connect = function( options ) {
     notifier.clients.client1.disconnect();
 
  */
-AeroGear.Notifier.adapters.mqttws.prototype.disconnect = function() {
+Notifier.adapters.mqttws.prototype.disconnect = function() {
     var client = this.getClient();
-    if ( this.getState() === AeroGear.Notifier.CONNECTED ) {
-        this.setState( AeroGear.Notifier.DISCONNECTING );
+    if ( this.getState() === Notifier.CONNECTED ) {
+        this.setState( Notifier.DISCONNECTING );
         client.disconnect();
     }
 };
@@ -326,7 +329,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.disconnect = function() {
             subscribeOptions: { ... }
         }, true );
  */
-AeroGear.Notifier.adapters.mqttws.prototype.subscribe = function( channels, reset ) {
+Notifier.adapters.mqttws.prototype.subscribe = function( channels, reset ) {
     var client = this.getClient();
 
     if ( reset ) {
@@ -371,7 +374,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.subscribe = function( channels, rese
         }
     ]);
  */
-AeroGear.Notifier.adapters.mqttws.prototype.unsubscribe = function( channels ) {
+Notifier.adapters.mqttws.prototype.unsubscribe = function( channels ) {
     var client = this.getClient();
 
     channels = Array.isArray( channels ) ? channels : [ channels ];
@@ -393,7 +396,7 @@ AeroGear.Notifier.adapters.mqttws.prototype.unsubscribe = function( channels ) {
     // Send a "Hello" message to a channel
     notifier.clients.client1.send( "test.address", "Hello" );
  */
-AeroGear.Notifier.adapters.mqttws.prototype.send = function( channel, message, sendOptions ) {
+Notifier.adapters.mqttws.prototype.send = function( channel, message, sendOptions ) {
     var client = this.getClient();
     message = new Paho.MQTT.Message( message || "" );
     message.destinationName = channel;

@@ -1,3 +1,6 @@
+import DataManager from 'aerogear.datamanager';
+import 'websql';
+
 ( function() {
 
     module( "DataManager: WebSQL" );
@@ -7,7 +10,7 @@
         ok( window.openDatabase );
     });
 
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
     dm.add({
         name: "test1",
         type: "WebSQL"
@@ -15,7 +18,7 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
 
     module( "DataManager: WebSQL - Create and Test open failure", {
         setup: function() {
@@ -36,7 +39,7 @@
         expect( 2 );
 
         equal( Object.keys( dm.stores ).length, 1, "1 store created" );
-        equal( dm.stores.test1 instanceof AeroGear.DataManager.adapters.WebSQL, true, "new WebSQL DB instance created" );
+        equal( dm.stores.test1 instanceof DataManager.adapters.WebSQL, true, "new WebSQL DB instance created" );
     });
 
     asyncTest( "Read - DB not open.  Should Fail", function() {
@@ -81,7 +84,7 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
 
     module( "DataManager: WebSQL - Open", {
         setup: function() {
@@ -121,7 +124,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         store;
 
     module( "DataManager: WebSQL - Promise API", {
@@ -188,7 +191,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Save", {
@@ -291,7 +294,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Save using 'Auto Connect' param", {
@@ -390,7 +393,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Read", {
@@ -465,7 +468,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Read - id is a string", {
@@ -524,7 +527,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Update", {
@@ -584,7 +587,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Remove", {
@@ -660,7 +663,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Filter", {
@@ -721,7 +724,7 @@
 })();
 
 ( function() {
-    var dm = AeroGear.DataManager();
+    var dm = DataManager();
     dm.add({
         name: "test1",
         type: "WebSQL"
@@ -747,7 +750,7 @@
 })();
 
 (function() {
-    var dm = AeroGear.DataManager(),
+    var dm = DataManager(),
         data = null;
 
     module( "DataManager: WebSQL - Read - '-' in the name", {

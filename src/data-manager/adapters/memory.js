@@ -13,6 +13,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+
 /**
     The Memory adapter is the default type used when creating a new store. Data is simply stored in a data var and is lost on unload (close window, leave page, etc.)
     This constructor is instantiated when the "DataManager.add()" method is called
@@ -34,13 +38,13 @@ dm.add({
     }
 });
  */
-AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
+DataManager.adapters.Memory = function( storeName, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.DataManager.adapters.Memory ) ) {
-        return new AeroGear.DataManager.adapters.Memory( storeName, settings );
+    if ( !( this instanceof DataManager.adapters.Memory ) ) {
+        return new DataManager.adapters.Memory( storeName, settings );
     }
 
-    AeroGear.DataManager.adapters.base.apply( this, arguments );
+    DataManager.adapters.base.apply( this, arguments );
     /**
         Empties the value of the private data var
         @private
@@ -126,7 +130,7 @@ AeroGear.DataManager.adapters.Memory = function( storeName, settings ) {
 /**
     Determine if this adapter is supported in the current environment
 */
-AeroGear.DataManager.adapters.Memory.isValid = function() {
+DataManager.adapters.Memory.isValid = function() {
     return true;
 };
 
@@ -149,7 +153,7 @@ AeroGear.DataManager.adapters.Memory.isValid = function() {
             console.log( data );
         });
  */
-AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
+DataManager.adapters.Memory.prototype.read = function( id ) {
     var filter = {};
 
     filter[ this.getRecordId() ] = id;
@@ -208,7 +212,7 @@ AeroGear.DataManager.adapters.Memory.prototype.read = function( id ) {
                 .catch( function( error ) { ... } );
         });
  */
-AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) {
+DataManager.adapters.Memory.prototype.save = function( data, options ) {
     var itemFound = false;
 
     data = Array.isArray( data ) ? data : [ data ];
@@ -264,7 +268,7 @@ AeroGear.DataManager.adapters.Memory.prototype.save = function( data, options ) 
                 .catch( function( error ) { ... } );
         });
  */
-AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
+DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
     var delId, data, item;
 
     if ( !toRemove ) {
@@ -329,7 +333,7 @@ AeroGear.DataManager.adapters.Memory.prototype.remove = function( toRemove ) {
                 .catch( function( error ) { ... } );
         });
  */
-AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
+DataManager.adapters.Memory.prototype.filter = function( filterParameters, matchAny ) {
     var filtered, key, j, k,
         that = this;
 
@@ -450,4 +454,4 @@ AeroGear.DataManager.adapters.Memory.prototype.filter = function( filterParamete
 /**
     Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
-AeroGear.DataManager.validateAdapter( "Memory", AeroGear.DataManager.adapters.Memory );
+DataManager.validateAdapter( "Memory", DataManager.adapters.Memory );

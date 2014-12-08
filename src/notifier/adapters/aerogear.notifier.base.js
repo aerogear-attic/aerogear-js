@@ -13,13 +13,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import Notifier from 'aerogear.notifier';
+
 /**
     The Base Notifier adapter that all other Notifier adapters( except SimplePush ) will extend from.
     Not to be Instantiated directly
 */
 
-AeroGear.Notifier.adapters.base = function( clientName, settings ) {
-    if ( this instanceof AeroGear.Notifier.adapters.base ) {
+Notifier.adapters.base = function( clientName, settings ) {
+    if ( this instanceof Notifier.adapters.base ) {
         throw "Invalid instantiation of base class AeroGear.Notifier.adapters.base";
     }
 
@@ -28,7 +31,7 @@ AeroGear.Notifier.adapters.base = function( clientName, settings ) {
     var connectURL = settings.connectURL || "",
         channels = settings.channels || [],
         autoConnect = !!settings.autoConnect || channels.length,
-        state = AeroGear.Notifier.CONNECTING,
+        state = Notifier.CONNECTING,
         name = clientName,
         client = null;
 

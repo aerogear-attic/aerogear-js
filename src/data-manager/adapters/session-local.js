@@ -13,6 +13,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import DataManager from 'aerogear.datamanager';
+import 'aerogear.datamanager.base';
+import 'memory';
+
 /**
     The SessionLocal adapter extends the Memory adapter to store data in either session or local storage which makes it a little more persistent than memory
     This constructor is instantiated when the "DataManager.add()" method is called
@@ -41,13 +46,13 @@ dm.add({
     }
 });
  */
-AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
+DataManager.adapters.SessionLocal = function( storeName, settings ) {
     // Allow instantiation without using new
-    if ( !( this instanceof AeroGear.DataManager.adapters.SessionLocal ) ) {
-        return new AeroGear.DataManager.adapters.SessionLocal( storeName, settings );
+    if ( !( this instanceof DataManager.adapters.SessionLocal ) ) {
+        return new DataManager.adapters.SessionLocal( storeName, settings );
     }
 
-    AeroGear.DataManager.adapters.Memory.apply( this, arguments );
+    DataManager.adapters.Memory.apply( this, arguments );
 
     // Private Instance vars
     var storeType = settings.storageType || "sessionStorage",
@@ -59,7 +64,7 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
 
     // Initialize data from the persistent store if it exists
     if ( currentData ) {
-        AeroGear.DataManager.adapters.Memory.prototype.save.call( this, currentData, true );
+        DataManager.adapters.Memory.prototype.save.call( this, currentData, true );
     }
 
     // Privileged Methods
@@ -87,7 +92,7 @@ AeroGear.DataManager.adapters.SessionLocal = function( storeName, settings ) {
 /**
     Determine if this adapter is supported in the current environment
 */
-AeroGear.DataManager.adapters.SessionLocal.isValid = function() {
+DataManager.adapters.SessionLocal.isValid = function() {
     try {
         return !!(window.localStorage && window.sessionStorage);
     } catch( error ){
@@ -96,7 +101,7 @@ AeroGear.DataManager.adapters.SessionLocal.isValid = function() {
 };
 
 // Inherit from the Memory adapter
-AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGear.DataManager.adapters.Memory(), {
+DataManager.adapters.SessionLocal.prototype = Object.create( new DataManager.adapters.Memory(), {
     // Public Methods
     /**
         Saves data to the store, optionally clearing and resetting the data
@@ -151,7 +156,7 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
                 reset = options && options.reset ? options.reset : false,
                 oldData = window[ this.getStoreType() ].getItem( this.getStoreKey() );
 
-            return AeroGear.DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], { reset: reset } ] )
+            return DataManager.adapters.Memory.prototype.save.apply( this, [ arguments[ 0 ], { reset: reset } ] )
                 .then( function( newData ) {
                     // Sync changes to persistent store
                     try {
@@ -159,7 +164,7 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
                     } catch( error ) {
                         oldData = oldData ? JSON.parse( oldData ) : [];
 
-                        return AeroGear.DataManager.adapters.Memory.prototype.save.apply( that, [ oldData, { reset: reset } ] )
+                        return DataManager.adapters.Memory.prototype.save.apply( that, [ oldData, { reset: reset } ] )
                             .then( function() {
                                 return Promise.reject();
                             });
@@ -200,7 +205,7 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
         value: function( toRemove ) {
             var that = this;
 
-            return AeroGear.DataManager.adapters.Memory.prototype.remove.apply( this, arguments )
+            return DataManager.adapters.Memory.prototype.remove.apply( this, arguments )
                 .then( function( newData ) {
                     // Sync changes to persistent store
                     window[ that.getStoreType() ].setItem( that.getStoreKey(), JSON.stringify( that.encrypt( newData ) ) );
@@ -212,4 +217,4 @@ AeroGear.DataManager.adapters.SessionLocal.prototype = Object.create( new AeroGe
 /**
     Validate this adapter and add it to AeroGear.DataManager.validAdapters if valid
 */
-AeroGear.DataManager.validateAdapter( "SessionLocal", AeroGear.DataManager.adapters.SessionLocal );
+DataManager.validateAdapter( "SessionLocal", DataManager.adapters.SessionLocal );

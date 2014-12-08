@@ -13,12 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+import DataManager from 'aerogear.datamanager';
+
 /**
     The Base adapter that all other adapters will extend from.
     Not to be Instantiated directly
  */
-AeroGear.DataManager.adapters.base = function( storeName, settings ) {
-    if ( this instanceof AeroGear.DataManager.adapters.base ) {
+DataManager.adapters.base = function( storeName, settings ) {
+    if ( this instanceof DataManager.adapters.base ) {
         throw "Invalid instantiation of base class AeroGear.DataManager.adapters.base";
     }
 

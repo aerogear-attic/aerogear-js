@@ -1,0 +1,19 @@
+<html>
+<head>
+    <script type="application/javascript" src="dist/aerogear.min.js"></script>
+</head>
+<body>
+
+
+<button>Aerogear.extend</button>
+
+<script>
+    var button = document.getElementsByTagName('button')[0];
+    button.onclick = function() {
+        AeroGear.extend({}, {});
+
+        console.log(AeroGear.Authorization());
+    }
+</script>
+</body>
+</html>
