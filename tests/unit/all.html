@@ -6,8 +6,8 @@
 
     <script src="../vendor/jquery-2.0.3.min.js"></script>
 
-    <link rel="stylesheet" href="qunit.css">
-    <link rel="stylesheet" href="qunit-composite.css">
+    <link rel="stylesheet" href="../vendor/qunit.css">
+    <link rel="stylesheet" href="../vendor/qunit-composite.css">
     <script src="../vendor/qunit.js"></script>
     <script src="../vendor/qunit-composite.js"></script>
 
@@ -15,11 +15,21 @@
     (function() {
 
     var suites = [
+            "aerogear-ajax/aerogear-ajax.html",
+            "authorization/authorization.html",
+            "crypto/aerogear.crypto.html",
             "data-manager/data-manager-memory-async.html",
             "data-manager/data-manager-sessionLocal-async.html",
+            "data-manager/data-manager-sessionLocal-async-encrypted.html",
+            "data-manager/data-manager-fallback-feature-detect.html",
+            "data-manager/data-manager-fallback.html",
             "data-manager-indexeddb/data-manager-indexeddb.html",
+            "data-manager-indexeddb/data-manager-indexeddb-encrypted.html",
             "data-manager-websql/data-manager-websql.html",
-            "notifier/notifier.html"
+            "data-manager-websql/data-manager-websql-encrypted.html",
+            "notifier/notifier.html",
+            "simplepush/simplepush.html",
+            "unifiedpush/unifiedpush.html"
         ];
 
     QUnit.testSuites( suites );
