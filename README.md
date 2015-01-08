@@ -5,6 +5,8 @@ JavaScript client library implementation for AeroGear. Eventually, this will inc
 ## Authorization
 - - -
 
+_This api has been deprecated as of 2.1.0 and will be removed in a future version_
+
 The AeroGear.Authorization namespace provides an authorization API. It will help provide access to services that need authorization.
 
 See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Authorization.html) for more info.
