@@ -16,6 +16,7 @@
 /**
     The OAuth2 adapter is the default type used when creating a new authorization module. It uses AeroGear.ajax to communicate with the server.
     This constructor is instantiated when the "Authorizer.add()" method is called
+    @deprecated since 2.1.0 and will be removed in a future release.
     @status Experimental
     @constructs AeroGear.Authorization.adapters.OAuth2
     @param {String} name - the name used to reference this particular authz module

@@ -15,6 +15,7 @@
 */
 /**
     The AeroGear.Authorization namespace provides an authentication API.
+    @deprecated since 2.1.0 and will be removed in a future release.
     @status Experimental
     @class
     @param {String|Array|Object} [config] - A configuration for the service(s) being created along with the authorizer. If an object or array containing objects is used, the objects can have the following properties:
