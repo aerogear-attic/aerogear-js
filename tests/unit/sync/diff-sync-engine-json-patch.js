@@ -57,40 +57,6 @@
         equal( doc.content.name, 'Mr.Poon', 'name should be updated');
     });
 
-    test( 'patch shadow - content is a String', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
-        var content = 'Fletch';
-        var doc = { id: 1234, clientId: 'client1', content: content };
-        var shadow;
-        engine.addDocument( doc );
-        doc.content = 'John Coctolstol';
-
-        shadow = engine.getShadow( doc.id );
-
-        console.log(shadow);
-
-        var patchMsg = {
-            msgType: 'patch',
-            id: doc.id,
-            clientId: shadow.clientId,
-            edits: [{
-                clientVersion: shadow.clientVersion,
-                serverVersion: shadow.serverVersion,
-                // currently not implemented but we probably need this for checking the client and server shadow are identical be for patching.
-                checksum: '',
-                diffs: [jsonpatch.compare(shadow.content, doc.content)]
-            }]
-        };
-        //var patchMsg = engine.diff( doc );
-        console.log('patchMsg', patchMsg);
-
-        var updatedShadow = engine.patchShadow( patchMsg );
-        console.log(updatedShadow);
-        equal( updatedShadow.content, 'John Coctolstol', 'name should have been updated to John Coctolstol' );
-        equal( shadow.serverVersion, 1, 'Server version should have been updated.' );
-        equal( shadow.clientVersion, 0, 'Client version should not have been updated.' );
-    });
-
     test( 'patch shadow - content is an Object', function() {
         var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
         var content = { name: 'Fletch' };
