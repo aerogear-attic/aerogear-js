@@ -61,7 +61,7 @@ AeroGear.DiffSyncEngine.adapters.jsonPatch = function() {
                 serverVersion: shadow.serverVersion,
                 // currently not implemented but we probably need this for checking the client and server shadow are identical be for patching.
                 checksum: '',
-                diffs: [jsonpatch.compare( shadow.content, doc.content )]
+                diffs: jsonpatch.compare( shadow.content, doc.content )
             }]
         };
 
@@ -164,7 +164,7 @@ AeroGear.DiffSyncEngine.adapters.jsonPatch = function() {
     this.applyEditsToShadow = function ( edits, shadow ) {
         var patchResult;
         // returns true or false,  should probably do something with it?
-        patchResult = jsonpatch.apply( shadow.content, edits.diffs[0] );
+        patchResult = jsonpatch.apply( shadow.content, edits.diffs );
         return shadow;
     };
 
