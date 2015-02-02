@@ -32,7 +32,7 @@
         equal ( edit.serverVersion, 0, 'version should be zero');
         equal ( edit.checksum, '', 'checksum is currently not implemented.');
 
-        var diffs = edit.diffs[0];
+        var diffs = edit.diffs;
         ok( diffs instanceof Array, 'diffs should be an array of tuples' );
         ok( diffs.length === 1, 'there should be 1 diff tuples generated');
         //{op: "replace", path: "/name", value: "Mr.Poon"}
@@ -76,7 +76,7 @@
                 serverVersion: shadow.serverVersion,
                 // currently not implemented but we probably need this for checking the client and server shadow are identical be for patching.
                 checksum: '',
-                diffs: [jsonpatch.compare(shadow.content, doc.content)]
+                diffs: jsonpatch.compare(shadow.content, doc.content)
             }]
         };
         //var patchMsg = engine.diff( doc );
@@ -105,7 +105,7 @@
                 clientVersion: shadow.clientVersion,
                 serverVersion: shadow.serverVersion,
                 checksum: '',
-                diffs: [jsonpatch.compare(shadow.content, doc.content)]
+                diffs: jsonpatch.compare(shadow.content, doc.content)
             }]
         };
 
@@ -135,7 +135,7 @@
                 clientVersion: 0,
                 serverVersion: 0,
                 checksum: '',
-                diffs: [jsonpatch.compare(shadow.content, doc.content)]
+                diffs: jsonpatch.compare(shadow.content, doc.content)
             }]
         };
 
