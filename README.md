@@ -7,8 +7,6 @@ JavaScript client library implementation for AeroGear. Eventually, this will inc
 
 _This api has been deprecated and removed as of 2.1.0.  To use it you will need the latest 1.x release, which can be [found here](https://github.com/aerogear/aerogear-js/tree/1.x))_
 
-See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Authorization.html) for more info.
-
 ## Auth
 - - -
 
