@@ -58,6 +58,55 @@
         }
 
         pushServerURL = pushServerURL.substr(-1) === '/' ? pushServerURL : pushServerURL + '/';
+
+        this._ajax = function( settings ) {
+            return new Promise( function( resolve, reject ) {
+                var header,
+                    that = this,
+                    request = new XMLHttpRequest();
+
+
+                request.open( settings.type || "GET", settings.url, true, settings.username, settings.password );
+
+                request.responseType = "json";
+                request.setRequestHeader( "Content-Type", "application/json" );
+                request.setRequestHeader( "Accept", "application/json" );
+
+                if( settings.headers ) {
+                    for ( header in settings.headers ) {
+                        request.setRequestHeader( header, settings.headers[ header ] );
+                    }
+                }
+
+                // Success and 400's
+                request.onload = function() {
+                    var status = ( request.status < 400 ) ? "success" : "error",
+                        promiseValue = that._createPromiseValue( request, status );
+
+                    if( status === "success" ) {
+                        return resolve( promiseValue );
+                    }
+
+                    return reject( promiseValue );
+                };
+
+                // Network errors
+                request.onerror = function() {
+                    return reject( that._createPromiseValue( request, "error" ) );
+                };
+
+                // create promise arguments
+                this._createPromiseValue = function( request, status ) {
+                    return {
+                        data: request.response,
+                        statusText: request.statusText || status,
+                        agXHR: request
+                    };
+                };
+
+                request.send( settings.data );
+            });
+        };
         /**
             Performs a register request against the UnifiedPush Server using the given metadata which represents a client that wants to register with the server.
             @param {Object} settings The settings to pass in
@@ -68,7 +117,7 @@
             @param {String} [settings.metadata.operatingSystem] - Useful on Hybrid platforms like Apache Cordova to specifiy the underlying operating system.
             @param {String} [settings.metadata.osVersion] - Useful on Hybrid platforms like Apache Cordova to specify the version of the underlying operating system.
             @param {String} [settings.metadata.deviceType] - Useful on Hybrid platforms like Apache Cordova to specify the type of the used device, like iPad or Android-Phone.
-            @returns {Object} An ES6 Promise created by AeroGear.ajax
+            @returns {Object} An ES6 Promise
          */
         this.registerWithPushServer = function( settings ) {
             settings = settings || {};
@@ -82,9 +131,7 @@
             // Make sure that settings.metadata.categories is an Array
             metadata.categories = Array.isArray( metadata.categories ) ? metadata.categories : ( metadata.categories ? [ metadata.categories ] : [] );
 
-            return AeroGear.ajax({
-                contentType: "application/json",
-                dataType: "json",
+            return this._ajax({
                 type: "POST",
                 url: pushServerURL + "rest/registry/device",
                 headers: {
@@ -97,12 +144,10 @@
         /**
             Performs an unregister request against the UnifiedPush Server for the given deviceToken. The deviceToken identifies the client within its PushNetwork. On Android this is the registrationID, on iOS this is the deviceToken and on SimplePush this is the URL of the given SimplePush server/network.
             @param {String} deviceToken - unique String which identifies the client that is being unregistered.
-            @returns {Object} An ES6 Promise created by AeroGear.ajax
+            @returns {Object} An ES6 Promise
          */
         this.unregisterWithPushServer = function( deviceToken ) {
-            return AeroGear.ajax({
-                contentType: "application/json",
-                dataType: "json",
+            return this._ajax({
                 type: "DELETE",
                 url: pushServerURL + "rest/registry/device/" + deviceToken,
                 headers: {
