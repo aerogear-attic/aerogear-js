@@ -5,9 +5,7 @@ JavaScript client library implementation for AeroGear. Eventually, this will inc
 ## Authorization
 - - -
 
-_This api has been deprecated as of 2.1.0 and will be removed in a future version_
-
-The AeroGear.Authorization namespace provides an authorization API. It will help provide access to services that need authorization.
+_This api has been deprecated and removed as of 2.1.0.  To use it you will need the latest 1.x release, which can be [found here](https://github.com/aerogear/aerogear-js/tree/1.x))_
 
 See the [Authorization API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Authorization.html) for more info.
 
@@ -69,11 +67,6 @@ All features of the library are given a stability rating which is noted in the d
 - - -
 
 Some parts of AeroGear.js depend on external libraries which are not bundled in the same file. Below is a list of each plugin and their adapters along with external dependencies, if they have any. It is recommended to use the latest stable version of each dependency unless otherwise noted.
-
-### Authorization
-
-* **OAuth2**
-    * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
 
 ### Crypto
 * [SJCL](https://github.com/bitwiseshiftleft/sjcl) - bundled w/ AeroGear.js

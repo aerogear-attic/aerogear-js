@@ -6,9 +6,9 @@ Usage:
     grunt custom:help - Show this help
 
 
-Example: A custom build containing Authz OAuth2 and the IndexedDB Adapter
+Example: A custom build containing IndexedDB Adapter
 
-    grunt custom:oauth2,dataManagerIndexedDB
+    grunt custom:dataManagerIndexedDB
 
 ----------------------------------------------------------------------------
 
