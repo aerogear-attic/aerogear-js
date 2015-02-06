@@ -249,7 +249,7 @@ AeroGear.DiffSyncEngine.adapters.jsonPatch = function() {
         for ( i = 0; i < pendingEdits.length; i++ ) {
             pendingEdit = pendingEdits[i];
             for ( j = 0; j < pendingEdit.edits.length; j++) {
-                if ( pendingEdit.edits[j].serverVersion === edit.serverVersion && pendingEdit.edits[j].clientVersion <= edit.clientVersion) {
+                if ( pendingEdit.edits[j].clientVersion <= edit.clientVersion) {
                     pendingEdit.edits.splice(i, 1);
                     break;
                 }
