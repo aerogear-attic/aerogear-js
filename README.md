@@ -38,6 +38,8 @@ See the [DataManager API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGe
 ## Notifier
 - - -
 
+_This api has been deprecated as of 2.1.0 and will be removed in a future version_
+
 Notifier is a collection of adapters which provide a unified or similar API for interacting with different messaging services and protocols.
 
 See the [Notifier API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.Notifier.html) for more info.
