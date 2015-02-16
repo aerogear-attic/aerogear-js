@@ -16,14 +16,14 @@
 /**
     The AeroGear Differential Sync Client.
     @status Experimental
-    @constructs AeroGear.UnifiedPushClient
+    @constructs AeroGear.DiffSyncClient
     @param {Object} config - A configuration
     @param {String} config.serverUrl - the url of the Differential Sync Server
     @param {Object} [config.syncEngine="AeroGear.DiffSyncEngine"] -
-    @param {function} [config.onopen] -
-    @param {function} [config.onclose] -
-    @param {function} [config.onsync] -
-    @param {function} [config.onerror] -
+    @param {function} [config.onopen] - will be called when a connection to the sync server has been opened
+    @param {function} [config.onclose] - will be called when a connection to the sync server has been closed
+    @param {function} [config.onsync] - listens for "sync" events from the sync server
+    @param {function} [config.onerror] - will be called when there are errors from the sync server
     @returns {object} diffSyncClient - The created DiffSyncClient
     @example
  */
@@ -53,7 +53,6 @@ AeroGear.DiffSyncClient = function ( config ) {
                 config.onopen.apply( this, arguments );
             }
 
-            //console.log ( 'WebSocket opened. SendQueue.length=', sendQueue.length );
             while ( sendQueue.length ) {
                 var task = sendQueue.pop();
                 if ( task.type === "add" ) {
@@ -101,12 +100,11 @@ AeroGear.DiffSyncClient = function ( config ) {
         Disconnects from the Differential Sync Server closing it's Websocket connection
     */
     this.disconnect = function() {
-        //console.log('Closing Connection');
         ws.close();
     };
 
     /**
-        patch -
+        patch - an internal method to sync the data with the Sync Engine
         @param {Object} data - The data to be patched
     */
     this._patch = function( data ) {
@@ -114,7 +112,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     };
 
     /**
-        getDocument -
+        getDocument - gets the document from the Sync Engine
         @param {String} id - the id of the document to get
         @returns {Object} - The document from the sync engine
     */
@@ -123,7 +121,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     };
 
     /**
-        diff
+        diff - an internal method to perform a diff with the Sync Server
         @param {Object} data - the data to perform a diff on
         @returns {Object} - An Object containing the edits from the Sync Engine
     */
@@ -132,7 +130,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     };
 
     /**
-        addDocument
+        addDocument - Adds a document to the Sync Engine
         @param {Object} doc - a document to add to the sync engine
     */
     this.addDocument = function( doc ) {
@@ -146,7 +144,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     };
 
     /**
-        sendEdits
+        sendEdits - an internal method to send the edits from the Sync Engine to the Sync Server
         @param {Object} edit - the edits to be sent to the server
     */
     this._sendEdits = function( edit ) {
@@ -176,7 +174,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     };
 
     /**
-        sync
+        sync - performs the Sync process
         @param {Object} data - the Data to be sync'd with the server
     */
     this.sync = function( data ) {
@@ -193,7 +191,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     };
 
     /**
-        fetch
+        fetch - fetch a document from the Sync Server.  Will perform a sync on it
         @param {String} docId - the id of a document to fetch from the Server
     */
     this.fetch = function( docId ) {
