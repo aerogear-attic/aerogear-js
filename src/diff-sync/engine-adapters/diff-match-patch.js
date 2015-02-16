@@ -14,6 +14,12 @@
 * limitations under the License.
 */
 
+/**
+    The diffMatchPatch adapter.
+    @status Experimental
+    @constructs AeroGear.DiffSyncEngine.adapters.diffMatchPatch
+    @returns {Object} The created adapter
+ */
 AeroGear.DiffSyncEngine.adapters.diffMatchPatch = function() {
     if ( !( this instanceof AeroGear.DiffSyncEngine.adapters.diffMatchPatch ) ) {
         return new AeroGear.DiffSyncEngine.adapters.diffMatchPatch();

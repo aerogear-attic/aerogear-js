@@ -14,6 +14,12 @@
 * limitations under the License.
 */
 
+/**
+    The jsonPath adapter.
+    @status Experimental
+    @constructs AeroGear.DiffSyncEngine.adapters.jsonPatch
+    @returns {Object} The created adapter
+ */
 AeroGear.DiffSyncEngine.adapters.jsonPatch = function() {
     if ( !( this instanceof AeroGear.DiffSyncEngine.adapters.jsonPatch ) ) {
         return new AeroGear.DiffSyncEngine.adapters.jsonPatch();
@@ -149,7 +155,6 @@ AeroGear.DiffSyncEngine.adapters.jsonPatch = function() {
             }
         }
 
-        //console.log('patched:', shadow);
         return shadow;
     };
 
