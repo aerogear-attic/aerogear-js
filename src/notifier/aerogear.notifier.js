@@ -15,6 +15,7 @@
 */
 /**
     The AeroGear.Notifier namespace provides a messaging API. Through the use of adapters, this library provides common methods like connect, disconnect, subscribe, unsubscribe and publish.
+    @deprecated since 2.1.0 and will be removed in a future release.
     @status Stable
     @class
     @augments AeroGear.Core

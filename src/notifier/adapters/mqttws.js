@@ -15,6 +15,7 @@
 */
 /**
     The mqttws adapter uses MQTT over WebSockets for messaging.
+    @deprecated since 2.1.0 and will be removed in a future release.
     @status Experimental
     @constructs AeroGear.Notifier.adapters.mqttws
     @param {String} clientName - The name used to reference this particular notifier client
