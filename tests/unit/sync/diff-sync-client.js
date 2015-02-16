@@ -18,6 +18,16 @@
         equal( client.ws, undefined, 'Should not be able to access private members ws' );
     });
 
+    test( 'remove document method should err', function() {
+        var client = AeroGear.DiffSyncClient( { serverUrl: 'ws://localhost:7777/sync' } );
+
+        try {
+            client.removeDoc('12345');
+        } catch (err) {
+            equal(err.message, 'Method Not Yet Implemented');
+        }
+    });
+
     function uuid()
     {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function( c ) {

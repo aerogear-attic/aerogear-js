@@ -189,8 +189,7 @@ AeroGear.DiffSyncClient = function ( config ) {
         TODO
     */
     this.removeDoc = function( doc ) {
-       // TODO?
-       // console.log( "removing  doc from engine" );
+        throw new Error( "Method Not Yet Implemented" );
     };
 
     /**
