@@ -32,7 +32,7 @@ module.exports = function(grunt) {
                 banner: '<%= meta.banner %>'
             },
             dist: {
-                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/crypto/sjcl.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/notifier/adapters/mqttws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js', 'src/crypto/aerogear.crypto.js'],
+                src: ['src/aerogear.core.js', 'external/uuid/uuid.js', 'external/crypto/sjcl.js', 'src/data-manager/aerogear.datamanager.js', 'src/data-manager/adapters/base.js', 'src/data-manager/adapters/memory.js', 'src/data-manager/adapters/session-local.js', 'src/data-manager/adapters/indexeddb.js', 'src/data-manager/adapters/websql.js', 'src/notifier/aerogear.notifier.js', 'src/notifier/adapters/base.js', 'src/notifier/adapters/simplePush.js', 'src/notifier/adapters/vertx.js', 'src/notifier/adapters/stompws.js', 'src/notifier/adapters/mqttws.js', 'src/unifiedpush/aerogear.unifiedpush.js', 'src/simplepush/aerogear.simplepush.js', 'src/crypto/aerogear.crypto.js', 'src/diff-sync/aerogear.diff-sync-engine.js', 'src/diff-sync/engine-adapters/diff-match-patch.js', 'src/diff-sync/engine-adapters/json-patch.js', 'src/diff-sync/aerogear.diff-sync-client.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
             dataManager: {
@@ -94,6 +94,21 @@ module.exports = function(grunt) {
                 src: ['src/aerogear.core.js', 'external/crypto/sjcl.js', 'src/crypto/aerogear.crypto.js'],
                 description: 'Crypto build',
                 dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            diffSync: {
+                src: ['src/aerogear.core.js', 'src/diff-sync/aerogear.diff-sync-engine.js', 'src/diff-sync/engine-adapters/diff-match-patch.js', 'src/diff-sync/engine-adapters/json-patch.js', 'src/diff-sync/aerogear.diff-sync-client.js'],
+                description: 'Differential Sync Client and Engine',
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            diffSyncDiffMatchPatch: {
+                src: ['src/aerogear.core.js', 'src/diff-sync/aerogear.diff-sync-engine.js', 'src/diff-sync/engine-adapters/diff-match-patch.js', 'src/diff-sync/aerogear.diff-sync-client.js'],
+                description: 'Differential Sync Client and Engine - Diff Match Patch Only',
+                dest: 'dist/<%= pkg.name %>.custom.js'
+            },
+            diffSyncJsonPatch: {
+                src: ['src/aerogear.core.js', 'src/diff-sync/aerogear.diff-sync-engine.js', 'src/diff-sync/engine-adapters/json-patch.js', 'src/diff-sync/aerogear.diff-sync-client.js'],
+                description: 'Differential Sync Client and Engine - JSON Patch Only',
+                dest: 'dist/<%= pkg.name %>.custom.js'
             }
         },
         qunit: {
@@ -101,7 +116,8 @@ module.exports = function(grunt) {
             notifier: 'tests/unit/notifier/**/*.html',
             crypto: 'tests/unit/crypto/**/*.html',
             unifiedpush: 'tests/unit/unifiedpush/**/*.html',
-            simplepush: 'tests/unit/simplepush/**/*.html'
+            simplepush: 'tests/unit/simplepush/**/*.html',
+            diffSync: 'tests/unit/sync/**/*.html'
         },
         jshint: {
             all: {
@@ -171,6 +187,10 @@ module.exports = function(grunt) {
             core: {
                 files: 'src/aerogear.core.js',
                 tasks: 'qunit'
+            },
+            diffSync: {
+                files: 'src/diff-sync/**/*.js',
+                tasks: 'qunit:sync'
             }
         },
         ci: {
@@ -217,6 +237,9 @@ module.exports = function(grunt) {
     grunt.registerTask('unifiedPush', ['concat:unifiedPush']);
     grunt.registerTask('push', ['concat:push']);
     grunt.registerTask('crypto', ['concat:crypto']);
+    grunt.registerTask('diffSync', ['concat:diffSync']);
+    grunt.registerTask('diffSyncDiffMatchPatch', ['concat:diffSyncDiffMatchPatch']);
+    grunt.registerTask('diffSyncJsonPatch', ['concat:diffSyncJsonPatch']);
     grunt.registerTask('travis', ['jshint', 'qunit', 'concat:dist', 'setupCi', 'ci']);
 
     grunt.registerTask('docs', function() {

@@ -56,6 +56,16 @@ SimplePushClient is a client implementation and polyfill for the Mozilla SimpleP
 
 See the [SimplePushClient API docs](http://aerogear.org/docs/specs/aerogear-js/AeroGear.SimplePushClient.html) for more info. Also, please see the [Mozilla SimplePush specification](https://wiki.mozilla.org/WebAPI/SimplePush) for more info on SimplePush.
 
+## Diff Sync
+- - -
+
+The Diff Sync client and server are based on an implementation of Google's [Differential Synchonrization](http://research.google.com/pubs/pub35605.html) by Neil Fraser.
+
+The DiffSyncClient connects to the [AeroGear Sync Server](https://github.com/aerogear/aerogear-sync-server)
+
+The DiffSyncEngine is responsible for the algorithm logic.
+
+
 ## UnifiedPushClient
 - - -
 
@@ -109,6 +119,13 @@ Some parts of AeroGear.js depend on external libraries which are not bundled in 
 
 ### UnifiedPush
 * [ES6 Promise polyfill](https://github.com/jakearchibald/es6-promise)
+
+### Diff Sync
+* **Diff Match Patch**
+    * [Google Diff Match Patch](https://code.google.com/p/google-diff-match-patch/)
+
+* **JSON Patch**
+    * [JSON Patch](https://github.com/Starcounter-Jack/JSON-Patch)
 
 ## Building
 - - -
