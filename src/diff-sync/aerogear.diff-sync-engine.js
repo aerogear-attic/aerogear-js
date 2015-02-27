@@ -18,32 +18,19 @@
     @status Experimental
     @constructs AeroGear.DiffSyncEngine
     @param {Object} config - A configuration
-    @param {function} [config.type = "jsonPatch"] - the type of sync engine, defaults to jsonPatch
-    @returns {object} diffSyncClient - The created DiffSyncClient
+    @param {String} [config.type = "jsonPatch"] - the type of sync engine, defaults to jsonPatch
+    @returns {Object} diffSyncEngine - The created DiffSyncEngine
  */
 AeroGear.DiffSyncEngine = function( config ) {
     if ( !( this instanceof AeroGear.DiffSyncEngine ) ) {
         return new AeroGear.DiffSyncEngine( config );
     }
-    // Super Constructor
-    AeroGear.Core.call( this );
 
     this.lib = "DiffSyncEngine";
     this.type = config ? config.type || "jsonPatch" : "jsonPatch";
 
-    /**
-        The name used to reference the collection of sync engines instances created from the adapters
-        @memberOf AeroGear.DiffSyncEngine
-        @type Object
-        @default modules
-     */
-    this.collectionName = "engines";
-
-    this.add( config );
+    return new AeroGear.DiffSyncEngine.adapters[ this.type ]();
 };
-
-AeroGear.DiffSyncEngine.prototype = AeroGear.Core;
-AeroGear.DiffSyncEngine.constructor = AeroGear.DiffSyncEngine;
 
 /**
     The adapters object is provided so that adapters can be added to the AeroGear.DiffSyncEngine namespace dynamically and still be accessible to the add method

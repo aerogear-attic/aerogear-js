@@ -3,19 +3,19 @@
     module( 'Sync Engine test' );
 
     test ( 'AeroGear.DiffSyncEngine should support creation without the new keyword', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         ok( engine , 'Should be no problem not using new when creating' );
     });
 
     test( 'add document', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing, doc = { id: 1234, clientId: 'client1', content: { name: 'Fletch' } };
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'}), doc = { id: 1234, clientId: 'client1', content: { name: 'Fletch' } };
         engine.addDocument( { id: 1234, clientId: 'client1', content: { name: 'Fletch' } } );
         var actualDoc = engine.getDocument( 1234 );
         equal( actualDoc.id, 1234, 'Document id should match' );
     });
 
     test( 'diff document', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         var doc = { id: 1234, clientId: 'client1', content: { name: 'Fletch' } };
         engine.addDocument( doc );
 
@@ -46,7 +46,7 @@
     });
 
     test( 'patch document', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         var doc = { id: 1234, clientId: 'client1', content: {name: 'Fletch' } };
         engine.addDocument( doc );
 
@@ -63,7 +63,7 @@
     });
 
     test( 'patch shadow - content is a String', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         var dmp = new diff_match_patch();
         var content = 'Fletch';
         var doc = { id: 1234, clientId: 'client1', content: content };
@@ -96,7 +96,7 @@
     });
 
     test( 'patch shadow - content is an Object', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         var dmp = new diff_match_patch();
         var content = { name: 'Fletch' };
         var doc = { id: 1234, clientId: 'client1', content: content };
@@ -129,7 +129,7 @@
     });
 
     test( 'already seen edit should be deleted', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         var dmp = new diff_match_patch();
         var content = { name: 'Fletch' };
         var doc = { id: 1234, clientId: 'client1', content: content };
@@ -160,7 +160,7 @@
     });
 
     test( 'restore from backup', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing', type: 'diffMatchPatch'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine({type: 'diffMatchPatch'});
         var dmp = new diff_match_patch();
         var content = { name: 'Fletch' };
         var doc = { id: 1234, clientId: 'client1', content: content };

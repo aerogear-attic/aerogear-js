@@ -3,19 +3,19 @@
     module( 'JSON Patch - Sync Engine test' );
 
     test ( 'JSON Patch should be the default engine', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing' }).engines.thing;
+        var engine = AeroGear.DiffSyncEngine();
         equal( engine instanceof AeroGear.DiffSyncEngine.adapters.jsonPatch , true, 'Should be an instance of jsonpatch adapter' );
     });
 
     test( 'add document', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing, doc = { id: 1234, clientId: 'client1', content: { name: 'Fletch' } };
+        var engine = AeroGear.DiffSyncEngine(), doc = { id: 1234, clientId: 'client1', content: { name: 'Fletch' } };
         engine.addDocument( { id: 1234, clientId: 'client1', content: { name: 'Fletch' } } );
         var actualDoc = engine.getDocument( 1234 );
         equal( actualDoc.id, 1234, 'Document id should match' );
     });
 
     test( 'diff document', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine();
         var doc = { id: 1234, clientId: 'client1', content: { name: 'Fletch' } };
         engine.addDocument( doc );
 
@@ -42,7 +42,7 @@
     });
 
     test( 'patch document', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine();
         var doc = { id: 1234, clientId: 'client1', content: {name: 'Fletch' } };
         engine.addDocument( doc );
 
@@ -58,7 +58,7 @@
     });
 
     test( 'patch shadow - content is an Object', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine();
         var content = { name: 'Fletch' };
         var doc = { id: 1234, clientId: 'client1', content: content };
         var shadow;
@@ -89,7 +89,7 @@
     });
 
     test( 'already seen edit should be deleted', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine();
         var content = { name: 'Fletch' };
         var doc = { id: 1234, clientId: 'client1', content: content };
         var shadow;
@@ -119,7 +119,7 @@
     });
 
     test( 'restore from backup', function() {
-        var engine = AeroGear.DiffSyncEngine({name: 'thing'}).engines.thing;
+        var engine = AeroGear.DiffSyncEngine();
         var content = { name: 'Fletch' };
         var doc = { id: 1234, clientId: 'client1', content: content };
         var shadow;

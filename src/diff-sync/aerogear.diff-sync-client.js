@@ -36,7 +36,7 @@ AeroGear.DiffSyncClient = function ( config ) {
     var ws,
         sendQueue = [],
         that = this,
-        syncEngine = config.syncEngine || new AeroGear.DiffSyncEngine({name: 'jsonPatchEngine'}).engines.jsonPatchEngine;
+        syncEngine = config.syncEngine || new AeroGear.DiffSyncEngine();
 
     if ( config.serverUrl === undefined ) {
         throw new Error( "'config.serverUrl' must be specified" );
