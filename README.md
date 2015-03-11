@@ -61,9 +61,9 @@ See the [SimplePushClient API docs](http://aerogear.org/docs/specs/aerogear-js/A
 
 The Diff Sync client and server are based on an implementation of Google's [Differential Synchonrization](http://research.google.com/pubs/pub35605.html) by Neil Fraser.
 
-The DiffSyncClient connects to the [AeroGear Sync Server](https://github.com/aerogear/aerogear-sync-server)
+The [DiffSyncClient](http://aerogear.org/docs/specs/aerogear-js/AeroGear.DiffSyncClient.html) connects to the [AeroGear Sync Server](https://github.com/aerogear/aerogear-sync-server)
 
-The DiffSyncEngine is responsible for the algorithm logic.
+The [DiffSyncEngine](http://aerogear.org/docs/specs/aerogear-js/AeroGear.DiffSyncEngine.html) is responsible for the algorithm logic - there are two adapters available: [JSON Patch](http://aerogear.org/docs/specs/aerogear-js/AeroGear.DiffSyncEngine.adapters.jsonPatch.html) and [DiffMatchPatch](http://aerogear.org/docs/specs/aerogear-js/AeroGear.DiffSyncEngine.adapters.diffMatchPatch.html).
 
 
 ## UnifiedPushClient
