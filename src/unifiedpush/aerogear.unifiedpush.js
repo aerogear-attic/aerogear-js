@@ -68,12 +68,6 @@
 
                 request.open( settings.type || "GET", settings.url, true, settings.username, settings.password );
 
-                /////////////////////////////////////////////////////////
-                //was removed to support older version of XMLHttpRequest
-                //responseType property for XMLHttpRequest object is added in the level 2 XMLHttpRequest Level
-                //which is included in html 5
-                //request.responseType = "json";
-                /////////////////////////////////////////////////////////
                 request.setRequestHeader( "Content-Type", "application/json" );
                 request.setRequestHeader( "Accept", "application/json" );
 
