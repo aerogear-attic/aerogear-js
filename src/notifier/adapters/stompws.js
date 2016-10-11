@@ -23,6 +23,7 @@
     @param {Boolean} [settings.autoConnect=false] - Automatically connect the client to the connectURL on creation IF LOGIN IS NOT NEEDED. This option is ignored and a connection is automatically established if channels are provided as the connection is necessary prior to channel subscription
     @param {String} [settings.connectURL=""] - defines the URL for connecting to the messaging service
     @param {Function} [settings.onConnect] - callback to be executed when a connection is established if autoConnect === true
+    @param {Function} [settings.onDisconnect] - callback to be executed when a connection is terminated if autoConnect === true
     @param {Function} [settings.onConnectError] - callback to be executed when connecting to a service is unsuccessful if autoConnect === true
     @param {Array} [settings.channels=[]] - a set of channel objects to which this client can subscribe. Each object should have a String address as well as a callback to be executed when a message is received on that channel.
     @returns {Object} The created notifier client
